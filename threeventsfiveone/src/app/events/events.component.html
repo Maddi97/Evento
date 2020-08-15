@@ -1,3 +1,19 @@
-<div style="margin-top: 1rem;" fxLayout="column" fxLayoutAlign="center center">
-    <vents-event-tile fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%" routerLink="/full-event"></vents-event-tile>
+<div fxLayoutAlign="center center">
+    <div style="margin-top: 1rem;" fxLayout="column" fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%">
+        <div fxLayout="row" fxLayoutAlign="start center" style="margin-bottom: .5rem;">
+            <vents-date-picker></vents-date-picker>
+            <div fxLayout="column" fxLayoutAlign="start start">
+                <!-- <div>
+                    <span>Auf Karte ansehen</span>
+                    <mat-icon style="font-size: 2rem;">map</mat-icon>
+                </div> -->
+                <!-- <mat-slider style="padding-top: 0;"></mat-slider> -->
+                <mat-slider style="padding: 0;"></mat-slider>
+            </div>
+        </div>
+        <div fxLayout="column">
+            <vents-event-tile style="width: 100%;" routerLink="/full-event"></vents-event-tile>
+            <vents-event-tile style="width: 100%;" routerLink="/full-event"></vents-event-tile>
+        </div>
+    </div>    
 </div>

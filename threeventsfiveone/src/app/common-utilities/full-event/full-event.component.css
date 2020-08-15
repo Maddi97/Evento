@@ -1,14 +1,15 @@
 .event-tile {
-    background-color: gainsboro;
+    background-color: rgb(238, 238, 238);
     border-radius: 10px;
     height: 95%;
     margin: auto;
     margin-top: .5rem;
     padding-bottom: .5rem;
+    box-shadow: 0px 2px 2px rgb(61, 61, 61);
 }
 
 .category {
-    background-color: rgb(220, 245, 0);
+    background-color: rgb(245, 241, 0);
     border-radius: 7px;
     padding: 0px 3px 0px 3px; 
     width:fit-content; 

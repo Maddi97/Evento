@@ -1,6 +1,9 @@
 .event-tile {
     width: 100%;
-    background-color: gainsboro;
-    border-radius: 10px;
+    background-color: rgb(238, 238, 238);
+    /* background-color: rgb(241, 241, 241); */
+    border-radius: 5px;
     height: 5rem;
+    box-shadow: 0px 2px 2px rgb(61, 61, 61);
+    margin-bottom: .5rem;
 }

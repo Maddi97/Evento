@@ -4,6 +4,9 @@ import { EventsComponent } from './events.component';
 import { CommonUtilitiesModule } from '../common-utilities/common-utilities.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from '../app-routing.module';
+import { MatIconModule } from '@angular/material/icon';
+import {MatSliderModule} from '@angular/material/slider';
+
 
 
 @NgModule({
@@ -14,7 +17,16 @@ import { AppRoutingModule } from '../app-routing.module';
     AppRoutingModule,
     CommonModule,
     CommonUtilitiesModule,
+    /**
+     * Flex
+     */
     FlexLayoutModule,
+
+    /**
+     * Material Imports
+     */
+    MatIconModule,
+    MatSliderModule,
   ]
 })
 export class EventsModule { }
