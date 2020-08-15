@@ -1,0 +1,18 @@
+.date-picker {
+    width: 10rem;
+    height: 3.7rem;
+    border-radius: 10px;
+    background-color: rgb(0, 0, 0);
+    overflow-y: scroll;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.date-picker::-webkit-scrollbar {
+    display: none;
+  }
+  
+/* Hide scrollbar for IE, Edge and Firefox */
+.date-picker {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}

@@ -1,0 +1,5 @@
+<div class="date-picker">
+    <div fxLayout="row">
+        <vents-day-date *ngFor="let day of nextMonth" [date]="day" (click)="safeDate(day)"></vents-day-date>
+    </div>
+</div>

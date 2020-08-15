@@ -1,0 +1,7 @@
+.day-date {
+    height: 3.2rem;
+    width:  3.2rem;
+    background-color: rgb(255, 238, 0);
+    border-radius: 5px;
+    margin: 4px 3px 4px 3px;
+}
