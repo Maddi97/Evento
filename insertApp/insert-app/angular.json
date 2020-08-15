@@ -132,5 +132,8 @@
       }
     }
   },
-  "defaultProject": "insert-app"
+  "defaultProject": "insert-app",
+  "cli": {
+    "analytics": false
+  }
 }
