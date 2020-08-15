@@ -10,7 +10,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { SettingsModule } from './settings/settings.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
-
+import { CommonUtilitiesModule } from './common-utilities/common-utilities.module';
 
 @NgModule({
   declarations: [
@@ -34,6 +34,7 @@ import { MatIconModule } from '@angular/material/icon';
     EventsModule,
     CategoriesModule,
     SettingsModule,
+    CommonUtilitiesModule,
     
   ],
   providers: [],

@@ -1,17 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EventsComponent } from './events.component';
-import { CommonUtilitiesModule } from '../common-utilities/common-utilities.module';
+import { EventTileComponent } from './event-tile/event-tile.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+
 
 @NgModule({
   declarations: [
-    EventsComponent,
+    EventTileComponent,
   ],
   imports: [
     CommonModule,
-    CommonUtilitiesModule,
     FlexLayoutModule,
+  ],
+  exports: [
+    EventTileComponent,
   ]
 })
-export class EventsModule { }
+export class CommonUtilitiesModule { }
