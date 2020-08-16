@@ -36,3 +36,8 @@
     border-radius: 10px; 
     padding: 5px
 }
+
+.event-pic {
+    height: 5rem; 
+    width: 6rem;
+}

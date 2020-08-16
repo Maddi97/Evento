@@ -5,3 +5,21 @@
     border-radius: 5px;
     margin: 4px 3px 4px 3px;
 }
+
+.day {
+    font-size: 1.8rem; 
+    height: 2.2rem;
+}
+
+.date {
+    font-size: 0.8rem; 
+    height: 1.0rem;
+}
+
+.day-date-clicked {
+    height: 3.2rem;
+    width:  3.2rem;
+    background-color: rgb(117, 109, 0);
+    border-radius: 5px;
+    margin: 4px 3px 4px 3px;
+}

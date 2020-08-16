@@ -1,9 +1,9 @@
-<div class="day-date">
+<div [ngClass]="{'day-date': !isClicked, 'day-date-clicked': isClicked}">
     <div fxLayout="column">
-        <div fxLayoutAlign="center center" style="font-size: 1.8rem; height: 2.2rem;">
+        <div fxLayoutAlign="center center" class="day">
             {{ dayToString(date.getDay()) }}
         </div>
-        <div fxLayoutAlign="center center" style="font-size: 0.8rem; height: 1.0rem;">
+        <div fxLayoutAlign="center center" class="date">
             {{ dateToString() }}
         </div>
     </div>

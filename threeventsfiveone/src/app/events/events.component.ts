@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EventsComponent implements OnInit {
 
+  public isDropdown = false;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -14,9 +16,13 @@ export class EventsComponent implements OnInit {
 
   formatLabel(value: number) {
     if (value >= 1) {
-      return  value / 10+ 'km';
+      return  value / 10 + 'km';
     }
 
     return value;
+  }
+
+  searchForDay(filter: Date) {
+    console.log(filter);
   }
 }

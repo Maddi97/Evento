@@ -9,6 +9,8 @@ export class DayDateComponent implements OnInit {
 
   @Input() date: Date;
 
+  @Input() isClicked = false;
+
   days: string[] = [
     'So',
     'Mo',
@@ -22,8 +24,6 @@ export class DayDateComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.date.getDate(), this.date.getMonth())
-    
   }
 
   dayToString(day: number): string {

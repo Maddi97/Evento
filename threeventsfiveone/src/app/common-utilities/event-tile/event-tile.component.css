@@ -7,3 +7,29 @@
     box-shadow: 0px 2px 2px rgb(61, 61, 61);
     margin-bottom: .5rem;
 }
+
+.pic {
+    width: 4rem; 
+    height: 4rem; 
+    border-radius: 5px;
+}
+
+.event-pic {
+    height: 100%; 
+    width: 6rem;
+}
+
+.date  {
+    width: 100%; 
+    color: rgb(114, 114, 114); 
+    padding: 0px 3px 0px 0px; 
+    font-size: .7rem;
+}
+
+.category {
+    background-color: rgb(255, 238, 0); 
+    border-radius: 7px; 
+    padding: 0px 3px 0px 3px; 
+    width:fit-content; 
+    font-size: .7rem;
+}

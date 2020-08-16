@@ -1,18 +1,29 @@
 <div fxLayoutAlign="center center">
-    <div style="margin-top: 1rem;" fxLayout="column" fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%">
+    <div style="margin-top: 1rem;" fxLayout="column" fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%" fxFlex.gt-md="40%">
         <div fxLayout="row" fxLayoutAlign="start center" style="margin-bottom: .5rem;">
-            <vents-date-picker></vents-date-picker>
-            <div fxLayout="column" fxLayoutAlign="start start">
-                <!-- <div>
-                    <span>Auf Karte ansehen</span>
-                    <mat-icon style="font-size: 2rem;">map</mat-icon>
-                </div> -->
-                <!-- <mat-slider style="padding-top: 0;"></mat-slider> -->
-                <mat-slider style="padding: 0;"></mat-slider>
+            <vents-date-picker fxFlex="50%" (clickedDate)="searchForDay($event)"></vents-date-picker>
+            <div fxLayout="row" fxLayoutAlign="space-around center">
+                <mat-icon class="icon" routerLink="/map">
+                    map
+                </mat-icon>
+            </div>
+            <div fxLayout fxLayoutAlign="end center" style="width: 100%;">
+                <mat-icon class="icon" (click)="isDropdown = !isDropdown">
+                    keyboard_arrow_down
+                </mat-icon>
+            </div>
+        </div>
+        <div *ngIf="isDropdown" fxLayout="column" style="margin-bottom: .5rem;">
+            Entfernung
+            <mat-slider style="padding-top: 0;"></mat-slider>
+            Kategorien
+            <div fxLayout="row wrap" fxLayoutAlign="start center">
+                <span class="category">
+                    Kategorie
+                </span>
             </div>
         </div>
         <div fxLayout="column">
-            <vents-event-tile style="width: 100%;" routerLink="/full-event"></vents-event-tile>
             <vents-event-tile style="width: 100%;" routerLink="/full-event"></vents-event-tile>
         </div>
     </div>    
