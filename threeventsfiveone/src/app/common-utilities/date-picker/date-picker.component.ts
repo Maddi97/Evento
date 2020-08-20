@@ -1,4 +1,5 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { MatCalendar } from '@angular/material/datepicker';
 
 @Component({
   selector: 'vents-date-picker',
@@ -8,6 +9,9 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 export class DatePickerComponent implements OnInit {
 
   @Output() clickedDate = new EventEmitter<Date>();
+
+  @ViewChild(MatCalendar) datePicker: MatCalendar<Date>;
+
 
   public nextMonth: DateClicked[] = [];
   constructor() { }

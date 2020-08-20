@@ -6,7 +6,12 @@ import { FullEventComponent } from './full-event/full-event.component';
 import { DatePickerComponent } from './date-picker/date-picker.component';
 import { DayDateComponent } from './date-picker/day-date/day-date.component';
 import { MapComponent } from './map/map.component';
-import { GoogleMapsModule } from '@angular/google-maps'
+import { GoogleMapsModule } from '@angular/google-maps';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatInputModule} from '@angular/material/input';
+
+
 
 
 
@@ -22,6 +27,9 @@ import { GoogleMapsModule } from '@angular/google-maps'
     CommonModule,
     FlexLayoutModule,
     GoogleMapsModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatNativeDateModule,
   ],
   exports: [
     EventTileComponent,

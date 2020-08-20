@@ -3,16 +3,20 @@
     height: 3.7rem;
     border-radius: 10px;
     background-color: rgb(0, 0, 0);
+    box-shadow: 0px 2px 2px rgb(61, 61, 61);
+}
+
+.scroll {
     overflow-y: scroll;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.date-picker::-webkit-scrollbar {
+.scroll::-webkit-scrollbar {
     display: none;
   }
   
 /* Hide scrollbar for IE, Edge and Firefox */
-.date-picker {
+.scroll {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
