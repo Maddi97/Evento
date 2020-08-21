@@ -14,24 +14,19 @@ export class OrganizerViewComponent implements OnInit {
   constructor(private organizerService: OrganizerService) { }
 
   ngOnInit(): void {
-    this.organizerService.getOrganizer()
-    .subscribe((organizor: Organizer[]) => {
-      this.organizer = organizor;
-      console.log(organizor)
-    }); //(organizor: Organizer[]) => this.organizer = organizor
-  }
-  
+    this.organizerService.getOrganizer().subscribe();
 
-  addNewOrganizer(title): void {
-    this.organizerService.createOrganizer(title)
-    .subscribe((organizor: Organizer) => this.organizer.push(organizor));
+    this.organizerService.organizers.subscribe(o => {
+      this.organizer = o;
+    });
   }
-  
-  deleteOrganizor(id: string){
-    this.organizerService.deleteOrganizer(id)
-    .subscribe(organizor => console.log(organizor));
 
-
+  addNewOrganizer(title: string): void {
+    this.organizerService.createOrganizer(title).subscribe();
   }
-  
+
+  deleteOrganizer(id: string): void {
+    this.organizerService.deleteOrganizer(id).subscribe();
+  }
+
 }

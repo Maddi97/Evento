@@ -7,8 +7,8 @@
 </div>
     
 <div>
-    <div *ngFor="let organizor of organizer" style="display:flex; flex-direction: row; align-content: space-between;">
-        <p>{{organizor.title}}</p> <button (click)="deleteOrganizor(organizor._id)">x</button>
+    <div *ngFor="let o of organizer" style="display:flex; flex-direction: row; align-content: space-between;">
+        <p>{{o.title}}</p> <button (click)="deleteOrganizer(o._id)">x</button>
     </div>
 </div>
   
