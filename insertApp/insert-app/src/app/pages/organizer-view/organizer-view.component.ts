@@ -14,8 +14,6 @@ export class OrganizerViewComponent implements OnInit {
   constructor(private organizerService: OrganizerService) { }
 
   ngOnInit(): void {
-    this.organizerService.getOrganizer().subscribe();
-
     this.organizerService.organizers.subscribe(o => {
       this.organizer = o;
     });

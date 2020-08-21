@@ -6,15 +6,24 @@ import { AppComponent } from './app.component';
 import { EventViewComponent } from './pages/event-view/event-view.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {SelectionViewComponent } from './pages/selection-view/selection-view.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+
+
 
 import { HttpClientModule } from "@angular/common/http";
-import { OrganizerViewComponent } from './pages/organizer-view/organizer-view.component'
+import { OrganizerViewComponent } from './pages/organizer-view/organizer-view.component';
+
+import {FlexLayoutModule} from '@angular/flex-layout';
+import { MatNativeDateModule } from '@angular/material/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -33,7 +42,13 @@ import { OrganizerViewComponent } from './pages/organizer-view/organizer-view.co
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatChipsModule
+    MatChipsModule,
+    FlexLayoutModule,
+    NgxMaterialTimepickerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
