@@ -1,0 +1,14 @@
+<div class="example-container">
+    <mat-form-field appearance="fill">
+      <mat-label>Organizer</mat-label>
+      <input matInput #target (keydown.enter)="addNewOrganizer(target.value)">
+    </mat-form-field>
+    <br>
+</div>
+    
+<div>
+    <div *ngFor="let o of organizer" style="display:flex; flex-direction: row; align-content: space-between;">
+        <p>{{o.title}}</p> <button (click)="deleteOrganizer(o._id)">x</button>
+    </div>
+</div>
+  
