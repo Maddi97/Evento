@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { OrganizerService } from 'src/app/organizer.service';
 
 @Component({
   selector: 'app-selection-view',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SelectionViewComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private organizerService: OrganizerService,
+    
+  ) { }
 
   ngOnInit(): void {
+    this.organizerService.getOrganizer().subscribe();
   }
 
 }

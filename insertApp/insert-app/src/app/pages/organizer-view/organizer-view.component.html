@@ -1,14 +1,30 @@
-<div class="example-container">
-    <mat-form-field appearance="fill">
+<div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+    <mat-form-field appearance="fill" style="width: 90%;">
       <mat-label>Organizer</mat-label>
-      <input matInput #target (keydown.enter)="addNewOrganizer(target.value)">
+      <input matInput #target (keydown.enter)="addNewOrganizer(target.value); target.value = ''">
     </mat-form-field>
-    <br>
+    <div style="width: 90%;" fxLayoutAlign="start center">
+        <mat-form-field>
+          <mat-label>Straße, Hausnummer</mat-label>
+          <textarea matInput placeholder="Musterstraße 13"></textarea>
+        </mat-form-field>
+        <mat-form-field >
+          <mat-label>PLZ, Ort</mat-label>
+          <textarea matInput placeholder="12013, Musterhausen"></textarea>
+        </mat-form-field>
+    </div>
 </div>
     
 <div>
-    <div *ngFor="let o of organizer" style="display:flex; flex-direction: row; align-content: space-between;">
-        <p>{{o.title}}</p> <button (click)="deleteOrganizer(o._id)">x</button>
+    <div *ngFor="let o of organizer" fxLayout="column" fxLayoutAlign="center center">
+        <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px;" fxLayout="row">
+            <div style="width: 80%;" fxLayoutAlign="start center">
+                {{o.title}}
+            </div>
+            <div (click)="deleteOrganizer(o._id)" style="width: 20%; background-color: red; border-radius: 5px;"fxLayoutAlign="center center">
+                Delete
+            </div>
+        </div>
     </div>
 </div>
   

@@ -5,8 +5,8 @@ import { AppComponent } from './app.component';
 import { OrganizerViewComponent } from './pages/organizer-view/organizer-view.component';
 
 const routes: Routes = [
-  { path: 'event', component: EventViewComponent},
-  {path: 'organizer', component: OrganizerViewComponent}
+  { path: 'event', component: EventViewComponent },
+  { path: 'organizer', component: OrganizerViewComponent }
 ];
 
 @NgModule({

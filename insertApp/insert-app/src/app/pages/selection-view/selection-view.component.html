@@ -1,8 +1,4 @@
-<div>
-    <div>
-        <button mat-raised-button color="primary" [routerLink]="['/organizer']">Add new Organizer</button>
-    </div>
-    <div>
-        <button mat-raised-button color="primary" [routerLink]="['/event']">Add new Event</button>
-    </div>
+<div fxLayout="row">
+    <button mat-raised-button [routerLink]="['/organizer']" style="width: 50%; border-radius: 10px;">Add new Organizer</button>
+    <button mat-raised-button [routerLink]="['/event']" style="width: 50%; border-radius: 10px">Add new Event</button>
 </div>
