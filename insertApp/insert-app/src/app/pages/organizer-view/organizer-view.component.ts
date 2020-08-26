@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OrganizerService } from 'src/app/organizer.service';
-import Organizer from 'src/app/models/organizer';
+import { Organizer, Adress } from 'src/app/models/organizer';
 
 @Component({
   selector: 'app-organizer-view',
@@ -20,7 +20,12 @@ export class OrganizerViewComponent implements OnInit {
   }
 
   addNewOrganizer(title: string): void {
-    this.organizerService.createOrganizer(title).subscribe();
+    const org = new Organizer();
+    org.title = title;
+    org.adress = new Adress();
+    org.adress.plz = '01127';
+    org.adress.street = 'Großenhainerstraße';
+    this.organizerService.createOrganizer(org).subscribe();
   }
 
   deleteOrganizer(id: string): void {

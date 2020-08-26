@@ -10,7 +10,7 @@ router.get('/organizer/:organizerId/events', (req, res) => {
 });
   
 router.post('/organizer/:organizerId/events', (req, res) => {
-    (new Event({'title': req.body.title, '_organizerId': req.params.organizerId}))
+    (new Event({'title': req.body.event.title, '_organizerId': req.params.organizerId}))
     .save()
     .then((events) => res.send(events))
     .catch((error) => console.log(error))

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { WebService } from './web.service';
 import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
-import Organizer from './models/organizer';
+import { Organizer } from './models/organizer';
 import { HttpRequest } from '@angular/common/http';
 import { filter, map, catchError, share } from 'rxjs/operators';
 
@@ -32,8 +32,8 @@ export class OrganizerService {
       return obs;
   }
 
- createOrganizer(title: string): Observable<Organizer> {
-  const obs = this.webService.post('organizer', { title }).pipe(
+ createOrganizer(organizer: Organizer): Observable<Organizer> {
+  const obs = this.webService.post('organizer', { organizer }).pipe(
     map((r: HttpRequest<any>) => r as unknown as Organizer),
     catchError((error: any) => {
       console.error('an error occurred', error);

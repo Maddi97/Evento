@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { OrganizerService } from 'src/app/organizer.service';
-import Organizer from 'src/app/models/organizer';
+import { Organizer } from 'src/app/models/organizer';
 import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
+import { EventsService } from 'src/app/events.service';
+import { Event } from '../../models/event';
 
 @Component({
   selector: 'app-event-view',
@@ -18,6 +20,8 @@ export class EventViewComponent implements OnInit {
 
   constructor(
     private organizerService: OrganizerService,
+    private eventService: EventsService,
+
   ) { }
 
   ngOnInit(): void {
@@ -27,12 +31,21 @@ export class EventViewComponent implements OnInit {
       startWith(''),
       map(value => this._filter(value))
     );
+
+    const event = new Event();
+    event._organizerId = '5f40133d0777d345df982edc';
+    event.title = 'test';
+    this.createEvent(event);
   }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
     return this.organizers.map(o => o.title).filter(o => o.toLowerCase().includes(filterValue));
+  }
+
+  createEvent(event: Event) {
+    this.eventService.createEvent(event);
   }
 
 }
