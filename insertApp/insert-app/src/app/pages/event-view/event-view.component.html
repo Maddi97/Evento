@@ -6,40 +6,92 @@
       [matAutocomplete]="auto"
       type="text">
       <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-          {{option}}
-        </mat-option>
+          <mat-option *ngFor="let organizer of organizers" [value]="organizer.name">
+            {{organizer.name}}
+          </mat-option>
       </mat-autocomplete>
     </mat-form-field>
    
-    <mat-form-field appearance="fill" style="width: 90%;">
-      <mat-label>Description</mat-label>
-      <textarea matInput></textarea>
-    </mat-form-field>
-    
-    <div fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
-      <div>
-        <mat-form-field appearance="fill">
-          <mat-label>Choose a date</mat-label>
-          <input matInput [matDatepicker]="picker">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
+    <form [formGroup]="eventForm">
+
+      <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+        <mat-form-field appearance="fill" style="width: 90%;">
+          <mat-label>Event Name</mat-label>
+          <input matInput #target required="true" formControlName="name" (keydown.enter)="addNewEvent(); target.value = ''">
         </mat-form-field>
-      </div>
-      <div style="padding-left: 1rem;">
-        <span>Beginn:</span>
-        <div class="ngx-timepicker-field-example">
-          <ngx-timepicker-field [format]="24" [defaultTime]="'23:11'"></ngx-timepicker-field>
-        </div>
-      </div>
-      <div style="padding-left: 1rem;">
-        <span>Ende:</span>
-        <div class="ngx-timepicker-field-example">
-          <ngx-timepicker-field [format]="24" [defaultTime]="'23:11'"></ngx-timepicker-field>
-        </div>
-      </div>
+        <div style="width: 90%;" fxLayoutAlign="start center"></div>
     </div>
-    <button mat-raised-button color="primary" style="width: 90%; margin-bottom: .5rem;">
+
+    <div class="city"style="width: 100%;" fxLayoutAlign="center center" fxLayout="row" >
+      <div style="width: 90%;" fxLayoutAlign="center center">
+          <mat-form-field appearance="fill" style="width: 90%;">
+              <mat-label>Plz</mat-label>
+              <input matInput #target required="true" formControlName="plz" (keydown.enter)="addNewEvent(); target.value = ''">
+          </mat-form-field>
+      </div>
+
+      <div style="width: 90%;" fxLayoutAlign="end center" fxLayout="column">
+          <mat-form-field appearance="fill" style="width: 90%;">
+          <mat-label>City</mat-label>
+          <input matInput #target required="true" formControlName="city" (keydown.enter)="addNewEvent(); target.value = ''">
+          </mat-form-field>
+      </div>
+  </div>
+
+  <div class="street" style="width: 100%;" fxLayoutAlign="center center" fxLayout="row" >
+      <div style="width: 90%;" fxLayoutAlign="center center" fxLayout="column">
+          <mat-form-field appearance="fill" style="width: 90%;">
+          <mat-label>Street</mat-label>
+          <input matInput #target required="true" formControlName="street" (keydown.enter)="addNewEvent(); target.value = ''">
+          </mat-form-field>
+      </div>
+
+      <div style="width: 15%;" fxLayoutAlign="center center" fxLayout="column">
+          <mat-form-field appearance="fill" style="width: 100%;">
+          <mat-label>Number</mat-label>
+          <input matInput #target required="true" formControlName="streetNumber" (keydown.enter)="addNewEvent(); target.value = ''">
+          </mat-form-field>
+      </div>
+  </div>
+
+  <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+    <mat-form-field appearance="fill" style="width: 90%;">
+    <mat-label>Category</mat-label>
+    <input matInput #target required="true" formControlName="category" (keydown.enter)="addNewEvent(); target.value = ''">
+    </mat-form-field>
+</div>
+
+  <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+      <mat-form-field appearance="fill" style="width: 90%;">
+      <mat-label>Description</mat-label>
+      <input matInput #target required="true" formControlName="description" (keydown.enter)="addNewEvent(); target.value = ''">
+      </mat-form-field>
+  </div>
+      
+      <div fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
+        <div>
+          <mat-form-field appearance="fill">
+            <mat-label>Choose a date</mat-label>
+            <input matInput [matDatepicker]="picker" (dateChange)= " eventDate.day = ($event.value.getDate() + '/' + ($event.value.getMonth()+1) + '/' + $event.value.getFullYear())">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div style="padding-left: 1rem;">
+          <span>Beginn:</span>
+          <div class="ngx-timepicker-field-example">
+            <ngx-timepicker-field [format]="24" #startTime [defaultTime]="eventDate.end" (timeChanged)="eventDate.start = startTime.timepickerTime"></ngx-timepicker-field>
+          </div>
+        </div>
+        <div style="padding-left: 1rem;">
+          <span>Ende:</span>
+          <div class="ngx-timepicker-field-example">
+            <ngx-timepicker-field [format]="24" #endTime [defaultTime]="eventDate.end" (timeChanged)="eventDate.end = endTime.timepickerTime"></ngx-timepicker-field>
+          </div>
+        </div>
+      </div>
+    </form>
+    <button mat-raised-button color="primary" style="width: 90%; margin-bottom: .5rem;" (click)="addNewEvent()">
       Submit
     </button>
 </div>
