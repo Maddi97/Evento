@@ -51,6 +51,30 @@ export class OrganizerService {
 
  }
 
+updateOrganizer(id: string, organizer : Organizer){
+
+    const obs = this.webService.patch(`organizer/${id}`, { organizer }).pipe(
+      map((r: HttpRequest<any>) => r as unknown as Organizer),
+      catchError((error: any) => {
+        console.error('an error occurred', error);
+        return observableThrowError(error.error.message || error);
+      }),
+      share());
+
+    obs.toPromise().then(
+      (response: Organizer) => {
+        const tempOrg = this._organizers.getValue();
+        tempOrg.map((o: Organizer, index) => {
+          if (o._id === id) {
+            tempOrg.splice(index, 1);
+          }
+        });
+        this._organizers.next(tempOrg);
+      }
+    )
+    return obs;   
+} 
+
 deleteOrganizer(id: string){
   const obs = this.webService.delete(`organizer/${id}`).pipe(
     map((r: HttpRequest<any>) => r as unknown as Organizer),

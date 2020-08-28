@@ -21,6 +21,12 @@ router.get('/organizer/:organizerId', (req, res) => {
     .then((organizer) => res.send(organizer))
     .catch((error) => console.log(error))
 })
+
+router.patch('/organizer/:organizerId', (req, res) => {
+    Organizer.findByIdAndUpdate({ _id: req.params.organizerId } , { $set: req.body.organizer } )
+    .then((organizer) => res.send(organizer))
+    .catch((error => console.log(error)))
+});
   
 router.delete('/organizer/:organizerId', (req, res) => {
     Organizer.findByIdAndDelete({_id: req.params.organizerId})

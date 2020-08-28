@@ -23,6 +23,10 @@ export class WebService {
     return this.http.put(`${this.ROOT_URL}/${uri}`, payload)
   }
 
+  patch(uri: string, payload: Object) {
+    return this.http.patch(`${this.ROOT_URL}/${uri}`, payload)
+  }
+
   delete(uri: string) {
     return this.http.delete(`${this.ROOT_URL}/${uri}`)
   }
