@@ -1,19 +1,13 @@
-<div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
-    <mat-form-field appearance="fill" style="width: 90%;">
-      <mat-label>Organizer</mat-label>
-      <input matInput #target (keydown.enter)="addNewOrganizer(target.value); target.value = ''">
-    </mat-form-field>
-    <div style="width: 90%;" fxLayoutAlign="start center">
-        <mat-form-field>
-          <mat-label>Straße, Hausnummer</mat-label>
-          <textarea matInput placeholder="Musterstraße 13"></textarea>
+<form [formGroup]="organizerForm">
+    <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+        <mat-form-field appearance="fill" style="width: 90%;">
+          <mat-label>Organizer</mat-label>
+          <input matInput #target formControlName="name" (keydown.enter)="addNewOrganizer(); target.value = ''">
         </mat-form-field>
-        <mat-form-field >
-          <mat-label>PLZ, Ort</mat-label>
-          <textarea matInput placeholder="12013, Musterhausen"></textarea>
-        </mat-form-field>
+        <div style="width: 90%;" fxLayoutAlign="start center"> 
+        </div>
     </div>
-</div>
+</form>
     
 <div>
     <div *ngFor="let o of organizer" fxLayout="column" fxLayoutAlign="center center">

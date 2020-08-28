@@ -41,7 +41,7 @@ export class EventViewComponent implements OnInit {
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.organizers.map(o => o.title).filter(o => o.toLowerCase().includes(filterValue));
+    return this.organizers.map(o => o.name).filter(o => o.toLowerCase().includes(filterValue));
   }
 
   createEvent(event: Event) {

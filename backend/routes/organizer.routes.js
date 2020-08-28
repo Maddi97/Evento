@@ -10,7 +10,7 @@ router.get('/organizer', (req, res) => {
   
 router.post('/organizer', (req, res) => {
     console.log(req.body);
-    (new Organizer({'title': req.body.organizer.title, 'adress': req.body.organizer.adress }))
+    (new Organizer(req.body.organizer))
     .save()
     .then((organizer) => res.send(organizer))
     .catch((error) => console.log(error))
