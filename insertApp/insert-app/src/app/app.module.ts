@@ -15,6 +15,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 
@@ -34,6 +35,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     OrganizerViewComponent
   ],
   imports: [
+    MatCheckboxModule,
     HttpClientModule,
     MatButtonModule,
     MatInputModule,

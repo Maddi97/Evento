@@ -54,9 +54,37 @@
         <input matInput #target required="true" formControlName="category" (keydown.enter)="addNewOrganizer(); target.value = ''">
         </mat-form-field>
     </div>
+    
+    
+    <div class = "dayList" >
+    <mat-checkbox class="opening-times-required" [isOpeningTimesRequired] (change)="isOpeningTimesRequired = !isOpeningTimesRequired" >Opening times required? </mat-checkbox>
+        <div *ngIf="isOpeningTimesRequired">
+
+            <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="row" *ngFor="let day of openingTimes">
+
+                <p> {{day.day}} </p>
+                <div style="padding-left: 1rem;">
+                    <span>Start:</span>
+                    <div class="ngx-timepicker-field-example">
+                         <ngx-timepicker-field #startTime [format]="24" [(defaultTime)]="day.start" (timeChanged)="day.start = startTime.timepickerTime"> </ngx-timepicker-field>
+                    </div>
+                </div>
+                <div style="padding-left: 1rem;">
+                    <span>Ende:</span>
+                    <div class="ngx-timepicker-field-example">
+                    <ngx-timepicker-field #endTime [format]="24" [defaultTime]="day.end" (timeChanged)="day.end = endTime.timepickerTime"></ngx-timepicker-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </form>
     
+
+
+
+
 <div>
     <div *ngFor="let o of organizer" fxLayout="column" fxLayoutAlign="center center">
         <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px;" fxLayout="row">

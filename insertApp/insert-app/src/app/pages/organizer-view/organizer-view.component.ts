@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OrganizerService } from 'src/app/organizer.service';
-import { Organizer, Adress } from 'src/app/models/organizer';
+import { Organizer, Adress, Day } from 'src/app/models/organizer';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
@@ -22,6 +22,19 @@ export class OrganizerViewComponent implements OnInit {
     category: new FormControl('', []),
     description: new FormControl('', [])
   })
+
+  isOpeningTimesRequired : boolean = false;
+
+  openingTimes : Day[] = [
+    {day: "Monday", start: "00:00", end: "00:00"},
+    {day: "Tuesday", start: "00:00", end: "00:00"}, 
+    {day: "Wednesday", start: "00:00", end: "00:00"}, 
+    {day: "Thursday", start: "00:00", end: "00:00"}, 
+    {day: "Friday", start: "00:00", end: "00:00"}, 
+    {day: "Saturday", start: "00:00", end: "00:00"}, 
+    {day: "Sunday", start: "00:00", end: "00:00"}  
+  ]
+
 
   constructor(
     private organizerService: OrganizerService,
@@ -52,23 +65,28 @@ export class OrganizerViewComponent implements OnInit {
     org.description = this.organizerForm.get('description').value;
     org.category = this.organizerForm.get('category').value;
 
-    console.log(org);
+    org.openingTimes=this.openingTimes
+    
+
     this.organizerService.createOrganizer(org).subscribe();
   }
 
 
 
-  setOrganizerForm(o: Organizer): void {
+  setOrganizerForm(org: Organizer): void {
     this.organizerForm.setValue({
-      'name' : o.name,
-      'city' : o.adress.city,
-      'plz'  : o.adress.plz,
-      'street': o.adress.street,
-      'streetNumber': o.adress.streetNumber,
-      'country': o.adress.country,
-      'description': o.description,
-      'category': o.category 
+      'name' : org.name,
+      'city' : org.adress.city,
+      'plz'  : org.adress.plz,
+      'street': org.adress.street,
+      'streetNumber': org.adress.streetNumber,
+      'country': org.adress.country,
+      'description': org.description,
+      'category': org.category 
   });
+
+    this.openingTimes = org.openingTimes
+
   }
 
   updateOrganizer(id: string): void {
@@ -88,12 +106,17 @@ export class OrganizerViewComponent implements OnInit {
       org.description = this.organizerForm.get('description').value;
       org.category = this.organizerForm.get('category').value;
 
+      org.openingTimes=this.openingTimes
+
+
      this.organizerService.updateOrganizer(id, org).subscribe();
+
 
   }
 
   deleteOrganizer(id: string): void {
     this.organizerService.deleteOrganizer(id).subscribe();
   }
+
 
 }
