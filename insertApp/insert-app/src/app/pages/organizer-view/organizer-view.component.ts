@@ -120,11 +120,11 @@ export class OrganizerViewComponent implements OnInit {
   nullFormField(){
     this.organizerForm.setValue({
       name : '',
-      city : '',
+      city : 'Dresden',
       plz  : '',
       street: '',
       streetNumber: '',
-      country: '',
+      country: 'Germany',
       description: '',
       category: ''
     });
