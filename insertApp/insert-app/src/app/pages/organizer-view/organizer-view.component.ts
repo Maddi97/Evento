@@ -12,10 +12,12 @@ export class OrganizerViewComponent implements OnInit {
 
   organizer: Organizer[] = [];
 
+  updateOrganizerId: string = '';
+
   organizerForm = this.fb.group({
     name: new FormControl('', []),
     city: new FormControl('Dresden', []),
-    plz: new FormControl('01127', []),
+    plz: new FormControl('', []),
     street: new FormControl('', []),
     streetNumber: new FormControl('', []),
     country: new FormControl('Deutschland', []),
@@ -69,28 +71,30 @@ export class OrganizerViewComponent implements OnInit {
     
 
     this.organizerService.createOrganizer(org).subscribe();
+    this.nullFormField();
   }
 
 
 
   setOrganizerForm(org: Organizer): void {
     this.organizerForm.setValue({
-      'name' : org.name,
-      'city' : org.adress.city,
-      'plz'  : org.adress.plz,
-      'street': org.adress.street,
-      'streetNumber': org.adress.streetNumber,
-      'country': org.adress.country,
-      'description': org.description,
-      'category': org.category 
+      name: org.name,
+      city: org.adress.city,
+      plz: org.adress.plz,
+      street: org.adress.street,
+      streetNumber: org.adress.streetNumber,
+      country: org.adress.country,
+      description: org.description,
+      category: org.category
   });
 
     this.openingTimes = org.openingTimes
+    this.updateOrganizerId = org._id;
 
   }
 
-  updateOrganizer(id: string): void {
-
+  updateOrganizer(): void {
+      console.log('hallo');
       const org = new Organizer();
       const adress = new Adress();
       org.name = this.organizerForm.get('name').value;
@@ -109,9 +113,23 @@ export class OrganizerViewComponent implements OnInit {
       org.openingTimes=this.openingTimes
 
 
-     this.organizerService.updateOrganizer(id, org).subscribe();
+     this.organizerService.updateOrganizer(this.updateOrganizerId, org).subscribe();
+     this.nullFormField();
 
+  }
 
+  nullFormField(){
+    this.organizerForm.setValue({
+      name : '',
+      city : '',
+      plz  : '',
+      street: '',
+      streetNumber: '',
+      country: '',
+      description: '',
+      category: ''
+    });
+    this.updateOrganizerId = ''
   }
 
   deleteOrganizer(id: string): void {

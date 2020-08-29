@@ -64,16 +64,18 @@ updateOrganizer(id: string, organizer : Organizer){
     obs.toPromise().then(
       (response: Organizer) => {
         const tempOrg = this._organizers.getValue();
+        let indeX: number;
         tempOrg.map((o: Organizer, index) => {
           if (o._id === id) {
-            tempOrg.splice(index, 1);
+            indeX = index;
           }
         });
+        tempOrg[indeX] = organizer;
         this._organizers.next(tempOrg);
       }
     )
-    return obs;   
-} 
+    return obs;
+}
 
 deleteOrganizer(id: string){
   const obs = this.webService.delete(`organizer/${id}`).pipe(
