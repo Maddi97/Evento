@@ -25,23 +25,23 @@ export class OrganizerViewComponent implements OnInit {
     description: new FormControl('', [])
   })
 
-  isOpeningTimesRequired : boolean = false;
+  isOpeningTimesRequired = false;
 
   openingTimes : Day[] = [
-    {day: "Monday", start: "00:00", end: "00:00"},
-    {day: "Tuesday", start: "00:00", end: "00:00"}, 
-    {day: "Wednesday", start: "00:00", end: "00:00"}, 
-    {day: "Thursday", start: "00:00", end: "00:00"}, 
-    {day: "Friday", start: "00:00", end: "00:00"}, 
-    {day: "Saturday", start: "00:00", end: "00:00"}, 
-    {day: "Sunday", start: "00:00", end: "00:00"}  
+    {day: 'Monday', start: '00:00', end: '00:00'},
+    {day: 'Tuesday', start: '00:00', end: '00:00'},
+    {day: 'Wednesday', start: '00:00', end: '00:00'},
+    {day: 'Thursday', start: '00:00', end: '00:00'},
+    {day: 'Friday', start: '00:00', end: '00:00'},
+    {day: 'Saturday', start: '00:00', end: '00:00'},
+    {day: 'Sunday', start: '00:00', end: '00:00'}
   ]
 
 
   constructor(
     private organizerService: OrganizerService,
     private fb: FormBuilder,
-    
+
     ) { }
 
   ngOnInit(): void {
@@ -55,7 +55,7 @@ export class OrganizerViewComponent implements OnInit {
     const org = new Organizer();
     const adress = new Adress();
     org.name = this.organizerForm.get('name').value;
-    //set adress
+    // set adress
     adress.plz =  this.organizerForm.get('plz').value;
     adress.city =  this.organizerForm.get('city').value;
     adress.street =  this.organizerForm.get('street').value;
@@ -68,7 +68,6 @@ export class OrganizerViewComponent implements OnInit {
     org.category = this.organizerForm.get('category').value;
 
     org.openingTimes=this.openingTimes
-    
 
     this.organizerService.createOrganizer(org).subscribe();
     this.nullFormField();
@@ -98,7 +97,7 @@ export class OrganizerViewComponent implements OnInit {
       const org = new Organizer();
       const adress = new Adress();
       org.name = this.organizerForm.get('name').value;
-      //set adress
+      // set adress
       adress.plz =  this.organizerForm.get('plz').value;
       adress.city =  this.organizerForm.get('city').value;
       adress.street =  this.organizerForm.get('street').value;

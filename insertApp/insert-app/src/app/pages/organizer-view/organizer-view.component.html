@@ -2,7 +2,7 @@
     <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
         <mat-form-field appearance="fill" style="width: 90%;">
           <mat-label>Organizer</mat-label>
-          <input matInput #target required formControlName="name" (keydown.enter)="addNewOrganizer(); target.value = ''">
+          <input matInput #target required formControlName="name" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
         </mat-form-field>
         <div style="width: 90%;" fxLayoutAlign="start center"></div>
 
@@ -13,14 +13,14 @@
         <div style="width: 45%;" fxLayoutAlign="start center">
             <mat-form-field appearance="fill" style="width: 90%;">
                 <mat-label>Plz</mat-label>
-                <input matInput #target required formControlName="plz" (keydown.enter)="addNewOrganizer(); target.value = ''">
+                <input matInput #target required formControlName="plz" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
             </mat-form-field>
         </div>
 
         <div style="width: 45%;" fxLayoutAlign="end center" fxLayout="column">
             <mat-form-field appearance="fill" style="width: 90%;">
             <mat-label>City</mat-label>
-            <input matInput #target required formControlName="city" (keydown.enter)="addNewOrganizer(); target.value = ''">
+            <input matInput #target required formControlName="city" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
             </mat-form-field>
         </div>
     </div>
@@ -29,14 +29,14 @@
         <div style="width: 75%;" fxLayout="column">
             <mat-form-field appearance="fill" style="width: 90%;">
             <mat-label>Street</mat-label>
-            <input matInput #target required formControlName="street" (keydown.enter)="addNewOrganizer(); target.value = ''">
+            <input matInput #target required formControlName="street" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
             </mat-form-field>
         </div>
 
         <div style="width: 15%;" fxLayoutAlign="end center" fxLayout="column">
             <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Number</mat-label>
-            <input matInput #target required formControlName="streetNumber" (keydown.enter)="addNewOrganizer(); target.value = ''">
+            <input matInput #target required formControlName="streetNumber" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
             </mat-form-field>
         </div>
     </div>
@@ -44,14 +44,14 @@
     <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
         <mat-form-field appearance="fill" style="width: 90%;">
         <mat-label>Description</mat-label>
-        <input matInput #target required formControlName="description" (keydown.enter)="addNewOrganizer(); target.value = ''">
+        <input matInput #target required formControlName="description" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
         </mat-form-field>
     </div>
 
     <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
         <mat-form-field appearance="fill" style="width: 90%;">
         <mat-label>Category</mat-label>
-        <input matInput #target required formControlName="category" (keydown.enter)="addNewOrganizer(); target.value = ''">
+        <input matInput #target required formControlName="category" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
         </mat-form-field>
     </div>
     
@@ -83,10 +83,10 @@
 
 </form>
 <div fxLayout="column" fxLayoutAlign="center center">
-    <div (click)="updateOrganizer()" style="width: 20%; background-color: blue; border-radius: 5px;"fxLayoutAlign="center center">
+    <div (click)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer()" style="width: 20%; background-color: blue; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
         {{ updateOrganizerId !== '' ? 'Update' : 'Submit'}}
     </div>
-    <div (click)="nullFormField()" style="width: 20%; background-color: rgb(229, 255, 0); border-radius: 5px;"fxLayoutAlign="center center">
+    <div (click)="nullFormField()" style="width: 20%; background-color: rgb(229, 255, 0); border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
         Clear
     </div>
 </div>
@@ -95,11 +95,11 @@
 
 <div>
     <div *ngFor="let o of organizer" fxLayout="column" fxLayoutAlign="center center">
-        <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px;" fxLayout="row">
+        <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
             <div style="width: 80%;" fxLayoutAlign="start center" (click)="setOrganizerForm(o)">
                 {{o.name}}
             </div>
-            <div (click)="deleteOrganizer(o._id)" style="width: 20%; background-color: red; border-radius: 5px;"fxLayoutAlign="center center">
+            <div (click)="deleteOrganizer(o._id)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
                 Delete
             </div>
         </div>
