@@ -60,14 +60,8 @@
         <input matInput #target required formControlName="description" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
         </mat-form-field>
     </div>
-
-    <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
-        <mat-form-field appearance="fill" style="width: 90%;">
-        <mat-label>Category</mat-label>
-        <input matInput #target required formControlName="category" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
-        </mat-form-field>
-    </div>
     
+    <app-category-select [loadedCategory]="category" (newCategorySelect)="setCategory($event)"></app-category-select>
     
     <div fxLayout fxLayoutAlign="center center">
         <div style="width: 90%" fxLayout fxLayoutAlign="start center">

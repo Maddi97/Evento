@@ -30,7 +30,6 @@ export class EventsService {
         share());
         obs.toPromise().then(
           (response: Event) => {
-            console.log(response);
           }
         )
         return obs;

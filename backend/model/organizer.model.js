@@ -34,8 +34,13 @@ const OrganizerSchema = new mongoose.Schema({
         type: String,
     },
     category: {
-        type: String,
-    },
+        name: {
+            type:String,
+        },
+        subcategories: [{
+            type: String,
+        }]
+     },
     description: {
         type: String,
         maxlength: 200

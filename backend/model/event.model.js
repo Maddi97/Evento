@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose')
 
 const EventSchema = new mongoose.Schema({
@@ -33,8 +34,14 @@ const EventSchema = new mongoose.Schema({
         }
     },
     category: {
-        type: String,
-    },
+        name: {
+            type:String,
+        },
+        subcategories: [{
+            type: String,
+        }]
+     },
+     
     description: {
         type: String,
         maxlength: 200

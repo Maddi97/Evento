@@ -25,6 +25,7 @@ import { OrganizerViewComponent } from './pages/organizer-view/organizer-view.co
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CategorySelectComponent } from './pages/category-select/category-select.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppComponent,
     EventViewComponent,
     SelectionViewComponent,
-    OrganizerViewComponent
+    OrganizerViewComponent,
+    CategorySelectComponent,
   ],
   imports: [
     MatCheckboxModule,

@@ -1,10 +1,12 @@
+import { Category } from './category'
+
 export class Event {
     _id: string;
     name: string;
     _organizerId: string;
     adress: Adress
     date: EventDate;
-    category: string;
+    category: Category;
     description: string;
     price: string;
 }

@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
 import { EventsService } from 'src/app/events.service';
 import { Event , EventDate} from '../../models/event';
+import { Category } from 'src/app/models/category';
 
 @Component({
   selector: 'app-event-view',
@@ -21,9 +22,11 @@ export class EventViewComponent implements OnInit {
     street: new FormControl('', []),
     streetNumber: new FormControl('', []),
     country: new FormControl('Deutschland', []),
-    category: new FormControl('', []),
     description: new FormControl('', [])
   })
+
+
+  category: Category;
 
   todaysDate = this.getActualDate()
 
@@ -76,10 +79,9 @@ export class EventViewComponent implements OnInit {
     event.adress = adress
 
     event.description = this.eventForm.get('description').value;
-    event.category = this.eventForm.get('category').value;
+    event.category = this.category //this.eventForm.get('category').value;
     
     event.date = this.eventDate;
-
     this.eventService.createEvent(event);
   }
 
@@ -90,6 +92,10 @@ export class EventViewComponent implements OnInit {
     var yyyy = today.getFullYear();
 
    return  mm + '/' + dd + '/' + yyyy;
+  }
+
+  setCategory(cat: Category){
+    this.category = cat
   }
 
 }

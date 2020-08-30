@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { OrganizerService } from 'src/app/organizer.service';
 import { Organizer, Adress, Day } from 'src/app/models/organizer';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { Category } from 'src/app/models/category';
 
 @Component({
   selector: 'app-organizer-view',
@@ -23,7 +24,6 @@ export class OrganizerViewComponent implements OnInit {
     country: new FormControl('Deutschland', []),
     email: new FormControl('', []),
     telephone: new FormControl('', []),
-    category: new FormControl('', []),
     description: new FormControl('', [])
   })
 
@@ -39,6 +39,7 @@ export class OrganizerViewComponent implements OnInit {
     {day: 'Sunday', start: '00:00', end: '00:00'}
   ]
 
+    category: Category;
 
   constructor(
     private organizerService: OrganizerService,
@@ -51,6 +52,7 @@ export class OrganizerViewComponent implements OnInit {
       this.organizer = o;
     });
   }
+
 
 
   addNewOrganizer(): void {
@@ -69,7 +71,8 @@ export class OrganizerViewComponent implements OnInit {
     org.email = this.organizerForm.get('email').value;
     org.telephone = this.organizerForm.get('telephone').value;
     org.description = this.organizerForm.get('description').value;
-    org.category = this.organizerForm.get('category').value;
+    org.category = this.category;
+    //this.organizerForm.get('category').value;
 
     org.openingTimes=this.openingTimes
 
@@ -90,16 +93,15 @@ export class OrganizerViewComponent implements OnInit {
       email: org.email,
       telephone: org.telephone,
       description: org.description,
-      category: org.category
   });
 
+    this.category = org.category
     this.openingTimes = org.openingTimes
     this.updateOrganizerId = org._id;
 
   }
 
   updateOrganizer(): void {
-      console.log('hallo');
       const org = new Organizer();
       const adress = new Adress();
       org.name = this.organizerForm.get('name').value;
@@ -115,7 +117,8 @@ export class OrganizerViewComponent implements OnInit {
       org.email = this.organizerForm.get('email').value;
       org.telephone = this.organizerForm.get('telephone').value;
       org.description = this.organizerForm.get('description').value;
-      org.category = this.organizerForm.get('category').value;
+      
+      org.category = this.category;
 
       org.openingTimes=this.openingTimes
 
@@ -132,11 +135,10 @@ export class OrganizerViewComponent implements OnInit {
       plz  : '',
       street: '',
       streetNumber: '',
-      country: '',
+      country: 'Deutschland',
       email: '',
       telephone: '',
       description: '',
-      category: ''
     });
     this.updateOrganizerId = ''
   }
@@ -145,5 +147,8 @@ export class OrganizerViewComponent implements OnInit {
     this.organizerService.deleteOrganizer(id).subscribe();
   }
 
+  setCategory(cat: Category){
+    this.category = cat;
+  }
 
 }
