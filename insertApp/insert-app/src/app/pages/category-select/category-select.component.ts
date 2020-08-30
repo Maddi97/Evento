@@ -12,7 +12,7 @@ import { startWith, map } from 'rxjs/operators';
 })
 export class CategorySelectComponent implements OnInit, OnChanges {
 
-  @Input() loadedCategory: Category = {_id: "", name: "", subcategories: [""]};
+  @Input() loadedCategory: Category = {_id: "", name: "Category", subcategories: [""]};
 
   @Output() newCategorySelect = new EventEmitter<Category>();
 
@@ -22,7 +22,7 @@ export class CategorySelectComponent implements OnInit, OnChanges {
   
   categories: Category[] = [];
   selectedCategory: Category;
-  selectedSubcategories= new FormControl();
+  selectedSubcategories= new FormControl(this.loadedCategory.subcategories);
   filteredOptions: Observable<String[]>;
 
   constructor(
@@ -40,7 +40,10 @@ export class CategorySelectComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges){
-    console.log(changes.loadedCategory)
+    this.categoryName.setValue(changes.loadedCategory.currentValue?.name)
+    this.selectedCategory = this.categories.find(cat => cat.name === this.categoryName.value)
+
+    this.selectedSubcategories.setValue(changes.loadedCategory.currentValue?.subcategories)
   }
 
   private _filter(value: Category): string[] {
