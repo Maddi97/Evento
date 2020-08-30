@@ -18,6 +18,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatCardModule} from '@angular/material/card';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 
 
@@ -39,6 +40,7 @@ import { CategorySelectComponent } from './pages/category-select/category-select
     CategorySelectComponent,
   ],
   imports: [
+    MatExpansionModule,
     MatDividerModule,
     MatCardModule,
     MatCheckboxModule,

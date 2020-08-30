@@ -2,6 +2,11 @@ var express = require('express');
 var router = express.Router();
 const Event = require("../model/event.model")
 
+router.get('/events', (req, res) =>{
+    Event.find({})
+    .then((events)=> res.send(events))
+    .catch((error) =>console.log(error))
+})
 
 router.get('/organizer/:organizerId/events', (req, res) => {
     Event.find({_organizerId: req.params.organizerId})

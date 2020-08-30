@@ -38,7 +38,9 @@ export class EventViewComponent implements OnInit {
   organizerName = new FormControl();
   organizers: Organizer[] = [];
   filteredOptions: Observable<string[]>;
-  constructor(
+  allEvents: Event[] = [];
+  eventsOfOrganizer: Event[]; 
+    constructor(
     private organizerService: OrganizerService,
     private eventService: EventsService,
     private fb: FormBuilder,
@@ -47,16 +49,16 @@ export class EventViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.organizerService.organizers.subscribe(org => this.organizers = org);
+    this.eventService.event.subscribe(event => this.allEvents = event);
+    this.eventService.getAllEvents()
 
     this.filteredOptions = this.organizerName.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value)),
     );
-//    const event = new Event();
   }
 
   private _filter(value: Organizer): string[] {
-    console.log(value)
     const filterValue = value.name.toLowerCase();
 
     return this.organizers.map(o => o.name).filter(o => o.toLowerCase().includes(filterValue));
@@ -112,6 +114,15 @@ export class EventViewComponent implements OnInit {
       description: '',
       category: ''
     })
+  }
+
+  loadEvents(organizerId: string){
+    this.eventsOfOrganizer = this.allEvents.filter(event => event._organizerId === organizerId)
+
+  }
+
+  nullEventsOfOrganizer(){
+    this.eventsOfOrganizer = []
   }
 
 }

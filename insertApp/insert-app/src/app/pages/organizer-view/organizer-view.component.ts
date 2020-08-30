@@ -147,8 +147,4 @@ export class OrganizerViewComponent implements OnInit {
     this.organizerService.deleteOrganizer(id).subscribe();
   }
 
-  setCategory(cat: Category){
-    this.category = cat;
-  }
-
 }

@@ -34,4 +34,32 @@ export class EventsService {
         )
         return obs;
      }
+
+     getAllEvents(): Observable<Event[]> {
+       const obs = this.webService.get('events').pipe(
+         map((res: HttpRequest<any>) => res as unknown as Event[]),
+         catchError((error: any) => {
+           console.error('an error occured', error);
+           return observableThrowError(error.error.message || error);
+         }),
+         share());
+        obs.toPromise().then((response) => {
+          this._events.next(response);
+        })
+        return obs;
+     }
+
+     getEvents(organizerId: string): Observable<Event[]> {
+      const obs = this.webService.get(`organizer/${organizerId}/events`).pipe(
+        map((r: HttpRequest<any>) => r as unknown as Event[]),
+        catchError((error: any) => {
+          console.error('an error occurred', error);
+          return observableThrowError(error.error.message || error);
+        }),
+        share());
+        obs.toPromise().then((response) => {
+          this._events.next(response);
+        })
+        return obs;
+    }
 }
