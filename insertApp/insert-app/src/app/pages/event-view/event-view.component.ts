@@ -38,7 +38,7 @@ export class EventViewComponent implements OnInit {
 
   organizerName = new FormControl();
   organizers: Organizer[] = [];
-  filteredOptions: Observable<String[]>;
+  filteredOptions: Observable<string[]>;
   constructor(
     private organizerService: OrganizerService,
     private eventService: EventsService,
@@ -64,7 +64,7 @@ export class EventViewComponent implements OnInit {
   }
 
   addNewEvent() {
-    
+
     const organizer = this.organizers.find(org => org.name === this.organizerName.value)
     const event = new Event()
     const adress = new Adress()
@@ -83,19 +83,40 @@ export class EventViewComponent implements OnInit {
     
     event.date = this.eventDate;
     this.eventService.createEvent(event);
+    this.nullFormField();
   }
 
   getActualDate(){
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const yyyy = today.getFullYear();
 
    return  mm + '/' + dd + '/' + yyyy;
   }
 
   setCategory(cat: Category){
     this.category = cat
+  }
+
+
+  insertOrgInfo(org: Organizer) {
+    this.eventForm.get('plz').setValue(org.adress.plz);
+    this.eventForm.get('city').setValue(org.adress.city);
+    this.eventForm.get('street').setValue(org.adress.street);
+    this.eventForm.get('streetNumber').setValue(org.adress.streetNumber);
+  }
+
+  nullFormField() {
+    this.eventForm.setValue({
+      name: '',
+      city: 'Dresden',
+      plz: '',
+      street: '',
+      streetNumber: '',
+      country: 'Deutschland',
+      description: ''
+    })
   }
 
 }
