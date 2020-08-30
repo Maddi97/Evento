@@ -22,11 +22,10 @@ export class EventViewComponent implements OnInit {
     street: new FormControl('', []),
     streetNumber: new FormControl('', []),
     country: new FormControl('Deutschland', []),
-    description: new FormControl('', [])
+    description: new FormControl('', []),
+    category: new FormControl('', [])
   })
 
-
-  category: Category;
 
   todaysDate = this.getActualDate()
 
@@ -79,8 +78,8 @@ export class EventViewComponent implements OnInit {
     event.adress = adress
 
     event.description = this.eventForm.get('description').value;
-    event.category = this.category //this.eventForm.get('category').value;
-    
+    event.category = this.eventForm.get('category').value;
+
     event.date = this.eventDate;
     this.eventService.createEvent(event);
     this.nullFormField();
@@ -94,11 +93,6 @@ export class EventViewComponent implements OnInit {
 
    return  mm + '/' + dd + '/' + yyyy;
   }
-
-  setCategory(cat: Category){
-    this.category = cat
-  }
-
 
   insertOrgInfo(org: Organizer) {
     this.eventForm.get('plz').setValue(org.adress.plz);
@@ -115,7 +109,8 @@ export class EventViewComponent implements OnInit {
       street: '',
       streetNumber: '',
       country: 'Deutschland',
-      description: ''
+      description: '',
+      category: ''
     })
   }
 
