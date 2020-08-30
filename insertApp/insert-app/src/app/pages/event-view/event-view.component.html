@@ -53,11 +53,13 @@
       </div>
   </div>
 
+<div class="category" style="width: 100%;" fxLayoutAlign="center center"   >
+  <mat-card style="width: 100%;">
+    <app-category-select  [loadedCategory]="category" (newCategorySelect)="setCategory($event)"></app-category-select>
+  </mat-card>
+</div>
 
-<app-category-select  [loadedCategory]="category" (newCategorySelect)="setCategory($event)"></app-category-select>
-
-
-  <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+  <div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column" >
       <mat-form-field appearance="fill" style="width: 100%;">
       <mat-label>Description</mat-label>
       <input matInput #target required="true" formControlName="description" (keydown.enter)="addNewEvent(); target.value = ''">
@@ -73,6 +75,8 @@
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
         </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-around center" >
         <div style="padding-left: 1rem;">
           <span>Beginn:</span>
           <div class="ngx-timepicker-field-example">
@@ -86,6 +90,7 @@
           </div>
         </div>
       </div>
+    </div>
     </form>
     <button mat-raised-button color="primary" style="width: 90%; margin-bottom: .5rem;" (click)="addNewEvent()">
       Submit

@@ -61,41 +61,51 @@
         </mat-form-field>
     </div>
     
-    <app-category-select [loadedCategory]="category" (newCategorySelect)="setCategory($event)"></app-category-select>
-    
-    <div fxLayout fxLayoutAlign="center center">
-        <div style="width: 90%" fxLayout fxLayoutAlign="start center">
+
+    <div class="category" style="width: 100%;" fxLayoutAlign="center center"   >
+        <mat-card style="width: 90%;" fxLayoutAlign="center center">
+          <app-category-select style="width: 100%;" fxLayoutAlign="center center" [loadedCategory]="category" (newCategorySelect)="setCategory($event)"></app-category-select>
+        </mat-card>
+    </div>    
+
+    <div fxLayout="column" fxLayoutAlign="center center">
+        <div style="width: 100%"  fxLayoutAlign="center center">
             <mat-checkbox class="opening-times-required" [isOpeningTimesRequired] (change)="isOpeningTimesRequired = !isOpeningTimesRequired">Opening times required? </mat-checkbox>
         </div>
-        <div *ngIf="isOpeningTimesRequired">
+        <div style="width: 100%;" fxLayoutAlign="center" fxLayout="column" *ngIf="isOpeningTimesRequired">
 
-            <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="row" *ngFor="let day of openingTimes">
+            <div  *ngFor="let day of openingTimes">
+                <mat-divider></mat-divider>
+                <p fxLayoutAlign="center" > {{day.day}} </p>
 
-                <p> {{day.day}} </p>
-                <div style="padding-left: 1rem;">
-                    <span>Start:</span>
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div style="padding-left: 1rem;" fxLayout="row">
+                    <p>Start :</p>
                     <div class="ngx-timepicker-field-example">
                          <ngx-timepicker-field #startTime [format]="24" [(defaultTime)]="day.start" (timeChanged)="day.start = startTime.timepickerTime"> </ngx-timepicker-field>
                     </div>
                 </div>
-                <div style="padding-left: 1rem;">
-                    <span>Ende:</span>
+                <div style="padding-left: 1rem;" fxLayout="row">
+                    <p>Ende:</p>
                     <div class="ngx-timepicker-field-example">
                     <ngx-timepicker-field #endTime [format]="24" [defaultTime]="day.end" (timeChanged)="day.end = endTime.timepickerTime"></ngx-timepicker-field>
                     </div>
                 </div>
             </div>
         </div>
+        </div>
+        <mat-divider></mat-divider>
+
     </div>
 
 </form>
-<div fxLayout="column" fxLayoutAlign="center center">
-    <div (click)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer()" style="width: 20%; background-color: blue; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+<div fxLayout="column" fxLayoutAlign="spacing-around center" style="margin: 1em;">
+    <button  mat-raised-button color="primary" (click)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer()" style="width: 70%; cursor: pointer;"fxLayoutAlign="center center">
         {{ updateOrganizerId !== '' ? 'Update' : 'Submit'}}
-    </div>
-    <div (click)="nullFormField()" style="width: 20%; background-color: rgb(229, 255, 0); border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+    </button>
+    <button  mat-raised-button color="secondary" (click)="nullFormField()" style="width: 70%;cursor: pointer; margin-top:1em;"fxLayoutAlign="center center">
         Clear
-    </div>
+    </button>
 </div>
 
 

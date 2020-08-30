@@ -16,6 +16,8 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatCardModule} from '@angular/material/card';
+import {MatDividerModule} from '@angular/material/divider';
 
 
 
@@ -37,6 +39,8 @@ import { CategorySelectComponent } from './pages/category-select/category-select
     CategorySelectComponent,
   ],
   imports: [
+    MatDividerModule,
+    MatCardModule,
     MatCheckboxModule,
     HttpClientModule,
     MatButtonModule,
