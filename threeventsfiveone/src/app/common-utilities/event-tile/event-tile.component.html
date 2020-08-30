@@ -3,22 +3,19 @@
         <img class="pic" src="assets/test-pictures/test.png">
     </div>
     <div fxLayout="column" style="width: 95%;">
-        <div fxLayout="row">
-            <span>
-                Veranstaltungsname
-            </span>
+        <div fxLayout="row" style="width: 100%;">
+            <div style="width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                {{ event?.name }}
+            </div>
             <div fxLayoutAlign="end end" class="date">
-                01.01.2020
+                {{ event?.date.day }}
             </div>
         </div>
         <div fxLayoutAlign="start start">
             name
         </div>
         <div classs="category">
-            Kategorie
+            {{ event?.category }}
         </div>
-        <!-- <div style="color: rgb(138, 138, 138); font-size: .8rem">
-            Kurze Beschreibung
-        </div> -->
     </div>
 </div>

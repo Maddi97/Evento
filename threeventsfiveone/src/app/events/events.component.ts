@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { EventService } from './event.service';
+import { Event } from '../models/event';
 
 @Component({
   selector: 'vents-events',
@@ -9,9 +11,18 @@ export class EventsComponent implements OnInit {
 
   public isDropdown = false;
 
-  constructor() { }
+  eventList: Event[] = [];
+
+  constructor(
+    private eventService: EventService
+  ) { }
 
   ngOnInit(): void {
+    this.eventService.getAllEvents();
+    this.eventService.events.subscribe((ev: Event[]) => {
+      this.eventList = ev;
+      console.log(ev);
+    });
   }
 
   formatLabel(value: number) {
