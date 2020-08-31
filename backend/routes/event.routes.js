@@ -17,8 +17,7 @@ router.get('/organizer/:organizerId/events', (req, res) => {
 
 
 router.get('/eventOnDate', (req, res) => {
-    console.log(req.params)
-    date = new Date(req.body.date)
+    date = new Date(req.query.date)
     Event.find(
        {date: { $gte: date.setDate(date.getDate() - 1), $lte: date.setDate(date.getDate() +1) } } //-1 um den heutigen Tag mit zu finden
         )
