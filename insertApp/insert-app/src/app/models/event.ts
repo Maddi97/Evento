@@ -5,7 +5,11 @@ export class Event {
     name: string;
     _organizerId: string;
     adress: Adress
-    date: EventDate;
+    date: Date;
+    times:{
+        start: string,
+        end: string
+    }
     category: Category;
     description: string;
     price: string;
@@ -17,10 +21,4 @@ export class Adress {
     street: string;
     streetNumber: string;
     country: string;
-}
-
-export class EventDate {
-    day: string;
-    start: string;
-    end: string;
 }

@@ -48,9 +48,17 @@ const EventSchema = new mongoose.Schema({
     },
 
     date: {
-        day: String,
-        start: String,
-        end: String,
+            type: Date,
+
+    time: {
+        start:{
+            type: String,
+        },
+        end: {
+            type: String,
+        }
+        
+        }
     }
 
 });

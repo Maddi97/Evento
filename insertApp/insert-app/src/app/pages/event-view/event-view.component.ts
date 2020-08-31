@@ -5,8 +5,9 @@ import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
 import { EventsService } from 'src/app/events.service';
-import { Event , EventDate} from '../../models/event';
+import { Event } from '../../models/event';
 import { Category } from 'src/app/models/category';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-event-view',
@@ -27,10 +28,9 @@ export class EventViewComponent implements OnInit {
   })
 
 
-  todaysDate = this.getActualDate()
+  date = new Date()
 
-  eventDate: EventDate = {
-    day: this.todaysDate,
+  times = {
     start: '00:00',
     end: '00:00',
   }
@@ -38,8 +38,8 @@ export class EventViewComponent implements OnInit {
   organizerName = new FormControl();
   organizers: Organizer[] = [];
   filteredOptions: Observable<string[]>;
-  allEvents: Event[] = [];
-  eventsOfOrganizer: Event[]; 
+  allUpcomingEvents: Event[] = [];
+  eventsOfOrganizer: Event[];
     constructor(
     private organizerService: OrganizerService,
     private eventService: EventsService,
@@ -49,8 +49,8 @@ export class EventViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.organizerService.organizers.subscribe(org => this.organizers = org);
-    this.eventService.event.subscribe(event => this.allEvents = event);
-    this.eventService.getAllEvents()
+    this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
+    this.eventService.getAllUpcomingEvents()
 
     this.filteredOptions = this.organizerName.valueChanges.pipe(
       startWith(''),
@@ -82,19 +82,11 @@ export class EventViewComponent implements OnInit {
     event.description = this.eventForm.get('description').value;
     event.category = this.eventForm.get('category').value;
 
-    event.date = this.eventDate;
+    event.date = this.date;
     this.eventService.createEvent(event);
     this.nullFormField();
   }
 
-  getActualDate(){
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2, '0');
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-    const yyyy = today.getFullYear();
-
-   return  mm + '/' + dd + '/' + yyyy;
-  }
 
   insertOrgInfo(org: Organizer) {
     this.eventForm.get('plz').setValue(org.adress.plz);
@@ -117,12 +109,23 @@ export class EventViewComponent implements OnInit {
   }
 
   loadEvents(organizerId: string){
-    this.eventsOfOrganizer = this.allEvents.filter(event => event._organizerId === organizerId)
+    this.eventsOfOrganizer = this.allUpcomingEvents.filter(event => event._organizerId === organizerId)
 
   }
 
   nullEventsOfOrganizer(){
     this.eventsOfOrganizer = []
+  }
+
+  setDate(value){
+    let date = new Date(value)
+    date.setDate(date.getDate() + 1)
+    date = new Date(date.toISOString());
+    this.date = date;
+  }
+
+  deleteEvent(organizerId: string, eventId: string){
+    this.eventService.deletEvent(organizerId, eventId)
   }
 
 }

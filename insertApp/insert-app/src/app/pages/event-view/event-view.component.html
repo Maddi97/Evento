@@ -70,7 +70,7 @@
         <div>
           <mat-form-field appearance="fill">
             <mat-label>Choose a date</mat-label>
-            <input matInput [matDatepicker]="picker" (dateChange)= " eventDate.day = ($event.value.getDate() + '/' + ($event.value.getMonth()+1) + '/' + $event.value.getFullYear())">
+            <input matInput [matDatepicker]="picker" (dateChange)= "setDate($event.value)">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
@@ -80,13 +80,13 @@
         <div style="padding-left: 1rem;">
           <span>Beginn:</span>
           <div class="ngx-timepicker-field-example">
-            <ngx-timepicker-field [format]="24" #startTime [defaultTime]="eventDate.end" (timeChanged)="eventDate.start = startTime.timepickerTime"></ngx-timepicker-field>
+            <ngx-timepicker-field [format]="24" #startTime [defaultTime]="times.start" (timeChanged)="times.start = startTime.timepickerTime"></ngx-timepicker-field>
           </div>
         </div>
         <div style="padding-left: 1rem;">
           <span>Ende:</span>
           <div class="ngx-timepicker-field-example">
-            <ngx-timepicker-field [format]="24" #endTime [defaultTime]="eventDate.end" (timeChanged)="eventDate.end = endTime.timepickerTime"></ngx-timepicker-field>
+            <ngx-timepicker-field [format]="24" #endTime [defaultTime]="times.end" (timeChanged)="times.end = endTime.timepickerTime"></ngx-timepicker-field>
           </div>
         </div>
       </div>
@@ -114,7 +114,7 @@
                 <div style="width: 80%;" fxLayoutAlign="start center"> 
                   {{event.name}}
                 </div>
-                <div (click)="deleteEvent()" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+                <div (click)="deleteEvent(organizer._id, event._id)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
                     Delete
                 </div>
             </div>
