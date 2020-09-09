@@ -1,5 +1,5 @@
 export class Category{
-    _id: String;
+    _id: string;
     name: string;
-    subcategories: [String];
+    subcategories: string[];
 }

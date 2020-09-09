@@ -24,7 +24,6 @@ export class EventViewComponent implements OnInit {
     streetNumber: new FormControl('', []),
     country: new FormControl('Deutschland', []),
     description: new FormControl('', []),
-    category: new FormControl('', [])
   })
 
 
@@ -34,6 +33,8 @@ export class EventViewComponent implements OnInit {
     start: '00:00',
     end: '00:00',
   }
+
+  category: Category
 
   organizerName = new FormControl();
   organizers: Organizer[] = [];
@@ -80,7 +81,7 @@ export class EventViewComponent implements OnInit {
     event.adress = adress
 
     event.description = this.eventForm.get('description').value;
-    event.category = this.eventForm.get('category').value;
+    event.category = this.category;
 
     event.date = this.date;
     this.eventService.createEvent(event);
@@ -104,8 +105,8 @@ export class EventViewComponent implements OnInit {
       streetNumber: '',
       country: 'Deutschland',
       description: '',
-      category: ''
     })
+    this.category = {_id: '', name:'', subcategories: ['']}
   }
 
   loadEvents(organizerId: string){
@@ -122,6 +123,11 @@ export class EventViewComponent implements OnInit {
     date.setDate(date.getDate() + 1)
     date = new Date(date.toISOString());
     this.date = date;
+  }
+
+  setCategory(value){
+    console.log(value)
+    this.category = value
   }
 
   deleteEvent(organizerId: string, eventId: string){
