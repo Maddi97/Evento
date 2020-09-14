@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -40,6 +41,7 @@ import { CategorySelectComponent } from './pages/category-select/category-select
     CategorySelectComponent,
   ],
   imports: [
+    FormsModule,
     MatExpansionModule,
     MatDividerModule,
     MatCardModule,

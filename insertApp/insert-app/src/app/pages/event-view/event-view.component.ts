@@ -16,6 +16,10 @@ import * as moment from 'moment';
 })
 export class EventViewComponent implements OnInit {
 
+  updateOrganizerId: string  = '';
+  updateEventId: string = '';
+
+
   eventForm = this.fb.group({
     name: new FormControl('', []),
     city: new FormControl('Dresden', []),
@@ -27,14 +31,15 @@ export class EventViewComponent implements OnInit {
   })
 
 
-  date = new Date()
-
-  times = {
-    start: '00:00',
-    end: '00:00',
-  }
+  date =  new FormControl(new Date())
 
   category: Category
+
+
+  times = {
+    start: new FormControl("00:00"),
+    end: new FormControl("00:00")
+  }
 
   organizerName = new FormControl();
   organizers: Organizer[] = [];
@@ -82,9 +87,14 @@ export class EventViewComponent implements OnInit {
 
     event.description = this.eventForm.get('description').value;
     event.category = this.category;
+    let date =  this.date.value;
+    date.setDate(date.getDate() + 1)
+    date = new Date(date.toISOString());
+    event.date = date
+    const time = {start:this.times.start.value, end: this.times.end.value}
+    event.times = time
 
-    event.date = this.date;
-    this.eventService.createEvent(event);
+    this.eventService.createEvent(event).subscribe();
     this.nullFormField();
   }
 
@@ -97,6 +107,8 @@ export class EventViewComponent implements OnInit {
   }
 
   nullFormField() {
+    this.updateEventId = ''
+    this.organizerName.setValue('')
     this.eventForm.setValue({
       name: '',
       city: 'Dresden',
@@ -107,11 +119,14 @@ export class EventViewComponent implements OnInit {
       description: '',
     })
     this.category = {_id: '', name:'', subcategories: ['']}
+    this.date.setValue(new Date())
+    this.times.start.setValue('00:00')
+    this.times.end.setValue('00:00')
   }
 
   loadEvents(organizerId: string){
+    this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
     this.eventsOfOrganizer = this.allUpcomingEvents.filter(event => event._organizerId === organizerId)
-
   }
 
   nullEventsOfOrganizer(){
@@ -120,18 +135,68 @@ export class EventViewComponent implements OnInit {
 
   setDate(value){
     let date = new Date(value)
-    date.setDate(date.getDate() + 1)
-    date = new Date(date.toISOString());
-    this.date = date;
+    this.date.setValue(date);
   }
 
+  setEventForm(event: Event) : void{
+    this.updateEventId = event._id
+    const organizer = this.organizers.find(org => org._id === event._organizerId)
+    this.organizerName.setValue(organizer.name)
+    this.updateOrganizerId = organizer._id
+    this.eventForm.setValue({
+      name: event.name,
+      city: event.adress.city,
+      plz: event.adress.plz,
+      street: event.adress.street,
+      streetNumber: event.adress.streetNumber,
+      country: event.adress.country,
+      description: event.description,
+    })
+    this.category = event.category
+    let date = new Date(event.date)
+    date.setDate(date.getDate() - 1)
+    date = new Date(date.toISOString());
+    this.date.setValue(date)
+    this.times.start.setValue(event.times.start)
+    this.times.end.setValue(event.times.end)
+  }
+
+
+    updateEvent(){
+    const organizer = this.organizers.find(org => org.name === this.organizerName.value)
+    const event = new Event()
+    const adress = new Adress()
+    event._organizerId = organizer._id
+    event.name = this.eventForm.get('name').value;
+    adress.plz =  this.eventForm.get('plz').value;
+    adress.city =  this.eventForm.get('city').value;
+    adress.street =  this.eventForm.get('street').value;
+    adress.streetNumber =  this.eventForm.get('streetNumber').value;
+    adress.country =  this.eventForm.get('country').value;
+
+    event.adress = adress
+
+    event.description = this.eventForm.get('description').value;
+    event.category = this.category;
+    let date =  this.date.value;
+    date.setDate(date.getDate() + 1)
+    date = new Date(date.toISOString());
+    event.date = date
+    const time = {start:this.times.start.value, end: this.times.end.value}
+    event.times = time
+    console.log(event)
+    event._id = this.updateEventId
+    this.eventService.updateEvent(this.updateOrganizerId ,this.updateEventId, event).subscribe();
+    this.nullFormField();
+    }
+
   setCategory(value){
-    console.log(value)
     this.category = value
   }
 
   deleteEvent(organizerId: string, eventId: string){
-    this.eventService.deletEvent(organizerId, eventId)
+    this.eventService.deletEvent(organizerId, eventId).subscribe()
+
   }
 
 }

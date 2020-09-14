@@ -29,11 +29,40 @@ export class EventsService {
         }),
         share());
         obs.toPromise().then(
-          (response: Event) => {
+          ( response: Event) => {
+            const tempEvent = this._events.getValue();
+            tempEvent.push(response);
+            this._events.next(tempEvent);
           }
         )
         return obs;
      }
+
+     updateEvent(organizerId: string ,eventId: string, event : Event){
+
+      const obs = this.webService.patch(`organizer/${organizerId}/events/${eventId}`, { event }).pipe(
+        map((r: HttpRequest<any>) => r as unknown as Event),
+        catchError((error: any) => {
+          console.error('an error occurred', error);
+          return observableThrowError(error.error.message || error);
+        }),
+        share());
+  
+      obs.toPromise().then(
+        (response: Event) => {
+          const tempEvent = this._events.getValue();
+          let indeX: number;
+          tempEvent.map((event: Event, index) => {
+            if (event._id === eventId) {
+              indeX = index;
+            }
+          });
+          tempEvent[indeX] = event;
+          this._events.next(tempEvent);
+        }
+      )
+      return obs;
+  }
 
      getAllEvents(): Observable<Event[]> {
        const obs = this.webService.get('events').pipe(

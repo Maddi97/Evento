@@ -72,31 +72,43 @@
         <div>
           <mat-form-field appearance="fill">
             <mat-label>Choose a date</mat-label>
-            <input matInput [matDatepicker]="picker" (dateChange)= "setDate($event.value)">
+            <input matInput [matDatepicker]="picker" (dateChange)= "setDate($event.value)" [formControl]="date">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
         </div>
-
-        <div fxLayout="row" fxLayoutAlign="space-around center" >
-        <div style="padding-left: 1rem;">
-          <span>Beginn:</span>
-          <div class="ngx-timepicker-field-example">
-            <ngx-timepicker-field [format]="24" #startTime [defaultTime]="times.start" (timeChanged)="times.start = startTime.timepickerTime"></ngx-timepicker-field>
-          </div>
-        </div>
-        <div style="padding-left: 1rem;">
-          <span>Ende:</span>
-          <div class="ngx-timepicker-field-example">
-            <ngx-timepicker-field [format]="24" #endTime [defaultTime]="times.end" (timeChanged)="times.end = endTime.timepickerTime"></ngx-timepicker-field>
-          </div>
-        </div>
       </div>
+
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div style="padding-left: 1rem;" fxLayout="row">
+            <p>Start :</p>
+            <div class="ngx-timepicker-field-example">
+              
+                 <ngx-timepicker-field #startTime [formControl]="times.start"
+                 [format]="24"
+                 [defaultTime]="'00:00'"> </ngx-timepicker-field>
+            </div>
+        </div>
+        <div style="padding-left: 1rem;" fxLayout="row">
+            <p>Ende:</p>
+            <div class="ngx-timepicker-field-example">
+            <ngx-timepicker-field #endTime [formControl]="times.end"
+            [format]="24"
+            [defaultTime]="'00:00'"></ngx-timepicker-field>
+            </div>
+        </div>
     </div>
+
     </form>
-    <button mat-raised-button color="primary" style="width: 90%; margin-bottom: .5rem;" (click)="addNewEvent()">
-      Submit
-    </button>
+    
+    <div fxLayout="column" fxLayoutAlign="spacing-around center" style="margin: 1em;">
+      <button  mat-raised-button color="primary" (click)="updateEventId !== '' ? updateEvent() : addNewEvent()" style="width: 100%; cursor: pointer;"fxLayoutAlign="center center">
+          {{ updateEventId !== '' ? 'Update' : 'Submit'}}
+      </button>
+      <button  mat-raised-button color="secondary" (click)="nullFormField()" style="width: 100%;cursor: pointer; margin-top:1em;"fxLayoutAlign="center center">
+          Clear
+      </button>
+  </div>
 
   </div>
 
@@ -115,7 +127,7 @@
 
         <div *ngFor="let event of eventsOfOrganizer" fxLayout="row">
           <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
-            <div style="width: 80%;" fxLayoutAlign="start center"> 
+            <div style="width: 80%;" fxLayoutAlign="start center" (click)="setEventForm(event)" > 
               {{event.name}}
             </div>
             <div (click)="deleteEvent(organizer._id, event._id)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
