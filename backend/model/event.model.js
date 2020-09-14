@@ -34,6 +34,9 @@ const EventSchema = new mongoose.Schema({
         }
     },
     category: {
+        _id: {
+            type:String,
+        },
         name: {
             type:String,
         },
@@ -49,9 +52,10 @@ const EventSchema = new mongoose.Schema({
 
     date: {
             type: Date,
+    },
 
-    time: {
-        start:{
+    times: {
+        start: {
             type: String,
         },
         end: {
@@ -59,7 +63,6 @@ const EventSchema = new mongoose.Schema({
         }
         
         }
-    }
 
 });
 
