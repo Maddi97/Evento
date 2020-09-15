@@ -30,6 +30,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CategorySelectComponent } from './pages/category-select/category-select.component';
+import { CategoryViewComponent } from './pages/category-view/category-view.component';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { CategorySelectComponent } from './pages/category-select/category-select
     SelectionViewComponent,
     OrganizerViewComponent,
     CategorySelectComponent,
+    CategoryViewComponent,
   ],
   imports: [
     FormsModule,

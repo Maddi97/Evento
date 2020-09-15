@@ -1,0 +1,27 @@
+<div style="margin: 2em">
+
+<div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+    <form class="example-form">
+        <mat-form-field class="example-full-width" (keydown.enter)="setCategory()">
+          <mat-label>Category</mat-label>
+          <input type="text" matInput [formControl]="categoryName" [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setCategory()">
+            <mat-option *ngFor="let category of filteredOptions | async " [value]="category.name">
+                {{category.name}}
+              </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </form>
+      <p> {{categoryName.value}} </p>
+      <mat-form-field  appearance="fill" style="width: 90%;">
+        <mat-label>Subcategory</mat-label>
+    
+        <mat-select [formControl]="selectedSubcategories" multiple (selectionChange)="emitCategory()">
+            <mat-option *ngFor="let subcategory of selectedSubcategories.value" [value]="subcategory">
+              {{subcategory}}
+            </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+</div>
+</div>
