@@ -8,6 +8,7 @@ import { EventsService } from 'src/app/events.service';
 import { Event } from '../../models/event';
 import { Category } from 'src/app/models/category';
 import * as moment from 'moment';
+import { CategoryService } from 'src/app/category.service';
 
 @Component({
   selector: 'app-event-view',
@@ -33,6 +34,7 @@ export class EventViewComponent implements OnInit {
 
   })
 
+  categories: Category[]
 
   date =  new FormControl(new Date())
 
@@ -46,10 +48,13 @@ export class EventViewComponent implements OnInit {
 
   organizerName = new FormControl();
   organizers: Organizer[] = [];
+  organizerOfCategory: Organizer[];
+
   filteredOptions: Observable<string[]>;
   allUpcomingEvents: Event[] = [];
   eventsOfOrganizer: Event[];
     constructor(
+    private categoryService: CategoryService,
     private organizerService: OrganizerService,
     private eventService: EventsService,
     private fb: FormBuilder,
@@ -57,6 +62,7 @@ export class EventViewComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.categoryService.categories.subscribe(cat => this.categories = cat)
     this.organizerService.organizers.subscribe(org => this.organizers = org);
     this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
     this.eventService.getAllUpcomingEvents()
@@ -133,7 +139,12 @@ export class EventViewComponent implements OnInit {
     this.times.end.setValue('00:00')
   }
 
+  loadOrganizer(categoryName: string){
+    this.organizerService.organizers.subscribe(org => this.organizerOfCategory = org.filter(o => o.category.name === categoryName))
+  }
+
   loadEvents(organizerId: string){
+
     this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
     this.eventsOfOrganizer = this.allUpcomingEvents.filter(event => event._organizerId === organizerId)
   }
@@ -244,4 +255,25 @@ export class EventViewComponent implements OnInit {
   return Math.floor(seconds) + " seconds";
 }
 
+timeSinceInteger(date){
+  var seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+  var interval = seconds / 86400;
+  return interval
 }
+
+getColor(organizer: Organizer): string{
+
+  if (organizer.frequency - this.timeSinceInteger(organizer.lastUpdated) <= 1){
+    return 'lightcoral'
+  }
+  if(1 < organizer.frequency - this.timeSinceInteger(organizer.lastUpdated)
+     && organizer.frequency - this.timeSinceInteger(organizer.lastUpdated) <= 5){
+    return 'orange'
+  }
+  if (organizer.frequency - this.timeSinceInteger(organizer.lastUpdated) > 5){
+    return 'lightgreen'
+  }
+}
+
+}
+

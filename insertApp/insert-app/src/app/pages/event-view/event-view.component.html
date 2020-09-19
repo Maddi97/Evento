@@ -127,8 +127,19 @@
 
   <div style="width: 90%; margin-top: 3em;">
     <mat-accordion>
-      <div *ngFor="let organizer of organizers" fxLayout="column" fxLayoutAlign="center center">
-      <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="loadEvents(organizer._id)">
+      <div *ngFor="let category of categories" fxLayout="column" fxLayoutAlign="center center">
+        <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="loadOrganizer(category.name)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{category.name}}
+            </mat-panel-title>
+            <mat-panel-description>
+                Open to see all organizers
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+      <div *ngFor="let organizer of organizerOfCategory" fxLayout="column" fxLayoutAlign="center center">
+      <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" [ngStyle]="{'background': getColor(organizer)}" (afterExpand)="loadEvents(organizer._id)">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{organizer.name}}
@@ -149,10 +160,12 @@
             </div>
         </div>
       </div>
+    </mat-expansion-panel>
+  </div>
+
 
       </mat-expansion-panel>
     </div>
-
     </mat-accordion>  
 </div>
 

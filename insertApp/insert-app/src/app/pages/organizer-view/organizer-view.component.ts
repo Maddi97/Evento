@@ -107,6 +107,10 @@ export class OrganizerViewComponent implements OnInit {
 
   }
 
+  setCategory(category){
+    this.category = category
+  }
+
   updateOrganizer(): void {
       const org = new Organizer();
       const adress = new Adress();
