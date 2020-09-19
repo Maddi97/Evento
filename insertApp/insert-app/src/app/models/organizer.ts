@@ -9,6 +9,9 @@ export class Organizer {
     telephone?: string;
     category: Category;
     description: string;
+    link: string;
+    frequency: number;
+    lastUpdated: Date;
     openingTimes?: Day[];
 }
 

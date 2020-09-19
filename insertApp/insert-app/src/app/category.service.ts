@@ -36,7 +36,7 @@ export class CategoryService {
     }
 
     createCategory(cat: Category): Observable<Category> {
-      const obs = this.webService.post('/category', cat).pipe(
+      const obs = this.webService.post('category', cat).pipe(
         map((r: HttpRequest<any>) => r as unknown as Category),
         catchError((error: any) => {
           console.error('an error occurred', error);
@@ -50,4 +50,50 @@ export class CategoryService {
         )
         return obs;
      }
+     updateCategory(catId: string, category: Category): Observable<Category>{
+      const obs = this.webService.patch(`category/${catId}`, { category }).pipe(
+        map((r: HttpRequest<any>) => r as unknown as Category),
+        catchError((error: any) => {
+          console.error('an error occurred', error);
+          return observableThrowError(error.error.message || error);
+        }),
+        share());
+  
+      obs.toPromise().then(
+        (response: Category) => {
+          const tempCat = this._categories.getValue();
+          let indeX: number;
+          tempCat.map((cat: Category, index) => {
+            if (cat._id === catId) {
+              indeX = index;
+            }
+          });
+          tempCat[indeX] = category;
+          this._categories.next(tempCat);
+        }
+      )
+      return obs;
+     }
+
+     deleteCategory(categoryId: string){
+      const obs = this.webService.delete(`category/${categoryId}`).pipe(
+        map((r: HttpRequest<any>) => r as unknown as Category),
+        catchError((error: any) => {
+          console.error('an error occurred', error);
+          return observableThrowError(error.error.message || error);
+        }),
+        share());
+        obs.toPromise().then(
+          (response: Category) => {
+            const tempCat = this._categories.getValue();
+            tempCat.map((category: Category, index) => {
+              if (category._id === categoryId) {
+                tempCat.splice(index, 1);
+              }
+            });
+            this._categories.next(tempCat);
+          }
+        )
+        return obs;
+    }
 }

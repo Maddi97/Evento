@@ -67,7 +67,20 @@
       <input matInput #target required="true" formControlName="description" (keydown.enter)="addNewEvent(); target.value = ''">
       </mat-form-field>
   </div>
-      
+
+  <div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column" >
+    <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Link</mat-label>
+    <input matInput #target required="true" formControlName="link" (keydown.enter)="addNewEvent(); target.value = ''">
+    </mat-form-field>
+</div>
+<div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column" >
+  <mat-form-field appearance="fill" style="width: 100%;">
+  <mat-label>Price: 0,00</mat-label>
+  <input matInput #target required="true" formControlName="price" (keydown.enter)="addNewEvent(); target.value = ''">
+  </mat-form-field>
+</div>
+
       <div fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
         <div>
           <mat-form-field appearance="fill">
@@ -115,7 +128,7 @@
   <div style="width: 90%; margin-top: 3em;">
     <mat-accordion>
       <div *ngFor="let organizer of organizers" fxLayout="column" fxLayoutAlign="center center">
-      <mat-expansion-panel (afterExpand)="loadEvents(organizer._id)">
+      <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="loadEvents(organizer._id)">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{organizer.name}}
@@ -123,6 +136,7 @@
           <mat-panel-description>
               Open to see all events
           </mat-panel-description>
+          <p>Last Updated: {{ timeSince(organizer.lastUpdated) }}</p>
         </mat-expansion-panel-header>
 
         <div *ngFor="let event of eventsOfOrganizer" fxLayout="row">

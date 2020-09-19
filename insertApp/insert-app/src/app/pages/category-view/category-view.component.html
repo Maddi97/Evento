@@ -1,27 +1,50 @@
 <div style="margin: 2em">
 
 <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
-    <form class="example-form">
-        <mat-form-field class="example-full-width" (keydown.enter)="setCategory()">
-          <mat-label>Category</mat-label>
-          <input type="text" matInput [formControl]="categoryName" [matAutocomplete]="auto">
-          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setCategory()">
-            <mat-option *ngFor="let category of filteredOptions | async " [value]="category.name">
-                {{category.name}}
-              </mat-option>
-          </mat-autocomplete>
+       
+    <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+        <mat-form-field appearance="fill" style="width: 100%;">
+          <mat-label>Add Category</mat-label>
+          <input matInput #target required="true" [formControl]="categoryName" (keydown.enter)="addNewCategory(); target.value = ''">
         </mat-form-field>
-      </form>
-      <p> {{categoryName.value}} </p>
-      <mat-form-field  appearance="fill" style="width: 90%;">
-        <mat-label>Subcategory</mat-label>
-    
-        <mat-select [formControl]="selectedSubcategories" multiple (selectionChange)="emitCategory()">
-            <mat-option *ngFor="let subcategory of selectedSubcategories.value" [value]="subcategory">
-              {{subcategory}}
-            </mat-option>
-        </mat-select>
-      </mat-form-field>
-      
+      </div>
+
 </div>
+
+<div style="width: 90%; margin-top: 3em;">
+    <mat-accordion>
+      <div *ngFor="let category of categories" fxLayout="column" fxLayoutAlign="center center">
+      <mat-expansion-panel style="max-width: 100%; width: 75%; margin-top: 1em;">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{category.name}}
+          </mat-panel-title>
+          <div (click)="deleteCategory(category)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;margin-right: 1em;"fxLayoutAlign="center center">
+            Delete
+        </div>
+
+        </mat-expansion-panel-header>
+        <div style="width: 85%;">
+            <mat-form-field appearance="fill" style="width: 100%;">
+                <mat-label>Add Subcategory</mat-label>
+                <input matInput #target required="true" [formControl]="subcategoryName" (keydown.enter)="addNewSubcategory(category); target.value = ''">
+              </mat-form-field>
+        </div>
+        <div *ngFor="let sub of category.subcategories" fxLayout="row">
+          <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
+            <div style="width: 80%;" fxLayoutAlign="start center" (click)="setEventForm(event)" > 
+              {{sub}}
+            </div>
+            <div (click)="deleteSubcategory(category, sub)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+                Delete
+            </div>
+        </div>
+      </div>
+
+      </mat-expansion-panel>
+    </div>
+
+    </mat-accordion>  
+</div>
+
 </div>

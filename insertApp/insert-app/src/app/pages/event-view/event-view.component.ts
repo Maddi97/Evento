@@ -23,11 +23,14 @@ export class EventViewComponent implements OnInit {
   eventForm = this.fb.group({
     name: new FormControl('', []),
     city: new FormControl('Dresden', []),
-    plz: new FormControl('01127', []),
+    plz: new FormControl('', []),
     street: new FormControl('', []),
     streetNumber: new FormControl('', []),
     country: new FormControl('Deutschland', []),
     description: new FormControl('', []),
+    link: new FormControl('', []),
+    price: new FormControl('', [])
+
   })
 
 
@@ -86,6 +89,8 @@ export class EventViewComponent implements OnInit {
     event.adress = adress
 
     event.description = this.eventForm.get('description').value;
+    event.link = this.eventForm.get('link').value;
+    event.price = this.eventForm.get('price').value;
     event.category = this.category;
     let date =  this.date.value;
     date.setDate(date.getDate() + 1)
@@ -95,6 +100,8 @@ export class EventViewComponent implements OnInit {
     event.times = time
 
     this.eventService.createEvent(event).subscribe();
+    organizer.lastUpdated = new Date()
+    this.organizerService.updateOrganizer(organizer._id, organizer)
     this.nullFormField();
   }
 
@@ -117,6 +124,8 @@ export class EventViewComponent implements OnInit {
       streetNumber: '',
       country: 'Deutschland',
       description: '',
+      link: '',
+      price: ''
     })
     this.category = {_id: '', name:'', subcategories: ['']}
     this.date.setValue(new Date())
@@ -151,6 +160,8 @@ export class EventViewComponent implements OnInit {
       streetNumber: event.adress.streetNumber,
       country: event.adress.country,
       description: event.description,
+      link: event.link,
+      price: event.price
     })
     this.category = event.category
     let date = new Date(event.date)
@@ -177,6 +188,8 @@ export class EventViewComponent implements OnInit {
     event.adress = adress
 
     event.description = this.eventForm.get('description').value;
+    event.link = this.eventForm.get('link').value;
+    event.price = this.eventForm.get('price').value;
     event.category = this.category;
     let date =  this.date.value;
     date.setDate(date.getDate() + 1)
@@ -187,6 +200,10 @@ export class EventViewComponent implements OnInit {
     console.log(event)
     event._id = this.updateEventId
     this.eventService.updateEvent(this.updateOrganizerId ,this.updateEventId, event).subscribe();
+
+    //last updated actual
+    organizer.lastUpdated = new Date()
+    this.organizerService.updateOrganizer(organizer._id, organizer)
     this.nullFormField();
     }
 
@@ -198,5 +215,33 @@ export class EventViewComponent implements OnInit {
     this.eventService.deletEvent(organizerId, eventId).subscribe()
 
   }
+
+ timeSince(date) {
+  
+  var seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+
+  var interval = seconds / 31536000;
+
+  if (interval > 1) {
+    return Math.floor(interval) + " years";
+  }
+  interval = seconds / 2592000;
+  if (interval > 1) {
+    return Math.floor(interval) + " months";
+  }
+  interval = seconds / 86400;
+  if (interval > 1) {
+    return Math.floor(interval) + " days";
+  }
+  interval = seconds / 3600;
+  if (interval > 1) {
+    return Math.floor(interval) + " hours";
+  }
+  interval = seconds / 60;
+  if (interval > 1) {
+    return Math.floor(interval) + " minutes";
+  }
+  return Math.floor(seconds) + " seconds";
+}
 
 }

@@ -12,6 +12,7 @@ export class Event {
     }
     category: Category;
     description: string;
+    link: string;
     price: string;
 }
 

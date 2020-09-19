@@ -9,7 +9,6 @@ router.get('/category', (req, res) => {
 });
   
 router.post('/category', (req, res) => {
-    console.log(req.body);
     (new Category(req.body)) 
     .save()
     .then((category) => res.send(category))
@@ -23,7 +22,7 @@ router.delete('/category/:categoryId', (req, res) =>{
 });
 
 router.patch('/category/:categoryId', (req, res) => {
-    Organizer.findByIdAndUpdate({ _id: req.params.categoryId } , { $set: req.body.category } )
+    Category.findByIdAndUpdate({ _id: req.params.categoryId } , { $set: req.body.category } )
     .then((category) => res.send(category))
     .catch((error => console.log(error)))
 });

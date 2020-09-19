@@ -49,6 +49,13 @@ const EventSchema = new mongoose.Schema({
         type: String,
         maxlength: 200
     },
+    link: {
+        type: String,
+    },
+
+    price: {
+        type: String,
+    },
 
     date: {
             type: Date,

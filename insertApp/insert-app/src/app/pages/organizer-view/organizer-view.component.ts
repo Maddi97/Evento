@@ -24,7 +24,9 @@ export class OrganizerViewComponent implements OnInit {
     country: new FormControl('Deutschland', []),
     email: new FormControl('', []),
     telephone: new FormControl('', []),
-    description: new FormControl('', [])
+    description: new FormControl('', []),
+    link: new FormControl('', []),
+    frequency: new FormControl(7, [])
   })
 
   isOpeningTimesRequired = false;
@@ -71,11 +73,13 @@ export class OrganizerViewComponent implements OnInit {
     org.email = this.organizerForm.get('email').value;
     org.telephone = this.organizerForm.get('telephone').value;
     org.description = this.organizerForm.get('description').value;
+    org.link = this.organizerForm.get('link').value;
+    org.frequency = this.organizerForm.get('frequency').value;
     org.category = this.category;
     //this.organizerForm.get('category').value;
 
     org.openingTimes=this.openingTimes
-
+    org.lastUpdated = new Date()
     this.organizerService.createOrganizer(org).subscribe();
     this.nullFormField();
   }
@@ -93,6 +97,8 @@ export class OrganizerViewComponent implements OnInit {
       email: org.email,
       telephone: org.telephone,
       description: org.description,
+      link: org.link,
+      frequency: org.frequency
   });
 
     this.category = org.category
@@ -117,7 +123,8 @@ export class OrganizerViewComponent implements OnInit {
       org.email = this.organizerForm.get('email').value;
       org.telephone = this.organizerForm.get('telephone').value;
       org.description = this.organizerForm.get('description').value;
-      
+      org.link = this.organizerForm.get('link').value;
+      org.frequency = this.organizerForm.get('frequency').value;
       org.category = this.category;
 
       org.openingTimes=this.openingTimes
@@ -139,6 +146,8 @@ export class OrganizerViewComponent implements OnInit {
       email: '',
       telephone: '',
       description: '',
+      link:'',
+      frequency: 7,
     });
     this.updateOrganizerId = ''
   }

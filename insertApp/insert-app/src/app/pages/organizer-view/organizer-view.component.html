@@ -60,7 +60,18 @@
         <input matInput #target required formControlName="description" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
         </mat-form-field>
     </div>
-    
+    <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+        <mat-form-field appearance="fill" style="width: 90%;">
+        <mat-label>Link of Organizer page</mat-label>
+        <input matInput #target required formControlName="link" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+        </mat-form-field>
+    </div>
+    <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+        <mat-form-field appearance="fill" style="width: 90%;">
+        <mat-label>Update Frequency in Days</mat-label>
+        <input matInput #target required formControlName="frequency" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+        </mat-form-field>
+    </div>
 
     <div class="category" style="width: 100%;" fxLayoutAlign="center center"   >
         <mat-card style="width: 90%;" fxLayoutAlign="center center">
