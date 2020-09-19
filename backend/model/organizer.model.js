@@ -13,7 +13,7 @@ const OrganizerSchema = new mongoose.Schema({
         },
         street: {
             type: String,
-            minlength: 2
+            minlength: 3
         },
         city: {
             type: String,
@@ -21,7 +21,6 @@ const OrganizerSchema = new mongoose.Schema({
         },
         streetNumber: {
             type: String,
-            minlength: 1
         },
         country: {
             type: String,
