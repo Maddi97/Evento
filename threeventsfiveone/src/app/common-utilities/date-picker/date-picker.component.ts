@@ -8,7 +8,7 @@ import { MatCalendar } from '@angular/material/datepicker';
 })
 export class DatePickerComponent implements OnInit {
 
-  @Output() clickedDate = new EventEmitter<Date>();
+  @Output() clickedDate = new EventEmitter<DateClicked>();
 
   @ViewChild(MatCalendar) datePicker: MatCalendar<Date>;
 
@@ -28,7 +28,6 @@ export class DatePickerComponent implements OnInit {
   }
 
   safeDate(day: Date) {
-    this.clickedDate.emit(day);
     this.nextMonth.map(m => {
       if (m.date === day) {
         if (m.isClicked === true) {
@@ -40,6 +39,7 @@ export class DatePickerComponent implements OnInit {
         m.isClicked = false;
       }
     });
+    this.clickedDate.emit(this.nextMonth.find(m => m.date === day));
   }
 }
 

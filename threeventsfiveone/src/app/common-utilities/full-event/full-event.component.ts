@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Event } from '../../models/event';
+import { ActivatedRoute } from '@angular/router';
+import { EventService } from 'src/app/events/event.service';
 
 @Component({
   selector: 'vents-full-event',
@@ -7,9 +10,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FullEventComponent implements OnInit {
 
-  constructor() { }
+  eventId: string;
+
+  event: Event;
+
+  constructor(
+    private route: ActivatedRoute,
+    private eventService: EventService,
+
+  ) { }
 
   ngOnInit(): void {
+    this.route.fragment.subscribe(r => {
+      this.eventId = r;
+      this.event = this.eventService.eventForId(this.eventId);
+      console.log(this.event);
+    });
   }
 
 }

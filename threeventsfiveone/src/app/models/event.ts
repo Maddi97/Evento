@@ -1,10 +1,12 @@
+import { Category } from './category';
 export class Event {
     _id: string;
     name: string;
     _organizerId: string;
     adress: Adress
-    date: EventDate;
-    category: string;
+    date: Date;
+    times: EventTimes;
+    category: Category;
     description: string;
     price: string;
 }
@@ -17,8 +19,7 @@ export class Adress {
     country: string;
 }
 
-export class EventDate {
-    day: string;
+export class EventTimes {
     start: string;
     end: string;
 }

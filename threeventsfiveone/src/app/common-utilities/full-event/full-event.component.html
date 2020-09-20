@@ -4,19 +4,19 @@
             <img class="pic" src="assets/test-pictures/test.png">
         </div>
         <div fxLayout="column" style="width: 95%;">
-            <div fxLayout="row" style="padding-top: .5rem;">
+            <div fxLayout="row" style="padding-top: .5rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 100%;">
                 <span>
-                    Veranstaltungsname
+                    {{event?.name}}
                 </span>
                 <div fxLayoutAlign="end end" class="date">
-                    01.01.2020
+                    {{ event?.date | date }}
                 </div>
             </div>
             <div fxLayoutAlign="start start">
-                name
+                {{ event?._organizerId}}
             </div>
             <div class="category">
-                Kategorie
+                {{ event?.category.name}}
             </div>
         </div>
     </div>
@@ -24,9 +24,9 @@
         <div style="width: 95%">
             Adresse:
             <br/>
-            Teststraße 1312
+            {{event?.adress?.street}} {{event?.adress?.streetNumber}}
             <br/>
-            01312 Dresden
+            {{event?.adress?.plz}} {{event?.adress?.city}}
 
         </div>
     </div>
@@ -34,11 +34,7 @@
         <div class="description">
             Kurze Beschreibung:
             <p>
-            Darunter verstehen wir die Wünsche, 
-            Erwartungen und das Kaufverhalten potentieller Konsumenten. 
-            Wir beraten Sie in allen Fragen zur Umsatzsteigerung und 
-            Kundengewinnung auf digitalem Weg im und rund um das Internet. 
-            In einem gemeinsamen Workshop werden Ihre Ziele und Wünsche erfasst.
+                {{event?.description}}
             </p>
         </div>
     </div>

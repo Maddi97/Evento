@@ -22,6 +22,10 @@ export class EventService {
     return this._events;
   }
 
+  public eventForId(id: string): Event {
+    return this._events.getValue().find(f => f._id === id);
+  }
+
 
   getAllEvents() {
     const obs = this.webService.get('organizer').pipe(
