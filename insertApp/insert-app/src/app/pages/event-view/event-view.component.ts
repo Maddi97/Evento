@@ -106,7 +106,7 @@ export class EventViewComponent implements OnInit {
 
     this.eventService.createEvent(event).subscribe();
     organizer.lastUpdated = new Date()
-    this.organizerService.updateOrganizer(organizer._id, organizer)
+    this.organizerService.updateOrganizer(organizer._id, organizer).subscribe()
     this.nullFormField();
   }
 
