@@ -18,7 +18,7 @@ router.post('/organizer', (req, res) => {
 router.get('/organizer/:organizerId', (req, res) => {
     Organizer.find( { _id: req.params.organizerId })
     .then((organizer) => res.send(organizer))
-    .catch((error) => console.log(error))
+    .catch((error) => console.log(error)) 
 })
 
 router.patch('/organizer/:organizerId', (req, res) => {

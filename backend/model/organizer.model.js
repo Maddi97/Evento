@@ -1,3 +1,4 @@
+const { Int32 } = require('mongodb');
 const mongoose = require('mongoose')
 
 const OrganizerSchema = new mongoose.Schema({
@@ -12,7 +13,7 @@ const OrganizerSchema = new mongoose.Schema({
         },
         street: {
             type: String,
-            minlength: 2
+            minlength: 3
         },
         city: {
             type: String,
@@ -20,7 +21,6 @@ const OrganizerSchema = new mongoose.Schema({
         },
         streetNumber: {
             type: String,
-            minlength: 1
         },
         country: {
             type: String,
@@ -34,11 +34,25 @@ const OrganizerSchema = new mongoose.Schema({
         type: String,
     },
     category: {
-        type: String,
-    },
+        name: {
+            type:String,
+        },
+        subcategories: [{
+            type: String,
+        }]
+     },
     description: {
         type: String,
         maxlength: 200
+    },
+    link: {
+        type: String,
+    },
+    frequency: {
+        type: Number,
+    },
+    lastUpdated:{
+        type: Date,
     },
     openingTimes: [{
         day: {

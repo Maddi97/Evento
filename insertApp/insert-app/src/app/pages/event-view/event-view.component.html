@@ -1,3 +1,5 @@
+
+<div fxLayout="row">
 <div style="width: 100%; margin-top: 1rem;" fxLayout="column" fxLayoutAlign="center center">
     <mat-form-field appearance="fill" style="width: 90%;">
       <mat-label>Organizer</mat-label>
@@ -53,44 +55,118 @@
       </div>
   </div>
 
-  <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
-    <mat-form-field appearance="fill" style="width: 100%;">
-    <mat-label>Category</mat-label>
-    <input matInput #target required="true" formControlName="category" (keydown.enter)="addNewEvent(); target.value = ''">
-    </mat-form-field>
+<div class="category" style="width: 100%;" fxLayoutAlign="center center"   >
+  <mat-card style="width: 100%;">
+    <app-category-select  [loadedCategory]="category" (newCategorySelect)="setCategory($event)"></app-category-select>
+  </mat-card>
 </div>
 
-  <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+  <div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column" >
       <mat-form-field appearance="fill" style="width: 100%;">
       <mat-label>Description</mat-label>
       <input matInput #target required="true" formControlName="description" (keydown.enter)="addNewEvent(); target.value = ''">
       </mat-form-field>
   </div>
-      
+
+  <div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column" >
+    <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Link</mat-label>
+    <input matInput #target required="true" formControlName="link" (keydown.enter)="addNewEvent(); target.value = ''">
+    </mat-form-field>
+</div>
+<div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column" >
+  <mat-form-field appearance="fill" style="width: 100%;">
+  <mat-label>Price: 0,00</mat-label>
+  <input matInput #target required="true" formControlName="price" (keydown.enter)="addNewEvent(); target.value = ''">
+  </mat-form-field>
+</div>
+
       <div fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
         <div>
           <mat-form-field appearance="fill">
             <mat-label>Choose a date</mat-label>
-            <input matInput [matDatepicker]="picker" (dateChange)= " eventDate.day = ($event.value.getDate() + '/' + ($event.value.getMonth()+1) + '/' + $event.value.getFullYear())">
+            <input matInput [matDatepicker]="picker" (dateChange)= "setDate($event.value)" [formControl]="date">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
         </div>
-        <div style="padding-left: 1rem;">
-          <span>Beginn:</span>
-          <div class="ngx-timepicker-field-example">
-            <ngx-timepicker-field [format]="24" #startTime [defaultTime]="eventDate.end" (timeChanged)="eventDate.start = startTime.timepickerTime"></ngx-timepicker-field>
-          </div>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div style="padding-left: 1rem;" fxLayout="row">
+            <p>Start :</p>
+            <div class="ngx-timepicker-field-example">
+              
+                 <ngx-timepicker-field #startTime [formControl]="times.start"
+                 [format]="24"
+                 [defaultTime]="'00:00'"> </ngx-timepicker-field>
+            </div>
         </div>
-        <div style="padding-left: 1rem;">
-          <span>Ende:</span>
-          <div class="ngx-timepicker-field-example">
-            <ngx-timepicker-field [format]="24" #endTime [defaultTime]="eventDate.end" (timeChanged)="eventDate.end = endTime.timepickerTime"></ngx-timepicker-field>
-          </div>
+        <div style="padding-left: 1rem;" fxLayout="row">
+            <p>Ende:</p>
+            <div class="ngx-timepicker-field-example">
+            <ngx-timepicker-field #endTime [formControl]="times.end"
+            [format]="24"
+            [defaultTime]="'00:00'"></ngx-timepicker-field>
+            </div>
+        </div>
+    </div>
+
+    </form>
+    
+    <div fxLayout="column" fxLayoutAlign="spacing-around center" style="margin: 1em;">
+      <button  mat-raised-button color="primary" (click)="updateEventId !== '' ? updateEvent() : addNewEvent()" style="width: 100%; cursor: pointer;"fxLayoutAlign="center center">
+          {{ updateEventId !== '' ? 'Update' : 'Submit'}}
+      </button>
+      <button  mat-raised-button color="secondary" (click)="nullFormField()" style="width: 100%;cursor: pointer; margin-top:1em;"fxLayoutAlign="center center">
+          Clear
+      </button>
+  </div>
+
+  </div>
+
+  <div style="width: 90%; margin-top: 3em;">
+    <mat-accordion>
+      <div *ngFor="let category of categories" fxLayout="column" fxLayoutAlign="center center">
+        <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="loadOrganizer(category.name)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{category.name}}
+            </mat-panel-title>
+            <mat-panel-description>
+                Open to see all organizers
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+      <div *ngFor="let organizer of organizerOfCategory" fxLayout="column" fxLayoutAlign="center center">
+      <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" [ngStyle]="{'background': getColor(organizer)}" (afterExpand)="loadEvents(organizer._id)">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{organizer.name}}
+          </mat-panel-title>
+          <mat-panel-description>
+              Open to see all events
+          </mat-panel-description>
+          <p>Last Updated: {{ timeSince(organizer.lastUpdated) }}</p>
+        </mat-expansion-panel-header>
+
+        <div *ngFor="let event of eventsOfOrganizer" fxLayout="row">
+          <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
+            <div style="width: 80%;" fxLayoutAlign="start center" (click)="setEventForm(event)" > 
+              {{event.name}}
+            </div>
+            <div (click)="deleteEvent(organizer._id, event._id)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+                Delete
+            </div>
         </div>
       </div>
-    </form>
-    <button mat-raised-button color="primary" style="width: 90%; margin-bottom: .5rem;" (click)="addNewEvent()">
-      Submit
-    </button>
+    </mat-expansion-panel>
+  </div>
+
+
+      </mat-expansion-panel>
+    </div>
+    </mat-accordion>  
+</div>
+
 </div>

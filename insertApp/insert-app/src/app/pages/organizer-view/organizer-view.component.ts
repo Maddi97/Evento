@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { OrganizerService } from 'src/app/organizer.service';
 import { Organizer, Adress, Day } from 'src/app/models/organizer';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { Category } from 'src/app/models/category';
+import {MatSnackBar} from '@angular/material/snack-bar'
 
 @Component({
   selector: 'app-organizer-view',
@@ -23,8 +25,9 @@ export class OrganizerViewComponent implements OnInit {
     country: new FormControl('Deutschland', []),
     email: new FormControl('', []),
     telephone: new FormControl('', []),
-    category: new FormControl('', []),
-    description: new FormControl('', [])
+    description: new FormControl('', []),
+    link: new FormControl('', []),
+    frequency: new FormControl(7, [])
   })
 
   isOpeningTimesRequired = false;
@@ -39,10 +42,12 @@ export class OrganizerViewComponent implements OnInit {
     {day: 'Sunday', start: '00:00', end: '00:00'}
   ]
 
+    category: Category;
 
   constructor(
     private organizerService: OrganizerService,
     private fb: FormBuilder,
+    private _snackbar: MatSnackBar,
 
     ) { }
 
@@ -51,6 +56,7 @@ export class OrganizerViewComponent implements OnInit {
       this.organizer = o;
     });
   }
+
 
 
   addNewOrganizer(): void {
@@ -69,11 +75,15 @@ export class OrganizerViewComponent implements OnInit {
     org.email = this.organizerForm.get('email').value;
     org.telephone = this.organizerForm.get('telephone').value;
     org.description = this.organizerForm.get('description').value;
-    org.category = this.organizerForm.get('category').value;
+    org.link = this.organizerForm.get('link').value;
+    org.frequency = this.organizerForm.get('frequency').value;
+    org.category = this.category;
+    //this.organizerForm.get('category').value;
 
     org.openingTimes=this.openingTimes
-
-    this.organizerService.createOrganizer(org).subscribe();
+    org.lastUpdated = new Date()
+    this.organizerService.createOrganizer(org).subscribe(res => this.openSnackBar("Successfully updated: "+ res.name));
+    this.organizerForm.reset()
     this.nullFormField();
   }
 
@@ -90,18 +100,25 @@ export class OrganizerViewComponent implements OnInit {
       email: org.email,
       telephone: org.telephone,
       description: org.description,
-      category: org.category
+      link: org.link,
+      frequency: org.frequency
   });
 
+    this.category = org.category
     this.openingTimes = org.openingTimes
     this.updateOrganizerId = org._id;
 
   }
 
+  setCategory(category){
+    this.category = category
+  }
+
   updateOrganizer(): void {
-      console.log('hallo');
       const org = new Organizer();
       const adress = new Adress();
+
+      org._id = this.updateOrganizerId;
       org.name = this.organizerForm.get('name').value;
       // set adress
       adress.plz =  this.organizerForm.get('plz').value;
@@ -115,35 +132,49 @@ export class OrganizerViewComponent implements OnInit {
       org.email = this.organizerForm.get('email').value;
       org.telephone = this.organizerForm.get('telephone').value;
       org.description = this.organizerForm.get('description').value;
-      org.category = this.organizerForm.get('category').value;
+      org.link = this.organizerForm.get('link').value;
+      org.frequency = this.organizerForm.get('frequency').value;
+      org.category = this.category;
 
       org.openingTimes=this.openingTimes
 
-
-     this.organizerService.updateOrganizer(this.updateOrganizerId, org).subscribe();
+     this.organizerService.updateOrganizer(this.updateOrganizerId, org).subscribe(
+       res => this.openSnackBar("Successfully updated: "+ res.name));
+     this.organizerForm.reset()
      this.nullFormField();
+
 
   }
 
-  nullFormField(){
-    this.organizerForm.setValue({
-      name : '',
-      city : 'Dresden',
-      plz  : '',
-      street: '',
-      streetNumber: '',
-      country: 'Deutschland',
-      email: '',
-      telephone: '',
-      description: '',
-      category: ''
+  openSnackBar(message){
+
+    this._snackbar.open(message, '' , { 
+      duration: 1000,
+      verticalPosition: 'top',
+      horizontalPosition: 'center',
+      panelClass: ['green-snackbar']
+
     });
+  }
+
+  nullFormField(){
+    this.isOpeningTimesRequired = false;
+
+    this.openingTimes = [
+      {day: 'Monday', start: '00:00', end: '00:00'},
+      {day: 'Tuesday', start: '00:00', end: '00:00'},
+      {day: 'Wednesday', start: '00:00', end: '00:00'},
+      {day: 'Thursday', start: '00:00', end: '00:00'},
+      {day: 'Friday', start: '00:00', end: '00:00'},
+      {day: 'Saturday', start: '00:00', end: '00:00'},
+      {day: 'Sunday', start: '00:00', end: '00:00'}
+    ]
+    this.category = new Category()
     this.updateOrganizerId = ''
   }
 
   deleteOrganizer(id: string): void {
     this.organizerService.deleteOrganizer(id).subscribe();
   }
-
 
 }

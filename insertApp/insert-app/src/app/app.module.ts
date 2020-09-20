@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +17,10 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatCardModule} from '@angular/material/card';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatSnackBarModule} from '@angular/material/snack-bar'
 
 
 
@@ -25,6 +30,8 @@ import { OrganizerViewComponent } from './pages/organizer-view/organizer-view.co
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CategorySelectComponent } from './pages/category-select/category-select.component';
+import { CategoryViewComponent } from './pages/category-view/category-view.component';
 
 
 @NgModule({
@@ -32,9 +39,16 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppComponent,
     EventViewComponent,
     SelectionViewComponent,
-    OrganizerViewComponent
+    OrganizerViewComponent,
+    CategorySelectComponent,
+    CategoryViewComponent,
   ],
   imports: [
+    MatSnackBarModule,
+    FormsModule,
+    MatExpansionModule,
+    MatDividerModule,
+    MatCardModule,
     MatCheckboxModule,
     HttpClientModule,
     MatButtonModule,

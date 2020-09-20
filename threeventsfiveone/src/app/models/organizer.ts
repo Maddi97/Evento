@@ -1,17 +1,11 @@
-import { Category } from './category'
-
-
 export class Organizer {
     _id: string;
     name: string;
     adress: Adress;
     email?: string;
     telephone?: string;
-    category: Category;
+    category: string;
     description: string;
-    link: string;
-    frequency: number;
-    lastUpdated: Date;
     openingTimes?: Day[];
 }
 
