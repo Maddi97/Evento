@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { OrganizerService } from 'src/app/organizer.service';
 import { Organizer, Adress} from 'src/app/models/organizer';
 import { Observable } from 'rxjs';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
 import { EventsService } from 'src/app/events.service';
 import { Event } from '../../models/event';
