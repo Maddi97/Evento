@@ -22,6 +22,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSnackBarModule} from '@angular/material/snack-bar'
 
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 
 import { HttpClientModule } from "@angular/common/http";
@@ -32,6 +33,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CategorySelectComponent } from './pages/category-select/category-select.component';
 import { CategoryViewComponent } from './pages/category-view/category-view.component';
+import { MapViewComponent} from './map-view/map-view.component'
 
 
 @NgModule({
@@ -42,8 +44,10 @@ import { CategoryViewComponent } from './pages/category-view/category-view.compo
     OrganizerViewComponent,
     CategorySelectComponent,
     CategoryViewComponent,
+    MapViewComponent
   ],
   imports: [
+    LeafletModule,
     MatSnackBarModule,
     FormsModule,
     MatExpansionModule,
