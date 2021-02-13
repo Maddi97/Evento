@@ -14,6 +14,10 @@ export class Event {
     description: string;
     link: string;
     price: string;
+    geo_data:{
+        lat: string,
+        lon: string,
+    };
 }
 
 export class Adress {

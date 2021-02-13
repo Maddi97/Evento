@@ -3,11 +3,13 @@ import { OrganizerService } from 'src/app/organizer.service';
 import { Organizer, Adress} from 'src/app/models/organizer';
 import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, share } from 'rxjs/operators';
 import { EventsService } from 'src/app/events.service';
 import { Event } from '../../models/event';
 import { Category } from 'src/app/models/category';
 import { CategoryService } from 'src/app/category.service';
+import { NominatimGeoService } from '../../nominatim-geo.service'
+
 
 @Component({
   selector: 'app-event-view',
@@ -45,6 +47,11 @@ export class EventViewComponent implements OnInit {
     end: new FormControl("00:00")
   }
 
+  geo_data = {
+    lat:  "",
+    lon: ""
+  }
+
   organizerName = new FormControl();
   organizers: Organizer[] = [];
   organizerOfCategory: Organizer[];
@@ -57,6 +64,8 @@ export class EventViewComponent implements OnInit {
     private organizerService: OrganizerService,
     private eventService: EventsService,
     private fb: FormBuilder,
+    private geoService: NominatimGeoService,
+
   ) { }
 
 
@@ -87,8 +96,12 @@ export class EventViewComponent implements OnInit {
     event.name = this.eventForm.get('name').value;
     adress.plz =  this.eventForm.get('plz').value;
     adress.city =  this.eventForm.get('city').value;
-    adress.street =  this.eventForm.get('street').value;
-    adress.streetNumber =  this.eventForm.get('streetNumber').value;
+
+    const streetWithNumber =  this.eventForm.get('street').value;
+    const street = streetWithNumber.split(' ')[0]
+    const streetNumber = streetWithNumber.split(' ').pop()
+    adress.street=street
+    adress.streetNumber =  streetNumber;
     adress.country =  this.eventForm.get('country').value;
 
     event.adress = adress
@@ -103,8 +116,24 @@ export class EventViewComponent implements OnInit {
     event.date = date
     const time = {start:this.times.start.value, end: this.times.end.value}
     event.times = time
+    event.geo_data = this.geo_data
 
-    this.eventService.createEvent(event).subscribe();
+    // first fetch geo data from osm API and than complete event data type and send to backend
+    this.geoService.get_geo_data(adress.city, adress.street, adress.streetNumber).pipe(
+      map(geo_data => {
+      event.geo_data.lat = geo_data[0].lat;
+      event.geo_data.lon = geo_data[0].lon;
+      }),
+      share()
+      ).toPromise().then( undefined =>
+        this.eventService.createEvent(event).subscribe(event_response => console.log(event_response))
+      )
+
+    
+    
+
+    // geo_data is observable
+    console.log(event)
     organizer.lastUpdated = new Date()
     this.organizerService.updateOrganizer(organizer._id, organizer).subscribe()
     this.nullFormField();
@@ -158,6 +187,7 @@ export class EventViewComponent implements OnInit {
   }
 
   setEventForm(event: Event) : void{
+    console.log(event)
     this.updateEventId = event._id
     const organizer = this.organizers.find(org => org._id === event._organizerId)
     this.organizerName.setValue(organizer.name)
@@ -166,7 +196,7 @@ export class EventViewComponent implements OnInit {
       name: event.name,
       city: event.adress.city,
       plz: event.adress.plz,
-      street: event.adress.street,
+      street: event.adress.street + ' ' + event.adress.streetNumber,
       streetNumber: event.adress.streetNumber,
       country: event.adress.country,
       description: event.description,
@@ -191,8 +221,8 @@ export class EventViewComponent implements OnInit {
     event.name = this.eventForm.get('name').value;
     adress.plz =  this.eventForm.get('plz').value;
     adress.city =  this.eventForm.get('city').value;
-    adress.street =  this.eventForm.get('street').value;
-    adress.streetNumber =  this.eventForm.get('streetNumber').value;
+    adress.street =  this.eventForm.get('street').value.split(' ').slice(0,-1).join(' ');
+    adress.streetNumber =  this.eventForm.get('street').value.split(' ').slice(-1)[0];
     adress.country =  this.eventForm.get('country').value;
 
     event.adress = adress
@@ -209,11 +239,23 @@ export class EventViewComponent implements OnInit {
     event.times = time
     console.log(event)
     event._id = this.updateEventId
-    this.eventService.updateEvent(this.updateOrganizerId ,this.updateEventId, event).subscribe();
+    event.geo_data = this.geo_data
+    this.geoService.get_geo_data(adress.city, adress.street, adress.streetNumber).pipe(
+      map(geo_data => {
+      event.geo_data.lat = geo_data[0].lat;
+      event.geo_data.lon = geo_data[0].lon;
+      }),
+      share()
+      ).toPromise().then( moin =>
+        {
+          this.eventService.updateEvent(event._organizerId,event._id, event).subscribe( event => console.log(event))
+          organizer.lastUpdated = new Date()
+          this.organizerService.updateOrganizer(organizer._id, organizer)
+        }
+      )
+    
 
-    //last updated actual
-    organizer.lastUpdated = new Date()
-    this.organizerService.updateOrganizer(organizer._id, organizer)
+    
     this.nullFormField();
     }
 

@@ -16,6 +16,7 @@ export class WebService {
    } 
 
    post(uri: string, payload: Object) {
+    console.log(payload)
     return this.http.post(`${this.ROOT_URL}/${uri}`, payload)
   }
 
@@ -24,6 +25,7 @@ export class WebService {
   }
 
   patch(uri: string, payload: Object) {
+    console.log(payload)
     return this.http.patch(`${this.ROOT_URL}/${uri}`, payload)
   }
 

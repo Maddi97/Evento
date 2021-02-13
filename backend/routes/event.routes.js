@@ -66,9 +66,12 @@ router.get('/organizer/:organizerId/events/:eventId', (req, res) => {
 });
   
 router.patch('/organizer/:organizerId/events/:eventId', (req, res) => {
-    Event.findOneAndUpdate({_organizerId: req.params.organizerId, _id: req.params.eventId}, {$set: req.body})
-    .then((event) => res.send(event))
-    .catch((error) => console.log(error))
+    Event.findOneAndUpdate(
+      { _organizerId: req.params.organizerId, _id: req.params.eventId },
+      { $set: req.body.event }, { new: true}
+    )
+      .then((event) => res.send(event))
+      .catch((error) => console.log(error));
 });
   
 router.delete('/organizer/:organizerId/events/:eventId', (req, res) => {
