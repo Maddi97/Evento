@@ -13,6 +13,10 @@ export class Organizer {
     frequency: number;
     lastUpdated: Date;
     openingTimes?: Day[];
+    geo_data:{
+        lat: string,
+        lon: string,
+    };
 }
 
 export class Adress {

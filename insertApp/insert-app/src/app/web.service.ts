@@ -26,6 +26,7 @@ export class WebService {
 
   patch(uri: string, payload: Object) {
     console.log(payload)
+    console.log(uri)
     return this.http.patch(`${this.ROOT_URL}/${uri}`, payload)
   }
 

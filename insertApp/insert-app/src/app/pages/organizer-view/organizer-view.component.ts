@@ -4,6 +4,8 @@ import { Organizer, Adress, Day } from 'src/app/models/organizer';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Category } from 'src/app/models/category';
 import {MatSnackBar} from '@angular/material/snack-bar'
+import { NominatimGeoService } from '../../nominatim-geo.service'
+import { map, share } from 'rxjs/operators';
 
 @Component({
   selector: 'app-organizer-view',
@@ -18,7 +20,7 @@ export class OrganizerViewComponent implements OnInit {
 
   organizerForm = this.fb.group({
     name: new FormControl('', []),
-    city: new FormControl('Dresden', []),
+    city: new FormControl('Leipzig', []),
     plz: new FormControl('', []),
     street: new FormControl('', []),
     streetNumber: new FormControl('', []),
@@ -41,14 +43,17 @@ export class OrganizerViewComponent implements OnInit {
     {day: 'Saturday', start: '00:00', end: '00:00'},
     {day: 'Sunday', start: '00:00', end: '00:00'}
   ]
-
+    geo_data = {
+        lat:  "",
+        lon: ""
+      }
     category: Category;
 
   constructor(
     private organizerService: OrganizerService,
     private fb: FormBuilder,
     private _snackbar: MatSnackBar,
-
+    private geoService: NominatimGeoService,
     ) { }
 
   ngOnInit(): void {
@@ -66,8 +71,8 @@ export class OrganizerViewComponent implements OnInit {
     // set adress
     adress.plz =  this.organizerForm.get('plz').value;
     adress.city =  this.organizerForm.get('city').value;
-    adress.street =  this.organizerForm.get('street').value;
-    adress.streetNumber =  this.organizerForm.get('streetNumber').value;
+    adress.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ');
+    adress.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[0];
     adress.country =  this.organizerForm.get('country').value;
 
     org.adress = adress
@@ -82,8 +87,25 @@ export class OrganizerViewComponent implements OnInit {
 
     org.openingTimes=this.openingTimes
     org.lastUpdated = new Date()
-    this.organizerService.createOrganizer(org).subscribe(res => this.openSnackBar("Successfully updated: "+ res.name));
-    this.organizerForm.reset()
+
+    org.geo_data = this.geo_data
+
+    // first fetch geo data from osm API and than complete event data type and send to backend
+    this.geoService.get_geo_data(adress.city, adress.street, adress.streetNumber).pipe(
+      map(geo_data => {
+      org.geo_data.lat = geo_data[0].lat;
+      org.geo_data.lon = geo_data[0].lon;
+      }),
+      share()
+      ).toPromise().then( undefined =>
+      {  
+        this.organizerService.createOrganizer(org).subscribe(res => { this.openSnackBar("Successfully updated: "+ res.name) })
+        this.organizerForm.reset()
+      }
+
+        )
+
+
     this.nullFormField();
   }
 
@@ -94,8 +116,8 @@ export class OrganizerViewComponent implements OnInit {
       name: org.name,
       city: org.adress.city,
       plz: org.adress.plz,
-      street: org.adress.street,
-      streetNumber: org.adress.streetNumber,
+      street: org.adress.street + ' ' + org.adress.streetNumber ,
+      streetNumber: '' ,
       country: org.adress.country,
       email: org.email,
       telephone: org.telephone,
@@ -123,8 +145,8 @@ export class OrganizerViewComponent implements OnInit {
       // set adress
       adress.plz =  this.organizerForm.get('plz').value;
       adress.city =  this.organizerForm.get('city').value;
-      adress.street =  this.organizerForm.get('street').value;
-      adress.streetNumber =  this.organizerForm.get('streetNumber').value;
+      adress.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ');
+      adress.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[0];
       adress.country =  this.organizerForm.get('country').value;
 
       org.adress = adress
@@ -137,10 +159,24 @@ export class OrganizerViewComponent implements OnInit {
       org.category = this.category;
 
       org.openingTimes=this.openingTimes
+      org.geo_data = this.geo_data
+    // first fetch geo data from osm API and than complete event data type and send to backend
+    this.geoService.get_geo_data(adress.city, adress.street, adress.streetNumber).pipe(
+      map(geo_data => {
+      org.geo_data.lat = geo_data[0].lat;
+      org.geo_data.lon = geo_data[0].lon;
+      }),
+      share()
+      ).toPromise().then( undefined =>
+      {  
+        this.organizerService.updateOrganizer(org._id, org).subscribe(
+        res => this.openSnackBar("Successfully updated: "+ res.name));
+        this.organizerForm.reset()
+      }
 
-     this.organizerService.updateOrganizer(this.updateOrganizerId, org).subscribe(
-       res => this.openSnackBar("Successfully updated: "+ res.name));
-     this.organizerForm.reset()
+        )
+
+     
      this.nullFormField();
 
 

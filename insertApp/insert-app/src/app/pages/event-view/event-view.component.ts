@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { OrganizerService } from 'src/app/organizer.service';
 import { Organizer, Adress} from 'src/app/models/organizer';
-import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { startWith, map, share } from 'rxjs/operators';
+import { startWith, map, share, catchError } from 'rxjs/operators';
 import { EventsService } from 'src/app/events.service';
 import { Event } from '../../models/event';
 import { Category } from 'src/app/models/category';
 import { CategoryService } from 'src/app/category.service';
 import { NominatimGeoService } from '../../nominatim-geo.service'
+import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
+
 
 
 @Component({
@@ -97,11 +98,10 @@ export class EventViewComponent implements OnInit {
     adress.plz =  this.eventForm.get('plz').value;
     adress.city =  this.eventForm.get('city').value;
 
-    const streetWithNumber =  this.eventForm.get('street').value;
-    const street = streetWithNumber.split(' ')[0]
-    const streetNumber = streetWithNumber.split(' ').pop()
-    adress.street=street
-    adress.streetNumber =  streetNumber;
+
+    adress.street =  this.eventForm.get('street').value.split(' ').slice(0,-1).join(' ');
+    adress.streetNumber =  this.eventForm.get('street').value.split(' ').slice(-1)[0];
+
     adress.country =  this.eventForm.get('country').value;
 
     event.adress = adress
@@ -121,6 +121,7 @@ export class EventViewComponent implements OnInit {
     // first fetch geo data from osm API and than complete event data type and send to backend
     this.geoService.get_geo_data(adress.city, adress.street, adress.streetNumber).pipe(
       map(geo_data => {
+      
       event.geo_data.lat = geo_data[0].lat;
       event.geo_data.lon = geo_data[0].lon;
       }),

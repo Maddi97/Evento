@@ -49,7 +49,7 @@ const EventSchema = new mongoose.Schema({
 
   description: {
     type: String,
-    maxlength: 200,
+    maxlength: 5000,
   },
   link: {
     type: String,
