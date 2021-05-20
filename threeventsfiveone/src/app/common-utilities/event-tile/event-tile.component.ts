@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Event } from '../../models/event';
 
 @Component({
   selector: 'vents-event-tile',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./event-tile.component.css']
 })
 export class EventTileComponent implements OnInit {
+
+  @Input() event: Event;
 
   constructor() { }
 

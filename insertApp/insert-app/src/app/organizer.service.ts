@@ -52,7 +52,7 @@ export class OrganizerService {
  }
 
 updateOrganizer(id: string, organizer : Organizer){
-
+  console.log(id, organizer)
     const obs = this.webService.patch(`organizer/${id}`, { organizer }).pipe(
       map((r: HttpRequest<any>) => r as unknown as Organizer),
       catchError((error: any) => {

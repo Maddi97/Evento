@@ -1,12 +1,23 @@
+import { Category } from './category'
+
 export class Event {
     _id: string;
     name: string;
     _organizerId: string;
     adress: Adress
-    date: EventDate;
-    category: string;
+    date: Date;
+    times:{
+        start: string,
+        end: string
+    }
+    category: Category;
     description: string;
+    link: string;
     price: string;
+    geo_data:{
+        lat: string,
+        lon: string,
+    };
 }
 
 export class Adress {
@@ -17,8 +28,3 @@ export class Adress {
     country: string;
 }
 
-export class EventDate {
-    day: string;
-    start: string;
-    end: string;
-}

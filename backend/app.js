@@ -17,6 +17,8 @@ app.use(organizerRouter)
 var eventRouter = require('./routes/event.routes')
 app.use(eventRouter)
 
+var categoryRouter = require('./routes/category.routes')
+app.use(categoryRouter)
 // startup our app at http://localhost:3000
 app.listen(port, () =>
   console.log(`3vents51 backend listening on port ${port}!`)

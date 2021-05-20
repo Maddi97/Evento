@@ -1,12 +1,22 @@
+import { Category } from './category'
+
+
 export class Organizer {
     _id: string;
     name: string;
     adress: Adress;
     email?: string;
     telephone?: string;
-    category: string;
+    category: Category;
     description: string;
+    link: string;
+    frequency: number;
+    lastUpdated: Date;
     openingTimes?: Day[];
+    geo_data:{
+        lat: string,
+        lon: string,
+    };
 }
 
 export class Adress {

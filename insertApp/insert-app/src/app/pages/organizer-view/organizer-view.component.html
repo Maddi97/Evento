@@ -3,6 +3,7 @@
         <mat-form-field appearance="fill" style="width: 90%;">
           <mat-label>Organizer</mat-label>
           <input matInput #target required formControlName="name" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+          <mat-error *ngIf="organizerForm.get('name').hasError('required')">Organizer is required</mat-error>
         </mat-form-field>
         <div style="width: 90%;" fxLayoutAlign="start center"></div>
 
@@ -13,14 +14,18 @@
         <div style="width: 45%;" fxLayoutAlign="start center">
             <mat-form-field appearance="fill" style="width: 90%;">
                 <mat-label>Plz</mat-label>
-                <input matInput #target required formControlName="plz" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+                <input id="plz" name="plz" matInput #target required minlength="5" maxlength="5" formControlName="plz" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+                    <mat-error *ngIf="organizerForm.get('plz').hasError('required')">Plz is required</mat-error>
+                    <mat-error *ngIf="organizerForm.get('plz').hasError('minlength') || organizerForm.get('plz').hasError('maxlength') ">Plz length has to equal 5 </mat-error>
             </mat-form-field>
         </div>
 
         <div style="width: 45%;" fxLayoutAlign="end center" fxLayout="column">
             <mat-form-field appearance="fill" style="width: 90%;">
             <mat-label>City</mat-label>
-            <input matInput #target required formControlName="city" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+            <input matInput #target required minlength="3" formControlName="city" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+            <mat-error *ngIf="organizerForm.get('city').hasError('required')">City is required</mat-error>
+            <mat-error *ngIf="organizerForm.get('city').hasError('minlength')">This is not a city name</mat-error>
             </mat-form-field>
         </div>
     </div>
@@ -30,15 +35,16 @@
             <mat-form-field appearance="fill" style="width: 90%;">
             <mat-label>Street</mat-label>
             <input matInput #target required formControlName="street" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+            <mat-error *ngIf="organizerForm.get('street').hasError('required')">Street is required</mat-error>
             </mat-form-field>
         </div>
 
-        <div style="width: 15%;" fxLayoutAlign="end center" fxLayout="column">
+        <!-- <div style="width: 15%;" fxLayoutAlign="end center" fxLayout="column">
             <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Number</mat-label>
-            <input matInput #target required formControlName="streetNumber" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+            <input matInput #target formControlName="streetNumber" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
             </mat-form-field>
-        </div>
+        </div> -->
     </div>
 
     <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
@@ -58,50 +64,67 @@
         <mat-form-field appearance="fill" style="width: 90%;">
         <mat-label>Description</mat-label>
         <input matInput #target required formControlName="description" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+        <mat-error *ngIf="organizerForm.get('description').hasError('required')">Description is required</mat-error>
         </mat-form-field>
     </div>
-
     <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
         <mat-form-field appearance="fill" style="width: 90%;">
-        <mat-label>Category</mat-label>
-        <input matInput #target required formControlName="category" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+        <mat-label>Link of Organizer page</mat-label>
+        <input matInput #target required formControlName="link" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
         </mat-form-field>
     </div>
-    
-    
-    <div fxLayout fxLayoutAlign="center center">
-        <div style="width: 90%" fxLayout fxLayoutAlign="start center">
-            <mat-checkbox class="opening-times-required" [isOpeningTimesRequired] (change)="isOpeningTimesRequired = !isOpeningTimesRequired">Opening times required? </mat-checkbox>
+    <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+        <mat-form-field appearance="fill" style="width: 90%;">
+        <mat-label>Update Frequency in Days</mat-label>
+        <input matInput #target required formControlName="frequency" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+        </mat-form-field>
+    </div>
+
+    <div class="category" style="width: 100%;" fxLayoutAlign="center center"   >
+        <mat-card style="width: 90%;" fxLayoutAlign="center center">
+          <app-category-select style="width: 100%;" fxLayoutAlign="center center" [loadedCategory]="category" (newCategorySelect)="setCategory($event)"></app-category-select>
+        </mat-card>
+    </div>    
+
+    <div fxLayout="column" fxLayoutAlign="center center">
+        <div style="width: 100%"  fxLayoutAlign="center center">
+            <mat-checkbox class="opening-times-required" [checked]="isOpeningTimesRequired" (change)="isOpeningTimesRequired = !isOpeningTimesRequired">Opening times required? </mat-checkbox>
         </div>
-        <div *ngIf="isOpeningTimesRequired">
+        <div style="width: 100%;" fxLayoutAlign="center" fxLayout="column" *ngIf="isOpeningTimesRequired">
 
-            <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="row" *ngFor="let day of openingTimes">
+            <div  *ngFor="let day of openingTimes" style="margin: 0.8em; padding-left: 3em;
+            padding-right: 3em;">
+                <mat-divider></mat-divider>
+                <p fxLayoutAlign="center" > {{day.day}} </p>
 
-                <p> {{day.day}} </p>
-                <div style="padding-left: 1rem;">
-                    <span>Start:</span>
+            <div fxLayout="row" fxLayoutAlign="space-between center" >
+                <div style="padding-left: 1rem;" fxLayout="row">
+                    <p>Start :</p>
                     <div class="ngx-timepicker-field-example">
                          <ngx-timepicker-field #startTime [format]="24" [(defaultTime)]="day.start" (timeChanged)="day.start = startTime.timepickerTime"> </ngx-timepicker-field>
                     </div>
                 </div>
-                <div style="padding-left: 1rem;">
-                    <span>Ende:</span>
+                <div style="padding-left: 1rem;" fxLayout="row">
+                    <p>Ende:</p>
                     <div class="ngx-timepicker-field-example">
                     <ngx-timepicker-field #endTime [format]="24" [defaultTime]="day.end" (timeChanged)="day.end = endTime.timepickerTime"></ngx-timepicker-field>
                     </div>
                 </div>
             </div>
         </div>
+        </div>
+        <mat-divider></mat-divider>
+
     </div>
 
 </form>
-<div fxLayout="column" fxLayoutAlign="center center">
-    <div (click)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer()" style="width: 20%; background-color: blue; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+<div fxLayout="column" fxLayoutAlign="spacing-around center" style="margin: 1em;">
+    <button  mat-raised-button color="primary" (click)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer()" style="width: 70%; cursor: pointer;"fxLayoutAlign="center center" [disabled]="organizerForm.invalid">
         {{ updateOrganizerId !== '' ? 'Update' : 'Submit'}}
-    </div>
-    <div (click)="nullFormField()" style="width: 20%; background-color: rgb(229, 255, 0); border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+    </button>
+    <button  mat-raised-button color="secondary" (click)="nullFormField()" style="width: 70%;cursor: pointer; margin-top:1em;"fxLayoutAlign="center center">
         Clear
-    </div>
+    </button>
 </div>
 
 
@@ -117,5 +140,10 @@
             </div>
         </div>
     </div>
+
+    <div style="margin-top: 2em;">
+        <map-view [marker_data]="organizer"></map-view>
+    </div>
 </div>
+
   
