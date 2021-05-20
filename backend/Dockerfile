@@ -16,4 +16,4 @@ RUN npm install --save-dev @angular-devkit/build-angular
 
 COPY . /app
 
-CMD node app.js
+CMD nodemon app.js
