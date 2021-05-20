@@ -7,7 +7,7 @@
 services:
   threeventsfiveone:
     build: threeventsfiveone
-    container_name: 3events51_threeventsfiveone
+    container_name: 3vents51_threeventsfiveone
     ports:
       - 4200:4200
     volumes:
@@ -16,7 +16,7 @@ services:
 
   insert-app:
     build: insertApp/insert-app
-    container_name: 3events51_insert-app
+    container_name: 3vents51_insert-app
     ports:
       - 4201:4200
     volumes:
@@ -25,7 +25,7 @@ services:
 
   backend:
     build: backend
-    container_name: 3events51_backend
+    container_name: 3vents51_backend
     ports:
       - 3000:3000
     volumes:
@@ -36,6 +36,6 @@ services:
 
   mongodb:
     image: mongo
-    container_name: 3events51_mongodb
+    container_name: 3vents51_mongodb
 #    networks:
 #      - backend
