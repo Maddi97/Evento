@@ -98,7 +98,7 @@ export class OrganizerViewComponent implements OnInit {
       }),
       share()
       ).toPromise().then( undefined =>
-      {  
+      {
         this.organizerService.createOrganizer(org).subscribe(res => { this.openSnackBar("Successfully updated: "+ res.name) })
         this.organizerForm.reset()
       }
@@ -145,8 +145,8 @@ export class OrganizerViewComponent implements OnInit {
       // set adress
       adress.plz =  this.organizerForm.get('plz').value;
       adress.city =  this.organizerForm.get('city').value;
-      adress.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ');
-      adress.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[0];
+      adress.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ')[0];
+      adress.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[1];
       adress.country =  this.organizerForm.get('country').value;
 
       org.adress = adress
@@ -168,7 +168,7 @@ export class OrganizerViewComponent implements OnInit {
       }),
       share()
       ).toPromise().then( undefined =>
-      {  
+      {
         this.organizerService.updateOrganizer(org._id, org).subscribe(
         res => this.openSnackBar("Successfully updated: "+ res.name));
         this.organizerForm.reset()
@@ -176,7 +176,7 @@ export class OrganizerViewComponent implements OnInit {
 
         )
 
-     
+
      this.nullFormField();
 
 
@@ -184,7 +184,7 @@ export class OrganizerViewComponent implements OnInit {
 
   openSnackBar(message){
 
-    this._snackbar.open(message, '' , { 
+    this._snackbar.open(message, '' , {
       duration: 1000,
       verticalPosition: 'top',
       horizontalPosition: 'center',
