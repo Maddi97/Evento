@@ -7,9 +7,13 @@
           <mat-label>Add Category</mat-label>
           <input matInput #target required="true" [formControl]="categoryName" (keydown.enter)="addNewCategory(); target.value = ''">
         </mat-form-field>
+        <span class='col'><input type='file' (input)=fileChoosen($event)></span>
+        <button class='btn btn-warning' (click)="submitPhoto()">Submit</button>
       </div>
-
-</div>
+      <div *ngIf='uploaded_file'>
+      <div>{{uploaded_file.path}}</div>
+     </div>
+    </div>
 
 <div style="width: 90%; margin-top: 3em;">
     <mat-accordion>

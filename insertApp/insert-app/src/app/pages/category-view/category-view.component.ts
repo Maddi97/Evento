@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CategoryService } from 'src/app/category.service';
 import { Category } from 'src/app/models/category';
-
+import { FileUploadService } from 'src/app/file-upload.service';
 
 @Component({
   selector: 'app-category-view',
@@ -15,8 +15,14 @@ export class CategoryViewComponent implements OnInit {
   categoryName = new FormControl('')
   subcategoryName = new FormControl('')
   categories: Category[]
+  submitted: boolean
+  image: File
+  choosen:boolean
+  uploaded_file:any
+
   constructor(
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private fileService: FileUploadService
   ) { }
 
 
@@ -43,5 +49,23 @@ export class CategoryViewComponent implements OnInit {
   deleteSubcategory(category: Category, subcategory: string): void {
     category.subcategories = category.subcategories.filter(cat => cat != subcategory )
     this.categoryService.updateCategory(category._id, category).subscribe()
+  }
+  fileChoosen(event: any){
+    if(event.target.value){
+      this.image=<File>event.target.files[0];
+      this.choosen=true
+    }
+  }
+  submitPhoto(){
+    const formdata: FormData = new FormData();
+ 
+    formdata.append('file', this.image);
+    this.submitted = true;
+    if(this.image){
+
+      this.fileService.uploadFile(formdata).subscribe((res)=>{
+        this.uploaded_file = res        
+      })
+    }
   }
 }
