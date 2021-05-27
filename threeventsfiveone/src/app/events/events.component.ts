@@ -13,6 +13,8 @@ export class EventsComponent implements OnInit {
 
   public isDropdown = false;
 
+  mapView = false;
+
   eventList: Event[] = [];
   filteredList: Event[] = [];
 
@@ -64,6 +66,10 @@ export class EventsComponent implements OnInit {
 
   clearFilter() {
     this.filteredList = this.eventList;
+  }
+
+  changeToMapView() {
+    this.mapView ? this.mapView = false : this.mapView = true
   }
 }
 

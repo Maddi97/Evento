@@ -1,40 +1,49 @@
 <div style="width: 100%;" fxLayoutAlign="center center">
-    <div fxLayout="column" fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%" fxFlex.gt-md="40%" fxLayoutAlign="start center">
-        <vents-date-picker  style="width: 100%;"(clickedDate)="searchForDay($event)"></vents-date-picker>
-        <div style="margin-top: 1rem;" fxLayout="column" style="margin-bottom: 5rem; width: 100%;">
-            <div fxLayout="row" fxLayoutAlign="start center" style="margin-bottom: .5rem;">
-                <div fxLayout="row" fxLayoutAlign="space-around center">
-                    <mat-icon class="icon" routerLink="/map">
-                        map
-                    </mat-icon>
-                </div>
-                <div fxLayout fxLayoutAlign="end center" style="width: 100%;">
-                    <mat-icon class="icon" (click)="isDropdown = !isDropdown">
-                        keyboard_arrow_down
-                    </mat-icon>
-                </div>
-            </div>
-            <div *ngIf="isDropdown" fxLayout="column" style="margin-bottom: .5rem;">
-                Entfernung
-                <mat-slider style="padding-top: 0;"></mat-slider>
-                Kategorien
-                <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
+  <div fxLayout="column" fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%" fxFlex.gt-md="40%"
+       fxLayoutAlign="start center">
+    <vents-date-picker style="width: 100%;" (clickedDate)="searchForDay($event)"></vents-date-picker>
+    <div style="margin-top: 1rem;" fxLayout="column" style="margin-bottom: 5rem; width: 100%;">
+      <div fxLayout="row" fxLayoutAlign="start center" style="margin-bottom: .5rem;">
+        <div *ngIf="this.mapView" fxLayout="row" fxLayoutAlign="space-around center">
+          <mat-icon class="icon" (click)="changeToMapView()">
+            event
+          </mat-icon>
+        </div>
+        <div *ngIf="!this.mapView" fxLayout="row" fxLayoutAlign="space-around center">
+          <mat-icon class="icon" (click)="changeToMapView()">
+            map
+          </mat-icon>
+        </div>
+        <div fxLayout fxLayoutAlign="end center" style="width: 100%;">
+          <mat-icon class="icon" (click)="isDropdown = !isDropdown">
+            keyboard_arrow_down
+          </mat-icon>
+        </div>
+      </div>
+      <div *ngIf="isDropdown" fxLayout="column" style="margin-bottom: .5rem;">
+        Entfernung
+        <mat-slider style="padding-top: 0;"></mat-slider>
+        Kategorien
+        <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
                     <span class="category" (click)="searchForCategory(category)">
                         {{ category.name }}
                     </span>
-                </div>
-                <div (click)="clearFilter()">
-                    Filter Zurücksetzen
-                </div>
-            </div>
-            <div>
-                <div fxLayout="column" *ngFor="let event of filteredList">
-                    <vents-event-tile routerLink="/full-event" fragment={{event._id}} [event]="event"></vents-event-tile>
-                </div>
-                <div *ngIf="filteredList.length == 0">
-                    Sorry für das angegebene datum haben wir keine events gespeichert.
-                </div>
-            </div>
-        </div>    
+        </div>
+        <div (click)="clearFilter()">
+          Filter Zurücksetzen
+        </div>
+      </div>
+      <div *ngIf="this.mapView">
+        <map-view [marker_data]="this.eventList"></map-view>
+      </div>
+      <div *ngIf="this.mapView === false">
+        <div fxLayout="column" *ngFor="let event of filteredList">
+          <vents-event-tile routerLink="/full-event" fragment={{event._id}} [event]="event"></vents-event-tile>
+        </div>
+        <div *ngIf="filteredList.length == 0">
+          Sorry für das angegebene datum haben wir keine events gespeichert.
+        </div>
+      </div>
     </div>
+  </div>
 </div>

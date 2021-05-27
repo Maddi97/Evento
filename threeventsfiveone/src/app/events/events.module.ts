@@ -7,29 +7,31 @@ import { AppRoutingModule } from '../app-routing.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
 import { HttpClientModule } from "@angular/common/http";
+import {MapViewComponent} from "../map-view/map-view.component";
 
 
 @NgModule({
   declarations: [
     EventsComponent,
+    MapViewComponent
   ],
-  imports: [
-    AppRoutingModule,
-    CommonModule,
-    CommonUtilitiesModule,
-    /**
-     * Flex
-     */
-    FlexLayoutModule,
+    imports: [
+        AppRoutingModule,
+        CommonModule,
+        CommonUtilitiesModule,
+        /**
+         * Flex
+         */
+        FlexLayoutModule,
 
-    /**
-     * Material Imports
-     */
-    MatIconModule,
-    MatSliderModule,
+        /**
+         * Material Imports
+         */
+        MatIconModule,
+        MatSliderModule,
 
-    
-    HttpClientModule
-  ]
+
+        HttpClientModule,
+    ]
 })
 export class EventsModule { }
