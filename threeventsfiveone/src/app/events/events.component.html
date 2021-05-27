@@ -34,7 +34,7 @@
         </div>
       </div>
       <div *ngIf="this.mapView">
-        <map-view [marker_data]="this.eventList"></map-view>
+        <map-view [marker_data]="this.filteredList"></map-view>
       </div>
       <div *ngIf="this.mapView === false">
         <div fxLayout="column" *ngFor="let event of filteredList">
