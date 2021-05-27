@@ -5,6 +5,9 @@ const CategorySchema = new mongoose.Schema({
         type: String,
         minlength: 3
     },
+    icon:{
+        type: String,
+    },
     subcategories: [String]
 });
 

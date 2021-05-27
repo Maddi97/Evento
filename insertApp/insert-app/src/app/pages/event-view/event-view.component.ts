@@ -162,7 +162,7 @@ export class EventViewComponent implements OnInit {
       link: '',
       price: ''
     })
-    this.category = {_id: '', name:'', subcategories: ['']}
+    this.category = {_id: '', name:'', icon: '', subcategories: ['']}
     this.date.setValue(new Date())
     this.times.start.setValue('00:00')
     this.times.end.setValue('00:00')

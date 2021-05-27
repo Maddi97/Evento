@@ -4,6 +4,8 @@ import { FormControl } from '@angular/forms';
 import { CategoryService } from 'src/app/category.service';
 import { Category } from 'src/app/models/category';
 import { FileUploadService } from 'src/app/file-upload.service';
+import { map, share } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-category-view',
@@ -20,6 +22,8 @@ export class CategoryViewComponent implements OnInit {
   choosen:boolean
   uploaded_file:any
 
+
+
   constructor(
     private categoryService: CategoryService,
     private fileService: FileUploadService
@@ -31,10 +35,32 @@ export class CategoryViewComponent implements OnInit {
   }
 
   addNewCategory():void {
-    const category = new Category();
+    let category = new Category();
     category.name = this.categoryName.value;
+    category.icon = '';
     category.subcategories = []
-    this.categoryService.createCategory(category).subscribe()
+    if(this.image){
+      this.categoryService.createCategory(category).pipe(
+        map(cat_res => {
+
+            category = cat_res
+            let file_path = 'category_images/' + cat_res._id 
+            const formdata: FormData = new FormData();
+            formdata.append('file', this.image);
+            formdata.append('file_path', file_path)
+            this.fileService.uploadFile(formdata).subscribe((res)=> {
+            this.uploaded_file = res  
+            category.icon = res.path
+            this.categoryService.updateCategory(category._id, category).subscribe(x => console.log(x))
+                          
+          })
+        }),
+        share()
+        ).toPromise().then() 
+      }
+      else{
+          console.error("No image uploaded, but its necesarry for a category!")
+        }
   }
 
   deleteCategory(category: Category): void {
@@ -56,16 +82,5 @@ export class CategoryViewComponent implements OnInit {
       this.choosen=true
     }
   }
-  submitPhoto(){
-    const formdata: FormData = new FormData();
- 
-    formdata.append('file', this.image);
-    this.submitted = true;
-    if(this.image){
 
-      this.fileService.uploadFile(formdata).subscribe((res)=>{
-        this.uploaded_file = res        
-      })
-    }
-  }
 }
