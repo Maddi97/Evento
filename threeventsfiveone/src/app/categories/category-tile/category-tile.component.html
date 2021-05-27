@@ -1,13 +1,26 @@
-<div class="category-tile" fxLayout="column">
-    <div style="margin: 0.5rem; width: 100%; height: 100%;" fxLayout fxLayoutAlign="start start">
-        <span style="margin-left: .5rem;">
+<div class="category-tile" (click)="onClick()">
+  <div class="category-tile-name-container">
+        <span>
             {{category.name}}
         </span>
+  </div>
+  <div class="category-tile-image-container">
+    <mat-icon *ngIf="this.category.subcategories.length !== 0" class="material-icons small-icon">
+      expand_more
+    </mat-icon>
+    <mat-icon class="category-icon">
+      category
+    </mat-icon>
+    <!-- <img style="overflow: hidden; float: right;" src="assets/test-pictures/test.png"> -->
+  </div>
+</div>
+
+<div *ngIf="this.showSubcategories">
+  <div *ngFor="let subcategory of category.subcategories" class="category-tile subcategory">
+    <div class="category-tile-name-container">
+        <span>
+            {{subcategory}}
+        </span>
     </div>
-    <div fxLayout fxLayoutAlign="end end">
-        <mat-icon class="category-icon">
-            category
-        </mat-icon>
-        <!-- <img style="overflow: hidden; float: right;" src="assets/test-pictures/test.png"> -->
-    </div>
+  </div>
 </div>

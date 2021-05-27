@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Category } from 'src/app/models/category';
+import {Component, OnInit, Input} from '@angular/core';
+import {Category} from 'src/app/models/category';
 
 @Component({
   selector: 'vents-category-tile',
@@ -10,9 +10,16 @@ export class CategoryTileComponent implements OnInit {
 
   @Input() category: Category;
 
-  constructor() { }
+  showSubcategories = false;
+
+  constructor() {
+  }
 
   ngOnInit(): void {
+  }
+
+  onClick() {
+    this.showSubcategories ? this.showSubcategories = false : this.showSubcategories = true
   }
 
 }
