@@ -64,6 +64,19 @@ export class EventsComponent implements OnInit {
     this.filteredList = this.filteredList.filter(f => f.category._id === cat._id);
   }
 
+  isElementPicked(cat: Category) {
+    console.log(cat._id)
+    this.filteredList.forEach(event => {
+      if (event.category._id === cat._id) {
+        console.log('wtf')
+        return true
+        console.log('lulzo')
+      }
+    })
+
+    return false
+  }
+
   clearFilter() {
     this.filteredList = this.eventList;
   }

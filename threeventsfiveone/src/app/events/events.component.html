@@ -25,11 +25,11 @@
         <mat-slider style="padding-top: 0;"></mat-slider>
         Kategorien
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
-                    <span class="category" (click)="searchForCategory(category)">
+                    <span class="category" [ngClass]="{'categoryPicked': isElementPicked(category), 'categoryNonPicked': !isElementPicked(category)}" (click)="searchForCategory(category)">
                         {{ category.name }}
                     </span>
         </div>
-        <div (click)="clearFilter()">
+        <div class="category categoryYellow"  (click)="clearFilter()">
           Filter Zurücksetzen
         </div>
       </div>
