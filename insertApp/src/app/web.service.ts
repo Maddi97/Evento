@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
+import {environment} from "../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebService {
   readonly ROOT_URL;
+  env = environment
   constructor(private http: HttpClient) {
 
-    this.ROOT_URL = "http://localhost:3000";
+    this.ROOT_URL = this.env.apiBaseUrl;
    }
 
    get(uri: string) {
      return this.http.get(`${this.ROOT_URL}/${uri}`)
-   } 
+   }
 
    post(uri: string, payload: Object) {
     console.log(payload)
