@@ -1,0 +1,38 @@
+services:
+  threeventsfiveone:
+    build:
+      context: threeventsfiveone
+      dockerfile: prod.Dockerfile
+    container_name: 3vents51_threeventsfiveone
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./threeventsfiveone:/app
+      - /app/node_modules
+
+  insert-app:
+    build:
+      context: insertApp
+      dockerfile: prod.Dockerfile
+    container_name: 3vents51_insert-app
+    ports:
+      - 81:80
+    volumes:
+      - ./insertApp/insert-app:/app
+      - /app/node_modules
+
+  backend:
+    build:
+      context: backend
+      dockerfile: prod.Dockerfile
+    container_name: 3vents51_backend
+    ports:
+      - 82:80
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  mongodb:
+    image: mongo
+    container_name: 3vents51_mongodb

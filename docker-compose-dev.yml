@@ -1,12 +1,8 @@
-#
-#networks:
-#  backend:
-#    name: backend_network
-#    external: false
-
 services:
   threeventsfiveone:
-    build: threeventsfiveone
+    build:
+      context: threeventsfiveone
+      dockerfile: dev.Dockerfile
     container_name: 3vents51_threeventsfiveone
     ports:
       - 4200:4200
@@ -15,7 +11,9 @@ services:
       - /app/node_modules
 
   insert-app:
-    build: insertApp/insert-app
+    build:
+      context: insertApp
+      dockerfile: dev.Dockerfile
     container_name: 3vents51_insert-app
     ports:
       - 4201:4200
@@ -24,18 +22,16 @@ services:
       - /app/node_modules
 
   backend:
-    build: backend
+    build:
+      context: backend
+      dockerfile: dev.Dockerfile
     container_name: 3vents51_backend
     ports:
       - 3000:3000
     volumes:
       - ./backend:/app
       - /app/node_modules
-#    networks:
-#      - backend
 
   mongodb:
     image: mongo
     container_name: 3vents51_mongodb
-#    networks:
-#      - backend
