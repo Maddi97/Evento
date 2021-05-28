@@ -14,3 +14,9 @@
 #map {
   height: 100%;
 }
+
+.input-line {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

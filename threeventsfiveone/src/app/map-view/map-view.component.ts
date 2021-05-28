@@ -1,5 +1,7 @@
 import {AfterViewInit, Component, OnChanges, OnInit, Input} from '@angular/core';
 import * as L from 'leaflet';
+import {NominatimGeoService} from "../nominatim-geo.service";
+import { startWith, map, share, catchError } from 'rxjs/operators';
 
 
 @Component({
@@ -12,9 +14,16 @@ export class MapViewComponent implements OnInit, OnChanges {
   private map;
   private markerGroup
   private iconDefault
+  private positionIcon
 
-  constructor() {
-  }
+  private current_position
+  // private default_center_position = [51.33962, 12.37129]
+  private default_center_position = [40.7142700, -74.0059700]
+
+
+  constructor(
+    private geoService: NominatimGeoService
+  ) {}
 
   ngOnInit(): void {
     const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -31,7 +40,51 @@ export class MapViewComponent implements OnInit, OnChanges {
       shadowSize: [30, 30]
     });
 
+    this.positionIcon = L.icon({
+
+    })
+
     L.Marker.prototype.options.icon = this.iconDefault;
+  }
+
+  sanitizeInput(value) {
+    // ToDo sanitize input
+    return value
+  }
+
+  resetCenter(geoArray) {
+    if (geoArray[0] !== undefined) {
+      this.map.panTo(new L.LatLng(geoArray[0], geoArray[1]))
+    }
+    else {
+      this.map.panTo((new L.LatLng(this.default_center_position[0], this.default_center_position[1])))
+    }
+  }
+
+  searchForLocationInput(address) {
+    address = this.sanitizeInput(address)
+
+    console.log('map_view: ' + address)
+
+    let searched_center = []
+
+    this.geoService.get_geo_data_address(address).pipe(
+      map(geo_data => {
+        searched_center = [geo_data[0].lat, geo_data[0].lon]
+      }),share())
+
+    console.log(searched_center[0])
+    this.resetCenter(searched_center)
+  }
+
+  getCurrentPosition() {
+    console.log('test')
+    navigator.geolocation.getCurrentPosition(position => {
+      const { latitude, longitude } = position.coords;
+      this.current_position = [latitude, longitude]
+
+      this.resetCenter(this.current_position)
+    });
   }
 
   ngOnChanges(): void {
@@ -49,7 +102,7 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private initMap(): void {
     this.map = L.map('map', {
-      center: [51.33962, 12.37129],
+      center: this.default_center_position,
       zoom: 11
     });
 
