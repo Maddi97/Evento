@@ -29,12 +29,12 @@ export class NominatimGeoService {
 
   get_geo_data_address(address) {
     console.log('geo_service: ' + address)
+    console.log('url: ' + this.ROOT_URL + address + '&limit=2&format=json')
     return this.http.get(this.ROOT_URL + address + '&limit=2&format=json').pipe(
       take(1),
       map(geo_data => {
         if (Object.keys(geo_data).length < 1)
           throw console.error(("No coordinates found to given adress"));
-        console.log(geo_data)
         return geo_data
       }),
     )

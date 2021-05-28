@@ -53,6 +53,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   resetCenter(geoArray) {
+    console.log(geoArray)
     if (geoArray[0] !== undefined) {
       this.map.panTo(new L.LatLng(geoArray[0], geoArray[1]))
     }
@@ -64,21 +65,14 @@ export class MapViewComponent implements OnInit, OnChanges {
   searchForLocationInput(address) {
     address = this.sanitizeInput(address)
 
-    console.log('map_view: ' + address)
-
-    let searched_center = []
-
-    this.geoService.get_geo_data_address(address).pipe(
-      map(geo_data => {
-        searched_center = [geo_data[0].lat, geo_data[0].lon]
-      }),share())
-
-    console.log(searched_center[0])
-    this.resetCenter(searched_center)
+    this.geoService.get_geo_data_address(address).subscribe(
+      geo_data => {
+        let searched_center = [geo_data[0].lat, geo_data[0].lon]
+        this.resetCenter(searched_center)
+      })
   }
 
   getCurrentPosition() {
-    console.log('test')
     navigator.geolocation.getCurrentPosition(position => {
       const { latitude, longitude } = position.coords;
       this.current_position = [latitude, longitude]
