@@ -21,8 +21,16 @@
         </div>
       </div>
       <div *ngIf="isDropdown" fxLayout="column" style="margin-bottom: .5rem;">
-        Entfernung
-        <mat-slider style="padding-top: 0;"></mat-slider>
+        Entfernung (in km)
+        <mat-slider
+          thumbLabel
+          min="1"
+          max="100"
+          step="1"
+          [(ngModel)]="eventRange"
+          style="padding-top: 0;"
+          (input)="searchForDistance($event)">
+        </mat-slider>
         Kategorien
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
                     <span class="category" [ngClass]="isElementPicked(category)" (click)="searchForCategory(category)">

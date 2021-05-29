@@ -1,8 +1,6 @@
-import {AfterViewInit, Component, OnChanges, OnInit, Input} from '@angular/core';
+import {Component, OnChanges, OnInit, Input} from '@angular/core';
 import * as L from 'leaflet';
-import {NominatimGeoService} from "../nominatim-geo.service";
-import { startWith, map, share, catchError } from 'rxjs/operators';
-
+import {PositionService} from "./position.service";
 
 @Component({
   selector: 'map-view',
@@ -16,15 +14,11 @@ export class MapViewComponent implements OnInit, OnChanges {
   private iconDefault
   private positionIcon
   address = "Address"
-  searched_center = []
 
-  private current_position
-  // private default_center_position = [51.33962, 12.37129]
-  private default_center_position = [40.7142700, -74.0059700]
-
+  current_position = []
 
   constructor(
-    private geoService: NominatimGeoService
+    private positionService: PositionService
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +40,9 @@ export class MapViewComponent implements OnInit, OnChanges {
 
     })
 
+    this.current_position = this.positionService.getDefaultLocation()
+    console.log(this.current_position)
+
     L.Marker.prototype.options.icon = this.iconDefault;
   }
 
@@ -54,43 +51,32 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   resetCenter() {
-    if (this.searched_center.length === 2) {
-      this.map.panTo(new L.LatLng(this.searched_center[0], this.searched_center[1]))
-      this.searched_center = []
-    }
-    else {
-      this.map.panTo((new L.LatLng(this.default_center_position[0], this.default_center_position[1])))
-    }
+    this.current_position = this.positionService.getCurrentPosition()
+    this.map.panTo((new L.LatLng(this.current_position[0], this.current_position[1])))
   }
 
   searchForLocationInput() {
     let address = this.sanitizeInput(this.address)
 
-    const promise = new Promise((resolve) => {
-      this.geoService.get_geo_data_address(address).subscribe(
-        geo_data => {
-          // Resets Center to default value if no geo coordinates where found
-          // ToDo Check fo 'no address' error
-          if (geo_data[0] === undefined) {
-            resolve()
-          }
-          else {
-            this.searched_center = [geo_data[0].lat, geo_data[0].lon]
-            resolve()
-          }
-        })
-    });
-
-    promise.then(() => this.resetCenter())
+    this.positionService.getPositionByInput(address).toPromise().then(() => {
+      this.resetCenter()
+    })
   }
 
   getCurrentPosition() {
-    navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords;
-      this.searched_center = [latitude, longitude]
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        this.positionService.searched_center = [latitude, longitude];
+        this.resetCenter()
+      },
+      positionError => {
+        throw new Error('No Location Could be Found.')
+      });
 
-      this.resetCenter()
-    });
+    // ToDo how can i wait for this call????
+    this.positionService.getPositionByLocation()
+    this.resetCenter()
   }
 
   ngOnChanges(): void {
@@ -99,7 +85,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     }
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
     tiles.addTo(this.map);
 
@@ -107,8 +93,11 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private initMap(): void {
+    if (this.current_position.length === 0) {
+      this.current_position = this.positionService.getCurrentPosition()
+    }
     this.map = L.map('map', {
-      center: this.default_center_position,
+      center: this.current_position,
       zoom: 11
     });
 

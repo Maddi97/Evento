@@ -35,7 +35,6 @@ import { CommonUtilitiesModule } from './common-utilities/common-utilities.modul
     CategoriesModule,
     SettingsModule,
     CommonUtilitiesModule,
-
   ],
   providers: [],
   bootstrap: [AppComponent]

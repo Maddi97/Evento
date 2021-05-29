@@ -3,6 +3,9 @@ import { EventService } from './event.service';
 import { Event } from '../models/event';
 import { CategoriesService } from '../categories/categories.service';
 import { Category } from '../models/category';
+import {MatSliderChange} from "@angular/material/slider";
+import {PositionService} from "../map-view/position.service";
+import {NominatimGeoService} from "../nominatim-geo.service";
 
 @Component({
   selector: 'vents-events',
@@ -15,16 +18,21 @@ export class EventsComponent implements OnInit {
 
   mapView = false;
 
+  eventRange = 10
+
   eventList: Event[] = [];
   filteredList: Event[] = [];
   filteredCategories = [];
 
   categoryList: Category[] = [];
 
+  current_position = []
+
   constructor(
     private eventService: EventService,
     private categoriesService: CategoriesService,
-
+    private positionService: PositionService,
+    private geoService: NominatimGeoService
   ) { }
 
   ngOnInit(): void {
@@ -41,6 +49,15 @@ export class EventsComponent implements OnInit {
         this.categoriesService.getAllCategories();
       }
     });
+    this.positionService.position.subscribe( (pos: Array<any>) => {
+      this.current_position = pos;
+      if (pos.length === 0) {
+        this.positionService.getCurrentPosition()
+      }
+    })
+
+    // ToDo
+    console.log(this.current_position)
   }
 
   formatLabel(value: number) {
@@ -64,6 +81,33 @@ export class EventsComponent implements OnInit {
   searchForCategory(cat: Category) {
     this.filteredList = this.filteredList.filter(f => f.category._id === cat._id);
     this.filteredCategories.push(cat._id)
+  }
+
+  searchForDistance(event: MatSliderChange) {
+    // ToDo -> at event creation update coordinates! -> backend geo-data -> attach to event?
+    this.filteredList.forEach( event => {
+      // if (event.adress.longitude === undefined) {
+      //   let promise = this.geoService.get_geo_data(event.adress.city, event.adress.street, event.adress.streetNumber).pipe(
+      //     map( data => {
+      //       event.adress.longitude = data[1]
+      //       event.adress.longitude = data[0]
+      //     }
+      //   )).toPromise()
+      //  promise.then(() => {this.geoService.get_distance(this.current_position, [event.adress.latitude, event.adress.longitude])})
+      // }
+      // else {
+      if (event.adress.longitude !== undefined) {
+        this.geoService.get_distance(this.current_position, [event.adress.latitude, event.adress.longitude])
+      }
+      else {
+        console.log('hm')
+      }
+    })
+
+
+    this.eventRange = event.value
+    console.log('event_range: ' + this.eventRange)
+    console.log(event.value)
   }
 
   isElementPicked(cat: Category) {

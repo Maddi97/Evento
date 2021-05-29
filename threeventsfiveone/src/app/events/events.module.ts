@@ -16,20 +16,20 @@ import {FormsModule} from "@angular/forms";
     EventsComponent,
     MapViewComponent
   ],
-    imports: [
-        AppRoutingModule,
-        CommonModule,
-        CommonUtilitiesModule,
-        /**
-         * Flex
-         */
-        FlexLayoutModule,
+  imports: [
+    AppRoutingModule,
+    CommonModule,
+    CommonUtilitiesModule,
+    /**
+     * Flex
+     */
+    FlexLayoutModule,
 
-        /**
-         * Material Imports
-         */
-        MatIconModule,
-        MatSliderModule,
+    /**
+     * Material Imports
+     */
+    MatIconModule,
+    MatSliderModule,
 
 
         HttpClientModule,
