@@ -15,6 +15,8 @@ export class MapViewComponent implements OnInit, OnChanges {
   private markerGroup
   private iconDefault
   private positionIcon
+  address = "Address"
+  searched_center = []
 
   private current_position
   // private default_center_position = [51.33962, 12.37129]
@@ -48,36 +50,46 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   sanitizeInput(value) {
-    // ToDo sanitize input
-    return value
+    return value.replace(/ /g, '+')
   }
 
-  resetCenter(geoArray) {
-    console.log(geoArray)
-    if (geoArray[0] !== undefined) {
-      this.map.panTo(new L.LatLng(geoArray[0], geoArray[1]))
+  resetCenter() {
+    if (this.searched_center.length === 2) {
+      this.map.panTo(new L.LatLng(this.searched_center[0], this.searched_center[1]))
+      this.searched_center = []
     }
     else {
       this.map.panTo((new L.LatLng(this.default_center_position[0], this.default_center_position[1])))
     }
   }
 
-  searchForLocationInput(address) {
-    address = this.sanitizeInput(address)
+  searchForLocationInput() {
+    let address = this.sanitizeInput(this.address)
 
-    this.geoService.get_geo_data_address(address).subscribe(
-      geo_data => {
-        let searched_center = [geo_data[0].lat, geo_data[0].lon]
-        this.resetCenter(searched_center)
-      })
+    const promise = new Promise((resolve) => {
+      this.geoService.get_geo_data_address(address).subscribe(
+        geo_data => {
+          // Resets Center to default value if no geo coordinates where found
+          // ToDo Check fo 'no address' error
+          if (geo_data[0] === undefined) {
+            resolve()
+          }
+          else {
+            this.searched_center = [geo_data[0].lat, geo_data[0].lon]
+            resolve()
+          }
+        })
+    });
+
+    promise.then(() => this.resetCenter())
   }
 
   getCurrentPosition() {
     navigator.geolocation.getCurrentPosition(position => {
       const { latitude, longitude } = position.coords;
-      this.current_position = [latitude, longitude]
+      this.searched_center = [latitude, longitude]
 
-      this.resetCenter(this.current_position)
+      this.resetCenter()
     });
   }
 

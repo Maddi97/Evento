@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
 import { HttpClientModule } from "@angular/common/http";
 import {MapViewComponent} from "../map-view/map-view.component";
+import {FormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import {MapViewComponent} from "../map-view/map-view.component";
 
 
         HttpClientModule,
+        FormsModule,
     ]
 })
 export class EventsModule { }

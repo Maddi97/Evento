@@ -1,8 +1,8 @@
 <div class="map-container">
   <div class="input-line">
     <div>
-      <input type="text" id="address" name="address" #address>
-      <button (click)="searchForLocationInput(address.value)">Go!</button>
+      <input class="address-input" [(ngModel)]="address">
+      <button class="address-search" (click)="searchForLocationInput()">Go!</button>
     </div>
     <div>
     <span class="material-icons" (click)="getCurrentPosition()">
