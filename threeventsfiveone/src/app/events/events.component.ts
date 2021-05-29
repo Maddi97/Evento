@@ -17,6 +17,7 @@ export class EventsComponent implements OnInit {
 
   eventList: Event[] = [];
   filteredList: Event[] = [];
+  filteredCategories = [];
 
   categoryList: Category[] = [];
 
@@ -62,23 +63,21 @@ export class EventsComponent implements OnInit {
 
   searchForCategory(cat: Category) {
     this.filteredList = this.filteredList.filter(f => f.category._id === cat._id);
+    this.filteredCategories.push(cat._id)
   }
 
   isElementPicked(cat: Category) {
-    console.log(cat._id)
-    this.filteredList.forEach(event => {
-      if (event.category._id === cat._id) {
-        console.log('wtf')
-        return true
-        console.log('lulzo')
-      }
-    })
-
-    return false
+    if (this.filteredCategories.includes(cat._id)) {
+      return 'category-picked'
+    }
+    else {
+      return 'category-non-picked'
+    }
   }
 
   clearFilter() {
     this.filteredList = this.eventList;
+    this.filteredCategories = []
   }
 
   changeToMapView() {

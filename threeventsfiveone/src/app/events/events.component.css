@@ -13,14 +13,14 @@
     margin: 0rem .2rem .2rem 0rem;
 }
 
-.categoryNonPicked {
-  background-color: rgb(255, 0, 0);
+.category-non-picked {
+  background-color: rgb(255, 102, 102);
 }
 
-.categoryPicked {
-  background-color: rgb(0, 255, 0);
+.category-picked {
+  background-color: rgb(153, 255, 153);
 }
 
-.categoryYellow {
+.category-yellow {
   background-color: rgb(245, 241, 0);
 }
