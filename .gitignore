@@ -1,3 +1,14 @@
 /**/node_modules/
 /**/package-lock.json
 .idea
+.env.prod
+
+#Include Only Important Configuration For Reverse-Proxy
+letsencrypt/*
+!letsencrypt/config/
+letsencrypt/config/*
+!letsencrypt/config/nginx/
+letsencrypt/config/nginx/*
+!letsencrypt/config/nginx/proxy-confs/
+letsencrypt/config/nginx/proxy-confs/*
+!letsencrypt/config/nginx/proxy-confs/*.conf

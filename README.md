@@ -13,13 +13,13 @@ There are four components:
 To start the tech stack with docker run the following command:
 
 ```shell
-docker-compose -f docker-compose-prod.yml up -d --build
+docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build
 ```
 
 If the containers have already been built one can just run:
 
 ```shell
-docker-compose -f docker-compose-prod.yml up -d
+docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d
 ```
 
 For now the techstack only supports http. 
