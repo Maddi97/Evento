@@ -17,6 +17,4 @@ RUN npm install --save-dev @angular-devkit/build-angular --legacy-peer-deps
 
 COPY . /app
 
-RUN ng update --all --force
-
 CMD ng serve --host 0.0.0.0 --prod=false

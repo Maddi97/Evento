@@ -19,7 +19,7 @@ services:
     ports:
       - 81:80
     volumes:
-      - ./insertApp/insert-app:/app
+      - ./insertApp:/app
       - /app/node_modules
 
   backend:
