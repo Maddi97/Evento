@@ -5,6 +5,8 @@ import { CategoryService } from 'src/app/category.service';
 import { Category } from 'src/app/models/category';
 import { FileUploadService } from 'src/app/file-upload.service';
 import { map, share } from 'rxjs/operators';
+import { DomSanitizer } from '@angular/platform-browser';
+
 
 
 @Component({
@@ -21,12 +23,14 @@ export class CategoryViewComponent implements OnInit {
   image: File
   choosen:boolean
   uploaded_file:any
+  imageBlobUrl: any
 
 
 
   constructor(
     private categoryService: CategoryService,
-    private fileService: FileUploadService
+    private fileService: FileUploadService,
+    private sanitizer: DomSanitizer
   ) { }
 
 
@@ -44,19 +48,23 @@ export class CategoryViewComponent implements OnInit {
         map(cat_res => {
 
             category = cat_res
-            let file_path = 'category_images/' + cat_res._id 
+            let file_path = 'category_images/' + cat_res._id
             const formdata: FormData = new FormData();
             formdata.append('file', this.image);
             formdata.append('file_path', file_path)
             this.fileService.uploadFile(formdata).subscribe((res)=> {
-            this.uploaded_file = res  
+              this.fileService.downloadFile( res.path ).subscribe(res => {
+                const unsafeImg = URL.createObjectURL(res);
+                this.uploaded_file = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+                console.log(this.uploaded_file)
+              })
             category.icon = res.path
             this.categoryService.updateCategory(category._id, category).subscribe(x => console.log(x))
-                          
+
           })
         }),
         share()
-        ).toPromise().then() 
+        ).toPromise().then()
       }
       else{
           console.error("No image uploaded, but its necesarry for a category!")

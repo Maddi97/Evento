@@ -4,7 +4,7 @@ var express = require("express");
 var router = express.Router();
 const multer = require('multer');
 const fs = require('fs')
-
+const path = require('path')
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb){
@@ -13,12 +13,21 @@ const storage = multer.diskStorage({
     cb(null, path);
   },
   filename: function(req, file, cb) {
-    cb(
-      null,
-      `${crypto.randomBytes(10).toString("hex")}_${Date.now()}_${
-        file.originalname
-      }`
-    );
+      if(!file.originalname.match(/\.(png|jpg|jpeg)$/)){
+          var err = new Error()
+          err.code = 'filetype';
+          return cb(err)
+
+      }
+      else
+      {
+          cb(
+              null,
+              `${crypto.randomBytes(10).toString("hex")}_${Date.now()}_${
+                  file.originalname
+              }`
+          );
+      }
   }
 })
 
@@ -45,5 +54,10 @@ router.post('/uploadFile', upload.single('file'), function (req, res, next) {
       );
 
   });  
+
+router.post('/downloadFile', function (req, res, next) {
+    dest = req.body.path
+    res.download(dest)
+})
 
 module.exports = router;

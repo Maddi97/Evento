@@ -13,11 +13,15 @@ export class WebService {
 
    get(uri: string) {
      return this.http.get(`${this.ROOT_URL}/${uri}`)
-   } 
+   }
 
    post(uri: string, payload: Object) {
     console.log(payload)
     return this.http.post(`${this.ROOT_URL}/${uri}`, payload)
+  }
+  get_file(uri: string, payload: Object) {
+    console.log(payload)
+    return this.http.post(`${this.ROOT_URL}/${uri}`, payload, { responseType: 'blob' })
   }
 
   put(uri: string, payload: Object) {
