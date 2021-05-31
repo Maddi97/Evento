@@ -16,7 +16,7 @@ export class NominatimGeoService {
     this.ROOT_URL = "https://nominatim.openstreetmap.org/search?q=";
     this.URL_END = '&limit=2&format=json'
     this.osm_api_url_start = "http://router.project-osrm.org/route/v1/foot/"
-    this.osm_api_url_end = "[.json]"
+    this.osm_api_url_end = ".json"
   }
 
   get_geo_data(city, street, streetNumber) {
@@ -45,7 +45,7 @@ export class NominatimGeoService {
   get_distance(start_position, end_position) {
     return this.http.get(this.osm_api_url_start + start_position[1] + "," + start_position[0] + ";" + end_position[1] + "," + end_position[0] + this.osm_api_url_end).pipe(
       map( object => {
-        console.log(object)
+        return object
       })
     )
   }

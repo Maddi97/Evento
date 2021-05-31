@@ -64,19 +64,9 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   getCurrentPosition() {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        this.positionService.searched_center = [latitude, longitude];
-        this.resetCenter()
-      },
-      positionError => {
-        throw new Error('No Location Could be Found.')
-      });
-
-    // ToDo how can i wait for this call????
-    this.positionService.getPositionByLocation()
-    this.resetCenter()
+    this.positionService.getPositionByLocation().then(() => {
+      this.resetCenter()
+    })
   }
 
   ngOnChanges(): void {

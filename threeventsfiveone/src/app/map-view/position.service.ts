@@ -48,7 +48,17 @@ export class PositionService {
   }
 
   getPositionByLocation() {
-    // ToDO -> see map-view.component.ts
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const {latitude, longitude} = position.coords;
+          this.searched_center = [latitude, longitude];
+          resolve()
+        },
+        positionError => {
+          reject()
+        });
+    })
   }
 
 }

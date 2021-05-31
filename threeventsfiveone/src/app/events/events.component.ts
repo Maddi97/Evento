@@ -6,6 +6,9 @@ import { Category } from '../models/category';
 import {MatSliderChange} from "@angular/material/slider";
 import {PositionService} from "../map-view/position.service";
 import {NominatimGeoService} from "../nominatim-geo.service";
+import {map} from "rxjs/operators";
+import {async} from "@angular/core/testing";
+import {valueReferenceToExpression} from "@angular/compiler-cli/src/ngtsc/annotations/src/util";
 
 @Component({
   selector: 'vents-events',
@@ -83,31 +86,33 @@ export class EventsComponent implements OnInit {
     this.filteredCategories.push(cat._id)
   }
 
-  searchForDistance(event: MatSliderChange) {
-    // ToDo -> at event creation update coordinates! -> backend geo-data -> attach to event?
-    this.filteredList.forEach( event => {
-      // if (event.adress.longitude === undefined) {
-      //   let promise = this.geoService.get_geo_data(event.adress.city, event.adress.street, event.adress.streetNumber).pipe(
-      //     map( data => {
-      //       event.adress.longitude = data[1]
-      //       event.adress.longitude = data[0]
-      //     }
-      //   )).toPromise()
-      //  promise.then(() => {this.geoService.get_distance(this.current_position, [event.adress.latitude, event.adress.longitude])})
-      // }
-      // else {
-      if (event.adress.longitude !== undefined) {
-        this.geoService.get_distance(this.current_position, [event.adress.latitude, event.adress.longitude])
-      }
-      else {
-        console.log('hm')
-      }
+  searchForDistance(sliderEvent: MatSliderChange) {
+    // this.filteredList = this.filteredList.filter( event => {
+    //   if (event.geo_data === undefined) {
+    //     // ToDo wait with distance for this call
+    //     // ToDo can probably never happen, as all events need a position
+    //     // this.geoService.get_geo_data(event.adress.city, event.adress.street, event.adress.streetNumber).pipe(
+    //     //   map( data => {
+    //     //     event.geo_data.lat = data[0].lat
+    //     //     event.geo_data.lon = data[0].lon
+    //     //   })
+    //     // )
+    //     return false
+    //   }
+    //
+    //   let filtered
+
+    console.log(this.filteredList)
+    this.filteredList.forEach(event => {
+      this.geoService.get_distance(this.positionService.getCurrentPosition(), [event.geo_data.lat, event.geo_data.lon]).subscribe(map(
+        distance_object => {
+          console.log(distance_object)
+          this.filteredList = this.filteredList.filter(filterEvent => (filterEvent === event && distance_object.routes[0].distance / 1000 < sliderEvent.value))
+        }))
     })
-
-
-    this.eventRange = event.value
-    console.log('event_range: ' + this.eventRange)
-    console.log(event.value)
+      // console.log(filtered)
+      // return filtered
+    // })
   }
 
   isElementPicked(cat: Category) {
