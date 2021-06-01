@@ -7,12 +7,12 @@
           <mat-label>Add Category</mat-label>
           <input matInput #target required="true" [formControl]="categoryName" (keydown.enter)="addNewCategory(); target.value = ''">
         </mat-form-field>
-        <span class='col'><input type='file' (input)=fileChoosen($event)></span>
-        <button class='btn btn-warning' (click)="submitPhoto()">Submit</button>
+        <span class='col'><input type='file' (input)=fileChosen($event)></span>
+        <button class='btn btn-warning' (click)="addNewCategory()">Submit</button>
       </div>
-      <div *ngIf='uploaded_file'>
-      <div>{{uploaded_file.path}}</div>
-        <img style='width: 200px; height: 100px'[src]='uploaded_file'>
+      <div *ngIf='uploadedFile'>
+      <div>{{uploadedFile.path}}</div>
+        <img style='width: 200px; height: 100px'[src]='uploadedFile'>
      </div>
     </div>
 
@@ -24,6 +24,7 @@
           <mat-panel-title>
             {{category.name}}
           </mat-panel-title>
+          <img [src]="downloadImage(category._id)" >
           <div (click)="deleteCategory(category)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;margin-right: 1em;"fxLayoutAlign="center center">
             Delete
         </div>
@@ -45,7 +46,6 @@
             </div>
         </div>
       </div>
-
       </mat-expansion-panel>
     </div>
 

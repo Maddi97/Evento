@@ -58,7 +58,6 @@ export class CategoryService {
           return observableThrowError(error.error.message || error);
         }),
         share());
-  
       obs.toPromise().then(
         (response: Category) => {
           const tempCat = this._categories.getValue();

@@ -5,7 +5,7 @@ const CategorySchema = new mongoose.Schema({
         type: String,
         minlength: 3
     },
-    icon:{
+    iconPath: {
         type: String,
     },
     subcategories: [String]
