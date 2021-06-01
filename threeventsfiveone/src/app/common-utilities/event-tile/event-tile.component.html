@@ -1,0 +1,21 @@
+<div class="event-tile" fxLayout="row">
+    <div class="event-pic" fxLayoutAlign="center center">
+        
+    </div>
+    <div fxLayout="column" style="width: 75%;">
+        <div fxLayout="row" style="width: 100%;">
+            <div style="width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                {{ event?.name }}
+            </div>
+            <div fxLayoutAlign="end end" class="date">
+                {{ event?.date | date }}
+            </div>
+        </div>
+        <div fxLayoutAlign="start start">
+            name
+        </div>
+        <div classs="category">
+            {{ event?.category?.name }}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+.icon {
+    font-size: 3rem; 
+    height: 3rem; 
+    width: 3rem;
+}
+
+.category {
+    background-color: rgb(245, 241, 0);
+    border-radius: 7px;
+    padding: 3px 5px 3px 5px; 
+    width:fit-content; 
+    font-size: 1.2rem;
+    margin: 0rem .2rem .2rem 0rem;
+}

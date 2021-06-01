@@ -1,0 +1,41 @@
+<div class="event-tile" fxLayout="column" fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%">
+    <div fxLayout="row">
+        <div class="event-pic" fxLayoutAlign="center center">
+            <img class="pic" src="assets/test-pictures/test.png">
+        </div>
+        <div fxLayout="column" style="width: 95%;">
+            <div fxLayout="row" style="padding-top: .5rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 100%;">
+                <span>
+                    {{event?.name}}
+                </span>
+                <div fxLayoutAlign="end end" class="date">
+                    {{ event?.date | date }}
+                </div>
+            </div>
+            <div fxLayoutAlign="start start">
+                {{ event?._organizerId}}
+            </div>
+            <div class="category">
+                {{ event?.category.name}}
+            </div>
+        </div>
+    </div>
+    <div fxLayoutAlign="center center">
+        <div style="width: 95%">
+            Adresse:
+            <br/>
+            {{event?.adress?.street}} {{event?.adress?.streetNumber}}
+            <br/>
+            {{event?.adress?.plz}} {{event?.adress?.city}}
+
+        </div>
+    </div>
+    <div fxLayoutAlign="center center">
+        <div class="description">
+            Kurze Beschreibung:
+            <p>
+                {{event?.description}}
+            </p>
+        </div>
+    </div>
+</div>

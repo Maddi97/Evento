@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { EventService } from './event.service';
+import { Event } from '../models/event';
+import { CategoriesService } from '../categories/categories.service';
+import { Category } from '../models/category';
 
 @Component({
   selector: 'vents-events',
@@ -7,9 +11,63 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EventsComponent implements OnInit {
 
-  constructor() { }
+  public isDropdown = false;
+
+  eventList: Event[] = [];
+  filteredList: Event[] = [];
+
+  categoryList: Category[] = [];
+
+  constructor(
+    private eventService: EventService,
+    private categoriesService: CategoriesService,
+
+  ) { }
 
   ngOnInit(): void {
+    this.eventService.events.subscribe((ev: Event[]) => {
+      this.eventList = ev;
+      this.filteredList = this.eventList;
+      if (ev.length === 0) {
+        this.eventService.getAllEvents();
+      }
+    });
+    this.categoriesService.categories.subscribe((cat: Category[]) => {
+      this.categoryList = cat;
+      if (cat.length === 0) {
+        this.categoriesService.getAllCategories();
+      }
+    });
   }
 
+  formatLabel(value: number) {
+    if (value >= 1) {
+      return  value / 10 + 'km';
+    }
+
+    return value;
+  }
+
+  searchForDay(filter: DateClicked) {
+    console.log(filter);
+    if (filter.isClicked) {
+      this.filteredList = this.filteredList
+      .filter(f => (new Date(f.date).getDay() === filter.date.getDay() && new Date(f.date).getMonth() === filter.date.getMonth()));
+    } else {
+      this.filteredList = this.eventList;
+    }
+  }
+
+  searchForCategory(cat: Category) {
+    this.filteredList = this.filteredList.filter(f => f.category._id === cat._id);
+  }
+
+  clearFilter() {
+    this.filteredList = this.eventList;
+  }
+}
+
+class DateClicked {
+  date: Date;
+  isClicked: boolean;
 }
