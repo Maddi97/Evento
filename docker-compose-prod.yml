@@ -51,7 +51,6 @@ services:
       - ./letsencrypt/config:/config
     ports:
       - 443:443
-      - 80:80
     environment:
       - PUID=1000
       - PGID=1000
