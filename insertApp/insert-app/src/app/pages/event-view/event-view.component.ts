@@ -19,8 +19,8 @@ import { Observable, throwError as observableThrowError, BehaviorSubject } from 
 })
 export class EventViewComponent implements OnInit {
 
-  updateOrganizerId: string  = '';
-  updateEventId: string = '';
+  updateOrganizerId  = '';
+  updateEventId = '';
 
 
   eventForm = this.fb.group({
@@ -44,13 +44,13 @@ export class EventViewComponent implements OnInit {
 
 
   times = {
-    start: new FormControl("00:00"),
-    end: new FormControl("00:00")
+    start: new FormControl('00:00'),
+    end: new FormControl('00:00')
   }
 
   geo_data = {
-    lat:  "",
-    lon: ""
+    lat: '',
+    lon: ''
   }
 
   organizerName = new FormControl();
@@ -121,7 +121,7 @@ export class EventViewComponent implements OnInit {
     // first fetch geo data from osm API and than complete event data type and send to backend
     this.geoService.get_geo_data(adress.city, adress.street, adress.streetNumber).pipe(
       map(geo_data => {
-      
+
       event.geo_data.lat = geo_data[0].lat;
       event.geo_data.lon = geo_data[0].lon;
       }),
@@ -130,8 +130,8 @@ export class EventViewComponent implements OnInit {
         this.eventService.createEvent(event).subscribe(event_response => console.log(event_response))
       )
 
-    
-    
+
+
 
     // geo_data is observable
     console.log(event)
@@ -142,10 +142,10 @@ export class EventViewComponent implements OnInit {
 
 
   insertOrgInfo(org: Organizer) {
+      console.log(org)
     this.eventForm.get('plz').setValue(org.adress.plz);
     this.eventForm.get('city').setValue(org.adress.city);
-    this.eventForm.get('street').setValue(org.adress.street);
-    this.eventForm.get('streetNumber').setValue(org.adress.streetNumber);
+    this.eventForm.get('street').setValue(org.adress.street + ' ' + org.adress.streetNumber);
   }
 
   nullFormField() {
@@ -162,7 +162,7 @@ export class EventViewComponent implements OnInit {
       link: '',
       price: ''
     })
-    this.category = {_id: '', name:'', subcategories: ['']}
+    this.category = new Category()
     this.date.setValue(new Date())
     this.times.start.setValue('00:00')
     this.times.end.setValue('00:00')
@@ -183,7 +183,7 @@ export class EventViewComponent implements OnInit {
   }
 
   setDate(value){
-    let date = new Date(value)
+    const date = new Date(value)
     this.date.setValue(date);
   }
 
@@ -254,9 +254,9 @@ export class EventViewComponent implements OnInit {
           this.organizerService.updateOrganizer(organizer._id, organizer)
         }
       )
-    
 
-    
+
+
     this.nullFormField();
     }
 
@@ -270,36 +270,36 @@ export class EventViewComponent implements OnInit {
   }
 
  timeSince(date) {
-  
-  var seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
 
-  var interval = seconds / 31536000;
+  const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+
+  let interval = seconds / 31536000;
 
   if (interval > 1) {
-    return Math.floor(interval) + " years";
+    return Math.floor(interval) + ' years';
   }
   interval = seconds / 2592000;
   if (interval > 1) {
-    return Math.floor(interval) + " months";
+    return Math.floor(interval) + ' months';
   }
   interval = seconds / 86400;
   if (interval > 1) {
-    return Math.floor(interval) + " days";
+    return Math.floor(interval) + ' days';
   }
   interval = seconds / 3600;
   if (interval > 1) {
-    return Math.floor(interval) + " hours";
+    return Math.floor(interval) + ' hours';
   }
   interval = seconds / 60;
   if (interval > 1) {
-    return Math.floor(interval) + " minutes";
+    return Math.floor(interval) + ' minutes';
   }
-  return Math.floor(seconds) + " seconds";
+  return Math.floor(seconds) + ' seconds';
 }
 
 timeSinceInteger(date){
-  var seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
-  var interval = seconds / 86400;
+  const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+  const interval = seconds / 86400;
   return interval
 }
 

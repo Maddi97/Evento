@@ -1,3 +1,5 @@
 backend/node_modules/
+backend/category_images/
+.idea/
 /**/package-lock.json
-.idea
+
