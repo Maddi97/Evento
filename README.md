@@ -32,13 +32,13 @@ Then the nginx config has to be updated.
 For the local development the tech stack can be started with:
 
 ```shell
-docker-compose -f docker-compose-dev.yml up -d --build
+docker-compose -f docker-compose-dev.yml up --build
 ```
 
 Also, if the containers have been built use:
 
 ```shell
-docker-compose -f docker-compose-dev.yml up -d
+docker-compose -f docker-compose-dev.yml up
 ```
 
 Here only http is supported.
