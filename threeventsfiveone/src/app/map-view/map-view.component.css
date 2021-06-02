@@ -1,0 +1,31 @@
+.map-container {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50vh;
+}
+
+.map-frame {
+  border: 2px solid black;
+  height: 100%;
+}
+
+#map {
+  height: 100%;
+}
+
+.input-line {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.address-input {
+  margin-bottom: 5px;
+}
+
+.address-search {
+  margin-left: 5px;
+  margin-bottom: 5px;
+}

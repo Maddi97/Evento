@@ -9,7 +9,7 @@ import { Event } from './models/event';
 })
 export class NominatimGeoService {
   readonly ROOT_URL;
-  
+
 
   constructor(private http: HttpClient) {
         this.ROOT_URL = "https://nominatim.openstreetmap.org/search?q=";
@@ -18,7 +18,7 @@ export class NominatimGeoService {
   get_geo_data(city, street, streetNumber){
 
          return this.http.get( this.ROOT_URL + street + '+' + streetNumber + '+,' + city + '&limit=2&format=json' ).pipe(
-          take(1),      
+          take(1),
           map(geo_data => {
                   if(Object.keys(geo_data).length < 1)
                     throw console.error(("No coordinates found to given adress"));
