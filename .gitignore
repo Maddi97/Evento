@@ -1,4 +1,5 @@
 /**/node_modules/
+backend/category_images/
 /**/package-lock.json
 .idea
 .env.prod

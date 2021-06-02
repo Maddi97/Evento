@@ -21,6 +21,10 @@ export class WebService {
     console.log(payload)
     return this.http.post(`${this.ROOT_URL}/${uri}`, payload)
   }
+  get_file(uri: string, payload: Object) {
+    console.log(payload)
+    return this.http.post(`${this.ROOT_URL}/${uri}`, payload, { responseType: 'blob' })
+  }
 
   put(uri: string, payload: Object) {
     return this.http.put(`${this.ROOT_URL}/${uri}`, payload)

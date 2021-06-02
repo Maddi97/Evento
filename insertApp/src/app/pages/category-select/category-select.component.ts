@@ -12,7 +12,7 @@ import { startWith, map } from 'rxjs/operators';
 })
 export class CategorySelectComponent implements OnInit, OnChanges {
 
-  @Input() loadedCategory: Category = {_id: '', name:'', subcategories: ['']};
+  @Input() loadedCategory: Category = new Category()
 
   @Output() newCategorySelect = new EventEmitter<Category>();
 
@@ -55,6 +55,8 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     const cat = {
       _id: this.selectedCategory._id,
       name: this.selectedCategory.name,
+      iconPath: this.selectedCategory.iconPath,
+      iconTemporaryURL: this.selectedCategory.iconTemporaryURL,
       subcategories: [],
      }
     this.newCategorySelect.emit(cat)
@@ -62,9 +64,11 @@ export class CategorySelectComponent implements OnInit, OnChanges {
 
   emitCategory(){
     const cat = {
-                 _id: this.selectedCategory._id,
-                 name: this.selectedCategory.name,
-                 subcategories: this.selectedSubcategories.value
+      _id: this.selectedCategory._id,
+      name: this.selectedCategory.name,
+      iconPath: this.selectedCategory.iconPath,
+      iconTemporaryURL: this.selectedCategory.iconTemporaryURL,
+      subcategories: this.selectedSubcategories.value
                 }
       this.newCategorySelect.emit(cat)
   }
