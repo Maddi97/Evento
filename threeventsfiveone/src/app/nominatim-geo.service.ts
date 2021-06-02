@@ -15,7 +15,7 @@ export class NominatimGeoService {
   constructor(private http: HttpClient) {
     this.ROOT_URL = "https://nominatim.openstreetmap.org/search?q=";
     this.URL_END = '&limit=2&format=json'
-    this.osm_api_url_start = "http://router.project-osrm.org/route/v1/foot/"
+    this.osm_api_url_start = "https://router.project-osrm.org/route/v1/foot/"
     this.osm_api_url_end = ".json"
   }
 

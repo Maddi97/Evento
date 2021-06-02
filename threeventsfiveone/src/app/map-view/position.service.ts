@@ -9,8 +9,6 @@ import {resolve} from "@angular/compiler-cli/src/ngtsc/file_system";
 })
 export class PositionService {
 
-  private _position: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>([])
-
   searched_center = []
 
   // Leipzig Center
@@ -22,10 +20,6 @@ export class PositionService {
   constructor(
     private geoService: NominatimGeoService
   ) {
-  }
-
-  get position(): Observable<Array<any>> {
-    return this._position
   }
 
   getCurrentPosition() {
@@ -54,9 +48,6 @@ export class PositionService {
           const {latitude, longitude} = position.coords;
           this.searched_center = [latitude, longitude];
           resolve()
-        },
-        positionError => {
-          reject()
         });
     })
   }

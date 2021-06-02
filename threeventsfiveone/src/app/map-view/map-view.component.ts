@@ -41,7 +41,6 @@ export class MapViewComponent implements OnInit, OnChanges {
     })
 
     this.current_position = this.positionService.getDefaultLocation()
-    console.log(this.current_position)
 
     L.Marker.prototype.options.icon = this.iconDefault;
   }

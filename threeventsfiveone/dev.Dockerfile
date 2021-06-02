@@ -14,7 +14,6 @@ RUN npm install
 RUN npm install -g @angular/cli@10.0.6
 
 RUN npm install --save-dev @angular-devkit/build-angular
-RUN npm install --save-dev @types/googlemaps
 
 COPY . /app
 
