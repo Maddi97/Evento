@@ -6,9 +6,6 @@ import { Category } from '../models/category';
 import {MatSliderChange} from "@angular/material/slider";
 import {PositionService} from "../map-view/position.service";
 import {NominatimGeoService} from "../nominatim-geo.service";
-import {map} from "rxjs/operators";
-import {async} from "@angular/core/testing";
-import {valueReferenceToExpression} from "@angular/compiler-cli/src/ngtsc/annotations/src/util";
 
 @Component({
   selector: 'vents-events',
@@ -27,9 +24,9 @@ export class EventsComponent implements OnInit {
   filteredList: Event[] = [];
   filteredCategories = [];
 
-  categoryList: Category[] = [];
+  filterDistanceEvents = []
 
-  current_position = []
+  categoryList: Category[] = [];
 
   constructor(
     private eventService: EventService,
@@ -52,15 +49,6 @@ export class EventsComponent implements OnInit {
         this.categoriesService.getAllCategories();
       }
     });
-    this.positionService.position.subscribe( (pos: Array<any>) => {
-      this.current_position = pos;
-      if (pos.length === 0) {
-        this.positionService.getCurrentPosition()
-      }
-    })
-
-    // ToDo
-    console.log(this.current_position)
   }
 
   formatLabel(value: number) {
@@ -72,47 +60,58 @@ export class EventsComponent implements OnInit {
   }
 
   searchForDay(filter: DateClicked) {
-    console.log(filter);
     if (filter.isClicked) {
       this.filteredList = this.filteredList
       .filter(f => (new Date(f.date).getDay() === filter.date.getDay() && new Date(f.date).getMonth() === filter.date.getMonth()));
     } else {
-      this.filteredList = this.eventList;
+      let adding_events = this.eventList.filter(event => {
+        new Date(event.date).getDay() === filter.date.getDay() && new Date(event.date).getMonth() === filter.date.getMonth()
+      })
+      this.filteredList = this.filteredList.concat(adding_events)
     }
   }
 
-  searchForCategory(cat: Category) {
-    this.filteredList = this.filteredList.filter(f => f.category._id === cat._id);
-    this.filteredCategories.push(cat._id)
+  searchForCategory(category: Category) {
+    if (!this.filteredCategories.includes(category._id)) {
+      this.filteredList = this.filteredList.filter(event => event.category._id === category._id);
+      this.filteredCategories.push(category._id)
+    }
+    else {
+      let adding_events = this.eventList.filter(event => event.category._id !== category._id)
+      this.filteredList = this.filteredList.concat(adding_events)
+      let index = this.filteredCategories.indexOf(category._id)
+      this.filteredCategories.splice(index, 1)
+    }
   }
 
   searchForDistance(sliderEvent: MatSliderChange) {
-    // this.filteredList = this.filteredList.filter( event => {
-    //   if (event.geo_data === undefined) {
-    //     // ToDo wait with distance for this call
-    //     // ToDo can probably never happen, as all events need a position
-    //     // this.geoService.get_geo_data(event.adress.city, event.adress.street, event.adress.streetNumber).pipe(
-    //     //   map( data => {
-    //     //     event.geo_data.lat = data[0].lat
-    //     //     event.geo_data.lon = data[0].lon
-    //     //   })
-    //     // )
-    //     return false
-    //   }
-    //
-    //   let filtered
 
-    console.log(this.filteredList)
-    this.filteredList.forEach(event => {
-      this.geoService.get_distance(this.positionService.getCurrentPosition(), [event.geo_data.lat, event.geo_data.lon]).subscribe(map(
-        distance_object => {
-          console.log(distance_object)
-          this.filteredList = this.filteredList.filter(filterEvent => (filterEvent === event && distance_object.routes[0].distance / 1000 < sliderEvent.value))
-        }))
+    let clone_filter_list = this.filteredList
+    clone_filter_list = clone_filter_list.concat(this.filterDistanceEvents)
+    this.filterDistanceEvents = []
+
+    const distances = {};
+    const promises = [];
+
+    clone_filter_list.forEach(event => {
+      let promise = this.geoService.get_distance(this.positionService.getCurrentPosition(), [event.geo_data.lat, event.geo_data.lon]).toPromise().then(data => {
+        let parsed_data = JSON.parse(JSON.stringify(data))
+        distances[event._id] = parsed_data.routes[0].distance / 1000
+      })
+      promises.push(promise)
     })
-      // console.log(filtered)
-      // return filtered
-    // })
+
+    Promise.all(promises).then(values => {
+      this.filteredList = clone_filter_list.filter(event => {
+        if (distances[event._id] < sliderEvent.value) {
+          return true
+        }
+        else {
+          this.filterDistanceEvents.push(event)
+          return false
+        }
+      })
+    })
   }
 
   isElementPicked(cat: Category) {
