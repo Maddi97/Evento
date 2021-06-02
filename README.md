@@ -22,9 +22,11 @@ If the containers have already been built one can just run:
 docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d
 ```
 
-For now the techstack only supports http. 
-Therefore a letsencrypt docker container has to be added to create a certificate.
-Then the nginx config has to be updated.
+Afterwards the containers are reachable from the domain:
+
+[Events](https://events.3vents51.duckdns.org)
+[Insert](https://insert.3vents51.duckdns.org)
+[Backend](https://backend.3vents51.duckdns.org)
 
 
 ## Local Development
@@ -40,5 +42,11 @@ Also, if the containers have been built use:
 ```shell
 docker-compose -f docker-compose-dev.yml up
 ```
+
+The containers are then reachable via localhost and the specific ports:
+
+[Events](http://localhost:4200)
+[Insert](http://localhost:4201)
+[Backend](http://localhost:3000)
 
 Here only http is supported.
