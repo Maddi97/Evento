@@ -5,7 +5,7 @@ services:
       dockerfile: prod.Dockerfile
     container_name: 3vents51_threeventsfiveone
     ports:
-      - 9000:80
+      - 10000:80
     volumes:
       - ./threeventsfiveone:/app
       - /app/node_modules
@@ -18,7 +18,7 @@ services:
       dockerfile: prod.Dockerfile
     container_name: 3vents51_insert-app
     ports:
-      - 9001:80
+      - 10001:80
     volumes:
       - ./insertApp:/app
       - /app/node_modules
@@ -31,7 +31,7 @@ services:
       dockerfile: prod.Dockerfile
     container_name: 3vents51_backend
     ports:
-      - 9002:3000
+      - 10002:3000
     volumes:
       - ./backend:/app
       - /app/node_modules
