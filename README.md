@@ -25,7 +25,9 @@ docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d
 Afterwards the containers are reachable from the domain:
 
 [Events](https://events.3vents51.duckdns.org)
+
 [Insert](https://insert.3vents51.duckdns.org)
+
 [Backend](https://backend.3vents51.duckdns.org)
 
 
@@ -46,7 +48,9 @@ docker-compose -f docker-compose-dev.yml up
 The containers are then reachable via localhost and the specific ports:
 
 [Events](http://localhost:4200)
+
 [Insert](http://localhost:4201)
+
 [Backend](http://localhost:3000)
 
 Here only http is supported.
