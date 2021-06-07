@@ -5,5 +5,9 @@ export class Category{
     name: string;
     iconTemporaryURL: SafeResourceUrl;
     iconPath: string;
-    subcategories: string[];
+    subcategories: Subcategory[];
+}
+
+export class Subcategory{
+    name: string;
 }

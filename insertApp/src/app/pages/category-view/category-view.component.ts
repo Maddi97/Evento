@@ -1,7 +1,7 @@
 import {Component, OnChanges, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CategoryService } from 'src/app/category.service';
-import { Category } from 'src/app/models/category';
+import {Category, Subcategory} from 'src/app/models/category';
 import { FileUploadService } from 'src/app/file-upload.service';
 import { map, share } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -23,6 +23,7 @@ export class CategoryViewComponent implements OnInit{
   chosen:boolean
   uploadedFile:any
 
+  clickedSubcategory: number;
 
 
   constructor(
@@ -40,7 +41,6 @@ export class CategoryViewComponent implements OnInit{
   addNewCategory():void {
     let category = new Category();
     category.name = this.categoryName.value;
-    console.log(category)
     if(this.image){
       this.categoryService.createCategory(category).pipe(
         map(catRes => {
@@ -68,12 +68,14 @@ export class CategoryViewComponent implements OnInit{
   }
 
   addNewSubcategory(category: Category): void {
-    category.subcategories.push(this.subcategoryName.value)
+    let subcategory = new Subcategory()
+    subcategory.name = this.subcategoryName.value
+    category.subcategories.push(subcategory)
     this.categoryService.updateCategory(category._id, category).subscribe()
   }
 
   deleteSubcategory(category: Category, subcategory: string): void {
-    category.subcategories = category.subcategories.filter(cat => cat !== subcategory )
+    category.subcategories = category.subcategories.filter(subcat => subcat.name !== subcategory )
     this.categoryService.updateCategory(category._id, category).subscribe()
   }
   fileChosen(event: any){
@@ -101,4 +103,17 @@ export class CategoryViewComponent implements OnInit{
     )
     return iconURL
   }
+  uploadNewSubcategoryIcon(){
+  return 0
+  }
+  clickSubcategory(id){
+    console.log(id, this.clickedSubcategory)
+    if(id == this.clickedSubcategory) {
+      this.clickedSubcategory = 0
+    }
+    else{
+      this.clickedSubcategory=id
+    }
+  }
+
 }
