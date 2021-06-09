@@ -33,13 +33,22 @@
         </mat-slider>
         Kategorien
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
-                    <span class="category" [ngClass]="isElementPicked(category)" (click)="searchForCategory(category)">
-                        {{ category.name }}
-                    </span>
+          <div class="category-container">
+          <span class="category" [ngClass]="isElementPicked(category)" (click)="searchForCategory(category)">
+              {{ category.name }}
+          </span>
+            <div class="subcategory-container" *ngIf="this.filteredCategories.includes(category._id) && category.subcategories.length != 0"
+                 style="padding-left: 1rem">
+              <div *ngFor="let subcategory of category.subcategories">
+                <!-- TODO Wait For Checkout https://github.com/schndrrr/3vents51/tree/insertAppBackendCreateObjectForSubcategories -->
+                <!--                      <span class="category" [ngClass]="isElementPicked()" (click)="searchForSubCategory()"></span>-->
+                <span class="subcategory">
+                {{subcategory}}
+              </span>
+              </div>
+            </div>
+          </div>
         </div>
-<!--        <div class="category category-yellow"  (click)="clearFilter()">-->
-<!--          Filter Zurücksetzen-->
-<!--        </div>-->
       </div>
       <div *ngIf="this.mapView">
         <map-view [marker_data]="this.filteredList"></map-view>

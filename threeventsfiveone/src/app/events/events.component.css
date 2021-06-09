@@ -1,16 +1,37 @@
 .icon {
-    font-size: 3rem;
-    height: 3rem;
-    width: 3rem;
+  font-size: 3rem;
+  height: 3rem;
+  width: 3rem;
+  cursor: pointer;
 }
 
 .category {
   background-color: rgb(0, 255, 0);
   border-radius: 7px;
-    padding: 3px 5px 3px 5px;
-    width:fit-content;
-    font-size: 1.2rem;
-    margin: 0rem .2rem .2rem 0rem;
+  padding: 3px 5px 3px 5px;
+  width: fit-content;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.category-container {
+  padding: .3rem;
+}
+
+.subcategory-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: .5rem;
+}
+
+.subcategory {
+  background-color: rgb(0, 255, 0);
+  border-radius: 7px;
+  padding: 3px 5px 3px 5px;
+  width: fit-content;
+  font-size: 1rem;
+  margin: 0rem .2rem .2rem 0rem;
+  cursor: pointer;
 }
 
 .category-non-picked {

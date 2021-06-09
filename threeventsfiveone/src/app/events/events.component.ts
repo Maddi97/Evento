@@ -84,6 +84,10 @@ export class EventsComponent implements OnInit {
     }
   }
 
+  searchForSubCategory(subCategory) {
+  //  TODO Wait For Model Structure Of Subcategory https://github.com/schndrrr/3vents51/tree/insertAppBackendCreateObjectForSubcategories
+  }
+
   searchForDistance(sliderEvent: MatSliderChange) {
 
     let clone_filter_list = this.filteredList
