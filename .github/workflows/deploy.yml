@@ -13,4 +13,5 @@ jobs:
       - name: Build And Start Docker Container
         env:
           duckdns_token: ${{ secrets.PI }}
-        run: docker-compose -e DUCKDNSTOKEN="$env:duckdns_token" -f docker-compose-prod.yml up -d --build
+      - run: touch .env.prod && echo "DUCKDNSTOKEN=$env:duckdns_token" >> .env.prod
+      - run: docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build
