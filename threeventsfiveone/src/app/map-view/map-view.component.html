@@ -1,7 +1,7 @@
 <div class="map-container">
   <div class="input-line">
     <div>
-      <input class="address-input" [(ngModel)]="address">
+      <input class="address-input" (change)="searchForLocationInput()" [(ngModel)]="address">
       <button class="address-search" (click)="searchForLocationInput()">Go!</button>
     </div>
     <div>

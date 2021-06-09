@@ -21,6 +21,11 @@
         </div>
       </div>
       <div *ngIf="isDropdown" fxLayout="column" style="margin-bottom: .5rem;">
+
+        <div>
+          <input type="text" [(ngModel)]="filteredText" (keyup)="filter()">
+        </div>
+
         Entfernung (in km)
         <mat-slider
           thumbLabel
@@ -29,7 +34,7 @@
           step="1"
           [(ngModel)]="eventRange"
           style="padding-top: 0;"
-          (input)="searchForDistance($event)">
+          (input)="searchForDistance($event.value)">
         </mat-slider>
         Kategorien
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">

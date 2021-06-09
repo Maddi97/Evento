@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { EventService } from './event.service';
-import { Event } from '../models/event';
-import { CategoriesService } from '../categories/categories.service';
-import { Category } from '../models/category';
-import {MatSliderChange} from "@angular/material/slider";
+import {Component, OnInit} from '@angular/core';
+import {EventService} from './event.service';
+import {Event} from '../models/event';
+import {CategoriesService} from '../categories/categories.service';
+import {Category} from '../models/category';
 import {PositionService} from "../map-view/position.service";
 import {NominatimGeoService} from "../nominatim-geo.service";
 
@@ -20,20 +19,38 @@ export class EventsComponent implements OnInit {
 
   eventRange = 10
 
+  // List of all Events
   eventList: Event[] = [];
+
   filteredList: Event[] = [];
-  filteredCategories = [];
 
-  filterDistanceEvents = []
+  filteredText: string = "";
 
+  filteredDates = [];
+
+  filteredCategoryIDs = [];
+
+  filteredDistance = 10;
+
+  eventsInRange = []
+
+  eventDistances = {}
+
+  distanceChanged = false;
+  positionChanged = false;
+  currentPosition;
+
+  // List of all Categories
   categoryList: Category[] = [];
+
 
   constructor(
     private eventService: EventService,
     private categoriesService: CategoriesService,
     private positionService: PositionService,
     private geoService: NominatimGeoService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.eventService.events.subscribe((ev: Event[]) => {
@@ -42,6 +59,10 @@ export class EventsComponent implements OnInit {
       if (ev.length === 0) {
         this.eventService.getAllEvents();
       }
+      this.currentPosition = this.positionService.getCurrentPosition()
+      this.distanceChanged = true
+      // TODO this is run twice
+      this.applyDistanceSearch()
     });
     this.categoriesService.categories.subscribe((cat: Category[]) => {
       this.categoryList = cat;
@@ -53,79 +74,144 @@ export class EventsComponent implements OnInit {
 
   formatLabel(value: number) {
     if (value >= 1) {
-      return  value / 10 + 'km';
+      return value / 10 + 'km';
     }
 
     return value;
   }
 
+  filter() {
+    this.positionChanged = this.currentPosition !== this.positionService.getCurrentPosition();
+
+    if (this.positionChanged || this.distanceChanged) {
+      // TODO error ERROR Error: Uncaught (in promise): TypeError: this is undefined
+      this.applyDistanceSearch().then(this.applyFilters)
+    } else {
+      this.applyFilters()
+    }
+  }
+
+  applyFilters() {
+
+    let newFilteredList = this.eventList
+    // Filter By Date
+
+    if (this.filteredDates.length !== 0) {
+      newFilteredList = newFilteredList.filter(event => {
+        let event_picked = false
+        this.filteredDates.forEach(date => {
+          if (event_picked) {
+            return event_picked
+          }
+          event_picked = new Date(event.date).getDay() === date.getDay() && new Date(event.date).getMonth() === date.getMonth();
+        })
+        return event_picked
+      })
+    }
+
+    //Filter By Category
+    if (this.filteredCategoryIDs.length !== 0) {
+      newFilteredList = newFilteredList.filter(event => {
+        let event_picked = false
+        this.filteredCategoryIDs.forEach(category_id => {
+          if (event_picked) {
+            return event_picked
+          }
+          event_picked = event.category._id === category_id
+        })
+        return event_picked
+      })
+    }
+
+    //Filter By Text
+    if (this.filteredText !== "") {
+      newFilteredList = newFilteredList.filter(event => {
+        return event.name.toLowerCase().includes(this.filteredText.toLowerCase())
+      })
+    }
+
+    newFilteredList = newFilteredList.filter(event => {
+      return this.eventsInRange.includes(event)
+    })
+
+    console.log(this.eventsInRange)
+
+    this.filteredList = newFilteredList
+  }
+
   searchForDay(filter: DateClicked) {
     if (filter.isClicked) {
-      this.filteredList = this.filteredList
-      .filter(f => (new Date(f.date).getDay() === filter.date.getDay() && new Date(f.date).getMonth() === filter.date.getMonth()));
+      this.filteredDates.push(filter.date)
     } else {
-      let adding_events = this.eventList.filter(event => {
-        new Date(event.date).getDay() === filter.date.getDay() && new Date(event.date).getMonth() === filter.date.getMonth()
-      })
-      this.filteredList = this.filteredList.concat(adding_events)
+      this.filteredDates = this.filteredDates.filter(date => date.getDay() !== filter.date.getDay() || date.getMonth() !== filter.date.getMonth())
     }
+    this.filter()
   }
 
   searchForCategory(category: Category) {
-    if (!this.filteredCategories.includes(category._id)) {
-      this.filteredList = this.filteredList.filter(event => event.category._id === category._id);
-      this.filteredCategories.push(category._id)
+    if (!this.filteredCategoryIDs.includes(category._id)) {
+      this.filteredCategoryIDs.push(category._id)
+    } else {
+      let index = this.filteredCategoryIDs.indexOf(category._id)
+      this.filteredCategoryIDs.splice(index, 1)
     }
-    else {
-      let adding_events = this.eventList.filter(event => event.category._id !== category._id)
-      this.filteredList = this.filteredList.concat(adding_events)
-      let index = this.filteredCategories.indexOf(category._id)
-      this.filteredCategories.splice(index, 1)
+    this.filter()
+  }
+
+  async applyDistanceSearch() {
+    this.eventDistances = {};
+
+    if (this.distanceChanged || this.positionChanged) {
+      console.log('Updating distances!')
+      const promises = [];
+
+      this.currentPosition = this.positionService.getCurrentPosition()
+
+      this.eventList.forEach(event => {
+        let promise = this.geoService.get_distance(this.positionService.getCurrentPosition(), [event.geo_data.lat, event.geo_data.lon]).toPromise().then(data => {
+          let parsed_data = JSON.parse(JSON.stringify(data))
+          this.eventDistances[event._id] = parsed_data.routes[0].distance / 1000
+        })
+        promises.push(promise)
+      })
+
+      Promise.all(promises).then(value => {
+        this.eventsInRange = this.eventList.filter(event => {
+          return this.eventDistances[event._id] < this.filteredDistance;
+        })
+        this.distanceChanged = false
+        this.positionChanged = false
+        console.log('Distances updated!')
+      })
+    } else {
+      this.filterListByDistance()
     }
   }
 
-  searchForDistance(sliderEvent: MatSliderChange) {
-
-    let clone_filter_list = this.filteredList
-    clone_filter_list = clone_filter_list.concat(this.filterDistanceEvents)
-    this.filterDistanceEvents = []
-
-    const distances = {};
-    const promises = [];
-
-    clone_filter_list.forEach(event => {
-      let promise = this.geoService.get_distance(this.positionService.getCurrentPosition(), [event.geo_data.lat, event.geo_data.lon]).toPromise().then(data => {
-        let parsed_data = JSON.parse(JSON.stringify(data))
-        distances[event._id] = parsed_data.routes[0].distance / 1000
-      })
-      promises.push(promise)
+  filterListByDistance() {
+    this.eventsInRange = this.eventList.filter(event => {
+      return this.eventDistances[event._id] < this.filteredDistance;
     })
+  }
 
-    Promise.all(promises).then(values => {
-      this.filteredList = clone_filter_list.filter(event => {
-        if (distances[event._id] < sliderEvent.value) {
-          return true
-        }
-        else {
-          this.filterDistanceEvents.push(event)
-          return false
-        }
-      })
-    })
+  async searchForDistance(sliderDistance) {
+    this.filteredDistance = sliderDistance
+    this.distanceChanged = true
+    // TODO error ERROR Error: Uncaught (in promise): TypeError: this is undefined
+    this.applyDistanceSearch().then(this.applyFilters)
   }
 
   isElementPicked(cat: Category) {
-    if (this.filteredCategories.includes(cat._id)) {
+    if (this.filteredCategoryIDs.includes(cat._id)) {
       return 'category-picked'
-    }
-    else {
+    } else {
       return 'category-non-picked'
     }
   }
 
   clearFilter() {
     this.filteredList = this.eventList;
-    this.filteredCategories = []
+    this.filteredCategoryIDs = []
   }
 
   changeToMapView() {
