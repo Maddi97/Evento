@@ -70,7 +70,7 @@
     <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
         <mat-form-field appearance="fill" style="width: 90%;">
         <mat-label>Link of Organizer page</mat-label>
-        <input matInput #target required formControlName="link" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
+        <input matInput #target formControlName="link" (keydown.enter)="updateOrganizerId !== '' ? updateOrganizer() : addNewOrganizer(); target.value = ''">
         </mat-form-field>
     </div>
     <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
