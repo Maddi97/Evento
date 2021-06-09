@@ -1,0 +1,13 @@
+name: CI
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build And Start Docker Container
+        run: docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build
