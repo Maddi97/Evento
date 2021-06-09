@@ -12,5 +12,5 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build And Start Docker Container
         env:
-          duckdns_token: ${{ PI }}
+          duckdns_token: ${{ secrets.PI }}
         run: docker-compose -e DUCKDNSTOKEN="$env:duckdns_token" -f docker-compose-prod.yml up -d --build
