@@ -45,3 +45,22 @@
 .category-yellow {
   background-color: rgb(245, 241, 0);
 }
+
+.distance-label {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #808080;
+}
+
+.slider {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.event-search-input {
+  width: 80%;
+  border-radius: 5px;
+  border: 1px solid grey;
+  margin-left: 10%;
+  margin-bottom: 1em;
+}

@@ -13,7 +13,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   private markerGroup
   private iconDefault
   private positionIcon
-  address = "Address"
+  address = ""
 
   current_position = []
 
