@@ -200,7 +200,7 @@ export class EventsComponent implements OnInit {
     })
   }
 
-  async searchForDistance(sliderDistance) {
+  searchForDistance(sliderDistance) {
     this.filteredDistance = sliderDistance
     this.distanceChanged = true
     this.filter()
