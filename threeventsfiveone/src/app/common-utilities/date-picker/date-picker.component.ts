@@ -30,13 +30,12 @@ export class DatePickerComponent implements OnInit {
   safeDate(day: Date) {
     this.nextMonth.map(m => {
       if (m.date === day) {
-        if (m.isClicked === true) {
-          m.isClicked = false;
-          return;
-        }
-        m.isClicked = true;
-      } else {
-        m.isClicked = false;
+        m.isClicked = !m.isClicked
+        // if (m.isClicked === true) {
+        //   m.isClicked = false;
+        //   return;
+        // }
+        // m.isClicked = true;
       }
     });
     this.clickedDate.emit(this.nextMonth.find(m => m.date === day));
