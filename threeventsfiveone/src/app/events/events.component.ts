@@ -22,18 +22,25 @@ export class EventsComponent implements OnInit {
   // List of all Events
   eventList: Event[] = [];
 
+  // List of filtered Events
   filteredList: Event[] = [];
 
+  // Text by which the events get filtered
   filteredText: string = "";
 
+  // Applied filtered Dates
   filteredDates = [];
 
+  // Applied filtered Category IDs
   filteredCategoryIDs = [];
 
+  // Range for the events
   filteredDistance = 10;
 
+  // List of events in range to current position with filteredDistance
   eventsInRange = []
 
+  // Range of events to current position
   eventDistances = {}
 
   distanceChanged = false;
@@ -59,10 +66,9 @@ export class EventsComponent implements OnInit {
       if (ev.length === 0) {
         this.eventService.getAllEvents();
       }
-      this.currentPosition = this.positionService.getCurrentPosition()
-      this.distanceChanged = true
-      // TODO this is run twice
-      this.applyDistanceSearch()
+        this.currentPosition = this.positionService.getCurrentPosition()
+        this.distanceChanged = true
+        this.applyDistanceSearch()
     });
     this.categoriesService.categories.subscribe((cat: Category[]) => {
       this.categoryList = cat;
@@ -84,7 +90,6 @@ export class EventsComponent implements OnInit {
     this.positionChanged = this.currentPosition !== this.positionService.getCurrentPosition();
 
     if (this.positionChanged || this.distanceChanged) {
-      // TODO error ERROR Error: Uncaught (in promise): TypeError: this is undefined
       this.applyDistanceSearch().then(() => this.applyFilters())
     } else {
       this.applyFilters()
@@ -92,10 +97,10 @@ export class EventsComponent implements OnInit {
   }
 
   applyFilters() {
-
+    console.log('Filtering')
     let newFilteredList = this.eventList
-    // Filter By Date
 
+    // Filter By Date
     if (this.filteredDates.length !== 0) {
       newFilteredList = newFilteredList.filter(event => {
         let event_picked = false
@@ -130,11 +135,10 @@ export class EventsComponent implements OnInit {
       })
     }
 
+    //Filter By Distance
     newFilteredList = newFilteredList.filter(event => {
       return this.eventsInRange.includes(event)
     })
-
-    console.log(this.eventsInRange)
 
     this.filteredList = newFilteredList
   }
@@ -158,7 +162,8 @@ export class EventsComponent implements OnInit {
     this.filter()
   }
 
-  async applyDistanceSearch() {
+  applyDistanceSearch() {
+    return new Promise(resolve => {
     this.eventDistances = {};
 
     if (this.distanceChanged || this.positionChanged) {
@@ -175,17 +180,18 @@ export class EventsComponent implements OnInit {
         promises.push(promise)
       })
 
-      Promise.all(promises).then(value => {
-        this.eventsInRange = this.eventList.filter(event => {
-          return this.eventDistances[event._id] < this.filteredDistance;
-        })
+      Promise.all(promises).then(() => {
+        this.filterListByDistance()
         this.distanceChanged = false
         this.positionChanged = false
         console.log('Distances updated!')
+        resolve()
       })
     } else {
       this.filterListByDistance()
+      resolve()
     }
+    })
   }
 
   filterListByDistance() {
@@ -197,8 +203,7 @@ export class EventsComponent implements OnInit {
   async searchForDistance(sliderDistance) {
     this.filteredDistance = sliderDistance
     this.distanceChanged = true
-    // TODO error ERROR Error: Uncaught (in promise): TypeError: this is undefined
-    this.applyDistanceSearch().then(() => this.applyFilters())
+    this.filter()
   }
 
   isElementPicked(cat: Category) {
@@ -207,11 +212,6 @@ export class EventsComponent implements OnInit {
     } else {
       return 'category-non-picked'
     }
-  }
-
-  clearFilter() {
-    this.filteredList = this.eventList;
-    this.filteredCategoryIDs = []
   }
 
   changeToMapView() {

@@ -23,9 +23,10 @@
       <div *ngIf="isDropdown" fxLayout="column" style="margin-bottom: .5rem;">
 
         <div>
-          <input type="text" [(ngModel)]="filteredText" (keyup)="filter()">
+          <input type="text" placeholder="Search For Event" [(ngModel)]="filteredText" (keyup)="filter()">
         </div>
 
+<!--        TODO trigger slider only at end-->
         Entfernung (in km)
         <mat-slider
           thumbLabel
@@ -42,9 +43,6 @@
                         {{ category.name }}
                     </span>
         </div>
-<!--        <div class="category category-yellow"  (click)="clearFilter()">-->
-<!--          Filter Zurücksetzen-->
-<!--        </div>-->
       </div>
       <div *ngIf="this.mapView">
         <map-view [marker_data]="this.filteredList"></map-view>
