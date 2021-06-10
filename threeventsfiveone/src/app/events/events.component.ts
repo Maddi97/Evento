@@ -85,7 +85,7 @@ export class EventsComponent implements OnInit {
 
     if (this.positionChanged || this.distanceChanged) {
       // TODO error ERROR Error: Uncaught (in promise): TypeError: this is undefined
-      this.applyDistanceSearch().then(this.applyFilters)
+      this.applyDistanceSearch().then(() => this.applyFilters())
     } else {
       this.applyFilters()
     }
@@ -198,7 +198,7 @@ export class EventsComponent implements OnInit {
     this.filteredDistance = sliderDistance
     this.distanceChanged = true
     // TODO error ERROR Error: Uncaught (in promise): TypeError: this is undefined
-    this.applyDistanceSearch().then(this.applyFilters)
+    this.applyDistanceSearch().then(() => this.applyFilters())
   }
 
   isElementPicked(cat: Category) {
