@@ -28,4 +28,9 @@
 .address-search {
   margin-left: 5px;
   margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.gps-button {
+  cursor: pointer;
 }
