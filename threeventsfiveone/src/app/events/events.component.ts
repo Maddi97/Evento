@@ -7,6 +7,7 @@ import {PositionService} from "../map-view/position.service";
 import {NominatimGeoService} from "../nominatim-geo.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {ActivatedRoute} from "@angular/router";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'vents-events',
@@ -18,8 +19,6 @@ export class EventsComponent implements OnInit {
   public isDropdown = false;
 
   mapView = false;
-
-  eventRange = 10
 
   // List of all Events
   eventList: Event[] = [];
@@ -61,7 +60,8 @@ export class EventsComponent implements OnInit {
     private positionService: PositionService,
     private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private location: Location
   ) {
   }
 
@@ -80,15 +80,22 @@ export class EventsComponent implements OnInit {
       }
     });
 
-    // TODO Error data is null
     this.route.fragment.subscribe(data => {
       if(data !== null) {
-        let splittedData = data.split("=")
-        if (splittedData[0] === "subcategory") {
-          console.log(splittedData[1])
-          // TODO
-          // 1. Add subcategory For Filtering -> Wait For Other Ticket
-          // 2. this.filter()
+        let splitData = data.split("=")
+        if (splitData[0] === "subcategory") {
+          // TODO Hotfix For Now -> Until subcategory has an id and the matching category can be determined
+          let matchingCategory: Category[] = []
+          this.categoryList.forEach(category => {
+            if(category.subcategories.includes(splitData[1])) {
+              matchingCategory.push(category)
+            }
+          })
+          this.filteredCategoryIDs.push(matchingCategory[0]._id)
+          this.filteredSubcategories.push(splitData[1])
+          const pathWithoutHash = this.location.path(false)
+          this.location.replaceState(pathWithoutHash)
+          this.filter()
         }
       }
     })
@@ -242,8 +249,7 @@ export class EventsComponent implements OnInit {
     })
   }
 
-  searchForDistance(sliderDistance) {
-    this.filteredDistance = sliderDistance
+  searchForDistance(sliderEvent) {
     this.distanceChanged = true
     this.filter()
   }
