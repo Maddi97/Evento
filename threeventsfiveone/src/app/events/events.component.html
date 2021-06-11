@@ -32,8 +32,8 @@
           min="1"
           max="100"
           step="1"
-          [(ngModel)]="eventRange"
-          (change)="searchForDistance($event.value)">
+          [(ngModel)]="filteredDistance"
+          (change)="searchForDistance($event)">
         </mat-slider>
         <span class="distance-label">Kategorien</span>
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
