@@ -6,8 +6,7 @@ import {Category} from '../models/category';
 import {PositionService} from "../map-view/position.service";
 import {NominatimGeoService} from "../nominatim-geo.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {ActivatedRoute} from "@angular/router";
-import {Location} from "@angular/common";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'vents-events',
@@ -61,7 +60,7 @@ export class EventsComponent implements OnInit {
     private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
     private route: ActivatedRoute,
-    private location: Location
+    private router: Router
   ) {
   }
 
@@ -80,24 +79,23 @@ export class EventsComponent implements OnInit {
       }
     });
 
-    this.route.fragment.subscribe(data => {
-      if(data !== null) {
-        let splitData = data.split("=")
-        if (splitData[0] === "subcategory") {
-          // TODO Hotfix For Now -> Until subcategory has an id and the matching category can be determined
-          let matchingCategory: Category[] = []
-          this.categoryList.forEach(category => {
-            if(category.subcategories.includes(splitData[1])) {
-              matchingCategory.push(category)
-            }
-          })
-          this.filteredCategoryIDs.push(matchingCategory[0]._id)
-          this.filteredSubcategories.push(splitData[1])
-          const pathWithoutHash = this.location.path(false)
-          this.location.replaceState(pathWithoutHash)
-          this.filter()
-        }
+    this.route.queryParams.subscribe(data => {
+      console.log(data)
+      if(data.subcategory !== undefined) {
+        let matchingCategory: Category[] = []
+        this.categoryList.forEach(category => {
+          if (category.subcategories.includes(data.subcategory)) {
+            matchingCategory.push(category)
+          }
+        })
+        this.filteredCategoryIDs.push(matchingCategory[0]._id)
+        this.filteredSubcategories.push(data.subcategory)
+        this.filter()
+      } else if(data.mapUpdate !== undefined) {
+        this.mapView = false
+        this.filter()
       }
+      this.router.navigate(['/', 'events'])
     })
   }
 
@@ -202,7 +200,7 @@ export class EventsComponent implements OnInit {
   }
 
   searchForSubCategory(subCategory) {
-    if(this.filteredSubcategories.includes(subCategory)) {
+    if (this.filteredSubcategories.includes(subCategory)) {
       let index = this.filteredSubcategories.indexOf(subCategory)
       this.filteredSubcategories.splice(index, 1)
     } else {
@@ -213,33 +211,33 @@ export class EventsComponent implements OnInit {
 
   applyDistanceSearch() {
     return new Promise(resolve => {
-    this.eventDistances = {};
+      this.eventDistances = {};
 
-    if (this.distanceChanged || this.positionChanged) {
-      console.log('Updating distances!')
-      const promises = [];
+      if (this.distanceChanged || this.positionChanged) {
+        console.log('Updating distances!')
+        const promises = [];
 
-      this.currentPosition = this.positionService.getCurrentPosition()
+        this.currentPosition = this.positionService.getCurrentPosition()
 
-      this.eventList.forEach(event => {
-        let promise = this.geoService.get_distance(this.positionService.getCurrentPosition(), [event.geo_data.lat, event.geo_data.lon]).toPromise().then(data => {
-          let parsed_data = JSON.parse(JSON.stringify(data))
-          this.eventDistances[event._id] = parsed_data.routes[0].distance / 1000
+        this.eventList.forEach(event => {
+          let promise = this.geoService.get_distance(this.positionService.getCurrentPosition(), [event.geo_data.lat, event.geo_data.lon]).toPromise().then(data => {
+            let parsed_data = JSON.parse(JSON.stringify(data))
+            this.eventDistances[event._id] = parsed_data.routes[0].distance / 1000
+          })
+          promises.push(promise)
         })
-        promises.push(promise)
-      })
 
-      Promise.all(promises).then(() => {
+        Promise.all(promises).then(() => {
+          this.filterListByDistance()
+          this.distanceChanged = false
+          this.positionChanged = false
+          console.log('Distances updated!')
+          resolve()
+        })
+      } else {
         this.filterListByDistance()
-        this.distanceChanged = false
-        this.positionChanged = false
-        console.log('Distances updated!')
         resolve()
-      })
-    } else {
-      this.filterListByDistance()
-      resolve()
-    }
+      }
     })
   }
 
@@ -263,7 +261,7 @@ export class EventsComponent implements OnInit {
   }
 
   isSubcategoryPicked(subCategory) {
-    if(this.filteredSubcategories.includes(subCategory)) {
+    if (this.filteredSubcategories.includes(subCategory)) {
       return 'category-picked'
     } else {
       return 'category-non-picked'
