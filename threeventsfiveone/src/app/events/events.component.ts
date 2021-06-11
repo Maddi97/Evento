@@ -6,6 +6,7 @@ import {Category} from '../models/category';
 import {PositionService} from "../map-view/position.service";
 import {NominatimGeoService} from "../nominatim-geo.service";
 import {NgxSpinnerService} from "ngx-spinner";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'vents-events',
@@ -58,6 +59,7 @@ export class EventsComponent implements OnInit {
     private positionService: PositionService,
     private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
+    private route: ActivatedRoute
   ) {
   }
 
@@ -78,6 +80,16 @@ export class EventsComponent implements OnInit {
         this.categoriesService.getAllCategories();
       }
     });
+
+    this.route.fragment.subscribe(data => {
+      let splittedData = data.split("=")
+      if(splittedData[0] === "subcategory") {
+        console.log(splittedData[1])
+        // TODO
+        // 1. Add subcategory For Filtering -> Wait For Other Ticket
+        // 2. this.filter()
+      }
+    })
   }
 
   formatLabel(value: number) {
