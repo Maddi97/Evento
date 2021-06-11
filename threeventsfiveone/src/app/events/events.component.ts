@@ -45,7 +45,7 @@ export class EventsComponent implements OnInit {
   // Range of events to current position
   eventDistances = {}
 
-  distanceChanged = false;
+  distanceChanged = true;
   positionChanged = false;
   currentPosition;
 
@@ -70,9 +70,6 @@ export class EventsComponent implements OnInit {
       if (ev.length === 0) {
         this.eventService.getAllEvents();
       }
-        this.currentPosition = this.positionService.getCurrentPosition()
-        this.distanceChanged = true
-        this.applyDistanceSearch()
     });
     this.categoriesService.categories.subscribe((cat: Category[]) => {
       this.categoryList = cat;
@@ -81,13 +78,16 @@ export class EventsComponent implements OnInit {
       }
     });
 
+    // TODO Error data is null
     this.route.fragment.subscribe(data => {
-      let splittedData = data.split("=")
-      if(splittedData[0] === "subcategory") {
-        console.log(splittedData[1])
-        // TODO
-        // 1. Add subcategory For Filtering -> Wait For Other Ticket
-        // 2. this.filter()
+      if(data !== null) {
+        let splittedData = data.split("=")
+        if (splittedData[0] === "subcategory") {
+          console.log(splittedData[1])
+          // TODO
+          // 1. Add subcategory For Filtering -> Wait For Other Ticket
+          // 2. this.filter()
+        }
       }
     })
   }
