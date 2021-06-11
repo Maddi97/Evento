@@ -35,6 +35,9 @@ export class EventsComponent implements OnInit {
   // Applied filtered Category IDs
   filteredCategoryIDs = [];
 
+  // Applied Subcategory Filter
+  filteredSubcategories = [];
+
   // Range for the events
   filteredDistance = 10;
 
@@ -130,6 +133,20 @@ export class EventsComponent implements OnInit {
       })
     }
 
+    //Filter By Subcategory
+    if (this.filteredSubcategories.length !== 0) {
+      newFilteredList = newFilteredList.filter(event => {
+        let event_picked = false
+        this.filteredSubcategories.forEach(subcategory => {
+          if (event_picked) {
+            return event_picked
+          }
+          event_picked = event.category.subcategories.includes(subcategory)
+        })
+        return event_picked
+      })
+    }
+
     //Filter By Text
     if (this.filteredText !== "") {
       newFilteredList = newFilteredList.filter(event => {
@@ -166,7 +183,13 @@ export class EventsComponent implements OnInit {
   }
 
   searchForSubCategory(subCategory) {
-    //  TODO Wait For Model Structure Of Subcategory https://github.com/schndrrr/3vents51/tree/insertAppBackendCreateObjectForSubcategories
+    if(this.filteredSubcategories.includes(subCategory)) {
+      let index = this.filteredSubcategories.indexOf(subCategory)
+      this.filteredSubcategories.splice(index, 1)
+    } else {
+      this.filteredSubcategories.push(subCategory)
+    }
+    this.filter()
   }
 
   applyDistanceSearch() {
@@ -215,6 +238,14 @@ export class EventsComponent implements OnInit {
 
   isElementPicked(cat: Category) {
     if (this.filteredCategoryIDs.includes(cat._id)) {
+      return 'category-picked'
+    } else {
+      return 'category-non-picked'
+    }
+  }
+
+  isSubcategoryPicked(subCategory) {
+    if(this.filteredSubcategories.includes(subCategory)) {
       return 'category-picked'
     } else {
       return 'category-non-picked'

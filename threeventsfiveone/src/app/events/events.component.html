@@ -44,11 +44,7 @@
             <div class="subcategory-container" *ngIf="this.filteredCategoryIDs.includes(category._id) && category.subcategories.length != 0"
                  style="padding-left: 1rem">
               <div *ngFor="let subcategory of category.subcategories">
-                <!-- TODO Wait For Checkout https://github.com/schndrrr/3vents51/tree/insertAppBackendCreateObjectForSubcategories -->
-                <!--                      <span class="category" [ngClass]="isElementPicked()" (click)="searchForSubCategory()"></span>-->
-                <span class="subcategory">
-                {{subcategory}}
-              </span>
+                <span class="subcategory" [ngClass]="isSubcategoryPicked(subcategory)" (click)="searchForSubCategory(subcategory)">{{subcategory}}</span>
               </div>
             </div>
           </div>
