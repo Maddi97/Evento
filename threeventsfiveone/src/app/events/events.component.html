@@ -42,7 +42,7 @@
                     </span>
         </div>
       </div>
-      <ngx-spinner></ngx-spinner>
+      <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
       <div *ngIf="this.mapView">
         <map-view [marker_data]="this.filteredList"></map-view>
       </div>
