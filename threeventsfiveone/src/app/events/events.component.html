@@ -37,9 +37,17 @@
         </mat-slider>
         <span class="distance-label">Kategorien</span>
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
-                    <span class="category" [ngClass]="isElementPicked(category)" (click)="searchForCategory(category)">
-                        {{ category.name }}
-                    </span>
+          <div class="category-container">
+          <span class="category" [ngClass]="isElementPicked(category)" (click)="searchForCategory(category)">
+              {{ category.name }}
+          </span>
+            <div class="subcategory-container" *ngIf="this.filteredCategoryIDs.includes(category._id) && category.subcategories.length != 0"
+                 style="padding-left: 1rem">
+              <div *ngFor="let subcategory of category.subcategories">
+                <span class="subcategory" [ngClass]="isSubcategoryPicked(subcategory)" (click)="searchForSubCategory(subcategory)">{{subcategory}}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
