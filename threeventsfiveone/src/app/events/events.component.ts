@@ -5,6 +5,7 @@ import {CategoriesService} from '../categories/categories.service';
 import {Category} from '../models/category';
 import {PositionService} from "../map-view/position.service";
 import {NominatimGeoService} from "../nominatim-geo.service";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'vents-events',
@@ -55,7 +56,8 @@ export class EventsComponent implements OnInit {
     private eventService: EventService,
     private categoriesService: CategoriesService,
     private positionService: PositionService,
-    private geoService: NominatimGeoService
+    private geoService: NominatimGeoService,
+    private spinner: NgxSpinnerService,
   ) {
   }
 
@@ -89,6 +91,7 @@ export class EventsComponent implements OnInit {
   filter() {
     this.positionChanged = this.currentPosition !== this.positionService.getCurrentPosition();
 
+    this.spinner.show()
     if (this.positionChanged || this.distanceChanged) {
       this.applyDistanceSearch().then(() => this.applyFilters())
     } else {
@@ -141,6 +144,7 @@ export class EventsComponent implements OnInit {
     })
 
     this.filteredList = newFilteredList
+    this.spinner.hide()
   }
 
   searchForDay(filter: DateClicked) {
