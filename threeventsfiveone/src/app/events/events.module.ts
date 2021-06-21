@@ -9,6 +9,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { HttpClientModule } from "@angular/common/http";
 import {MapViewComponent} from "../map-view/map-view.component";
 import {FormsModule} from "@angular/forms";
+import {NgxSpinnerModule} from "ngx-spinner";
 
 
 @NgModule({
@@ -32,8 +33,9 @@ import {FormsModule} from "@angular/forms";
     MatSliderModule,
 
 
-        HttpClientModule,
-        FormsModule,
-    ]
+    HttpClientModule,
+    FormsModule,
+    NgxSpinnerModule,
+  ]
 })
 export class EventsModule { }

@@ -1,11 +1,11 @@
 <div class="map-container">
   <div class="input-line">
     <div>
-      <input class="address-input" [(ngModel)]="address">
+      <input class="address-input" (change)="searchForLocationInput()" placeholder="Address" [(ngModel)]="address">
       <button class="address-search" (click)="searchForLocationInput()">Go!</button>
     </div>
     <div>
-    <span class="material-icons" (click)="getCurrentPosition()">
+    <span class="material-icons gps-button" (click)="getCurrentPosition()">
       gps_fixed
     </span>
     </div>

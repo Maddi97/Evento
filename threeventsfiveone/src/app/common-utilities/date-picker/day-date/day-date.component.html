@@ -1,7 +1,7 @@
 <div [ngClass]="{'day-date': !isClicked, 'day-date-clicked': isClicked}">
     <div fxLayout="column">
         <div fxLayoutAlign="center center" class="day">
-            {{ dayToString(date.getDay()) }}
+            {{ dayToString() }}
         </div>
         <div fxLayoutAlign="center center" class="date">
             {{ dateToString() }}

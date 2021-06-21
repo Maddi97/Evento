@@ -21,26 +21,36 @@
         </div>
       </div>
       <div *ngIf="isDropdown" fxLayout="column" style="margin-bottom: .5rem;">
-        Entfernung (in km)
+        <div>
+          <input class="event-search-input" type="text" placeholder="Search For Event" [(ngModel)]="filteredText"
+                 (keyup)="filter()">
+        </div>
+        <span class="distance-label">Entfernung (in km)</span>
         <mat-slider
+          class="slider"
           thumbLabel
           min="1"
           max="100"
           step="1"
-          [(ngModel)]="eventRange"
-          style="padding-top: 0;"
-          (input)="searchForDistance($event)">
+          [(ngModel)]="filteredDistance"
+          (change)="searchForDistance($event)">
         </mat-slider>
-        Kategorien
+        <span class="distance-label">Kategorien</span>
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
-                    <span class="category" [ngClass]="isElementPicked(category)" (click)="searchForCategory(category)">
-                        {{ category.name }}
-                    </span>
+          <div class="category-container">
+          <span class="category" [ngClass]="isElementPicked(category)" (click)="searchForCategory(category)">
+              {{ category.name }}
+          </span>
+            <div class="subcategory-container" *ngIf="this.filteredCategoryIDs.includes(category._id) && category.subcategories.length != 0"
+                 style="padding-left: 1rem">
+              <div *ngFor="let subcategory of category.subcategories">
+                <span class="subcategory" [ngClass]="isSubcategoryPicked(subcategory)" (click)="searchForSubCategory(subcategory)">{{subcategory}}</span>
+              </div>
+            </div>
+          </div>
         </div>
-<!--        <div class="category category-yellow"  (click)="clearFilter()">-->
-<!--          Filter Zurücksetzen-->
-<!--        </div>-->
       </div>
+      <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
       <div *ngIf="this.mapView">
         <map-view [marker_data]="this.filteredList"></map-view>
       </div>

@@ -1,6 +1,7 @@
 import {Component, OnChanges, OnInit, Input} from '@angular/core';
 import * as L from 'leaflet';
 import {PositionService} from "./position.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'map-view',
@@ -13,12 +14,13 @@ export class MapViewComponent implements OnInit, OnChanges {
   private markerGroup
   private iconDefault
   private positionIcon
-  address = "Address"
+  address = ""
 
   current_position = []
 
   constructor(
-    private positionService: PositionService
+    private positionService: PositionService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -59,12 +61,14 @@ export class MapViewComponent implements OnInit, OnChanges {
 
     this.positionService.getPositionByInput(address).toPromise().then(() => {
       this.resetCenter()
+      this.router.navigate(['/', 'events'], {queryParams: {'mapUpdate': true}})
     })
   }
 
   getCurrentPosition() {
     this.positionService.getPositionByLocation().then(() => {
       this.resetCenter()
+      this.router.navigate(['/', 'events'], {queryParams: {'mapUpdate': true}})
     })
   }
 
