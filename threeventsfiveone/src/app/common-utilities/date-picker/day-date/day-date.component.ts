@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import * as moment from 'moment';
 
 @Component({
   selector: 'vents-day-date',
@@ -26,12 +27,12 @@ export class DayDateComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  dayToString(day: number): string {
-    return this.days[day];
+  dayToString(): string {
+    return moment(this.date).format("ddd");
   }
 
   dateToString(): string {
-    return this.date.getDate() + '.' + Number(this.date.getMonth() + 1);
+    return moment(this.date).format("DD.MM");
   }
 
 }
