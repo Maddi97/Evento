@@ -4,7 +4,7 @@ import { Category } from './category'
 export class Organizer {
     _id: string;
     name: string;
-    adress: Adress;
+    address: Address;
     email?: string;
     telephone?: string;
     category: Category;
@@ -19,7 +19,7 @@ export class Organizer {
     };
 }
 
-export class Adress {
+export class Address {
     city: string;
     plz: string;
     street: string;

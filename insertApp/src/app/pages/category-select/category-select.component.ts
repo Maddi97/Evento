@@ -30,7 +30,6 @@ export class CategorySelectComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.categoryService.categories.subscribe(cat => this.categories = cat);
-
     this.filteredOptions = this.categoryName.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value)),

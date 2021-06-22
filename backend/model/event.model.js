@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose')
 
 const EventSchema = new mongoose.Schema({
@@ -11,7 +10,12 @@ const EventSchema = new mongoose.Schema({
     required: true,
   },
 
-  adress: {
+  organizerName: {
+    type: String,
+    required: true,
+  },
+
+  address: {
     plz: {
       type: String,
       minlength: 5,
@@ -40,11 +44,20 @@ const EventSchema = new mongoose.Schema({
     name: {
       type: String,
     },
-    subcategories: [
-      {
-        type: String,
+    subcategories:
+      [
+          {
+        _id: {
+          type: String,
+        },
+        name:{
+          type: String,
+        },
+        iconPath: {
+          type: String,
+        },
       },
-    ],
+      ],
   },
 
   description: {

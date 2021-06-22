@@ -16,7 +16,7 @@
 
     <mat-select [formControl]="selectedSubcategories" multiple (selectionChange)="emitCategory()">
         <mat-option *ngFor="let subcategory of selectedCategory.subcategories" [value]="subcategory">
-          {{subcategory}}
+          {{subcategory.name}}
         </mat-option>
     </mat-select>
   </mat-form-field>

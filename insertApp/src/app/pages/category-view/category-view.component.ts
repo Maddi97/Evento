@@ -1,11 +1,10 @@
 import {Component, OnChanges, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CategoryService } from 'src/app/category.service';
-import { Category } from 'src/app/models/category';
+import {Category, Subcategory} from 'src/app/models/category';
 import { FileUploadService } from 'src/app/file-upload.service';
 import { map, share } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
-import {icon} from 'leaflet';
 
 
 
@@ -23,6 +22,7 @@ export class CategoryViewComponent implements OnInit{
   chosen:boolean
   uploadedFile:any
 
+  clickedSubcategory: number;
 
 
   constructor(
@@ -34,13 +34,11 @@ export class CategoryViewComponent implements OnInit{
   ngOnInit(): void {
     this.categoryService.categories.subscribe(cat => {
       this.categories = cat
-      console.log(this.categories)
     });
   }
   addNewCategory():void {
     let category = new Category();
     category.name = this.categoryName.value;
-    console.log(category)
     if(this.image){
       this.categoryService.createCategory(category).pipe(
         map(catRes => {
@@ -68,12 +66,38 @@ export class CategoryViewComponent implements OnInit{
   }
 
   addNewSubcategory(category: Category): void {
-    category.subcategories.push(this.subcategoryName.value)
-    this.categoryService.updateCategory(category._id, category).subscribe()
+    let subcategory = new Subcategory()
+    subcategory.name = this.subcategoryName.value
+    category.subcategories.push(subcategory)
+
+    if(this.image){
+      this.categoryService.updateCategory(category._id, category).subscribe(
+          catRes => {
+            category = catRes
+            subcategory = category.subcategories.find(sub =>
+              sub.name === subcategory.name
+             )
+            const subcategoryImagePath = 'category_images/' + catRes._id + '/' + subcategory._id
+            const formdata: FormData = new FormData();
+            formdata.append('file', this.image);
+            formdata.append('file_path', subcategoryImagePath)
+            this.fileService.uploadFile(formdata).subscribe((response)=> {
+              category.subcategories.map(sub => {
+                if(sub._id == subcategory._id){ sub.iconPath = response.path }
+              })
+              this.categoryService.updateCategory(category._id, category).subscribe(x => console.log('cat: ', x) )
+            })
+          },
+      )
+    }
+    else{
+      console.error('No image uploaded, but its necessary for a category!')
+    }
+
   }
 
-  deleteSubcategory(category: Category, subcategory: string): void {
-    category.subcategories = category.subcategories.filter(cat => cat !== subcategory )
+  deleteSubcategory(category: Category, subcategory): void {
+    category.subcategories = category.subcategories.filter(subcat => subcat.name !== subcategory.name )
     this.categoryService.updateCategory(category._id, category).subscribe()
   }
   fileChosen(event: any){
@@ -101,4 +125,17 @@ export class CategoryViewComponent implements OnInit{
     )
     return iconURL
   }
+  uploadNewSubcategoryIcon(){
+  return 0
+  }
+  clickSubcategory(id){
+    console.log(id, this.clickedSubcategory)
+    if(id == this.clickedSubcategory) {
+      this.clickedSubcategory = 0
+    }
+    else{
+      this.clickedSubcategory=id
+    }
+  }
+
 }

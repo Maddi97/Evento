@@ -44,7 +44,7 @@
             <div class="subcategory-container" *ngIf="this.filteredCategoryIDs.includes(category._id) && category.subcategories.length != 0"
                  style="padding-left: 1rem">
               <div *ngFor="let subcategory of category.subcategories">
-                <span class="subcategory" [ngClass]="isSubcategoryPicked(subcategory)" (click)="searchForSubCategory(subcategory)">{{subcategory}}</span>
+                <span class="subcategory" [ngClass]="isSubcategoryPicked(subcategory)" (click)="searchForSubCategory(subcategory)">{{subcategory.name}}</span>
               </div>
             </div>
           </div>

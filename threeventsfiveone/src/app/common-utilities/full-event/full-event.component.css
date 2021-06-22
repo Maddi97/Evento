@@ -11,33 +11,41 @@
 .category {
     background-color: rgb(245, 241, 0);
     border-radius: 7px;
-    padding: 0px 3px 0px 3px; 
-    width:fit-content; 
+    padding: 0px 3px 0px 3px;
+    width:fit-content;
     font-size: .7rem;
 }
 
+.subcategories{
+  background-color: rgb(184, 182, 99);
+  border-radius: 7px;
+  padding: 0px 3px 0px 3px;
+  width:fit-content;
+  font-size: .6rem;
+}
+
 .date {
-    width: 100%; 
-    color: rgb(114, 114, 114); 
-    padding: 0px 3px 0px 0px; 
+    width: 100%;
+    color: rgb(114, 114, 114);
+    padding: 0px 3px 0px 0px;
     font-size: .7rem;
 }
 
 .pic {
-    width: 4rem; 
-    height: 4rem; 
+    width: 4rem;
+    height: 4rem;
     border-radius: 5px;
 }
 
 .description {
-    color: rgb(138, 138, 138); 
-    font-size: .8rem; width: 95%; 
-    background-color: white; 
-    border-radius: 10px; 
+    color: rgb(138, 138, 138);
+    font-size: .8rem; width: 95%;
+    background-color: white;
+    border-radius: 10px;
     padding: 5px
 }
 
 .event-pic {
-    height: 5rem; 
+    height: 5rem;
     width: 6rem;
 }

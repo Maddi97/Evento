@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { OrganizerService } from 'src/app/organizer.service';
-import { Organizer, Adress, Day } from 'src/app/models/organizer';
+import { Organizer, Address, Day } from 'src/app/models/organizer';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Category } from 'src/app/models/category';
 import {MatSnackBar} from '@angular/material/snack-bar'
@@ -66,16 +66,16 @@ export class OrganizerViewComponent implements OnInit {
 
   addNewOrganizer(): void {
     const org = new Organizer();
-    const adress = new Adress();
+    const address = new Address();
     org.name = this.organizerForm.get('name').value;
-    // set adress
-    adress.plz =  this.organizerForm.get('plz').value;
-    adress.city =  this.organizerForm.get('city').value;
-    adress.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ');
-    adress.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[0];
-    adress.country =  this.organizerForm.get('country').value;
+    // set address
+    address.plz =  this.organizerForm.get('plz').value;
+    address.city =  this.organizerForm.get('city').value;
+    address.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ');
+    address.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[0];
+    address.country =  this.organizerForm.get('country').value;
 
-    org.adress = adress
+    org.address = address
 
     org.email = this.organizerForm.get('email').value;
     org.telephone = this.organizerForm.get('telephone').value;
@@ -91,7 +91,7 @@ export class OrganizerViewComponent implements OnInit {
     org.geo_data = this.geo_data
 
     // first fetch geo data from osm API and than complete event data type and send to backend
-    this.geoService.get_geo_data(adress.city, adress.street, adress.streetNumber).pipe(
+    this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
       map(geo_data => {
       org.geo_data.lat = geo_data[0].lat;
       org.geo_data.lon = geo_data[0].lon;
@@ -114,11 +114,11 @@ export class OrganizerViewComponent implements OnInit {
   setOrganizerForm(org: Organizer): void {
     this.organizerForm.setValue({
       name: org.name,
-      city: org.adress.city,
-      plz: org.adress.plz,
-      street: org.adress.street + ' ' + org.adress.streetNumber ,
+      city: org.address.city,
+      plz: org.address.plz,
+      street: org.address.street + ' ' + org.address.streetNumber ,
       streetNumber: '' ,
-      country: org.adress.country,
+      country: org.address.country,
       email: org.email,
       telephone: org.telephone,
       description: org.description,
@@ -138,18 +138,18 @@ export class OrganizerViewComponent implements OnInit {
 
   updateOrganizer(): void {
       const org = new Organizer();
-      const adress = new Adress();
+      const address = new Address();
 
       org._id = this.updateOrganizerId;
       org.name = this.organizerForm.get('name').value;
-      // set adress
-      adress.plz =  this.organizerForm.get('plz').value;
-      adress.city =  this.organizerForm.get('city').value;
-      adress.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ')[0];
-      adress.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[1];
-      adress.country =  this.organizerForm.get('country').value;
+      // set address
+      address.plz =  this.organizerForm.get('plz').value;
+      address.city =  this.organizerForm.get('city').value;
+      address.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ')[0];
+      address.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[1];
+      address.country =  this.organizerForm.get('country').value;
 
-      org.adress = adress
+      org.address = address
 
       org.email = this.organizerForm.get('email').value;
       org.telephone = this.organizerForm.get('telephone').value;
@@ -161,7 +161,7 @@ export class OrganizerViewComponent implements OnInit {
       org.openingTimes=this.openingTimes
       org.geo_data = this.geo_data
     // first fetch geo data from osm API and than complete event data type and send to backend
-    this.geoService.get_geo_data(adress.city, adress.street, adress.streetNumber).pipe(
+    this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
       map(geo_data => {
       org.geo_data.lat = geo_data[0].lat;
       org.geo_data.lon = geo_data[0].lon;

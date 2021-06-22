@@ -17,9 +17,9 @@
 
 <div *ngIf="this.showSubcategories">
   <div *ngFor="let subcategory of category.subcategories" class="category-tile subcategory">
-    <div class="category-tile-name-container" routerLink="/events" [queryParams]="{subcategory: subcategory}">
+    <div class="category-tile-name-container" routerLink="/events" [queryParams]="{subcategory: subcategory._id}">
       <span>
-            {{subcategory}}
+            {{subcategory.name}}
         </span>
     </div>
   </div>
