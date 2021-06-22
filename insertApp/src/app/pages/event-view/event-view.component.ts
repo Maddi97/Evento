@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OrganizerService } from 'src/app/organizer.service';
-import { Organizer, Adress} from 'src/app/models/organizer';
+import { Organizer, Address} from 'src/app/models/organizer';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { startWith, map, share, catchError } from 'rxjs/operators';
 import { EventsService } from 'src/app/events.service';
@@ -92,19 +92,20 @@ export class EventViewComponent implements OnInit {
 
     const organizer = this.organizers.find(org => org.name === this.organizerName.value)
     const event = new Event()
-    const adress = new Adress()
-    event._organizerId = organizer._id
+    const address = new Address()
+    event._organizerId = organizer._id;
+    event.organizerName = organizer.name;
     event.name = this.eventForm.get('name').value;
-    adress.plz =  this.eventForm.get('plz').value;
-    adress.city =  this.eventForm.get('city').value;
+    address.plz =  this.eventForm.get('plz').value;
+    address.city =  this.eventForm.get('city').value;
 
 
-    adress.street =  this.eventForm.get('street').value.split(' ').slice(0,-1).join(' ');
-    adress.streetNumber =  this.eventForm.get('street').value.split(' ').slice(-1)[0];
+    address.street =  this.eventForm.get('street').value.split(' ').slice(0,-1).join(' ');
+    address.streetNumber =  this.eventForm.get('street').value.split(' ').slice(-1)[0];
 
-    adress.country =  this.eventForm.get('country').value;
+    address.country =  this.eventForm.get('country').value;
 
-    event.adress = adress
+    event.address = address
 
     event.description = this.eventForm.get('description').value;
     event.link = this.eventForm.get('link').value;
@@ -119,7 +120,7 @@ export class EventViewComponent implements OnInit {
     event.geo_data = this.geo_data
 
     // first fetch geo data from osm API and than complete event data type and send to backend
-    this.geoService.get_geo_data(adress.city, adress.street, adress.streetNumber).pipe(
+    this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
       map(geo_data => {
 
       event.geo_data.lat = geo_data[0].lat;
@@ -143,9 +144,9 @@ export class EventViewComponent implements OnInit {
 
   insertOrgInfo(org: Organizer) {
       console.log(org)
-    this.eventForm.get('plz').setValue(org.adress.plz);
-    this.eventForm.get('city').setValue(org.adress.city);
-    this.eventForm.get('street').setValue(org.adress.street + ' ' + org.adress.streetNumber);
+    this.eventForm.get('plz').setValue(org.address.plz);
+    this.eventForm.get('city').setValue(org.address.city);
+    this.eventForm.get('street').setValue(org.address.street + ' ' + org.address.streetNumber);
   }
 
   nullFormField() {
@@ -195,11 +196,11 @@ export class EventViewComponent implements OnInit {
     this.updateOrganizerId = organizer._id
     this.eventForm.setValue({
       name: event.name,
-      city: event.adress.city,
-      plz: event.adress.plz,
-      street: event.adress.street + ' ' + event.adress.streetNumber,
-      streetNumber: event.adress.streetNumber,
-      country: event.adress.country,
+      city: event.address.city,
+      plz: event.address.plz,
+      street: event.address.street + ' ' + event.address.streetNumber,
+      streetNumber: event.address.streetNumber,
+      country: event.address.country,
       description: event.description,
       link: event.link,
       price: event.price
@@ -215,18 +216,19 @@ export class EventViewComponent implements OnInit {
 
 
     updateEvent(){
-    const organizer = this.organizers.find(org => org.name === this.organizerName.value)
+    const organizer = this.organizers.find(org => org.name === this.organizerName.value);
     const event = new Event()
-    const adress = new Adress()
+    const address = new Address()
     event._organizerId = organizer._id
+    event.organizerName = organizer.name
     event.name = this.eventForm.get('name').value;
-    adress.plz =  this.eventForm.get('plz').value;
-    adress.city =  this.eventForm.get('city').value;
-    adress.street =  this.eventForm.get('street').value.split(' ').slice(0,-1).join(' ');
-    adress.streetNumber =  this.eventForm.get('street').value.split(' ').slice(-1)[0];
-    adress.country =  this.eventForm.get('country').value;
+    address.plz =  this.eventForm.get('plz').value;
+    address.city =  this.eventForm.get('city').value;
+    address.street =  this.eventForm.get('street').value.split(' ').slice(0,-1).join(' ');
+    address.streetNumber =  this.eventForm.get('street').value.split(' ').slice(-1)[0];
+    address.country =  this.eventForm.get('country').value;
 
-    event.adress = adress
+    event.address = address
 
     event.description = this.eventForm.get('description').value;
     event.link = this.eventForm.get('link').value;
@@ -241,7 +243,7 @@ export class EventViewComponent implements OnInit {
     console.log(event)
     event._id = this.updateEventId
     event.geo_data = this.geo_data
-    this.geoService.get_geo_data(adress.city, adress.street, adress.streetNumber).pipe(
+    this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
       map(geo_data => {
       event.geo_data.lat = geo_data[0].lat;
       event.geo_data.lon = geo_data[0].lon;
@@ -261,6 +263,7 @@ export class EventViewComponent implements OnInit {
     }
 
   setCategory(value){
+    console.log(value)
     this.category = value
   }
 

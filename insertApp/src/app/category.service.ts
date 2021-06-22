@@ -45,7 +45,6 @@ export class CategoryService {
         share());
         obs.toPromise().then(
           (response: Category) => {
-            console.log(response);
           }
         )
         return obs;

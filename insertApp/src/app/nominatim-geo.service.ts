@@ -21,7 +21,7 @@ export class NominatimGeoService {
           take(1),
           map(geo_data => {
                   if(Object.keys(geo_data).length < 1)
-                    throw console.error(("No coordinates found to given adress"));
+                    throw console.error(("No coordinates found to given address"));
                   return geo_data
                 }),
                 )

@@ -9,5 +9,8 @@ export class Category{
 }
 
 export class Subcategory{
+    _id: string;
     name: string;
+    iconTemporaryURL: SafeResourceUrl;
+    iconPath: string;
 }

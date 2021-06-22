@@ -4,7 +4,8 @@ export class Event {
     _id: string;
     name: string;
     _organizerId: string;
-    adress: Adress
+    organizerName: string;
+    address: Address
     date: Date;
     times:{
         start: string,
@@ -20,7 +21,7 @@ export class Event {
     };
 }
 
-export class Adress {
+export class Address {
     city: string;
     plz: string;
     street: string;
