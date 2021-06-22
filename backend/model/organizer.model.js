@@ -1,4 +1,3 @@
-const { Int32 } = require('mongodb');
 const mongoose = require('mongoose')
 
 const OrganizerSchema = new mongoose.Schema({
@@ -6,7 +5,7 @@ const OrganizerSchema = new mongoose.Schema({
     type: String,
     minlength: 3,
   },
-  adress: {
+  address: {
     plz: {
       type: String,
       minlength: 5,
@@ -39,8 +38,16 @@ const OrganizerSchema = new mongoose.Schema({
     },
     subcategories: [
       {
-        type: String,
-      },
+        _id: {
+          type: String,
+        },
+        name: {
+          type: String,
+        },
+        iconPath: {
+          type: String,
+        },
+      }
     ],
   },
   description: {
