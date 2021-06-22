@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CategoryService } from 'src/app/category.service';
 import {Category, Subcategory} from 'src/app/models/category';
@@ -28,34 +28,36 @@ export class CategoryViewComponent implements OnInit{
   constructor(
     private categoryService: CategoryService,
     private fileService: FileUploadService,
-    private sanitizer: DomSanitizer
-  ) { }
+    private sanitizer: DomSanitizer,
+
+) { }
 
   ngOnInit(): void {
     this.categoryService.categories.subscribe(cat => {
       this.categories = cat
+      console.log(this.categories)
     });
   }
+
   addNewCategory():void {
     let category = new Category();
     category.name = this.categoryName.value;
-    if(this.image){
+    if(this.image) {
       this.categoryService.createCategory(category).pipe(
-        map(catRes => {
+          map(catRes => {
             category = catRes
             const categoryImagePath = 'category_images/' + catRes._id
             const formdata: FormData = new FormData();
             formdata.append('file', this.image);
             formdata.append('file_path', categoryImagePath)
-            this.fileService.uploadFile(formdata).subscribe((response)=> {
+            this.fileService.uploadFile(formdata).subscribe((response) => {
               category.iconPath = response.path
-              this.categoryService.updateCategory(category._id, category).subscribe(x => console.log('cat: ', x) )
-          })
-        }),
-        share()
-        ).toPromise().then(() => { console.log(this.categories)
-    })
-      }
+              this.categoryService.updateCategory(category._id, category).subscribe(x => console.log('cat: ', x))
+
+            })
+          }),
+      )
+    }
       else{
           console.error('No image uploaded, but its necessary for a category!')
         }
@@ -85,7 +87,7 @@ export class CategoryViewComponent implements OnInit{
               category.subcategories.map(sub => {
                 if(sub._id == subcategory._id){ sub.iconPath = response.path }
               })
-              this.categoryService.updateCategory(category._id, category).subscribe(x => console.log('cat: ', x) )
+              this.categoryService.updateCategory(category._id, category).subscribe(console.log(this.categories) )
             })
           },
       )
