@@ -16,7 +16,10 @@ export class MapViewComponent implements OnInit, OnChanges {
   private positionIcon
   address = ""
 
-  current_position = []
+  current_position = {
+    lat: "",
+    lon: ""
+  }
 
   constructor(
     private positionService: PositionService,
@@ -27,7 +30,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     const iconRetinaUrl = './assets/marker-icon-2x.png';
     const iconUrl = './assets/marker-icon.png';
     const shadowUrl = './assets/marker-shadow.png';
-    this.iconDefault = L.icon({
+    this.iconDefault = new L.icon({
       iconRetinaUrl,
       iconUrl,
       shadowUrl,
@@ -38,11 +41,7 @@ export class MapViewComponent implements OnInit, OnChanges {
       shadowSize: [30, 30]
     });
 
-    this.positionIcon = L.icon({
-
-    })
-
-    this.current_position = this.positionService.getDefaultLocation()
+    this.updatePosition(this.positionService.getDefaultLocation())
 
     L.Marker.prototype.options.icon = this.iconDefault;
   }
@@ -51,9 +50,14 @@ export class MapViewComponent implements OnInit, OnChanges {
     return value.replace(/ /g, '+')
   }
 
+  updatePosition(location_list) {
+    this.current_position.lat = location_list[0]
+    this.current_position.lon = location_list[1]
+  }
+
   resetCenter() {
-    this.current_position = this.positionService.getCurrentPosition()
-    this.map.panTo((new L.LatLng(this.current_position[0], this.current_position[1])))
+    this.updatePosition(this.positionService.getCurrentPosition())
+    this.map.panTo((new L.LatLng(this.current_position.lat, this.current_position.lon)))
   }
 
   searchForLocationInput() {
@@ -86,14 +90,15 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private initMap(): void {
-    if (this.current_position.length === 0) {
-      this.current_position = this.positionService.getCurrentPosition()
+    if (this.current_position.lat === "" || this.current_position.lon === "") {
+      this.updatePosition(this.positionService.getCurrentPosition())
     }
     this.map = L.map('map', {
       center: this.current_position,
       zoom: 11
     });
 
+    L.circle([this.current_position.lat, this.current_position.lon], {color: 'red', fillColor: '#f03', radius: 50}).addTo(this.map);
     this.markerGroup = L.layerGroup().addTo(this.map);
   }
 
@@ -109,6 +114,3 @@ export class MapViewComponent implements OnInit, OnChanges {
     }
   }
 }
-
-
-// https://nominatim.openstreetmap.org/search?q=Philipp-Rosenthal-Straße+31,Leipzig&limit=2&format=json
