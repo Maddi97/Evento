@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit} from '@angular/core';
+import {Component, ElementRef, OnChanges, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CategoryService } from 'src/app/category.service';
 import {Category, Subcategory} from 'src/app/models/category';
