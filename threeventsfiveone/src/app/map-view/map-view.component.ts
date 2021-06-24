@@ -12,48 +12,52 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Input() marker_data = [];
   private map;
   private markerGroup
-  private iconDefault
-  private positionIcon
   address = ""
 
-  current_position = []
+  current_position = {
+    lat: "",
+    lon: ""
+  }
+
+  private defaultIconRetina = './assets/leaflet_color_markers/marker-icon-2x-blue.png';
+  private defaultIcon = './assets/leaflet_color_markers/marker-icon-blue.png';
+  private shadowUrl = './assets/leaflet_color_markers/marker-shadow.png';
+
+  private locationIcon = './assets/leaflet_color_markers/marker-icon-red.png';
+  private locationIconRetina = './assets/leaflet_color_markers/marker-icon-2x-red.png';
+
+  private LeafIcon = L.Icon.extend({
+    options: {
+      shadowUrl: this.shadowUrl,
+      iconSize: [16, 24],
+      iconAnchor: [8, 30],
+      popupAnchor: [1, -26],
+      tooltipAnchor: [10, -20],
+      shadowSize: [30, 30]
+    }
+  });
 
   constructor(
     private positionService: PositionService,
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    const iconRetinaUrl = './assets/marker-icon-2x.png';
-    const iconUrl = './assets/marker-icon.png';
-    const shadowUrl = './assets/marker-shadow.png';
-    this.iconDefault = L.icon({
-      iconRetinaUrl,
-      iconUrl,
-      shadowUrl,
-      iconSize: [16, 24],
-      iconAnchor: [8, 30],
-      popupAnchor: [1, -26],
-      tooltipAnchor: [10, -20],
-      shadowSize: [30, 30]
-    });
-
-    this.positionIcon = L.icon({
-
-    })
-
-    this.current_position = this.positionService.getDefaultLocation()
-
-    L.Marker.prototype.options.icon = this.iconDefault;
-  }
-
   sanitizeInput(value) {
     return value.replace(/ /g, '+')
   }
 
+  ngOnInit(): void {
+    this.updatePosition(this.positionService.getDefaultLocation())
+  }
+
+  updatePosition(location_list) {
+    this.current_position.lat = location_list[0]
+    this.current_position.lon = location_list[1]
+  }
+
   resetCenter() {
-    this.current_position = this.positionService.getCurrentPosition()
-    this.map.panTo((new L.LatLng(this.current_position[0], this.current_position[1])))
+    this.updatePosition(this.positionService.getCurrentPosition())
+    this.map.panTo((new L.LatLng(this.current_position.lat, this.current_position.lon)))
   }
 
   searchForLocationInput() {
@@ -86,14 +90,15 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private initMap(): void {
-    if (this.current_position.length === 0) {
-      this.current_position = this.positionService.getCurrentPosition()
+    if (this.current_position.lat === "" || this.current_position.lon === "") {
+      this.updatePosition(this.positionService.getCurrentPosition())
     }
     this.map = L.map('map', {
-      center: this.current_position,
+      center: [this.current_position.lat, this.current_position.lon],
       zoom: 11
     });
 
+    L.marker([this.current_position.lat, this.current_position.lon]).setIcon(new this.LeafIcon({iconUrl: this.locationIcon, iconRetinaUrl: this.locationIconRetina})).addTo(this.map);
     this.markerGroup = L.layerGroup().addTo(this.map);
   }
 
@@ -102,13 +107,12 @@ export class MapViewComponent implements OnInit, OnChanges {
     if (typeof marker_data != 'undefined') {
       marker_data.map(marker => {
         if (typeof marker.geo_data != 'undefined') {
-          L.marker([marker.geo_data.lat, marker.geo_data.lon], this.iconDefault)
+          L.marker([marker.geo_data.lat, marker.geo_data.lon])
+            .setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
             .addTo(this.markerGroup)
+            .on('click', () => {this.router.navigate(['/', 'full-event'], {fragment: marker._id})})
         }
       })
     }
   }
 }
-
-
-// https://nominatim.openstreetmap.org/search?q=Philipp-Rosenthal-Straße+31,Leipzig&limit=2&format=json
