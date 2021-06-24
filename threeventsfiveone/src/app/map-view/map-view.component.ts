@@ -12,8 +12,6 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Input() marker_data = [];
   private map;
   private markerGroup
-  private iconDefault
-  private positionIcon
   address = ""
 
   current_position = {
@@ -21,33 +19,35 @@ export class MapViewComponent implements OnInit, OnChanges {
     lon: ""
   }
 
-  constructor(
-    private positionService: PositionService,
-    private router: Router
-  ) {}
+  private defaultIconRetina = './assets/leaflet_color_markers/marker-icon-2x-blue.png';
+  private defaultIcon = './assets/leaflet_color_markers/marker-icon-blue.png';
+  private shadowUrl = './assets/leaflet_color_markers/marker-shadow.png';
 
-  ngOnInit(): void {
-    const iconRetinaUrl = './assets/marker-icon-2x.png';
-    const iconUrl = './assets/marker-icon.png';
-    const shadowUrl = './assets/marker-shadow.png';
-    this.iconDefault = new L.icon({
-      iconRetinaUrl,
-      iconUrl,
-      shadowUrl,
+  private locationIcon = './assets/leaflet_color_markers/marker-icon-red.png';
+  private locationIconRetina = './assets/leaflet_color_markers/marker-icon-2x-red.png';
+
+  private LeafIcon = L.Icon.extend({
+    options: {
+      shadowUrl: this.shadowUrl,
       iconSize: [16, 24],
       iconAnchor: [8, 30],
       popupAnchor: [1, -26],
       tooltipAnchor: [10, -20],
       shadowSize: [30, 30]
-    });
+    }
+  });
 
-    this.updatePosition(this.positionService.getDefaultLocation())
-
-    L.Marker.prototype.options.icon = this.iconDefault;
-  }
+  constructor(
+    private positionService: PositionService,
+    private router: Router
+  ) {}
 
   sanitizeInput(value) {
     return value.replace(/ /g, '+')
+  }
+
+  ngOnInit(): void {
+    this.updatePosition(this.positionService.getDefaultLocation())
   }
 
   updatePosition(location_list) {
@@ -94,11 +94,11 @@ export class MapViewComponent implements OnInit, OnChanges {
       this.updatePosition(this.positionService.getCurrentPosition())
     }
     this.map = L.map('map', {
-      center: this.current_position,
+      center: [this.current_position.lat, this.current_position.lon],
       zoom: 11
     });
 
-    L.circle([this.current_position.lat, this.current_position.lon], {color: 'red', fillColor: '#f03', radius: 50}).addTo(this.map);
+    L.marker([this.current_position.lat, this.current_position.lon]).setIcon(new this.LeafIcon({iconUrl: this.locationIcon, iconRetinaUrl: this.locationIconRetina})).addTo(this.map);
     this.markerGroup = L.layerGroup().addTo(this.map);
   }
 
@@ -107,8 +107,10 @@ export class MapViewComponent implements OnInit, OnChanges {
     if (typeof marker_data != 'undefined') {
       marker_data.map(marker => {
         if (typeof marker.geo_data != 'undefined') {
-          L.marker([marker.geo_data.lat, marker.geo_data.lon], this.iconDefault)
+          L.marker([marker.geo_data.lat, marker.geo_data.lon])
+            .setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
             .addTo(this.markerGroup)
+            .on('click', () => {this.router.navigate(['/', 'full-event'], {fragment: marker._id})})
         }
       })
     }
