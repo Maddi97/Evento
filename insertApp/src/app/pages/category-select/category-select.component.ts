@@ -25,7 +25,7 @@ export class CategorySelectComponent implements OnInit, OnChanges {
   filteredOptions: Observable<string[]>;
 
   constructor(
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
   ) { }
 
   ngOnInit(): void {
