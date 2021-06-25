@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnChanges, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CategoryService } from 'src/app/category.service';
 import {Category, Subcategory} from 'src/app/models/category';
@@ -60,15 +60,15 @@ export class CategoryViewComponent implements OnInit{
       this.resetForms()
       return
     }
-    if(this.image){
+    if(this.image) {
       this.categoryService.createCategory(category).pipe(
-        map(catRes => {
+          map(catRes => {
             category = catRes
             const categoryImagePath = 'category_images/' + catRes._id
             const formdata: FormData = new FormData();
             formdata.append('file', this.image);
             formdata.append('file_path', categoryImagePath)
-            this.fileService.uploadFile(formdata).subscribe((response)=> {
+            this.fileService.uploadFile(formdata).subscribe((response) => {
               category.iconPath = response.path
               this.categoryService.updateCategory(category._id, category).subscribe(
                   category => this.openSnackBar("Successfully uploaded category: "+ category.name, 'success'),
@@ -84,7 +84,6 @@ export class CategoryViewComponent implements OnInit{
       else{
         this.openSnackBar('No image uploaded, but its necessary for a category!', 'error')
         this.resetForms()
-
     }
   }
 
@@ -96,12 +95,12 @@ export class CategoryViewComponent implements OnInit{
   }
 
   addNewSubcategory(category: Category): void {
-    if(this.image.size > this._max_image_size){
+    if(this.image && this.image.size > this._max_image_size){
       this.openSnackBar('File size too big!', 'error')
       this.resetForms()
       return
     }
-    if(!this._allowed_image_types.includes(this.image.type)) {
+    if(this.image && !this._allowed_image_types.includes(this.image.type)) {
       this.openSnackBar('File type ' + this.image.type + ' is not allowed', 'error')
       this.resetForms()
       return
@@ -197,8 +196,9 @@ export class CategoryViewComponent implements OnInit{
     });
   }
   resetForms(){
-    this.categoryName.reset()
-    this.subcategoryName.reset()
+    this.categoryName.reset();
+    this.subcategoryName.reset();
+    this.image = null;
     this.inputCat.nativeElement.value = '';
     this.inputSubcat.nativeElement.value = '';
     this.inputUpdateSubcat.nativeElement.value = '';

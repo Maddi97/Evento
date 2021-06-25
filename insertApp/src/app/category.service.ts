@@ -45,6 +45,9 @@ export class CategoryService {
         share());
         obs.toPromise().then(
           (response: Category) => {
+              const tempEvent = this._categories.getValue();
+              tempEvent.push(response);
+              this._categories.next(tempEvent);
           }
         )
         return obs;

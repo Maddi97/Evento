@@ -1,0 +1,10 @@
+.subcategory-form{
+    margin: 2rem;
+    box-shadow: 0px 0px 0px 4px rgba(0, 0, 0, 0.2),0px 1px 1px 0px rgba(0, 0, 0, 0.14),0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;
+}
+
+.upload-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}

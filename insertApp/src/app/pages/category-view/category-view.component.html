@@ -17,9 +17,9 @@
      </div>
     </div>
 
-<div style="width: 90%; margin-top: 3em;">
+<div style="width: 90%; margin-top: 3em;" *ngFor="let category of categories" [categories]>
     <mat-accordion>
-      <div *ngFor="let category of categories" fxLayout="column" fxLayoutAlign="center center">
+      <div  fxLayout="column" fxLayoutAlign="center center">
       <mat-expansion-panel style="max-width: 100%; width: 75%; margin-top: 1em;">
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -29,9 +29,10 @@
           <div (click)="deleteCategory(category)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;margin-right: 1em;"fxLayoutAlign="center center">
             Delete
         </div>
-
         </mat-expansion-panel-header>
+
         <div style="width: 85%;">
+            <mat-card class="subcategory-form">
             <mat-form-field appearance="fill" style="width: 100%;">
                 <mat-label>Add Subcategory</mat-label>
                 <input matInput #target required="true" [formControl]="subcategoryName" (keydown.enter)="addNewSubcategory(category); target.value = ''">
@@ -39,9 +40,12 @@
             </mat-form-field>
             <span class='col'><input type='file' #imageUploadSubcat (input)=fileChosen($event)></span>
             <button class='btn btn-warning' (click)="addNewSubcategory(category)">Add Subcategory</button>
+            </mat-card>
         </div>
-        <div *ngFor="let sub of category.subcategories" fxLayout="column">
-          <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
+
+        <div *ngFor="let sub of category.subcategories " fxLayout="column">
+            <div style="border-radius: 10px; border-style:groove; margin: 1rem; width:85%" >
+            <div style="height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
             <div style="width: 80%;" fxLayoutAlign="start center" (click)="this.clickSubcategory(sub._id)">
               {{sub.name}}
             </div>
@@ -49,11 +53,12 @@
                 Delete
             </div>
         </div>
-            <div *ngIf="sub._id === this.clickedSubcategory">
+            <div *ngIf="sub._id === this.clickedSubcategory" style="margin:1rem">
                 <span class='col'><input type='file' #imageUploadUpdateSubcategory (input)=fileChosen($event)></span>
-                <button class='btn btn-warning' (click)="updateSubcategoryIcon()">Update Subcategory </button>
+                <button class='mat-raised-button color="primary"' (click)="uploadNewSubcategoryIcon()">Update Subcategory </button>
+        </div>
             </div>
-      </div>
+        </div>
       </mat-expansion-panel>
     </div>
 
