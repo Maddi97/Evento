@@ -68,7 +68,7 @@ import { MapViewComponent} from './map-view/map-view.component'
     MatDatepickerModule,
     MatNativeDateModule,
     MatAutocompleteModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
