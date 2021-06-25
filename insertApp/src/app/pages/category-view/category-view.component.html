@@ -5,10 +5,11 @@
     <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
         <mat-form-field appearance="fill" style="width: 100%;">
           <mat-label>Add Category</mat-label>
-          <input matInput #target required="true" [formControl]="categoryName" (keydown.enter)="addNewCategory(); target.value = ''">
+          <input matInput #target required="true" minlength="2" [formControl]="categoryName" (keydown.enter)="addNewCategory(); target.value = ''">
+            <mat-error *ngIf="categoryName.invalid">Category name minimum length is 2</mat-error>
         </mat-form-field>
-        <span class='col'><input type='file' (input)=fileChosen($event)></span>
-        <button class='btn btn-warning' [formControl]="categoryName" (click)="addNewCategory(); target.value = ''">Add Category</button>
+        <span class='col'><input type='file' #imageUpload (input)=fileChosen($event)></span>
+        <button class='btn btn-warning' (click)="addNewCategory()">Add Category</button>
       </div>
       <div *ngIf='uploadedFile'>
       <div>{{uploadedFile.path}}</div>
@@ -19,7 +20,6 @@
 <div style="width: 90%; margin-top: 3em;" *ngFor="let category of categories" [categories]>
     <mat-accordion>
       <div  fxLayout="column" fxLayoutAlign="center center">
-
       <mat-expansion-panel style="max-width: 100%; width: 75%; margin-top: 1em;">
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -36,12 +36,10 @@
             <mat-form-field appearance="fill" style="width: 100%;">
                 <mat-label>Add Subcategory</mat-label>
                 <input matInput #target required="true" [formControl]="subcategoryName" (keydown.enter)="addNewSubcategory(category); target.value = ''">
-              </mat-form-field>
-                <div class="upload-buttons">
-            <span class='col'><input type='file' (input)=fileChosen($event)></span>
-            <button class='mat-raised-button color="primary"' (click)="addNewSubcategory(category)">Add Subcategory</button>
-                </div>
-            </mat-card>
+                <mat-error *ngIf="subcategoryName.invalid">Subcategory name minimum length is 2</mat-error>
+            </mat-form-field>
+            <span class='col'><input type='file' #imageUploadSubcat (input)=fileChosen($event)></span>
+            <button class='btn btn-warning' (click)="addNewSubcategory(category)">Add Subcategory</button>
         </div>
         <div *ngFor="let sub of category.subcategories " fxLayout="column">
             <div style="border-radius: 10px; border-style:groove; margin: 1rem; width:85%" >
@@ -54,9 +52,8 @@
             </div>
         </div>
             <div *ngIf="sub._id === this.clickedSubcategory" style="margin:1rem">
-                <span class='col'><input type='file' (input)=fileChosen($event)></span>
+                <span class='col'><input type='file' #imageUploadUpdateSubcategory (input)=fileChosen($event)></span>
                 <button class='mat-raised-button color="primary"' (click)="uploadNewSubcategoryIcon()">Update Subcategory </button>
-            </div>
         </div>
         </div>
       </mat-expansion-panel>

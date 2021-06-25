@@ -1,6 +1,7 @@
 /**/node_modules/
 backend/category_images/
 /**/package-lock.json
+/**/yarn.lock
 .idea
 .env.prod
 
