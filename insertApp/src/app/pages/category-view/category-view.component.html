@@ -29,8 +29,8 @@
           <div (click)="deleteCategory(category)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;margin-right: 1em;"fxLayoutAlign="center center">
             Delete
         </div>
-
         </mat-expansion-panel-header>
+
         <div style="width: 85%;">
             <mat-card class="subcategory-form">
             <mat-form-field appearance="fill" style="width: 100%;">
@@ -40,7 +40,9 @@
             </mat-form-field>
             <span class='col'><input type='file' #imageUploadSubcat (input)=fileChosen($event)></span>
             <button class='btn btn-warning' (click)="addNewSubcategory(category)">Add Subcategory</button>
+            </mat-card>
         </div>
+
         <div *ngFor="let sub of category.subcategories " fxLayout="column">
             <div style="border-radius: 10px; border-style:groove; margin: 1rem; width:85%" >
             <div style="height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
@@ -55,6 +57,7 @@
                 <span class='col'><input type='file' #imageUploadUpdateSubcategory (input)=fileChosen($event)></span>
                 <button class='mat-raised-button color="primary"' (click)="uploadNewSubcategoryIcon()">Update Subcategory </button>
         </div>
+            </div>
         </div>
       </mat-expansion-panel>
     </div>

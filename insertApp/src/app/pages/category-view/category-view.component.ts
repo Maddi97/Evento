@@ -95,12 +95,12 @@ export class CategoryViewComponent implements OnInit{
   }
 
   addNewSubcategory(category: Category): void {
-    if(this.image.size > this._max_image_size){
+    if(this.image && this.image.size > this._max_image_size){
       this.openSnackBar('File size too big!', 'error')
       this.resetForms()
       return
     }
-    if(!this._allowed_image_types.includes(this.image.type)) {
+    if(this.image && !this._allowed_image_types.includes(this.image.type)) {
       this.openSnackBar('File type ' + this.image.type + ' is not allowed', 'error')
       this.resetForms()
       return
@@ -196,8 +196,9 @@ export class CategoryViewComponent implements OnInit{
     });
   }
   resetForms(){
-    this.categoryName.reset()
-    this.subcategoryName.reset()
+    this.categoryName.reset();
+    this.subcategoryName.reset();
+    this.image = null;
     this.inputCat.nativeElement.value = '';
     this.inputSubcat.nativeElement.value = '';
     this.inputUpdateSubcat.nativeElement.value = '';

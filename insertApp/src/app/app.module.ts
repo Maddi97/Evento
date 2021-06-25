@@ -69,6 +69,7 @@ import { MapViewComponent} from './map-view/map-view.component'
         MatNativeDateModule,
         MatAutocompleteModule,
         ReactiveFormsModule,
+        MatCardModule,
         MatCardModule
     ],
   providers: [],
