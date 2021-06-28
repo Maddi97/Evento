@@ -24,7 +24,6 @@ export class FullEventComponent implements OnInit {
     this.route.fragment.subscribe(r => {
       this.eventId = r;
       this.event = this.eventService.eventForId(this.eventId);
-      console.log(this.event);
     });
   }
 

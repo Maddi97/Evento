@@ -7,6 +7,7 @@ import { map, share } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
 import {MatSnackBar} from '@angular/material/snack-bar'
 import { ViewChild } from '@angular/core';
+import * as log from "loglevel";
 
 
 
@@ -171,7 +172,6 @@ export class CategoryViewComponent implements OnInit{
   }
 
   clickSubcategory(id){
-    console.log(id, this.clickedSubcategory)
     if(id == this.clickedSubcategory) {
       this.clickedSubcategory = 0
     }
@@ -181,7 +181,7 @@ export class CategoryViewComponent implements OnInit{
   }
 
   updateSubcategoryIcon(){
-    console.log("to implement")
+    log.debug("to implement")
     this.resetForms()
   }
 

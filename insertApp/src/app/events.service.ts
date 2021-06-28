@@ -52,7 +52,6 @@ export class EventsService {
         (response: Event) => {
           const tempEvent = this._events.getValue();
           let indeX: number;
-          console.log(tempEvent)
           tempEvent.map((event: Event, index) => {
             if (event._id === eventId) {
               indeX = index;

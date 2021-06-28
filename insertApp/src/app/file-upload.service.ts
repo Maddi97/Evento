@@ -3,6 +3,7 @@ import { WebService } from './web.service';
 import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
 import { HttpRequest } from '@angular/common/http';
 import { filter, map, catchError, share } from 'rxjs/operators';
+import * as log from "loglevel";
 @Injectable({
   providedIn: 'root'
 })
@@ -28,7 +29,7 @@ export class FileUploadService {
         share());
         obs.toPromise().then(
           (response: any) => {
-            console.log(response);
+            log.debug(response);
           }
         )
         return obs;
@@ -43,7 +44,7 @@ export class FileUploadService {
       share());
     obs.toPromise().then(
       (response: any) => {
-        console.log(response);
+        log.debug(response);
       }
     )
     return obs;

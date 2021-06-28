@@ -9,6 +9,7 @@ import { Category } from 'src/app/models/category';
 import { CategoryService } from 'src/app/category.service';
 import { NominatimGeoService } from '../../nominatim-geo.service'
 import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
+import * as log from "loglevel";
 
 
 
@@ -128,14 +129,14 @@ export class EventViewComponent implements OnInit {
       }),
       share()
       ).toPromise().then( undefined =>
-        this.eventService.createEvent(event).subscribe(event_response => console.log(event_response))
+        this.eventService.createEvent(event).subscribe(event_response => log.debug(event_response))
       )
 
 
 
 
     // geo_data is observable
-    console.log(event)
+    log.debug(event)
     organizer.lastUpdated = new Date()
     this.organizerService.updateOrganizer(organizer._id, organizer).subscribe()
     this.nullFormField();
@@ -143,7 +144,7 @@ export class EventViewComponent implements OnInit {
 
 
   insertOrgInfo(org: Organizer) {
-      console.log(org)
+    log.debug(org)
     this.eventForm.get('plz').setValue(org.address.plz);
     this.eventForm.get('city').setValue(org.address.city);
     this.eventForm.get('street').setValue(org.address.street + ' ' + org.address.streetNumber);
@@ -189,7 +190,7 @@ export class EventViewComponent implements OnInit {
   }
 
   setEventForm(event: Event) : void{
-    console.log(event)
+    log.debug(event)
     this.updateEventId = event._id
     const organizer = this.organizers.find(org => org._id === event._organizerId)
     this.organizerName.setValue(organizer.name)
@@ -240,7 +241,6 @@ export class EventViewComponent implements OnInit {
     event.date = date
     const time = {start:this.times.start.value, end: this.times.end.value}
     event.times = time
-    console.log(event)
     event._id = this.updateEventId
     event.geo_data = this.geo_data
     this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
@@ -251,7 +251,7 @@ export class EventViewComponent implements OnInit {
       share()
       ).toPromise().then( moin =>
         {
-          this.eventService.updateEvent(event._organizerId,event._id, event).subscribe( event => console.log(event))
+          this.eventService.updateEvent(event._organizerId,event._id, event).subscribe( event => log.debug(event))
           organizer.lastUpdated = new Date()
           this.organizerService.updateOrganizer(organizer._id, organizer)
         }
@@ -263,7 +263,6 @@ export class EventViewComponent implements OnInit {
     }
 
   setCategory(value){
-    console.log(value)
     this.category = value
   }
 
