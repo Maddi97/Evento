@@ -96,9 +96,6 @@ export class EventsComponent implements OnInit {
         this.filteredCategoryIDs.push(matchingCategory[0]._id);
         this.filteredSubcategories.push(data.subcategory);
         this.filter();
-      } else if (data.mapUpdate !== undefined) {
-        this.mapView = false;
-        this.filter();
       }
       this.router.navigate(['/', 'events']);
     });
