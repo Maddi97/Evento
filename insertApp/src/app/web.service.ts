@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import {environment} from "../environments/environment";
+import * as log from "loglevel";
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +19,11 @@ export class WebService {
    }
 
    post(uri: string, payload: Object) {
-    console.log(payload)
+    log.info(payload)
     return this.http.post(`${this.ROOT_URL}/${uri}`, payload)
   }
   get_file(uri: string, payload: Object) {
-    console.log(payload)
+    log.info(payload)
     return this.http.post(`${this.ROOT_URL}/${uri}`, payload, { responseType: 'blob' })
   }
 
@@ -31,8 +32,8 @@ export class WebService {
   }
 
   patch(uri: string, payload: Object) {
-    console.log(payload)
-    console.log(uri)
+    log.info(payload)
+    log.info(uri)
     return this.http.patch(`${this.ROOT_URL}/${uri}`, payload)
   }
 

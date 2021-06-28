@@ -3,9 +3,13 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import * as log from 'loglevel';
 
 if (environment.production) {
   enableProdMode();
+  log.disableAll();
+} else {
+  log.enableAll();
 }
 
 platformBrowserDynamic().bootstrapModule(AppModule)
