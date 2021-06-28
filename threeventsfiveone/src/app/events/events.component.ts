@@ -7,6 +7,7 @@ import {PositionService} from '../map-view/position.service';
 import {NominatimGeoService} from '../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ActivatedRoute, Router} from '@angular/router';
+import * as log from 'loglevel';
 
 @Component({
   selector: 'vents-events',
@@ -80,7 +81,6 @@ export class EventsComponent implements OnInit {
     });
 
     this.route.queryParams.subscribe(data => {
-      console.log(data);
       if (data.subcategory !== undefined) {
         const matchingCategory: Category[] = [];
         this.categoryList.forEach(category => {
@@ -121,7 +121,7 @@ export class EventsComponent implements OnInit {
   }
 
   applyFilters() {
-    console.log('Filtering');
+    log.info('Filtering')
     let newFilteredList = this.eventList;
 
     // Filter By Date
@@ -223,7 +223,6 @@ export class EventsComponent implements OnInit {
         index += 1;
       });
       this.filteredSubcategories.splice(index, 1);
-      console.log(this.categoryList);
     } else {
       this.filteredSubcategories.push(subcategory);
     }
@@ -235,7 +234,7 @@ export class EventsComponent implements OnInit {
       this.eventDistances = {};
 
       if (this.distanceChanged || this.positionChanged) {
-        console.log('Updating distances!');
+        log.info('Updating distances!');
         const promises = [];
 
         this.currentPosition = this.positionService.getCurrentPosition();
@@ -252,7 +251,7 @@ export class EventsComponent implements OnInit {
           this.filterListByDistance();
           this.distanceChanged = false;
           this.positionChanged = false;
-          console.log('Distances updated!');
+          log.info('Distances updated!');
           resolve();
         });
       } else {
