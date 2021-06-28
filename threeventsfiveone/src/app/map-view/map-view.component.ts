@@ -12,6 +12,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Input() marker_data = [];
   private map;
   private markerGroup
+  private positionMarkerGroup
   address = ""
 
   current_position = {
@@ -57,6 +58,7 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   resetCenter() {
     this.updatePosition(this.positionService.getCurrentPosition())
+    this.setPositionMarker()
     this.map.panTo((new L.LatLng(this.current_position.lat, this.current_position.lon)))
   }
 
@@ -65,14 +67,12 @@ export class MapViewComponent implements OnInit, OnChanges {
 
     this.positionService.getPositionByInput(address).toPromise().then(() => {
       this.resetCenter()
-      this.router.navigate(['/', 'events'], {queryParams: {'mapUpdate': true}})
     })
   }
 
   getCurrentPosition() {
     this.positionService.getPositionByLocation().then(() => {
       this.resetCenter()
-      this.router.navigate(['/', 'events'], {queryParams: {'mapUpdate': true}})
     })
   }
 
@@ -86,6 +86,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     });
     tiles.addTo(this.map);
 
+    this.setPositionMarker()
     this.setMarkers(this.marker_data)
   }
 
@@ -98,8 +99,15 @@ export class MapViewComponent implements OnInit, OnChanges {
       zoom: 11
     });
 
-    L.marker([this.current_position.lat, this.current_position.lon]).setIcon(new this.LeafIcon({iconUrl: this.locationIcon, iconRetinaUrl: this.locationIconRetina})).addTo(this.map);
+    this.positionMarkerGroup = L.layerGroup().addTo(this.map);
     this.markerGroup = L.layerGroup().addTo(this.map);
+  }
+
+  private setPositionMarker(): void {
+    this.positionMarkerGroup.clearLayers();
+    L.marker([this.current_position.lat, this.current_position.lon])
+      .setIcon(new this.LeafIcon({iconUrl: this.locationIcon, iconRetinaUrl: this.locationIconRetina}))
+      .addTo(this.positionMarkerGroup);
   }
 
   private setMarkers(marker_data): void {

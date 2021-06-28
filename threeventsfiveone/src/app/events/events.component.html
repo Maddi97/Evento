@@ -3,7 +3,7 @@
        fxLayoutAlign="start center">
     <vents-date-picker style="width: 100%;" (clickedDate)="searchForDay($event)"></vents-date-picker>
     <div style="margin-top: 1rem;" fxLayout="column" style="margin-bottom: 5rem; width: 100%;">
-      <div fxLayout="row" fxLayoutAlign="start center" style="margin-bottom: .5rem;">
+      <div fxLayout="row" fxLayoutAlign="end center" style="margin-bottom: .5rem;">
         <div *ngIf="this.mapView" fxLayout="row" fxLayoutAlign="space-around center">
           <mat-icon class="icon" (click)="changeToMapView()">
             event
@@ -14,13 +14,8 @@
             map
           </mat-icon>
         </div>
-        <div fxLayout fxLayoutAlign="end center" style="width: 100%;">
-          <mat-icon class="icon" (click)="isDropdown = !isDropdown">
-            keyboard_arrow_down
-          </mat-icon>
-        </div>
       </div>
-      <div *ngIf="isDropdown" fxLayout="column" style="margin-bottom: .5rem;">
+      <div fxLayout="column" style="margin-bottom: .5rem;">
         <div>
           <input class="event-search-input" type="text" placeholder="Search For Event" [(ngModel)]="filteredText"
                  (keyup)="filter()">
