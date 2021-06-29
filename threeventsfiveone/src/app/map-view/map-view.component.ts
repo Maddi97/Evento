@@ -60,6 +60,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     this.updatePosition(this.positionService.getCurrentPosition())
     this.setPositionMarker()
     this.map.panTo((new L.LatLng(this.current_position.lat, this.current_position.lon)))
+    this.router.navigate(['/', 'events'], {queryParams: {'positionUpdate': true}})
   }
 
   searchForLocationInput() {
