@@ -92,7 +92,15 @@
   </mat-form-field>
 </div>
 
-      <div fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
+<div class="radio-group-permanent-event">
+    <label id="permanent-radio-group-label">Is event permanent?</label>
+    <mat-radio-group  formControlName="permanent">
+        <mat-radio-button value="true">Yes</mat-radio-button>
+        <mat-radio-button value="false">No</mat-radio-button>
+    </mat-radio-group>
+</div>
+
+      <div *ngIf="eventForm.get('permanent').value === 'false'" fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
         <div>
           <mat-form-field appearance="fill">
             <mat-label>Choose a date</mat-label>
@@ -126,7 +134,7 @@
     </form>
     
     <div fxLayout="column" fxLayoutAlign="spacing-around center" style="margin: 1em;">
-      <button  mat-raised-button color="primary" (click)="updateEventId !== '' ? updateEvent() : addNewEvent()" [disabled]="eventForm.invalid" style="width: 100%; cursor: pointer;"fxLayoutAlign="center center">
+      <button  mat-raised-button color="primary" (click)="updateEventId !== '' ? updateEvent() : addNewEvent()" [disabled]="checkDisabled()" style="width: 100%; cursor: pointer;"fxLayoutAlign="center center">
           {{ updateEventId !== '' ? 'Update' : 'Submit'}}
       </button>
       <button  mat-raised-button color="secondary" (click)="nullFormField()" style="width: 100%;cursor: pointer; margin-top:1em;"fxLayoutAlign="center center">

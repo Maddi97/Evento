@@ -15,6 +15,7 @@ export class Event {
     description: string;
     link: string;
     price: string;
+    permanent: boolean;
     geo_data:{
         lat: string,
         lon: string,

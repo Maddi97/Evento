@@ -85,6 +85,10 @@ const EventSchema = new mongoose.Schema({
     },
   },
 
+  permanent: {
+    type: Boolean,
+  },
+
   times: {
     start: {
       type: String,

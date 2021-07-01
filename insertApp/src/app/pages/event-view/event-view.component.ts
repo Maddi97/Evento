@@ -12,7 +12,6 @@ import { Observable, throwError as observableThrowError, BehaviorSubject } from 
 import * as log from "loglevel";
 
 
-
 @Component({
   selector: 'app-event-view',
   templateUrl: './event-view.component.html',
@@ -33,7 +32,8 @@ export class EventViewComponent implements OnInit {
     country: new FormControl('Deutschland', []),
     description: new FormControl('', []),
     link: new FormControl('', []),
-    price: new FormControl('', [])
+    price: new FormControl('', []),
+    permanent: new FormControl('false', [])
 
   })
 
@@ -111,6 +111,7 @@ export class EventViewComponent implements OnInit {
     event.description = this.eventForm.get('description').value;
     event.link = this.eventForm.get('link').value;
     event.price = this.eventForm.get('price').value;
+    event.permanent = this.eventForm.get('permanent').value;
     event.category = this.category;
     let date =  this.date.value;
     date.setDate(date.getDate() + 1)
@@ -162,9 +163,10 @@ export class EventViewComponent implements OnInit {
       country: 'Deutschland',
       description: '',
       link: '',
+      permanent: 'false',
       price: ''
     })
-    this.category = new Category()
+    this.category = undefined
     this.date.setValue(new Date())
     this.times.start.setValue('00:00')
     this.times.end.setValue('00:00')
@@ -204,6 +206,7 @@ export class EventViewComponent implements OnInit {
       country: event.address.country,
       description: event.description,
       link: event.link,
+      permanent: String(event.permanent),
       price: event.price
     })
     this.category = event.category
@@ -234,6 +237,7 @@ export class EventViewComponent implements OnInit {
     event.description = this.eventForm.get('description').value;
     event.link = this.eventForm.get('link').value;
     event.price = this.eventForm.get('price').value;
+    event.permanent = this.eventForm.get('permanent').value;
     event.category = this.category;
     let date =  this.date.value;
     date.setDate(date.getDate() + 1)
@@ -318,6 +322,11 @@ getColor(organizer: Organizer): string{
     return 'lightgreen'
   }
 }
+
+  checkDisabled(){
+    if(!this.eventForm.invalid && this.category !== undefined) return false
+    else return true
+  }
 
 }
 
