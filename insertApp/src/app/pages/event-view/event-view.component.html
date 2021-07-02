@@ -27,6 +27,8 @@
         </mat-form-field>
       </div>
 
+    <mat-slide-toggle [formControl]="toggleIsChecked">Address or coordinates?</mat-slide-toggle>
+    <div *ngIf="toggleIsChecked.value">
       <div class="city"style="width: 100%;" fxLayoutAlign="center center" fxLayout="row" >
         <div style="width: 50%;" fxLayoutAlign="center center">
           <mat-form-field appearance="fill" style="width: 100%;">
@@ -63,7 +65,19 @@
           <input matInput #target required="true" formControlName="streetNumber" (keydown.enter)="addNewEvent(); target.value = ''">
           </mat-form-field>
       </div> -->
-  </div>
+     </div>
+    </div>
+
+        <div class="coordinates" *ngIf="!toggleIsChecked.value">
+            <div style="width: 85%;" fxLayout="column">
+                <mat-form-field appearance="fill" style="width: 90%;">
+                    <mat-label>Coordinates:</mat-label>
+                    <input matInput #target required formControlName="coord" (keydown.enter)="addNewEvent(); target.value = ''">
+                    <mat-error *ngIf="eventForm.get('coord').hasError('required')">Coords are required if no Address is given</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
 
 <div class="category" style="width: 100%;" fxLayoutAlign="center center"   >
   <mat-card style="width: 100%;">
@@ -100,16 +114,21 @@
     </mat-radio-group>
 </div>
 
-      <div *ngIf="eventForm.get('permanent').value === 'false'" fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
-        <div>
-          <mat-form-field appearance="fill">
-            <mat-label>Choose a date</mat-label>
-            <input matInput [matDatepicker]="picker" (dateChange)= "setDate($event.value)" [formControl]="date">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
+        <div *ngIf="eventForm.get('permanent').value === 'false'" fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
+            <div>
+                <mat-form-field appearance="fill">
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Start date">
+                    <input matEndDate formControlName="end" placeholder="End date">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </div>
         </div>
-      </div>
+
+
 
       <div fxLayout="row" fxLayoutAlign="space-between center">
         <div style="padding-left: 1rem;" fxLayout="row">

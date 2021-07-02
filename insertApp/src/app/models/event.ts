@@ -6,7 +6,10 @@ export class Event {
     _organizerId: string;
     organizerName: string;
     address: Address
-    date: Date;
+    date: {
+        start: Date;
+        end: Date;
+    };
     times:{
         start: string,
         end: string

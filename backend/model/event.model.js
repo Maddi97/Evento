@@ -73,8 +73,13 @@ const EventSchema = new mongoose.Schema({
   },
 
   date: {
-    type: Date,
-  },
+    start: {
+      type: Date,
+    },
+    end: {
+      type: Date,
+    },
+    },
 
   geo_data: {
     lat: {
