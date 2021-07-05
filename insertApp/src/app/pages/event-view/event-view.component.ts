@@ -78,6 +78,7 @@ export class EventViewComponent implements OnInit {
     this.organizerService.organizers.subscribe(org => this.organizers = org);
     this.eventService.getAllUpcomingEvents().subscribe(x => console.log(x))
     this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
+    this.eventService.getEventsOnDate(new Date()).subscribe(x => console.log(x))
     this.filteredOptions = this.organizerName.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value)),

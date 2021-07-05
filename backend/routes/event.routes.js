@@ -16,15 +16,17 @@ router.get('/organizer/:organizerId/events', (req, res) => {
 });
 
 
-router.get('/eventOnDate', (req, res) => {
-    date = new Date(req.query.date)
-    Event.find({
-        $and: [
-            {'date.start': { $gte: date.setDate(date.getDate() - 1)}},
-            {'date.end': { $lte: date.setDate(date.getDate() +1)}}  //-1 um den heutigen Tag mit zu finden
-        ]
+router.post('/eventOnDate', (req, res) => {
+    date = new Date(req.body.date)
+    console.log(date)
+    Event.find(
+            {'date.start': { $gte: date.setDate(date.getDate() - 1 )}},
+            //{'date.end': { $lte: date.setDate(date.getDate() +1 )}}  //-1 um den heutigen Tag mit zu finden
+    )
+    .then((events) => {
+        res.send(events);
+        console.log(events)
     })
-    .then((events) => res.send(events))
     .catch((error) => console.log(error))
 });
 

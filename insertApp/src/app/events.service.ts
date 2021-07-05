@@ -106,6 +106,20 @@ export class EventsService {
        return obs;
     }
 
+    getEventsOnDate(date: Date): Observable<Event[]>{
+        const obs = this.webService.post('eventOnDate', { date }).pipe(
+            map((res: HttpRequest<any>) => res as unknown as Event[]),
+            catchError((error: any) => {
+                console.error('an error occured', error);
+                return observableThrowError(error.error.message || error);
+            }),
+            share());
+        obs.toPromise().then((response) => {
+            this._events.next(response);
+        })
+        return obs;
+    }
+
     deletEvent(organizerId: string, id){
       const obs = this.webService.delete(`organizer/${organizerId}/events/${id}`).pipe(
         map((r: HttpRequest<any>) => r as unknown as Event),
