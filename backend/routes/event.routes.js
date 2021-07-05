@@ -65,6 +65,16 @@ router.get('/upcomingEvents', (req, res) => {
 });
 
 
+router.post('/getEventsOnCategory', (req, res) =>{
+    const id = req.body.category._id
+    console.log(req.body.category._id)
+    Event.find({ "category._id": { id } } )
+        .then((events)=> {
+            res.send(events);
+            console.log(events)
+        })
+        .catch((error) =>console.log(error))
+})
 
 router.get('/organizer/:organizerId/upcomingEvents', (req, res) => {
 
