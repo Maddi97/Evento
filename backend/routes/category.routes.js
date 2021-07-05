@@ -22,12 +22,10 @@ router.delete('/category/:categoryId', (req, res) =>{
 });
 
 router.patch('/category/:categoryId', (req, res) => {
-    console.log('req' , req.body.category)
 
     Category.findByIdAndUpdate({ _id: req.params.categoryId } , { $set: req.body.category },{ returnOriginal: false },
     )
     .then((category) => {
-        console.log(category)
         res.send(category)
     })
     .catch((error => console.log(error)))
