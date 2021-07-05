@@ -22,7 +22,7 @@ export class EventViewComponent implements OnInit {
   updateOrganizerId  = '';
   updateEventId = '';
 
-  allEvents: Event[];
+  eventsFilteredByCategory: Event[];
 
   eventForm = this.fb.group({
     name: new FormControl('', []),
@@ -407,9 +407,8 @@ getColor(organizer: Organizer): string{
     else return true
   }
 
-  loadAllEvents(category: Category){
-      this.eventService.getEventsOnCategory(category).subscribe(x => log.debug(x))
-      this.eventService.getAllEvents().subscribe((events: Event[]) => this.allEvents = events)
+  loadEventsByCategory(category: Category){
+      this.eventService.getEventsOnCategory(category).subscribe((events: Event[]) => this.eventsFilteredByCategory = events)
   }
 
 }
