@@ -4,6 +4,7 @@ import { Observable, throwError as observableThrowError, BehaviorSubject } from 
 import { HttpRequest } from '@angular/common/http';
 import { filter, map, catchError, share } from 'rxjs/operators';
 import { Event } from './models/event';
+import {Category} from "./models/category";
 
 @Injectable({
   providedIn: 'root'
@@ -104,6 +105,20 @@ export class EventsService {
          this._events.next(response);
        })
        return obs;
+    }
+
+    getEventsOnCategory(category: Category): Observable<Event[]>{
+        const obs = this.webService.post('getEventsOnCategory', { category }).pipe(
+            map((res: HttpRequest<any>) => res as unknown as Event[]),
+            catchError((error: any) => {
+                console.error('an error occured', error);
+                return observableThrowError(error.error.message || error);
+            }),
+            share());
+        obs.toPromise().then((response) => {
+            this._events.next(response);
+        })
+        return obs;
     }
 
     getEventsOnDate(date: Date): Observable<Event[]>{

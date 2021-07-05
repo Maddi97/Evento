@@ -208,6 +208,30 @@
     <div style="margin-top: 2em;">
     <map-view [marker_data]="eventsOfOrganizer"></map-view>
     </div>
+
+     <div class="all-events-expansion-panel" *ngFor="let category of categories">
+         <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="loadAllEvents(category)">
+             <mat-expansion-panel-header>
+                 <mat-panel-title>
+                    {{category.name}}
+                 </mat-panel-title>
+                 <mat-panel-description>
+                     Open to see all events
+                 </mat-panel-description>
+             </mat-expansion-panel-header>
+
+             <div *ngFor="let event of allEvents" fxLayout="row">
+                 <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
+                     <div style="width: 80%;" fxLayoutAlign="start center" (click)="setEventForm(event)" >
+                         {{event.name}}
+                     </div>
+                     <div (click)="deleteEvent(event._organizerId, event._id)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+                         Delete
+                     </div>
+                 </div>
+             </div>
+         </mat-expansion-panel>
+     </div>
 </div>
 
 </div>
