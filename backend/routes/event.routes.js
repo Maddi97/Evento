@@ -18,10 +18,12 @@ router.get('/organizer/:organizerId/events', (req, res) => {
 
 router.get('/eventOnDate', (req, res) => {
     date = new Date(req.query.date)
-    Event.find(
-       {date: { $gte: date.setDate(date.getDate() - 1), $lte: date.setDate(date.getDate() +1) } } //-1 um den heutigen Tag mit zu finden
-        )
-
+    Event.find({
+        $and: [
+            {'date.start': { $gte: date.setDate(date.getDate() - 1)}},
+            {'date.end': { $lte: date.setDate(date.getDate() +1)}}  //-1 um den heutigen Tag mit zu finden
+        ]
+    })
     .then((events) => res.send(events))
     .catch((error) => console.log(error))
 });
@@ -30,7 +32,9 @@ router.get('/eventOnDate', (req, res) => {
 router.get('/upcomingEvents', (req, res) => {
     today = new Date()
     Event.find(
-       {date: {$gte : today.setDate(today.getDate() - 1)} }  //-1 um den heutigen Tag mit zu finden
+        {'date.start':
+                    {$gte : today.setDate(today.getDate() - 1)}
+        }  //-1 um den heutigen Tag mit zu finden
         )
 
     .then((events) => res.send(events))
@@ -43,7 +47,9 @@ router.get('/organizer/:organizerId/upcomingEvents', (req, res) => {
 
     today = new Date()
     Event.find(
-       {date: {$gte : today.setDate(today.getDate() - 1)} }  //-1 um den heutigen Tag mit zu finden
+        {'date.start':
+                {$gte : today.setDate(today.getDate() - 1)}
+        }  //-1 um den heutigen Tag mit zu finden
         )
 
     .then((events) => res.send(events))

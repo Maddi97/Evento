@@ -76,9 +76,8 @@ export class EventViewComponent implements OnInit {
   ngOnInit(): void {
     this.categoryService.categories.subscribe(cat => this.categories = cat)
     this.organizerService.organizers.subscribe(org => this.organizers = org);
+    this.eventService.getAllUpcomingEvents().subscribe(x => console.log(x))
     this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
-    this.eventService.getAllUpcomingEvents()
-
     this.filteredOptions = this.organizerName.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value)),
@@ -116,13 +115,16 @@ export class EventViewComponent implements OnInit {
     event.permanent = this.eventForm.get('permanent').value;
     event.category = this.category;
     event.date = {start: new Date, end: new Date }
-    if(!event.permanent) {
+
+    if(this.eventForm.get('permanent').value === 'false') {
       let start = this.eventForm.get('start').value
+      console.log(start)
       start.setDate(start.getDate() + 1)
       start = new Date(start.toISOString());
       event.date.start = start
 
       let end = this.eventForm.get('end').value
+      console.log(end)
       end.setDate(end.getDate() + 1)
       end = new Date(end.toISOString());
       event.date.end = end
@@ -211,6 +213,7 @@ export class EventViewComponent implements OnInit {
   loadEvents(organizerId: string){
 
     this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
+    console.log(this.allUpcomingEvents)
     this.eventsOfOrganizer = this.allUpcomingEvents.filter(event => event._organizerId === organizerId)
   }
 
@@ -226,7 +229,7 @@ export class EventViewComponent implements OnInit {
 
   setEventForm(event: Event) : void{
     log.debug(event)
-
+    console.log(this.allUpcomingEvents)
     //prepare dates
     let start = new Date(event.date.start)
     start.setDate(start.getDate() - 1)
@@ -283,7 +286,7 @@ export class EventViewComponent implements OnInit {
     event.category = this.category;
     event.date = {start: new Date, end: new Date }
 
-      if(!event.permanent) {
+      if(this.eventForm.get('permanent').value === 'false') {
         let start = this.eventForm.get('start').value
         start.setDate(start.getDate() + 1)
         start = new Date(start.toISOString());
