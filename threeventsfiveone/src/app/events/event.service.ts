@@ -62,4 +62,32 @@ export class EventService {
     });
     return obs;
   }
+
+  getAllUpcomingEvents(): Observable<Event[]> {
+    const obs = this.webService.get('upcomingEvents').pipe(
+      map((res: HttpRequest<any>) => res as unknown as Event[]),
+      catchError((error: any) => {
+        console.error('an error occured', error);
+        return observableThrowError(error.error.message || error);
+      }),
+      share());
+    obs.toPromise().then((response) => {
+      this._events.next(response);
+    })
+    return obs;
+  }
+
+  getEventsOnDate(date: Date): Observable<Event[]>{
+    const obs = this.webService.post('eventOnDate', { date }).pipe(
+      map((res: HttpRequest<any>) => res as unknown as Event[]),
+      catchError((error: any) => {
+        console.error('an error occured', error);
+        return observableThrowError(error.error.message || error);
+      }),
+      share());
+    obs.toPromise().then((response) => {
+      this._events.next(response);
+    })
+    return obs;
+  }
 }

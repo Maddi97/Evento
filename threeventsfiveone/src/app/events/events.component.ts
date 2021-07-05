@@ -30,7 +30,7 @@ export class EventsComponent implements OnInit {
   filteredText = '';
 
   // Applied filtered Dates
-  filteredDates = [];
+  filteredDate: Date;
 
   // Applied filtered Category IDs
   filteredCategoryIDs = [];
@@ -86,8 +86,7 @@ export class EventsComponent implements OnInit {
         this.categoryList.forEach(category => {
           if (category.subcategories.map( subcategory =>
             {
-              if (subcategory._id == data.subcategory._id) { return true; }
-              else { return false; }
+              return subcategory._id == data.subcategory._id;
             }
           )) {
             matchingCategory.push(category);
@@ -101,6 +100,8 @@ export class EventsComponent implements OnInit {
       }
       this.router.navigate(['/', 'events']);
     });
+
+    this.filteredDate = new Date()
   }
 
   formatLabel(value: number) {
@@ -127,16 +128,9 @@ export class EventsComponent implements OnInit {
     let newFilteredList = this.eventList;
 
     // Filter By Date
-    if (this.filteredDates.length !== 0) {
+    if (this.filteredDate != undefined) {
       newFilteredList = newFilteredList.filter(event => {
-        let event_picked = false;
-        this.filteredDates.forEach(date => {
-          if (event_picked) {
-            return event_picked;
-          }
-          event_picked = new Date(event.date).getDay() === date.getDay() && new Date(event.date).getMonth() === date.getMonth();
-        });
-        return event_picked;
+        return new Date(event.date.start).getDate() === this.filteredDate.getDate() && new Date(event.date.start).getMonth() === this.filteredDate.getMonth();
       });
     }
 
@@ -164,10 +158,8 @@ export class EventsComponent implements OnInit {
           }
           event_picked = event.category.subcategories.every( sub =>
             {
-              if (sub._id === subcategory._id) {
-                return true;
-              }
-              return false;
+              return sub._id === subcategory._id;
+
             }
           );
         });
@@ -193,9 +185,9 @@ export class EventsComponent implements OnInit {
 
   searchForDay(filter: DateClicked) {
     if (filter.isClicked) {
-      this.filteredDates.push(filter.date);
+      this.filteredDate = filter.date
     } else {
-      this.filteredDates = this.filteredDates.filter(date => date.getDay() !== filter.date.getDay() || date.getMonth() !== filter.date.getMonth());
+      this.filteredDate = undefined
     }
     this.filter();
   }
@@ -206,22 +198,25 @@ export class EventsComponent implements OnInit {
     } else {
       const index = this.filteredCategoryIDs.indexOf(category._id);
       this.filteredCategoryIDs.splice(index, 1);
+      category.subcategories.map(subcategory => {
+        if (this.filteredSubcategories.includes(subcategory)) {
+          let index = this.filteredSubcategories.indexOf(subcategory)
+          this.filteredSubcategories.splice(index, 1)
+        }
+      })
     }
     this.filter();
   }
 
   searchForSubCategory(subcategory) {
-    if (this.filteredSubcategories.every( sub =>
+    if (this.filteredSubcategories.some( sub =>
       {
-        if (sub._id === subcategory._id) {
-          return true;
-        }
-        return false;
+        return sub._id === subcategory._id;
       }
     ) &&  this.filteredSubcategories.length != 0) {
       let index = 0;
       this.filteredSubcategories.map(sub => {
-        if (sub._id = subcategory._id) { return; }
+        if (sub._id === subcategory._id) { return; }
         index += 1;
       });
       this.filteredSubcategories.splice(index, 1);
@@ -269,7 +264,7 @@ export class EventsComponent implements OnInit {
     });
   }
 
-  searchForDistance(sliderEvent) {
+  searchForDistance() {
     this.distanceChanged = true;
     this.filter();
   }
@@ -283,12 +278,9 @@ export class EventsComponent implements OnInit {
   }
 
   isSubcategoryPicked(subcategory) {
-    if (this.filteredSubcategories.every( sub =>
+    if (this.filteredSubcategories.some( sub =>
       {
-        if (sub._id === subcategory._id) {
-          return true;
-        }
-        return false;
+        return sub._id === subcategory._id;
       }
     ) && this.filteredSubcategories.length != 0) {
       return 'category-picked';
