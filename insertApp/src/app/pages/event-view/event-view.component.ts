@@ -76,9 +76,9 @@ export class EventViewComponent implements OnInit {
   ngOnInit(): void {
     this.categoryService.categories.subscribe(cat => this.categories = cat)
     this.organizerService.organizers.subscribe(org => this.organizers = org);
-    this.eventService.getAllUpcomingEvents().subscribe(x => console.log(x))
     this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
-    this.eventService.getEventsOnDate(new Date()).subscribe(x => console.log(x))
+    this.eventService.getAllUpcomingEvents().subscribe()
+    this.eventService.getEventsOnDate(new Date()).subscribe()
     this.filteredOptions = this.organizerName.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value)),
@@ -213,8 +213,7 @@ export class EventViewComponent implements OnInit {
 
   loadEvents(organizerId: string){
 
-    this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
-    console.log(this.allUpcomingEvents)
+    this.eventService.getAllUpcomingEvents().subscribe(event => console.log(event));
     this.eventsOfOrganizer = this.allUpcomingEvents.filter(event => event._organizerId === organizerId)
   }
 

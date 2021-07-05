@@ -18,25 +18,46 @@ router.get('/organizer/:organizerId/events', (req, res) => {
 
 router.post('/eventOnDate', (req, res) => {
     date = new Date(req.body.date)
-    console.log(date)
+    console.log(date.setDate(date.getDate()))
     Event.find(
-            {'date.start': { $gte: date.setDate(date.getDate() - 1 )}},
-            //{'date.end': { $lte: date.setDate(date.getDate() +1 )}}  //-1 um den heutigen Tag mit zu finden
+        {
+           $and: [
+                {
+                    'date.start': { $lte: new Date() }  //-1 um den heutigen Tag mit zu finden
+                },
+                {
+                    'date.end':  { $gte: new Date() }
+                }
+            ]
+    }
     )
     .then((events) => {
         res.send(events);
-        console.log(events)
+        console.log('Events: '+events)
     })
     .catch((error) => console.log(error))
 });
 
 
 router.get('/upcomingEvents', (req, res) => {
-    today = new Date()
     Event.find(
-        {'date.start':
-                    {$gte : today.setDate(today.getDate() - 1)}
-        }  //-1 um den heutigen Tag mit zu finden
+        {
+            $or: [
+                {
+                    'date.start': { $gte: new Date() }  //-1 um den heutigen Tag mit zu finden
+                },
+                {
+                    $and: [
+                        {
+                            'date.start': { $lte: new Date() }  //-1 um den heutigen Tag mit zu finden
+                        },
+                        {
+                            'date.end':  { $gte: new Date() }
+                        }
+                    ]
+                }
+            ]
+        }
         )
 
     .then((events) => res.send(events))
