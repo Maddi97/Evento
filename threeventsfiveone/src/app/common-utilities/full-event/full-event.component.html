@@ -8,9 +8,12 @@
                 <span>
                     {{event?.name}}
                 </span>
-                <div fxLayoutAlign="end end" class="date">
-                    {{ event?.date | date }}
+                <div fxLayoutAlign="end end" class="date-start">
+                    {{ event?.date?.start | date }}
                 </div>
+              <div fxLayoutAlign="end end" class="date-end">
+                {{ event?.date?.end | date }}
+              </div>
             </div>
             <div fxLayoutAlign="start start">
                 {{ event?.organizerName}}

@@ -29,7 +29,8 @@ export class OrganizerViewComponent implements OnInit {
     telephone: new FormControl('', []),
     description: new FormControl('', []),
     link: new FormControl('', []),
-    frequency: new FormControl(7, [])
+    frequency: new FormControl(7, []),
+    isEvent: new FormControl('false', [])
   })
 
   isOpeningTimesRequired = false;
@@ -74,7 +75,7 @@ export class OrganizerViewComponent implements OnInit {
     address.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ');
     address.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[0];
     address.country =  this.organizerForm.get('country').value;
-
+  console.log(address)
     org.address = address
 
     org.email = this.organizerForm.get('email').value;
@@ -82,6 +83,7 @@ export class OrganizerViewComponent implements OnInit {
     org.description = this.organizerForm.get('description').value;
     org.link = this.organizerForm.get('link').value;
     org.frequency = this.organizerForm.get('frequency').value;
+    org.isEvent = this.organizerForm.get('isEvent').value;
     org.category = this.category;
     //this.organizerForm.get('category').value;
 
@@ -112,6 +114,8 @@ export class OrganizerViewComponent implements OnInit {
 
 
   setOrganizerForm(org: Organizer): void {
+    console.log(org)
+
     this.organizerForm.setValue({
       name: org.name,
       city: org.address.city,
@@ -123,7 +127,8 @@ export class OrganizerViewComponent implements OnInit {
       telephone: org.telephone,
       description: org.description,
       link: org.link,
-      frequency: org.frequency
+      frequency: org.frequency,
+      isEvent: String(org.isEvent),
   });
 
     this.category = org.category
@@ -156,6 +161,7 @@ export class OrganizerViewComponent implements OnInit {
       org.description = this.organizerForm.get('description').value;
       org.link = this.organizerForm.get('link').value;
       org.frequency = this.organizerForm.get('frequency').value;
+      org.isEvent = this.organizerForm.get('isEvent').value;
       org.category = this.category;
 
       org.openingTimes=this.openingTimes
@@ -195,6 +201,20 @@ export class OrganizerViewComponent implements OnInit {
 
   nullFormField(){
     this.isOpeningTimesRequired = false;
+    this.organizerForm.setValue({
+      name: '',
+      city: 'Leipzig',
+      plz: '',
+      street: '',
+      streetNumber: '' ,
+      country: 'Deutschland',
+      email: '',
+      telephone: '',
+      description: '',
+      link: '',
+      frequency: 7,
+      isEvent: 'false',
+    })
 
     this.openingTimes = [
       {day: 'Monday', start: '00:00', end: '00:00'},
@@ -205,12 +225,17 @@ export class OrganizerViewComponent implements OnInit {
       {day: 'Saturday', start: '00:00', end: '00:00'},
       {day: 'Sunday', start: '00:00', end: '00:00'}
     ]
-    this.category = new Category()
+    this.category = undefined
     this.updateOrganizerId = ''
   }
 
   deleteOrganizer(id: string): void {
     this.organizerService.deleteOrganizer(id).subscribe();
+  }
+
+  checkDisabled(){
+    if(!this.organizerForm.invalid && this.category !== undefined) return false
+    else return true
   }
 
 }

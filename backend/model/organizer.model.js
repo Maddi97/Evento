@@ -76,6 +76,9 @@ const OrganizerSchema = new mongoose.Schema({
       },
     },
   ],
+  isEvent: {
+    type: Boolean,
+  },
   geo_data: {
     lat: {
       type: String,

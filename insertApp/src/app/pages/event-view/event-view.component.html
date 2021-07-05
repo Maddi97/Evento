@@ -27,6 +27,8 @@
         </mat-form-field>
       </div>
 
+    <mat-slide-toggle [formControl]="toggleIsChecked">Address or coordinates?</mat-slide-toggle>
+    <div *ngIf="toggleIsChecked.value">
       <div class="city"style="width: 100%;" fxLayoutAlign="center center" fxLayout="row" >
         <div style="width: 50%;" fxLayoutAlign="center center">
           <mat-form-field appearance="fill" style="width: 100%;">
@@ -63,7 +65,19 @@
           <input matInput #target required="true" formControlName="streetNumber" (keydown.enter)="addNewEvent(); target.value = ''">
           </mat-form-field>
       </div> -->
-  </div>
+     </div>
+    </div>
+
+        <div class="coordinates" *ngIf="!toggleIsChecked.value">
+            <div style="width: 85%;" fxLayout="column">
+                <mat-form-field appearance="fill" style="width: 90%;">
+                    <mat-label>Coordinates:</mat-label>
+                    <input matInput #target required formControlName="coord" (keydown.enter)="addNewEvent(); target.value = ''">
+                    <mat-error *ngIf="eventForm.get('coord').hasError('required')">Coords are required if no Address is given</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
 
 <div class="category" style="width: 100%;" fxLayoutAlign="center center"   >
   <mat-card style="width: 100%;">
@@ -92,16 +106,29 @@
   </mat-form-field>
 </div>
 
-      <div fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
-        <div>
-          <mat-form-field appearance="fill">
-            <mat-label>Choose a date</mat-label>
-            <input matInput [matDatepicker]="picker" (dateChange)= "setDate($event.value)" [formControl]="date">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
+<div class="radio-group-permanent-event">
+    <label id="permanent-radio-group-label">Is event permanent?</label>
+    <mat-radio-group  formControlName="permanent">
+        <mat-radio-button value="true">Yes</mat-radio-button>
+        <mat-radio-button value="false">No</mat-radio-button>
+    </mat-radio-group>
+</div>
+
+        <div *ngIf="eventForm.get('permanent').value === 'false'" fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
+            <div>
+                <mat-form-field appearance="fill">
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Start date">
+                    <input matEndDate formControlName="end" placeholder="End date">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </div>
         </div>
-      </div>
+
+
 
       <div fxLayout="row" fxLayoutAlign="space-between center">
         <div style="padding-left: 1rem;" fxLayout="row">
@@ -126,7 +153,7 @@
     </form>
     
     <div fxLayout="column" fxLayoutAlign="spacing-around center" style="margin: 1em;">
-      <button  mat-raised-button color="primary" (click)="updateEventId !== '' ? updateEvent() : addNewEvent()" [disabled]="eventForm.invalid" style="width: 100%; cursor: pointer;"fxLayoutAlign="center center">
+      <button  mat-raised-button color="primary" (click)="updateEventId !== '' ? updateEvent() : addNewEvent()" [disabled]="checkDisabled()" style="width: 100%; cursor: pointer;"fxLayoutAlign="center center">
           {{ updateEventId !== '' ? 'Update' : 'Submit'}}
       </button>
       <button  mat-raised-button color="secondary" (click)="nullFormField()" style="width: 100%;cursor: pointer; margin-top:1em;"fxLayoutAlign="center center">

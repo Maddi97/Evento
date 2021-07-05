@@ -12,7 +12,6 @@ import { Observable, throwError as observableThrowError, BehaviorSubject } from 
 import * as log from "loglevel";
 
 
-
 @Component({
   selector: 'app-event-view',
   templateUrl: './event-view.component.html',
@@ -33,8 +32,11 @@ export class EventViewComponent implements OnInit {
     country: new FormControl('Deutschland', []),
     description: new FormControl('', []),
     link: new FormControl('', []),
-    price: new FormControl('', [])
-
+    price: new FormControl('', []),
+    permanent: new FormControl('false', []),
+    start: new FormControl('', []),
+    end: new FormControl('', []),
+    coord: new FormControl('', []),
   })
 
   categories: Category[]
@@ -42,7 +44,7 @@ export class EventViewComponent implements OnInit {
   date =  new FormControl(new Date())
 
   category: Category
-
+  toggleIsChecked = new FormControl(true)
 
   times = {
     start: new FormControl('00:00'),
@@ -75,8 +77,8 @@ export class EventViewComponent implements OnInit {
     this.categoryService.categories.subscribe(cat => this.categories = cat)
     this.organizerService.organizers.subscribe(org => this.organizers = org);
     this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
-    this.eventService.getAllUpcomingEvents()
-
+    this.eventService.getAllUpcomingEvents().subscribe()
+    this.eventService.getEventsOnDate(new Date()).subscribe()
     this.filteredOptions = this.organizerName.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value)),
@@ -111,29 +113,62 @@ export class EventViewComponent implements OnInit {
     event.description = this.eventForm.get('description').value;
     event.link = this.eventForm.get('link').value;
     event.price = this.eventForm.get('price').value;
+    event.permanent = this.eventForm.get('permanent').value;
     event.category = this.category;
-    let date =  this.date.value;
-    date.setDate(date.getDate() + 1)
-    date = new Date(date.toISOString());
-    event.date = date
+    event.date = {start: new Date, end: new Date }
+
+    if(this.eventForm.get('permanent').value === 'false') {
+      let start = this.eventForm.get('start').value
+      console.log(start)
+      start.setDate(start.getDate() + 1)
+      start = new Date(start.toISOString());
+      event.date.start = start
+
+      let end = this.eventForm.get('end').value
+      console.log(end)
+      end.setDate(end.getDate() + 1)
+      end = new Date(end.toISOString());
+      event.date.end = end
+    }
+    else{
+      event.date.start = new Date()
+      event.date.end = new Date()
+    }
+
     const time = {start:this.times.start.value, end: this.times.end.value}
     event.times = time
-    event.geo_data = this.geo_data
 
-    // first fetch geo data from osm API and than complete event data type and send to backend
-    this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
-      map(geo_data => {
+    if(this.toggleIsChecked.value) {
+      event.geo_data = this.geo_data
+      // first fetch geo data from osm API and than complete event data type and send to backend
+      this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
+          map(geo_data => {
 
-      event.geo_data.lat = geo_data[0].lat;
-      event.geo_data.lon = geo_data[0].lon;
-      }),
-      share()
-      ).toPromise().then( undefined =>
-        this.eventService.createEvent(event).subscribe(event_response => log.debug(event_response))
+            event.geo_data.lat = geo_data[0].lat;
+            event.geo_data.lon = geo_data[0].lon;
+          }),
+          share()
+      ).toPromise().then(undefined =>
+          this.eventService.createEvent(event).subscribe(event_response => log.debug(event_response))
       )
-
-
-
+    }
+    else {
+      let coord = this.eventForm.get('coord').value
+      this.geo_data.lat = coord.split(",")[0].trim()
+      this.geo_data.lon = coord.split(",")[1].trim()
+      event.geo_data = this.geo_data
+      this.geoService.get_address_from_coordinates(this.geo_data).pipe(
+          map( (geo_json: any) =>
+          {
+            event.address.plz = geo_json.address.postcode;
+            event.address.street = geo_json.address.road;
+            event.address.country = this.eventForm.get('country').value // name land in response ist englisch, deshalb erstmal auf Deutschland gesetzt
+          }),
+          share()
+      ).toPromise().then(undefined =>
+          this.eventService.createEvent(event).subscribe(event_response => log.debug(event_response))
+      )
+    }
 
     // geo_data is observable
     log.debug(event)
@@ -144,7 +179,6 @@ export class EventViewComponent implements OnInit {
 
 
   insertOrgInfo(org: Organizer) {
-    log.debug(org)
     this.eventForm.get('plz').setValue(org.address.plz);
     this.eventForm.get('city').setValue(org.address.city);
     this.eventForm.get('street').setValue(org.address.street + ' ' + org.address.streetNumber);
@@ -162,10 +196,13 @@ export class EventViewComponent implements OnInit {
       country: 'Deutschland',
       description: '',
       link: '',
-      price: ''
+      permanent: 'false',
+      price: '',
+      start: '',
+      end: '',
+      coord: '',
     })
-    this.category = new Category()
-    this.date.setValue(new Date())
+    this.category = undefined
     this.times.start.setValue('00:00')
     this.times.end.setValue('00:00')
   }
@@ -176,7 +213,7 @@ export class EventViewComponent implements OnInit {
 
   loadEvents(organizerId: string){
 
-    this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
+    this.eventService.getAllUpcomingEvents().subscribe(event => console.log(event));
     this.eventsOfOrganizer = this.allUpcomingEvents.filter(event => event._organizerId === organizerId)
   }
 
@@ -187,10 +224,20 @@ export class EventViewComponent implements OnInit {
   setDate(value){
     const date = new Date(value)
     this.date.setValue(date);
-  }
+
+    }
 
   setEventForm(event: Event) : void{
     log.debug(event)
+    console.log(this.allUpcomingEvents)
+    //prepare dates
+    let start = new Date(event.date.start)
+    start.setDate(start.getDate() - 1)
+    start = new Date(start.toISOString());
+    let end = new Date(event.date.end)
+    end.setDate(end.getDate() - 1)
+    end = new Date(end.toISOString());
+
     this.updateEventId = event._id
     const organizer = this.organizers.find(org => org._id === event._organizerId)
     this.organizerName.setValue(organizer.name)
@@ -204,13 +251,14 @@ export class EventViewComponent implements OnInit {
       country: event.address.country,
       description: event.description,
       link: event.link,
-      price: event.price
+      permanent: String(event.permanent),
+      price: event.price,
+      start: start,
+      end: end,
+      coord: event.geo_data.lat + ', ' + event.geo_data.lon,
     })
     this.category = event.category
-    let date = new Date(event.date)
-    date.setDate(date.getDate() - 1)
-    date = new Date(date.toISOString());
-    this.date.setValue(date)
+
     this.times.start.setValue(event.times.start)
     this.times.end.setValue(event.times.end)
   }
@@ -234,28 +282,65 @@ export class EventViewComponent implements OnInit {
     event.description = this.eventForm.get('description').value;
     event.link = this.eventForm.get('link').value;
     event.price = this.eventForm.get('price').value;
+    event.permanent = this.eventForm.get('permanent').value;
     event.category = this.category;
-    let date =  this.date.value;
-    date.setDate(date.getDate() + 1)
-    date = new Date(date.toISOString());
-    event.date = date
+    event.date = {start: new Date, end: new Date }
+
+      if(this.eventForm.get('permanent').value === 'false') {
+        let start = this.eventForm.get('start').value
+        start.setDate(start.getDate() + 1)
+        start = new Date(start.toISOString());
+        event.date.start = start
+
+        let end = this.eventForm.get('end').value
+        end.setDate(end.getDate() + 1)
+        end = new Date(end.toISOString());
+        event.date.end = end
+      }
+      else{
+        event.date.start = new Date()
+        event.date.end = new Date()
+      }
+
     const time = {start:this.times.start.value, end: this.times.end.value}
     event.times = time
     event._id = this.updateEventId
-    event.geo_data = this.geo_data
-    this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
-      map(geo_data => {
-      event.geo_data.lat = geo_data[0].lat;
-      event.geo_data.lon = geo_data[0].lon;
-      }),
-      share()
-      ).toPromise().then( moin =>
-        {
-          this.eventService.updateEvent(event._organizerId,event._id, event).subscribe( event => log.debug(event))
-          organizer.lastUpdated = new Date()
-          this.organizerService.updateOrganizer(organizer._id, organizer)
-        }
-      )
+
+      if(this.toggleIsChecked.value) {
+        event.geo_data = this.geo_data
+        this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
+            map(geo_data => {
+              event.geo_data.lat = geo_data[0].lat;
+              event.geo_data.lon = geo_data[0].lon;
+            }),
+            share()
+        ).toPromise().then(moin => {
+              this.eventService.updateEvent(event._organizerId, event._id, event).subscribe(event => log.debug(event))
+              organizer.lastUpdated = new Date()
+              this.organizerService.updateOrganizer(organizer._id, organizer)
+            }
+        )
+      }
+      else{
+        let coord = this.eventForm.get('coord').value
+        this.geo_data.lat = coord.split(",")[0].trim()
+        this.geo_data.lon = coord.split(",")[1].trim()
+        event.geo_data = this.geo_data
+        this.geoService.get_address_from_coordinates(this.geo_data).pipe(
+            map( (geo_json: any) =>
+            {
+              event.address.plz = geo_json.address.postcode;
+              event.address.street = geo_json.address.road;
+              event.address.country = this.eventForm.get('country').value // name land in response ist englisch, deshalb erstmal auf Deutschland gesetzt
+            }),
+            share()
+        ).toPromise().then(undefined => {
+              this.eventService.updateEvent(event._organizerId, event._id, event).subscribe(event_response => log.debug(event_response))
+              organizer.lastUpdated = new Date()
+              this.organizerService.updateOrganizer(organizer._id, organizer)
+            }
+        )
+      }
 
 
 
@@ -318,6 +403,11 @@ getColor(organizer: Organizer): string{
     return 'lightgreen'
   }
 }
+
+  checkDisabled(){
+    if(!this.eventForm.invalid && this.category !== undefined) return false
+    else return true
+  }s
 
 }
 

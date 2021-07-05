@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,7 +20,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatCardModule} from '@angular/material/card';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {MatSnackBarModule} from '@angular/material/snack-bar'
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
@@ -34,6 +36,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CategorySelectComponent } from './pages/category-select/category-select.component';
 import { CategoryViewComponent } from './pages/category-view/category-view.component';
 import { MapViewComponent} from './map-view/map-view.component'
+import {CommonModule} from "@angular/common";
 
 
 @NgModule({
@@ -46,30 +49,34 @@ import { MapViewComponent} from './map-view/map-view.component'
     CategoryViewComponent,
     MapViewComponent
   ],
-  imports: [
-    LeafletModule,
-    MatSnackBarModule,
-    FormsModule,
-    MatExpansionModule,
-    MatDividerModule,
-    MatCardModule,
-    MatCheckboxModule,
-    HttpClientModule,
-    MatButtonModule,
-    MatInputModule,
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatChipsModule,
-    FlexLayoutModule,
-    NgxMaterialTimepickerModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule
-  ],
+    imports: [
+        LeafletModule,
+        MatSnackBarModule,
+        FormsModule,
+        MatExpansionModule,
+        MatDividerModule,
+        MatCardModule,
+        MatCheckboxModule,
+        HttpClientModule,
+        MatButtonModule,
+        MatInputModule,
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatChipsModule,
+        MatRadioModule,
+        FlexLayoutModule,
+        NgxMaterialTimepickerModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatAutocompleteModule,
+        MatSlideToggleModule,
+        ReactiveFormsModule,
+        ReactiveFormsModule,
+        CommonModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

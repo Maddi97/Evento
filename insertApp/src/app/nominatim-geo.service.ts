@@ -27,4 +27,15 @@ export class NominatimGeoService {
                 )
   }
 
+  get_address_from_coordinates(coord){
+      return this.http.get('https://nominatim.openstreetmap.org/reverse?lat=' + coord.lat + '&lon=' + coord.lon + '&limit=2&format=json').pipe(
+          take(1),
+          map(geo_data => {
+              if(Object.keys(geo_data).length < 1)
+                  throw console.error(("No coordinates found to given address"));
+              return geo_data
+          }),
+      )
+  }
+
 }
