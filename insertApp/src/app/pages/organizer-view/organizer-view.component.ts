@@ -6,6 +6,7 @@ import { Category } from 'src/app/models/category';
 import {MatSnackBar} from '@angular/material/snack-bar'
 import { NominatimGeoService } from '../../nominatim-geo.service'
 import { map, share } from 'rxjs/operators';
+import * as log from 'loglevel';
 
 @Component({
   selector: 'app-organizer-view',
@@ -75,9 +76,8 @@ export class OrganizerViewComponent implements OnInit {
     address.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ');
     address.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[0];
     address.country =  this.organizerForm.get('country').value;
-  console.log(address)
     org.address = address
-
+    log.debug(address)
     org.email = this.organizerForm.get('email').value;
     org.telephone = this.organizerForm.get('telephone').value;
     org.description = this.organizerForm.get('description').value;
@@ -114,8 +114,6 @@ export class OrganizerViewComponent implements OnInit {
 
 
   setOrganizerForm(org: Organizer): void {
-    console.log(org)
-
     this.organizerForm.setValue({
       name: org.name,
       city: org.address.city,
@@ -150,8 +148,8 @@ export class OrganizerViewComponent implements OnInit {
       // set address
       address.plz =  this.organizerForm.get('plz').value;
       address.city =  this.organizerForm.get('city').value;
-      address.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ')[0];
-      address.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[1];
+      address.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ');
+      address.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[0];
       address.country =  this.organizerForm.get('country').value;
 
       org.address = address

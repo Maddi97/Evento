@@ -22,6 +22,7 @@ export class EventViewComponent implements OnInit {
   updateOrganizerId  = '';
   updateEventId = '';
 
+  eventsFilteredByCategory: Event[];
 
   eventForm = this.fb.group({
     name: new FormControl('', []),
@@ -119,13 +120,11 @@ export class EventViewComponent implements OnInit {
 
     if(this.eventForm.get('permanent').value === 'false') {
       let start = this.eventForm.get('start').value
-      console.log(start)
       start.setDate(start.getDate() + 1)
       start = new Date(start.toISOString());
       event.date.start = start
 
       let end = this.eventForm.get('end').value
-      console.log(end)
       end.setDate(end.getDate() + 1)
       end = new Date(end.toISOString());
       event.date.end = end
@@ -213,7 +212,7 @@ export class EventViewComponent implements OnInit {
 
   loadEvents(organizerId: string){
 
-    this.eventService.getAllUpcomingEvents().subscribe(event => console.log(event));
+    this.eventService.getAllUpcomingEvents().subscribe(event => log.debug(event));
     this.eventsOfOrganizer = this.allUpcomingEvents.filter(event => event._organizerId === organizerId)
   }
 
@@ -229,7 +228,6 @@ export class EventViewComponent implements OnInit {
 
   setEventForm(event: Event) : void{
     log.debug(event)
-    console.log(this.allUpcomingEvents)
     //prepare dates
     let start = new Date(event.date.start)
     start.setDate(start.getDate() - 1)
@@ -407,7 +405,11 @@ getColor(organizer: Organizer): string{
   checkDisabled(){
     if(!this.eventForm.invalid && this.category !== undefined) return false
     else return true
-  }s
+  }
+
+  loadEventsByCategory(category: Category){
+      this.eventService.getEventsOnCategory(category).subscribe((events: Event[]) => this.eventsFilteredByCategory = events)
+  }
 
 }
 
