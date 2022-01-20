@@ -134,7 +134,7 @@ export class EventsComponent implements OnInit {
           if (event_picked) {
             return event_picked;
           }
-          event_picked = new Date(event.date).getDay() === date.getDay() && new Date(event.date).getMonth() === date.getMonth();
+          event_picked = new Date(event.date.start).getDay() === date.getDay() && new Date(event.date.start).getMonth() === date.getMonth();
         });
         return event_picked;
       });
