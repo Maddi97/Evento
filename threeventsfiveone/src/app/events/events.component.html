@@ -28,7 +28,7 @@
           max="100"
           step="1"
           [(ngModel)]="filteredDistance"
-          (change)="searchForDistance($event)">
+          (change)="searchForDistance()">
         </mat-slider>
         <span class="distance-label">Kategorien</span>
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
@@ -54,7 +54,7 @@
           <vents-event-tile routerLink="/full-event" fragment={{event._id}} [event]="event"></vents-event-tile>
         </div>
         <div *ngIf="filteredList.length == 0">
-          Sorry für das angegebene datum haben wir keine events gespeichert.
+          Sorry für das angegebene Datum haben wir keine Events gespeichert.
         </div>
       </div>
     </div>
