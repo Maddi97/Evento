@@ -28,7 +28,7 @@
           max="100"
           step="1"
           [(ngModel)]="filteredDistance"
-          (change)="searchForDistance()">
+          (change)="searchForDistance(filteredDistance)">
         </mat-slider>
         <span class="distance-label">Kategorien</span>
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">

@@ -212,6 +212,8 @@ export class EventViewComponent implements OnInit {
 
   loadEvents(organizerId: string){
 
+    console.log(new Date())
+    this.eventService.getEventsOnDate(new Date()).subscribe( x=> console.log('on date',x))
     this.eventService.getAllUpcomingEvents().subscribe(event => log.debug(event));
     this.eventsOfOrganizer = this.allUpcomingEvents.filter(event => event._organizerId === organizerId)
   }
