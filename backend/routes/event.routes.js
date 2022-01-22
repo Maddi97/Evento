@@ -37,14 +37,14 @@ router.post('/eventOnDate', (req, res) => {
 });
 
 router.post('/eventOnDateCatAndSubcat', (req, res) => {
-    let date = new Date(req.body.filter.date)
-    let categories = req.body.filter.cat
+    let date = new Date(req.body.fil.date)
+    let categories = req.body.fil.cat
 
     //get ids bc we filter by id
     let catIds = []
     categories.forEach(cat => catIds.push(cat._id))
 
-    let subcategories = req.body.filter.subcat
+    let subcategories = req.body.fil.subcat
     let subcatIds = []
     subcategories.forEach(sub => subcatIds.push(sub._id))
 

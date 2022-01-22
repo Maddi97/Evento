@@ -16,16 +16,16 @@
         </div>
       </div>
       <div fxLayout="column" style="margin-bottom: .5rem;">
-<!--        <span class="distance-label">Entfernung (in km)</span>-->
-<!--        <mat-slider-->
-<!--          class="slider"-->
-<!--          thumbLabel-->
-<!--          min="1"-->
-<!--          max="100"-->
-<!--          step="1"-->
-<!--          [(ngModel)]="filteredDistance"-->
-<!--          (change)="searchForDistance($event)">-->
-<!--        </mat-slider>-->
+        <span class="distance-label">Entfernung (in km)</span>
+        <mat-slider
+          class="slider"
+          thumbLabel
+          min="1"
+          max="100"
+          step="1"
+          [(ngModel)]="filteredDistance"
+          (change)="searchForDistance($event)">
+        </mat-slider>
         <span class="distance-label">Kategorien</span>
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
           <div class="category-container">

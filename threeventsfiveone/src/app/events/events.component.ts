@@ -8,6 +8,8 @@ import {NominatimGeoService} from '../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ActivatedRoute, Router} from '@angular/router';
 import * as log from 'loglevel';
+import {filter, map} from "rxjs/operators";
+import {flatMap} from "rxjs/internal/operators";
 
 @Component({
   selector: 'vents-events',
@@ -64,9 +66,10 @@ export class EventsComponent implements OnInit {
   ngOnInit(): void {
 
 
-    this.eventService.events.subscribe((ev: Event[]) => {
-      this.eventList = ev;
-      this.filteredList = ev;
+    this.eventService.events.pipe(
+      map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance )),
+    ).subscribe((ev: Event[]) => {
+      this.filteredList=ev;
     });
 
     this.categoriesService.categories.subscribe((cat: Category[]) => {
@@ -110,39 +113,30 @@ export class EventsComponent implements OnInit {
   applyFilters() {
     //Request backend for date, category and subcategory filter
     //filter object
-    let filter = {date: this.filteredDate, cat: [], subcat: []}
-
-    if (this.filteredCategory == null) filter.cat = this.categoryList
-    else filter.cat = [this.filteredCategory]
-
-    if(this.filteredSubcategories.length < 1) filter.subcat = []
-    else filter.subcat = this.filteredSubcategories
-
     this.currentPosition = this.positionService.getCurrentPosition();
+
+    let fil = {date: this.filteredDate, cat: [], subcat: []}
+
+    if (this.filteredCategory == null) fil.cat = this.categoryList
+    else fil.cat = [this.filteredCategory]
+
+    if(this.filteredSubcategories.length < 1) fil.subcat = []
+    else fil.subcat = this.filteredSubcategories
+
+
     this.filteredList = []
     this.spinner.show();
-    this.eventService.getEventsOnDateCategoryAndSubcategory(filter).subscribe(
-      events => {
-        events.forEach(event => {
-         // TODO is too slow
-          // this.filterByDistance(event)
-        });
-
-      }
-    )
+    this.eventService.getEventsOnDateCategoryAndSubcategory(fil, this.filteredDistance, this.currentPosition)
     this.spinner.hide();
 
   }
-
-  filterByDistance(event)
+  get_distance_to_current_position(event)
   {
-    //filter by distance
-    this.geoService.get_distance(this.currentPosition, [event.geo_data.lat, event.geo_data.lon]).subscribe(
-      geo => {
-        let dist = geo['routes'][0].distance / 1000
-        if (dist < this.filteredDistance) this.filteredList.push(event)
-      }
-    )
+    //get distance
+
+    let dist = this.geoService.get_distance(this.currentPosition, [event.geo_data.lat, event.geo_data.lon])
+    return dist
+
   }
 
   searchForDay(filter: DateClicked) {
