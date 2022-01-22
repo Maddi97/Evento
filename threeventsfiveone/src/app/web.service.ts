@@ -37,4 +37,7 @@ export class WebService {
  delete(uri: string) {
    return this.http.delete(`${this.ROOT_URL}/${uri}`);
  }
+  get_file(uri: string, payload: Object) {
+    return this.http.post(`${this.ROOT_URL}/${uri}`, payload, { responseType: 'blob' })
+  }
 }

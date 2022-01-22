@@ -100,7 +100,6 @@ export class EventsComponent implements OnInit {
               }
             })
         });
-      console.log(this.filteredSubcategories)
 
 
       this.applyFilters()
@@ -123,8 +122,6 @@ export class EventsComponent implements OnInit {
     if(this.filteredSubcategories.length < 1) fil.subcat = []
     else fil.subcat = this.filteredSubcategories
 
-
-    this.filteredList = []
     this.spinner.show();
     this.eventService.getEventsOnDateCategoryAndSubcategory(fil, this.filteredDistance, this.currentPosition)
     this.spinner.hide();
@@ -133,7 +130,7 @@ export class EventsComponent implements OnInit {
   get_distance_to_current_position(event)
   {
     //get distance
-
+    this.currentPosition = this.positionService.getCurrentPosition()
     let dist = this.geoService.get_distance(this.currentPosition, [event.geo_data.lat, event.geo_data.lon])
     return dist
 
