@@ -17,15 +17,15 @@ router.get('/organizer/:organizerId/events', (req, res) => {
 
 
 router.post('/eventOnDate', (req, res) => {
-    date = new Date(req.body.date)
+    let date = new Date(req.body.date)
     Event.find(
         {
            $and: [
                 {
-                    'date.start': { $lte: new Date() }  //-1 um den heutigen Tag mit zu finden
+                    'date.start': { $lte: date }  //-1 um den heutigen Tag mit zu finden
                 },
                 {
-                    'date.end':  { $gte: new Date() }
+                    'date.end':  { $gte: date }
                 }
             ]
     }
@@ -34,6 +34,51 @@ router.post('/eventOnDate', (req, res) => {
         res.send(events);
     })
     .catch((error) => console.log(error))
+});
+
+router.post('/eventOnDateCatAndSubcat', (req, res) => {
+    let date = new Date(req.body.filter.date)
+    let categories = req.body.filter.cat
+
+    //get ids bc we filter by id
+    let catIds = []
+    categories.forEach(cat => catIds.push(cat._id))
+
+    let subcategories = req.body.filter.subcat
+    let subcatIds = []
+    subcategories.forEach(sub => subcatIds.push(sub._id))
+
+
+    Event.find(
+        {
+            $and: [
+                {
+                    'date.start': { $lte: date }  //-1 um den heutigen Tag mit zu finden
+                },
+                {
+                    'date.end':  { $gte: date }
+                },
+                { 'category._id': { $in: catIds } },
+
+            ]
+        }
+    )
+        .then((events) => {
+            // events contains all events filtered by date and category, based on this here we filter on the subcategory
+            events = events.filter(event =>{
+                if (subcategories.length > 0) {
+                    r = false
+                    event.category.subcategories.forEach(sub => {
+                        if (subcatIds.includes(sub._id)) {
+                            r = true
+                        }
+                    })
+                    return r
+                } else return true
+                })
+            res.send(events);
+        })
+        .catch((error) => console.log(error))
 });
 
 
@@ -71,19 +116,6 @@ router.post('/getEventsOnCategory', (req, res) =>{
         })
         .catch((error) =>console.log(error))
 })
-
-router.get('/organizer/:organizerId/upcomingEvents', (req, res) => {
-
-    today = new Date()
-    Event.find(
-        {'date.start':
-                {$gte : today.setDate(today.getDate() - 1)}
-        }  //-1 um den heutigen Tag mit zu finden
-        )
-
-    .then((events) => res.send(events))
-    .catch((error) => console.log(error))
-});
 
 
   

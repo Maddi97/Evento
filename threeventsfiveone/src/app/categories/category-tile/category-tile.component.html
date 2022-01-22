@@ -5,7 +5,7 @@
         </span>
   </div>
   <div class="category-tile-image-container">
-    <mat-icon *ngIf="this.category.subcategories.length !== 0" class="material-icons small-icon">
+    <mat-icon class="material-icons small-icon">
       expand_more
     </mat-icon>
     <mat-icon class="category-icon">
@@ -16,8 +16,15 @@
 </div>
 
 <div *ngIf="this.showSubcategories">
+  <div class="category-tile subcategory">
+    <div class="category-tile-name-container" routerLink="/events" [queryParams]="{category: category._id}">
+        <span>
+            All
+          </span>
+    </div>
+  </div>
   <div *ngFor="let subcategory of category.subcategories" class="category-tile subcategory">
-    <div class="category-tile-name-container" routerLink="/events" [queryParams]="{subcategory: subcategory._id}">
+    <div class="category-tile-name-container" routerLink="/events" [queryParams]="{subcategory: subcategory._id, category: category._id}">
       <span>
             {{subcategory.name}}
         </span>
