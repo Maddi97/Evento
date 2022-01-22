@@ -9,7 +9,7 @@ RUN yarn install
 
 COPY . /app
 
-RUN ng build --output-path=dist --prod=true
+RUN ng build --output-path=dist --sourceMap=false --prod=true
 
 FROM nginx:1.16.0-alpine
 
