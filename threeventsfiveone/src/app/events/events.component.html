@@ -1,6 +1,6 @@
 <div style="width: 100%;" fxLayoutAlign="center center">
   <div fxLayout="column" fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%" fxFlex.gt-md="40%"
-       fxLayoutAlign="start center">
+       fxLayoutAlign="start center" >
     <vents-date-picker style="width: 100%;" (clickedDate)="searchForDay($event)"></vents-date-picker>
     <div style="margin-top: 1rem;" fxLayout="column" style="margin-bottom: 5rem; width: 100%;">
       <div fxLayout="row" fxLayoutAlign="end center" style="margin-bottom: .5rem;">
@@ -16,30 +16,27 @@
         </div>
       </div>
       <div fxLayout="column" style="margin-bottom: .5rem;">
-        <div>
-          <input class="event-search-input" type="text" placeholder="Search For Event" [(ngModel)]="filteredText"
-                 (keyup)="filter()">
-        </div>
-        <span class="distance-label">Entfernung (in km)</span>
-        <mat-slider
-          class="slider"
-          thumbLabel
-          min="1"
-          max="100"
-          step="1"
-          [(ngModel)]="filteredDistance"
-          (change)="searchForDistance(filteredDistance)">
-        </mat-slider>
+<!--        <span class="distance-label">Entfernung (in km)</span>-->
+<!--        <mat-slider-->
+<!--          class="slider"-->
+<!--          thumbLabel-->
+<!--          min="1"-->
+<!--          max="100"-->
+<!--          step="1"-->
+<!--          [(ngModel)]="filteredDistance"-->
+<!--          (change)="searchForDistance($event)">-->
+<!--        </mat-slider>-->
         <span class="distance-label">Kategorien</span>
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
           <div class="category-container">
-          <span class="category" [ngClass]="isElementPicked(category)" (click)="searchForCategory(category)">
+          <span class="category" [ngClass]="isElementPicked(category)" (click)="addCategoryToFilter(category)">
               {{ category.name }}
           </span>
-            <div class="subcategory-container" *ngIf="this.filteredCategoryIDs.includes(category._id) && category.subcategories.length != 0"
+            <div class="subcategory-container" *ngIf="category.subcategories.length > 0
+                                                && isElementPicked(category) == 'category-picked'"
                  style="padding-left: 1rem">
               <div *ngFor="let subcategory of category.subcategories">
-                <span class="subcategory" [ngClass]="isSubcategoryPicked(subcategory)" (click)="searchForSubCategory(subcategory)">{{subcategory.name}}</span>
+                <span class="subcategory" [ngClass]="isElementPicked(subcategory)" (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>
               </div>
             </div>
           </div>

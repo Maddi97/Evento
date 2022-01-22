@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
   styleUrls: ['./headerbar.component.css']
 })
 export class HeaderbarComponent implements OnInit {
+  searchText = ''
 
   constructor(
     private location: Location,
@@ -19,5 +20,6 @@ export class HeaderbarComponent implements OnInit {
   navBack() {
     this.location.back();
   }
+
 
 }

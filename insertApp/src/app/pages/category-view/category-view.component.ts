@@ -163,10 +163,10 @@ export class CategoryViewComponent implements OnInit{
             const unsafeImg = URL.createObjectURL(imageData);
             const tempIconURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
             cat.iconTemporaryURL = tempIconURL
-        })
-      }
+          })
+        }
         iconURL = cat.iconTemporaryURL
-    }}
+      }}
     )
     return iconURL
   }

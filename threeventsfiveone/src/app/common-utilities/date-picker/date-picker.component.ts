@@ -26,7 +26,7 @@ export class DatePickerComponent implements OnInit {
   safeDate(day: Date) {
     this.nextMonth.map(m => {
       if (m.date === day) {
-        m.isClicked = !m.isClicked
+        m.isClicked = true;
       } else {
         m.isClicked = false;
       }
@@ -40,12 +40,16 @@ export class DatePickerComponent implements OnInit {
       const day = thisDay.add(1, "days")
       this.nextMonth[i] = new DateClicked();
       this.nextMonth[i].date = new Date(day.toLocaleString());
-      this.nextMonth[i].isClicked = false;
-    }
+      if (i == this.firstDate) {
+        this.safeDate(this.nextMonth[i].date)
+      }
+      else {
+        this.nextMonth[i].isClicked = false;
+      }    }
   }
 
   addDates() {
-    // TODO maybe try to add number of dates dynamically 
+    // TODO maybe try to add number of dates dynamically
     this.numberOfDates += 7;
     this.firstDate += 7;
     this.createDateList()

@@ -1,6 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {Category} from 'src/app/models/category';
-
 @Component({
   selector: 'vents-category-tile',
   templateUrl: './category-tile.component.html',
@@ -13,6 +12,7 @@ export class CategoryTileComponent implements OnInit {
   showSubcategories = false;
 
   constructor() {
+
   }
 
   ngOnInit(): void {
@@ -21,5 +21,7 @@ export class CategoryTileComponent implements OnInit {
   onClick() {
     this.showSubcategories ? this.showSubcategories = false : this.showSubcategories = true
   }
+
+
 
 }
