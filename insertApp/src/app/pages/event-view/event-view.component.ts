@@ -108,11 +108,13 @@ export class EventViewComponent implements OnInit {
       address.street = address_splitted[1]
       address.streetNumber = ""
     }
+    else if(address_splitted.length==1){
+      address.street = address_splitted[0]
+      address.streetNumber = ""
+    }
     else{
       address.street = address_splitted.slice(0,-1).join(' ');
       address.streetNumber =  address_splitted.slice(-1)[0];
-
-
     }
 
 
@@ -283,8 +285,19 @@ export class EventViewComponent implements OnInit {
     event.name = this.eventForm.get('name').value;
     address.plz =  this.eventForm.get('plz').value;
     address.city =  this.eventForm.get('city').value;
-    address.street =  this.eventForm.get('street').value.split(' ').slice(0,-1).join(' ');
-    address.streetNumber =  this.eventForm.get('street').value.split(' ').slice(-1)[0];
+      let address_splitted =  this.eventForm.get('street').value.split(' ')
+      if (address_splitted[0]=="" && address_splitted.length == 2) {
+        address.street = address_splitted[1]
+        address.streetNumber = ""
+      }
+      else if(address_splitted.length==1){
+        address.street = address_splitted[0]
+        address.streetNumber = ""
+      }
+      else{
+        address.street = address_splitted.slice(0,-1).join(' ');
+        address.streetNumber =  address_splitted.slice(-1)[0];
+      }
     address.country =  this.eventForm.get('country').value;
 
     event.address = address

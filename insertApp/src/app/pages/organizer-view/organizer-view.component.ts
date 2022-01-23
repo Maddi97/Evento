@@ -77,8 +77,21 @@ export class OrganizerViewComponent implements OnInit {
     // set address
     address.plz =  this.organizerForm.get('plz').value;
     address.city =  this.organizerForm.get('city').value;
-    address.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ');
-    address.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[0];
+
+    let address_splitted =  this.organizerForm.get('street').value.split(' ')
+    console.log(address_splitted)
+    if (address_splitted[0]=="" && address_splitted.length == 2) {
+      address.street = address_splitted[1]
+      address.streetNumber = ""
+    }
+    else if(address_splitted.length==1){
+      address.street = address_splitted[0]
+      address.streetNumber = ""
+    }
+    else{
+      address.street = address_splitted.slice(0,-1).join(' ');
+      address.streetNumber =  address_splitted.slice(-1)[0];
+    }
     address.country =  this.organizerForm.get('country').value;
     org.address = address
     log.debug(address)
@@ -105,17 +118,17 @@ export class OrganizerViewComponent implements OnInit {
       share()
       ).toPromise().then( undefined =>
       {
-        this.organizerService.createOrganizer(org).subscribe(res => {
+        this.organizerService.createOrganizer(org).pipe(map(res => {
           let _id = res._id;
-          if (org.isEvent){
+          if (res.isEvent == true){
             //if org is event than create also an event object
             const event = this.createEventFromOrg(org)
             event._organizerId = _id
 
-            this.eventService.createEvent(event).subscribe(res => console.log(res))
+            this.eventService.createEvent(event).subscribe()
           }
           this.openSnackBar("Successfully added: "+ res.name)
-        })
+        })).subscribe()
 
 
 
@@ -178,8 +191,15 @@ createEventFromOrg(org){
       // set address
       address.plz =  this.organizerForm.get('plz').value;
       address.city =  this.organizerForm.get('city').value;
-      address.street =  this.organizerForm.get('street').value.split(' ').slice(0,-1).join(' ');
-      address.streetNumber =  this.organizerForm.get('street').value.split(' ').slice(-1)[0];
+        let address_splitted =  this.organizerForm.get('street').value.split(' ')
+        if (address_splitted[0]=="" && address_splitted.length == 2) {
+          address.street = address_splitted[1]
+          address.streetNumber = ""
+        }
+        else{
+          address.street = address_splitted.slice(0,-1).join(' ');
+          address.streetNumber =  address_splitted.slice(-1)[0];
+        }
       address.country =  this.organizerForm.get('country').value;
 
       org.address = address
@@ -203,18 +223,17 @@ createEventFromOrg(org){
       share()
       ).toPromise().then( undefined =>
       {
-        this.organizerService.updateOrganizer(org._id, org).subscribe(
-            () => {
-                      let _id = org._id;
-                      if (org.isEvent){
-                        //if org is event than create also an event object
-                        const event = this.createEventFromOrg(org)
-                        event._organizerId = _id
-
-                        this.eventService.createEvent(event).subscribe(res => console.log(res))
-                      }
-                      this.openSnackBar("Successfully added: "+ org.name)
-                    });
+        this.organizerService.updateOrganizer(org._id, org).pipe(map(res => {
+          let _id = res._id;
+          if (res.isEvent != true){
+            //if org is event than create also an event object
+            const event = this.createEventFromOrg(org)
+            event._organizerId = _id
+            console.log('moin')
+            this.eventService.createEvent(event).subscribe(res => console.log(res))
+          }
+          this.openSnackBar("Successfully updated: "+ res.name)
+        })).subscribe()
         this.organizerForm.reset()
       }
 
