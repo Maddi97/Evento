@@ -26,7 +26,7 @@ export class EventViewComponent implements OnInit {
 
   eventForm = this.fb.group({
     name: new FormControl('', []),
-    city: new FormControl('Dresden', []),
+    city: new FormControl('Leipzig', []),
     plz: new FormControl('', []),
     street: new FormControl('', []),
     streetNumber: new FormControl('', []),
@@ -103,9 +103,19 @@ export class EventViewComponent implements OnInit {
     address.plz =  this.eventForm.get('plz').value;
     address.city =  this.eventForm.get('city').value;
 
+    let address_splitted =  this.eventForm.get('street').value.split(' ')
+    if (address_splitted[0]=="" && address_splitted.length == 2) {
+      address.street = address_splitted[1]
+      address.streetNumber = ""
+    }
+    else{
+      address.street = address_splitted.slice(0,-1).join(' ');
+      address.streetNumber =  address_splitted.slice(-1)[0];
 
-    address.street =  this.eventForm.get('street').value.split(' ').slice(0,-1).join(' ');
-    address.streetNumber =  this.eventForm.get('street').value.split(' ').slice(-1)[0];
+
+    }
+
+
 
     address.country =  this.eventForm.get('country').value;
 

@@ -30,19 +30,39 @@ const EventSchema = new mongoose.Schema({
     },
     streetNumber: {
       type: String,
-      minlength: 1,
     },
     country: {
       type: String,
       minlength: 3,
     },
   },
+
+  openingTimes: [
+    {
+      day: {
+        type: String,
+      },
+      start: {
+        type: String,
+      },
+      end: {
+        type: String,
+      },
+    },
+  ],
+
   category: {
     _id: {
       type: String,
     },
     name: {
       type: String,
+    },
+    iconTemporaryURL: {
+      type: String
+    },
+    iconPath: {
+      type:String
     },
     subcategories:
       [
@@ -56,6 +76,9 @@ const EventSchema = new mongoose.Schema({
         iconPath: {
           type: String,
         },
+        iconTemporaryURL: {
+            type: String
+          },
       },
       ],
   },

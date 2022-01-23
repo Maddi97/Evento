@@ -33,22 +33,35 @@ const OrganizerSchema = new mongoose.Schema({
     type: String,
   },
   category: {
+    _id: {
+      type: String,
+    },
     name: {
       type: String,
     },
-    subcategories: [
-      {
-        _id: {
-          type: String,
-        },
-        name: {
-          type: String,
-        },
-        iconPath: {
-          type: String,
-        },
-      }
-    ],
+    iconTemporaryURL: {
+      type: String
+    },
+    iconPath: {
+      type:String
+    },
+    subcategories:
+        [
+          {
+            _id: {
+              type: String,
+            },
+            name:{
+              type: String,
+            },
+            iconPath: {
+              type: String,
+            },
+            iconTemporaryURL: {
+              type: String
+            },
+          },
+        ],
   },
   description: {
     type: String,

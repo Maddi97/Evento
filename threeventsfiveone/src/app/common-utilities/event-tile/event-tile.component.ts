@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Event } from '../../models/event';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FileService } from "../../file.service";
-import {FileUploadService} from "../../../../../insertApp/src/app/file-upload.service";
 
 @Component({
   selector: 'vents-event-tile',

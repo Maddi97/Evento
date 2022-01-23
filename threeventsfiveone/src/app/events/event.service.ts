@@ -91,7 +91,7 @@ export class EventService {
     return obs;
   }
 
-  getEventsOnDateCategoryAndSubcategory(fil: any, distance, currentPosition): Observable<Event[]>{
+  getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]>{
     const obs = this.webService.post('eventOnDateCatAndSubcat', { fil }).pipe(
       map((res: HttpRequest<any>) =>
           res as unknown as Event[]),

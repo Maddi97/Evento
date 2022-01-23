@@ -28,7 +28,7 @@ export class EventsComponent implements OnInit {
   filteredList: Event[] = [];
 
   // Applied filtered Category IDs
-  filteredCategory:Category;
+  filteredCategory: any = 'hot';
 
   //filteredSubcategories
   filteredSubcategories = [];
@@ -123,7 +123,14 @@ export class EventsComponent implements OnInit {
     else fil.subcat = this.filteredSubcategories
 
     this.spinner.show();
-    this.eventService.getEventsOnDateCategoryAndSubcategory(fil, this.filteredDistance, this.currentPosition)
+    // if category is not hot
+    if (!fil.cat.includes('hot')) {
+      this.eventService.getEventsOnDateCategoryAndSubcategory(fil)
+    }
+    else {
+      // if hot filter by date
+      this.eventService.getEventsOnDate(this.filteredDate)
+    }
     this.spinner.hide();
 
   }
@@ -149,9 +156,9 @@ export class EventsComponent implements OnInit {
   }
 
   //add or remove clicked category to list of filter
-  addCategoryToFilter(cat: Category){
+  addCategoryToFilter(cat: any){
     if (this.filteredCategory == cat) {
-      this.filteredCategory = null
+      return
     }
     else this.filteredCategory = cat
 

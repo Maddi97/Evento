@@ -7,6 +7,8 @@ import {MatSnackBar} from '@angular/material/snack-bar'
 import { NominatimGeoService } from '../../nominatim-geo.service'
 import { map, share } from 'rxjs/operators';
 import * as log from 'loglevel';
+import {EventsService} from "../../events.service";
+import {Event} from "../../models/event";
 
 @Component({
   selector: 'app-organizer-view',
@@ -56,7 +58,9 @@ export class OrganizerViewComponent implements OnInit {
     private fb: FormBuilder,
     private _snackbar: MatSnackBar,
     private geoService: NominatimGeoService,
-    ) { }
+    private eventService: EventsService,
+
+  ) { }
 
   ngOnInit(): void {
     this.organizerService.organizers.subscribe(o => {
@@ -101,7 +105,20 @@ export class OrganizerViewComponent implements OnInit {
       share()
       ).toPromise().then( undefined =>
       {
-        this.organizerService.createOrganizer(org).subscribe(res => { this.openSnackBar("Successfully updated: "+ res.name) })
+        this.organizerService.createOrganizer(org).subscribe(res => {
+          let _id = res._id;
+          if (org.isEvent){
+            //if org is event than create also an event object
+            const event = this.createEventFromOrg(org)
+            event._organizerId = _id
+
+            this.eventService.createEvent(event).subscribe(res => console.log(res))
+          }
+          this.openSnackBar("Successfully added: "+ res.name)
+        })
+
+
+
         this.organizerForm.reset()
       }
 
@@ -112,7 +129,20 @@ export class OrganizerViewComponent implements OnInit {
   }
 
 
+createEventFromOrg(org){
+  const event = new Event()
 
+  event.name = org.name
+  event.description = org.description
+  event.address = org.address
+  event.category = org.category
+  event.organizerName = org.name
+  event.permanent = true
+  event.openingTimes = org.openingTimes
+  event.link = org.link
+  event.geo_data = org.geo_data
+  return event
+}
   setOrganizerForm(org: Organizer): void {
     this.organizerForm.setValue({
       name: org.name,
@@ -174,7 +204,17 @@ export class OrganizerViewComponent implements OnInit {
       ).toPromise().then( undefined =>
       {
         this.organizerService.updateOrganizer(org._id, org).subscribe(
-        res => this.openSnackBar("Successfully updated: "+ res.name));
+            () => {
+                      let _id = org._id;
+                      if (org.isEvent){
+                        //if org is event than create also an event object
+                        const event = this.createEventFromOrg(org)
+                        event._organizerId = _id
+
+                        this.eventService.createEvent(event).subscribe(res => console.log(res))
+                      }
+                      this.openSnackBar("Successfully added: "+ org.name)
+                    });
         this.organizerForm.reset()
       }
 
