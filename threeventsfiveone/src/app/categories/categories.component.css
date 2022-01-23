@@ -1,0 +1,16 @@
+.category-components {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 2%;
+}
+
+.category-component {
+  width: 50%;
+}
+
+.header {
+  text-align: center;
+  padding-top: 10px;
+}

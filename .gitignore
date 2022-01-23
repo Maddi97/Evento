@@ -1,3 +1,16 @@
-backend/node_modules/
+/**/node_modules/
 backend/category_images/
-.idea/
+/**/package-lock.json
+/**/yarn.lock
+.idea
+.env.prod
+
+#Include Only Important Configuration For Reverse-Proxy
+letsencrypt/*
+!letsencrypt/config/
+letsencrypt/config/*
+!letsencrypt/config/nginx/
+letsencrypt/config/nginx/*
+!letsencrypt/config/nginx/proxy-confs/
+letsencrypt/config/nginx/proxy-confs/*
+!letsencrypt/config/nginx/proxy-confs/*.conf

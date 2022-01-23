@@ -1,13 +1,16 @@
 .day-date {
-    height: 3.2rem;
-    width:  3.2rem;
-    background-color: rgb(255, 238, 0);
+    height: 3.5rem;
+    width:  3.5rem;
+    background-color: white;
     border-radius: 5px;
-    margin: 4px 3px 4px 3px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 17px -9px rgb(61 61 61);
+    box-sizing: border-box;
 }
 
 .day {
-    font-size: 1.8rem; 
+    font-size: 1.3rem; 
     height: 2.2rem;
 }
 
@@ -17,9 +20,10 @@
 }
 
 .day-date-clicked {
-    height: 3.2rem;
-    width:  3.2rem;
-    background-color: rgb(117, 109, 0);
-    border-radius: 5px;
-    margin: 4px 3px 4px 3px;
+    height: 3.5rem;
+    width:  3.5rem;
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: inset 0px 0px 18px -14px rgb(61 61 61);
+    box-sizing: border-box;
 }

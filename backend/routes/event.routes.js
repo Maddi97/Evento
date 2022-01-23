@@ -16,21 +16,104 @@ router.get('/organizer/:organizerId/events', (req, res) => {
 });
 
 
-router.get('/eventOnDate', (req, res) => {
-    date = new Date(req.query.date)
+router.post('/eventOnDate', (req, res) => {
+    let date = new Date(req.body.date)
     Event.find(
-       {date: { $gte: date.setDate(date.getDate() - 1), $lte: date.setDate(date.getDate() +1) } } //-1 um den heutigen Tag mit zu finden
-        )
-
-    .then((events) => res.send(events))
+        {
+           $and: [
+                {
+                    'date.start': { $lte: date }  //-1 um den heutigen Tag mit zu finden
+                },
+                {
+                    'date.end':  { $gte: date }
+                }
+            ]
+    }
+    )
+    .then((events) => {
+        res.send(events);
+    })
     .catch((error) => console.log(error))
+});
+
+router.post('/eventOnDateCatAndSubcat', (req, res) => {
+    let date = new Date(req.body.fil.date)
+    let categories = req.body.fil.cat
+    let permanent = true
+    //get ids bc we filter by id
+    let catIds = []
+    categories.forEach(cat => catIds.push(cat._id))
+
+    let subcategories = req.body.fil.subcat
+    let subcatIds = []
+    subcategories.forEach(sub => subcatIds.push(sub._id))
+
+
+    Event.find(
+        {
+            $and: [
+                {
+                    $or: [
+                        {
+                            $and:
+                                [
+                                    {
+                                    'date.start': {$lte: date}  //-1 um den heutigen Tag mit zu finden
+                                     },
+                                    {
+                                    'date.end':  { $gte: date }
+                                    },
+                                ],
+                          },
+                        {
+                           permanent: {$eq: true}
+                        },
+                        ]
+                    },
+
+                { 'category._id': { $in: catIds } },
+
+            ]
+        }
+    )
+        .then((events) => {
+            // events contains all events filtered by date and category, based on this here we filter on the subcategory
+            events = events.filter(event =>{
+                if (subcategories.length > 0) {
+                    r = false
+                    event.category.subcategories.forEach(sub => {
+                        if (subcatIds.includes(sub._id)) {
+                            r = true
+                        }
+                    })
+                    return r
+                } else return true
+                })
+            res.send(events);
+        })
+        .catch((error) => console.log(error))
 });
 
 
 router.get('/upcomingEvents', (req, res) => {
-    today = new Date()
     Event.find(
-       {date: {$gte : today.setDate(today.getDate() - 1)} }  //-1 um den heutigen Tag mit zu finden
+        {
+            $or: [
+                {
+                    'date.start': { $gte: new Date() }  //-1 um den heutigen Tag mit zu finden
+                },
+                {
+                    $and: [
+                        {
+                            'date.start': { $lte: new Date() }  //-1 um den heutigen Tag mit zu finden
+                        },
+                        {
+                            'date.end':  { $gte: new Date() }
+                        }
+                    ]
+                }
+            ]
+        }
         )
 
     .then((events) => res.send(events))
@@ -38,17 +121,14 @@ router.get('/upcomingEvents', (req, res) => {
 });
 
 
-
-router.get('/organizer/:organizerId/upcomingEvents', (req, res) => {
-
-    today = new Date()
-    Event.find(
-       {date: {$gte : today.setDate(today.getDate() - 1)} }  //-1 um den heutigen Tag mit zu finden
-        )
-
-    .then((events) => res.send(events))
-    .catch((error) => console.log(error))
-});
+router.post('/getEventsOnCategory', (req, res) =>{
+    const id = String(req.body.category._id)
+    Event.find({ "category._id":  id } )
+        .then((events)=> {
+            res.send(events);
+        })
+        .catch((error) =>console.log(error))
+})
 
 
   

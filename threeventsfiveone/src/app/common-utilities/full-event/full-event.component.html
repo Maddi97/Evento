@@ -8,25 +8,31 @@
                 <span>
                     {{event?.name}}
                 </span>
-                <div fxLayoutAlign="end end" class="date">
-                    {{ event?.date | date }}
+                <div fxLayoutAlign="end end" class="date-start">
+                    {{ event?.date?.start | date }}
                 </div>
+              <div fxLayoutAlign="end end" class="date-end">
+                {{ event?.date?.end | date }}
+              </div>
             </div>
             <div fxLayoutAlign="start start">
-                {{ event?._organizerId}}
+                {{ event?.organizerName}}
             </div>
             <div class="category">
                 {{ event?.category.name}}
             </div>
+          <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
+            {{ subcategory?.name }}
+          </div>
         </div>
     </div>
     <div fxLayoutAlign="center center">
         <div style="width: 95%">
-            Adresse:
+            Addresse:
             <br/>
-            {{event?.adress?.street}} {{event?.adress?.streetNumber}}
+            {{event?.address?.street}} {{event?.address?.streetNumber}}
             <br/>
-            {{event?.adress?.plz}} {{event?.adress?.city}}
+            {{event?.address?.plz}} {{event?.address?.city}}
 
         </div>
     </div>

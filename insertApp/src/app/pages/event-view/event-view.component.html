@@ -1,0 +1,237 @@
+
+<div fxLayout="row">
+<div style="width: 100%; margin-top: 1rem;" fxLayout="column" fxLayoutAlign="center center">
+    <mat-form-field appearance="fill" style="width: 90%;">
+      <mat-label>Organizer</mat-label>
+      <input matInput
+      [formControl]="organizerName"
+      [matAutocomplete]="auto"
+      required
+      type="text">
+      
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option *ngFor="let organizer of organizers" [value]="organizer.name" (click)="insertOrgInfo(organizer)">
+            {{organizer.name}}
+          </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="organizerName.hasError('required')">Organizer is required</mat-error>
+    </mat-form-field>
+   
+    <form [formGroup]="eventForm" style="width: 90%;">
+
+      <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
+        <mat-form-field appearance="fill" style="width: 100%;">
+          <mat-label>Event Name</mat-label>
+          <input matInput #target required formControlName="name" (keydown.enter)="addNewEvent(); target.value = ''">
+          <mat-error *ngIf="eventForm.get('name').hasError('required')">Event name is required</mat-error>
+        </mat-form-field>
+      </div>
+
+    <mat-slide-toggle [formControl]="toggleIsChecked">Address or coordinates?</mat-slide-toggle>
+    <div *ngIf="toggleIsChecked.value">
+      <div class="city"style="width: 100%;" fxLayoutAlign="center center" fxLayout="row" >
+        <div style="width: 50%;" fxLayoutAlign="center center">
+          <mat-form-field appearance="fill" style="width: 100%;">
+              <mat-label>Plz</mat-label>
+              <input matInput #target required minlength="5" maxlength="5" formControlName="plz" (keydown.enter)="addNewEvent(); target.value = ''">
+              <mat-error *ngIf="eventForm.get('plz').hasError('required')">Plz is required</mat-error>
+              <mat-error *ngIf="eventForm.get('plz').hasError('minlength')">Plz length is 5</mat-error>
+
+          </mat-form-field>
+        </div>
+
+        <div style="width: 50%;" fxLayoutAlign="end center" fxLayout="column">
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>City</mat-label>
+            <input matInput #target required formControlName="city" (keydown.enter)="addNewEvent(); target.value = ''">
+            <mat-error *ngIf="eventForm.get('city').hasError('required')">City is required</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+  <div class="street" style="width: 100%;" fxLayoutAlign="center center" fxLayout="row" >
+      <div style="width: 85%;" fxLayout="column">
+          <mat-form-field appearance="fill" style="width: 90%;">
+          <mat-label>Street</mat-label>
+          <input matInput #target required formControlName="street" (keydown.enter)="addNewEvent(); target.value = ''">
+          <mat-error *ngIf="eventForm.get('street').hasError('required')">Street is required</mat-error>
+
+          </mat-form-field>
+      </div>
+<!-- 
+      <div style="width: 15%;" fxLayoutAlign="center center" fxLayout="column">
+          <mat-form-field appearance="fill" style="width: 100%;">
+          <mat-label>Number</mat-label>
+          <input matInput #target required="true" formControlName="streetNumber" (keydown.enter)="addNewEvent(); target.value = ''">
+          </mat-form-field>
+      </div> -->
+     </div>
+    </div>
+
+        <div class="coordinates" *ngIf="!toggleIsChecked.value">
+            <div style="width: 85%;" fxLayout="column">
+                <mat-form-field appearance="fill" style="width: 90%;">
+                    <mat-label>Coordinates:</mat-label>
+                    <input matInput #target required formControlName="coord" (keydown.enter)="addNewEvent(); target.value = ''">
+                    <mat-error *ngIf="eventForm.get('coord').hasError('required')">Coords are required if no Address is given</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+
+<div class="category" style="width: 100%;" fxLayoutAlign="center center"   >
+  <mat-card style="width: 100%;">
+    <app-category-select  [loadedCategory]="category" (newCategorySelect)="setCategory($event)"></app-category-select>
+  </mat-card>
+</div>
+
+  <div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column" >
+      <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Description</mat-label>
+      <input matInput #target required="true" formControlName="description" (keydown.enter)="addNewEvent(); target.value = ''">
+      <mat-error *ngIf="eventForm.get('description').hasError('required')">Description is required</mat-error>
+      </mat-form-field>
+  </div>
+
+  <div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column" >
+    <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Link</mat-label>
+    <input matInput #target formControlName="link" (keydown.enter)="addNewEvent(); target.value = ''">
+    </mat-form-field>
+</div>
+<div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column" >
+  <mat-form-field appearance="fill" style="width: 100%;">
+  <mat-label>Price: 0,00</mat-label>
+  <input matInput #target formControlName="price" (keydown.enter)="addNewEvent(); target.value = ''">
+  </mat-form-field>
+</div>
+
+<div class="radio-group-permanent-event">
+    <label id="permanent-radio-group-label">Is event permanent?</label>
+    <mat-radio-group  formControlName="permanent">
+        <mat-radio-button value="true">Yes</mat-radio-button>
+        <mat-radio-button value="false">No</mat-radio-button>
+    </mat-radio-group>
+</div>
+
+        <div *ngIf="eventForm.get('permanent').value === 'false'" fxLayout="row wrap" style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
+            <div>
+                <mat-form-field appearance="fill">
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Start date">
+                    <input matEndDate formControlName="end" placeholder="End date">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </div>
+        </div>
+
+
+
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div style="padding-left: 1rem;" fxLayout="row">
+            <p>Start :</p>
+            <div class="ngx-timepicker-field-example">
+              
+                 <ngx-timepicker-field #startTime [formControl]="times.start"
+                 [format]="24"
+                 [defaultTime]="'00:00'"> </ngx-timepicker-field>
+            </div>
+        </div>
+        <div style="padding-left: 1rem;" fxLayout="row">
+            <p>Ende:</p>
+            <div class="ngx-timepicker-field-example">
+            <ngx-timepicker-field #endTime [formControl]="times.end"
+            [format]="24"
+            [defaultTime]="'00:00'"></ngx-timepicker-field>
+            </div>
+        </div>
+    </div>
+
+    </form>
+    
+    <div fxLayout="column" fxLayoutAlign="spacing-around center" style="margin: 1em;">
+      <button  mat-raised-button color="primary" (click)="updateEventId !== '' ? updateEvent() : addNewEvent()" [disabled]="checkDisabled()" style="width: 100%; cursor: pointer;"fxLayoutAlign="center center">
+          {{ updateEventId !== '' ? 'Update' : 'Submit'}}
+      </button>
+      <button  mat-raised-button color="secondary" (click)="nullFormField()" style="width: 100%;cursor: pointer; margin-top:1em;"fxLayoutAlign="center center">
+          Clear
+      </button>
+  </div>
+
+  </div>
+
+  <div style="width: 90%; margin-top: 3em;">
+    <mat-accordion>
+      <div *ngFor="let category of categories" fxLayout="column" fxLayoutAlign="center center">
+        <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="loadOrganizer(category.name)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{category.name}}
+            </mat-panel-title>
+            <mat-panel-description>
+                Open to see all organizers
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+      <div *ngFor="let organizer of organizerOfCategory" fxLayout="column" fxLayoutAlign="center center">
+      <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" [ngStyle]="{'background': getColor(organizer)}" (afterExpand)="loadEvents(organizer._id)">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{organizer.name}}
+          </mat-panel-title>
+          <mat-panel-description>
+              Open to see all events
+          </mat-panel-description>
+          <p>Last Updated: {{ timeSince(organizer.lastUpdated) }}</p>
+        </mat-expansion-panel-header>
+
+        <div *ngFor="let event of eventsOfOrganizer" fxLayout="row">
+          <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
+            <div style="width: 80%;" fxLayoutAlign="start center" (click)="setEventForm(event)" > 
+              {{event.name}}
+            </div>
+            <div (click)="deleteEvent(organizer._id, event._id)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+                Delete
+            </div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </div>
+
+
+      </mat-expansion-panel>
+    </div>
+    </mat-accordion> 
+    <div style="margin-top: 2em;">
+    <map-view [marker_data]="eventsOfOrganizer"></map-view>
+    </div>
+
+     <div class="all-events-expansion-panel" *ngFor="let category of categories">
+         <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="loadEventsByCategory(category)">
+             <mat-expansion-panel-header>
+                 <mat-panel-title>
+                    {{category.name}}
+                 </mat-panel-title>
+                 <mat-panel-description>
+                     Open to see all events
+                 </mat-panel-description>
+             </mat-expansion-panel-header>
+
+             <div *ngFor="let event of eventsFilteredByCategory" fxLayout="row">
+                 <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
+                     <div style="width: 80%;" fxLayoutAlign="start center" (click)="setEventForm(event)" >
+                         {{event.name}}
+                     </div>
+                     <div (click)="deleteEvent(event._organizerId, event._id)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+                         Delete
+                     </div>
+                 </div>
+             </div>
+         </mat-expansion-panel>
+     </div>
+</div>
+
+</div>

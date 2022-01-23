@@ -1,15 +1,19 @@
 <div class="event-tile" fxLayout="row">
     <div class="event-pic" fxLayoutAlign="center center">
-        
+      <img [src]="IconURL" >
     </div>
     <div fxLayout="column" style="width: 75%;">
         <div fxLayout="row" style="width: 100%;">
+
             <div style="width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
                 {{ event?.name }}
             </div>
-            <div fxLayoutAlign="end end" class="date">
-                {{ event?.date | date }}
+            <div fxLayoutAlign="end end" class="date-start">
+                {{ event?.date?.start | date }}
             </div>
+          <div fxLayoutAlign="end end" class="date-end">
+            {{ event?.date?.end | date }}
+          </div>
         </div>
         <div fxLayoutAlign="start start">
             name

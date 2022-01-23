@@ -1,15 +1,17 @@
+import {Category} from "./category";
+
 export class Organizer {
     _id: string;
     name: string;
-    adress: Adress;
+    address: Address;
     email?: string;
     telephone?: string;
-    category: string;
+    category: Category;
     description: string;
     openingTimes?: Day[];
 }
 
-export class Adress {
+export class Address {
     city: string;
     plz: string;
     street: string;

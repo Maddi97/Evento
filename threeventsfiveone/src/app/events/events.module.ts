@@ -7,11 +7,15 @@ import { AppRoutingModule } from '../app-routing.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
 import { HttpClientModule } from "@angular/common/http";
+import {MapViewComponent} from "../map-view/map-view.component";
+import {FormsModule} from "@angular/forms";
+import {NgxSpinnerModule} from "ngx-spinner";
 
 
 @NgModule({
   declarations: [
     EventsComponent,
+    MapViewComponent
   ],
   imports: [
     AppRoutingModule,
@@ -28,8 +32,10 @@ import { HttpClientModule } from "@angular/common/http";
     MatIconModule,
     MatSliderModule,
 
-    
-    HttpClientModule
+
+    HttpClientModule,
+    FormsModule,
+    NgxSpinnerModule,
   ]
 })
 export class EventsModule { }

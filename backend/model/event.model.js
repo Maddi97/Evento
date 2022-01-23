@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose')
 
 const EventSchema = new mongoose.Schema({
@@ -11,7 +10,12 @@ const EventSchema = new mongoose.Schema({
     required: true,
   },
 
-  adress: {
+  organizerName: {
+    type: String,
+    required: true,
+  },
+
+  address: {
     plz: {
       type: String,
       minlength: 5,
@@ -26,13 +30,27 @@ const EventSchema = new mongoose.Schema({
     },
     streetNumber: {
       type: String,
-      minlength: 1,
     },
     country: {
       type: String,
       minlength: 3,
     },
   },
+
+  openingTimes: [
+    {
+      day: {
+        type: String,
+      },
+      start: {
+        type: String,
+      },
+      end: {
+        type: String,
+      },
+    },
+  ],
+
   category: {
     _id: {
       type: String,
@@ -40,11 +58,29 @@ const EventSchema = new mongoose.Schema({
     name: {
       type: String,
     },
-    subcategories: [
-      {
-        type: String,
+    iconTemporaryURL: {
+      type: String
+    },
+    iconPath: {
+      type:String
+    },
+    subcategories:
+      [
+          {
+        _id: {
+          type: String,
+        },
+        name:{
+          type: String,
+        },
+        iconPath: {
+          type: String,
+        },
+        iconTemporaryURL: {
+            type: String
+          },
       },
-    ],
+      ],
   },
 
   description: {
@@ -60,8 +96,13 @@ const EventSchema = new mongoose.Schema({
   },
 
   date: {
-    type: Date,
-  },
+    start: {
+      type: Date,
+    },
+    end: {
+      type: Date,
+    },
+    },
 
   geo_data: {
     lat: {
@@ -70,6 +111,10 @@ const EventSchema = new mongoose.Schema({
     lon: {
       type: String,
     },
+  },
+
+  permanent: {
+    type: Boolean,
   },
 
   times: {

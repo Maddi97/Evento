@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatCalendar } from '@angular/material/datepicker';
+import * as moment from 'moment';
 
 @Component({
   selector: 'vents-date-picker',
@@ -14,32 +15,44 @@ export class DatePickerComponent implements OnInit {
 
 
   public nextMonth: DateClicked[] = [];
+  public numberOfDates: number = 7;
+  public firstDate: number = 0;
   constructor() { }
 
   ngOnInit(): void {
-    const today = new Date();
-    const thisDay = new Date();
-    for ( let i = 0; i < 7; i++) {
-      const day = thisDay.setDate(today.getDate() + i);
-      this.nextMonth[i] = new DateClicked();
-      this.nextMonth[i].date = new Date(day);
-      this.nextMonth[i].isClicked = false;
-    }
+    this.createDateList()
   }
 
   safeDate(day: Date) {
     this.nextMonth.map(m => {
       if (m.date === day) {
-        if (m.isClicked === true) {
-          m.isClicked = false;
-          return;
-        }
         m.isClicked = true;
       } else {
         m.isClicked = false;
       }
     });
     this.clickedDate.emit(this.nextMonth.find(m => m.date === day));
+  }
+
+  createDateList() {
+    const thisDay = moment(this.nextMonth[this.firstDate - 1] ? this.nextMonth[this.firstDate - 1].date : new Date());
+    for ( let i = this.firstDate; i < this.numberOfDates; i++) {
+      const day = thisDay.add(1, "days")
+      this.nextMonth[i] = new DateClicked();
+      this.nextMonth[i].date = new Date(day.toLocaleString());
+      if (i == this.firstDate) {
+        this.safeDate(this.nextMonth[i].date)
+      }
+      else {
+        this.nextMonth[i].isClicked = false;
+      }    }
+  }
+
+  addDates() {
+    // TODO maybe try to add number of dates dynamically
+    this.numberOfDates += 7;
+    this.firstDate += 7;
+    this.createDateList()
   }
 }
 

@@ -21,7 +21,12 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images",
+                "output": "./assets/"
+              }
             ],
             "styles": [
               "src/custom-theme.scss",
@@ -118,6 +123,10 @@
               "devServerTarget": "threeventsfiveone:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
     }

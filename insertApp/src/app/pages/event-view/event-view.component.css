@@ -1,0 +1,15 @@
+.green {
+    color: green
+}
+
+.yellow {
+    color: yellow
+}
+
+.red {
+    color: red
+}
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+}
