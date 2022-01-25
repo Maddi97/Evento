@@ -366,6 +366,8 @@ export class EventViewComponent implements OnInit {
     this.nullFormField();
     }
 
+
+
   setCategory(value){
     this.category = value
   }
@@ -402,6 +404,7 @@ export class EventViewComponent implements OnInit {
   }
   return Math.floor(seconds) + ' seconds';
 }
+
 
 timeSinceInteger(date){
   const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);

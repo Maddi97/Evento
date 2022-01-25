@@ -4,13 +4,20 @@
 
     <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
         <mat-form-field appearance="fill" style="width: 100%;">
-          <mat-label>Add Category</mat-label>
-          <input matInput #target required="true" minlength="2" [formControl]="categoryName" (keydown.enter)="addNewCategory(); target.value = ''">
+          <mat-label *ngIf="!update">Add Category</mat-label>
+            <mat-label *ngIf="update">Update Category</mat-label>
+
+            <input matInput #target required="true" minlength="2" [formControl]="categoryName" (keydown.enter)="!update ? addNewCategory() :  updateCategory(); target.value = ''">
             <mat-error *ngIf="categoryName.invalid">Category name minimum length is 2</mat-error>
         </mat-form-field>
+        <img *ngIf="update" class = "category-icon" [src]="updateCategoryObject.iconTemporaryURL">
+
         <span class='col'><input type='file' #imageUpload (input)=fileChosen($event)></span>
-        <button class='btn btn-warning' (click)="addNewCategory()">Add Category</button>
-      </div>
+
+        <button *ngIf="!update" class='btn btn-warning' (click)="addNewCategory()">Add Category</button>
+        <button *ngIf="update" style="width: 20%; background-color: blue; color:white; border-radius: 5px; cursor: pointer;margin-right: 1em;" (click)="updateCategory()">Update Category</button>
+
+    </div>
       <div *ngIf='uploadedFile'>
       <div>{{uploadedFile.path}}</div>
      </div>
@@ -21,10 +28,13 @@
       <div  fxLayout="column" fxLayoutAlign="center center">
       <mat-expansion-panel style="max-width: 100%; width: 75%; margin-top: 1em;">
         <mat-expansion-panel-header>
-          <mat-panel-title>
+          <mat-panel-title style="justify-content: space-between">
             {{category.name}}
+              <img class = "category-icon" [src]="category.iconTemporaryURL">
           </mat-panel-title>
-            <img class = "category-icon" [src]="category.iconTemporaryURL">
+            <div (click)="$event.stopPropagation(); editCategoryClicked(category)" style="width: 20%; background-color: blue; color:white; border-radius: 5px; cursor: pointer;margin-right: 1em;"fxLayoutAlign="center center">
+                Edit
+            </div>
             <div (click)="deleteCategory(category)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;margin-right: 1em;"fxLayoutAlign="center center">
             Delete
         </div>
@@ -34,11 +44,13 @@
             <mat-card class="subcategory-form">
             <mat-form-field appearance="fill" style="width: 100%;">
                 <mat-label>Add Subcategory</mat-label>
-                <input matInput #target required="true" [formControl]="subcategoryName" (keydown.enter)="addNewSubcategory(category); target.value = ''">
+                <input matInput #target required="true" [formControl]="subcategoryName" (keydown.enter)="!updateSub ? addNewSubcategory(category) : updateSubcategory(category); target.value = '' ">
                 <mat-error *ngIf="subcategoryName.invalid">Subcategory name minimum length is 2</mat-error>
             </mat-form-field>
             <span class='col'><input type='file' #imageUploadSubcat (input)=fileChosen($event)></span>
-            <button class='btn btn-warning' (click)="addNewSubcategory(category)">Add Subcategory</button>
+            <button *ngIf="!updateSub" class='btn btn-warning' (click)="addNewSubcategory(category)">Add Subcategory</button>
+            <button *ngIf="updateSub" (click)="updateSubcategory(category)">Update Subcategory</button>
+
             </mat-card>
         </div>
 
@@ -47,16 +59,17 @@
             <div style="height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
             <div style="width: 80%;" fxLayoutAlign="start center" (click)="this.clickSubcategory(sub._id)">
               {{sub.name}}
+                <img style="padding-left: 70%;" class = "category-icon" [src]="sub.iconTemporaryURL">
+
             </div>
-<!--                <img class = "category-icon" [src]="downloadImage(sub)">-->
+                <button  (click)="$event.stopPropagation(); editSubcategoryClicked(category, sub)"
+                 style="width: 20%; background-color: blue; color:white; border-radius: 5px; cursor: pointer;margin-right: 1em;"
+                >Edit </button>
                 <div (click)="deleteSubcategory(category, sub)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
                 Delete
             </div>
         </div>
-            <div *ngIf="sub._id === this.clickedSubcategory" style="margin:1rem">
-                <span class='col'><input type='file' #imageUploadUpdateSubcategory (input)=fileChosen($event)></span>
-                <button class='mat-raised-button color="primary"' (click)="uploadNewSubcategoryIcon()">Update Subcategory </button>
-        </div>
+
             </div>
         </div>
       </mat-expansion-panel>

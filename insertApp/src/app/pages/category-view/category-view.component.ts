@@ -32,6 +32,11 @@ export class CategoryViewComponent implements OnInit{
   chosen:boolean
   uploadedFile:any
   clickedSubcategory: number;
+  update = false;
+  updateSub = false;
+  updateCategoryObject;
+  updateSubcategoryObject;
+
   private _allowed_image_types = ["image/png", "image/jpeg", "image/jpg"]
   private _max_image_size = 50000
   constructor(
@@ -171,9 +176,21 @@ export class CategoryViewComponent implements OnInit{
             cat.iconTemporaryURL = IconUrl
           })
         }
-
       }
-      return IconUrl
+      if(cat.subcategories.length > 0){
+        cat.subcategories.forEach(sub =>{
+          if(sub.iconPath != undefined){
+            if (sub.iconTemporaryURL === undefined){
+              this.fileService.downloadFile(sub.iconPath).subscribe(imageData => {
+                // create temporary Url for the downloaded image and bypass security
+                const unsafeImg = URL.createObjectURL(imageData);
+                IconUrl = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+                sub.iconTemporaryURL = IconUrl;
+              })
+            }
+          }
+        })
+      }
     })
   }
 
@@ -186,10 +203,109 @@ export class CategoryViewComponent implements OnInit{
     }
   }
 
-  updateSubcategoryIcon(){
-    log.debug("to implement")
-    this.resetForms()
+  updateCategory(){
+    let category = this.updateCategoryObject
+    category.name = this.categoryName.value;
+
+    if(this.image && this.image.size > this._max_image_size){
+      this.openSnackBar('File size too big!', 'error')
+      this.resetForms()
+      return
+    }
+    if(this.image && !this._allowed_image_types.includes(this.image.type)){
+      this.openSnackBar('File type ' + this.image.type + ' is not allowed', 'error')
+      this.resetForms()
+      return
+    }
+    if(this.image) {
+        const categoryImagePath = 'category_images/' + category._id
+        const formdata: FormData = new FormData();
+        formdata.append('file', this.image);
+        formdata.append('file_path', categoryImagePath)
+      //TODO delete old Icon
+            this.fileService.uploadFile(formdata).subscribe((response) => {
+              category.iconPath = response.path
+              this.categoryService.updateCategory(category._id, category).subscribe(
+                  category => this.openSnackBar("Successfully uploaded category: "+ category.name, 'success'),
+                  err => this.openSnackBar("An error occured: "+ err, 'error'),
+              )
+            })
+
+        this.resetForms()
+
+    }
+    else{
+      this.categoryService.updateCategory(category._id, category).subscribe(
+          category => this.openSnackBar("Successfully uploaded category: "+ category.name, 'success'),
+          err => this.openSnackBar("An error occured: "+ err, 'error'),
+      )
+      this.resetForms()
+    }
   }
+
+  updateSubcategory(category){
+
+
+    if(this.image && this.image.size > this._max_image_size){
+      this.openSnackBar('File size too big!', 'error')
+      this.resetForms()
+      return
+    }
+    if(this.image && !this._allowed_image_types.includes(this.image.type)) {
+      this.openSnackBar('File type ' + this.image.type + ' is not allowed', 'error')
+      this.resetForms()
+      return
+    }
+    if(this.image){
+      let subcategory = this.updateSubcategoryObject
+      subcategory.name = this.subcategoryName.value
+
+      this.categoryService.updateCategory(category._id, category).subscribe(
+          catRes => {
+            category = catRes
+
+            const subcategoryImagePath = 'category_images/' + catRes._id + '/' + subcategory._id
+            const formdata: FormData = new FormData();
+            formdata.append('file', this.image);
+            formdata.append('file_path', subcategoryImagePath)
+            this.fileService.uploadFile(formdata).subscribe(response => {
+              category.subcategories.map(sub => {
+                if(sub._id == subcategory._id){ sub.iconPath = response.path }
+              })
+              console.log('mon', category)
+              this.categoryService.updateCategory(category._id, category).subscribe(
+                  category => this.openSnackBar("Successfully uploaded subcategory: "+ subcategory.name, 'success'),
+                  err => this.openSnackBar("An error occured: "+ err, 'error'),
+                  () => this.resetForms())
+            })
+          },
+      )
+    }
+    else{
+      let subcategory = this.updateSubcategoryObject
+      subcategory.name = this.subcategoryName.value
+
+      this.categoryService.updateCategory(category._id, category).subscribe(
+          category => this.openSnackBar("Successfully updated subcategory: "+ subcategory.name, 'success'),
+          err => this.openSnackBar("An error occured: "+ err, 'error'),
+          () => this.resetForms())
+    }
+  }
+
+  editCategoryClicked(category){
+    let value = this.categoryName.value != category.name ? category.name : '';
+    this.update = !this.update;
+    this.updateCategoryObject = category
+    this.categoryName.setValue(value)
+  }
+  editSubcategoryClicked(category, sub){
+
+    let value = this.subcategoryName.value != sub.name ? sub.name : '';
+    this.updateSub = !this.updateSub;
+    this.updateSubcategoryObject = sub
+    this.subcategoryName.setValue(value)
+  }
+
 
   openSnackBar(message, state){
 
@@ -207,7 +323,10 @@ export class CategoryViewComponent implements OnInit{
     this.image = null;
     this.inputCat.nativeElement.value = '';
     this.inputSubcat.nativeElement.value = '';
-    this.inputUpdateSubcat.nativeElement.value = '';
+    this.updateCategoryObject = null;
+    this.update= false;
+    this.updateSubcategoryObject = null;
+    this.updateSub = false;
   }
 
 }
