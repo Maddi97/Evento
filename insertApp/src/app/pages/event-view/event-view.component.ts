@@ -65,6 +65,7 @@ export class EventViewComponent implements OnInit {
 
   filteredOptions: Observable<string[]>;
   allUpcomingEvents: Event[] = [];
+  allHotEvents: Event[];
   eventsOfOrganizer: Event[];
     constructor(
     private categoryService: CategoryService,
@@ -77,7 +78,6 @@ export class EventViewComponent implements OnInit {
 
 
   ngOnInit(): void {
-      console.log(moment(new Date()).utcOffset(0, true).format())
     this.categoryService.categories.subscribe(cat => this.categories = cat)
     this.organizerService.organizers.subscribe(org => this.organizers = org);
     this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
@@ -225,15 +225,22 @@ export class EventViewComponent implements OnInit {
     this.times.end.setValue('00:00')
   }
 
-  loadOrganizer(categoryName: string){
-    this.organizerService.organizers.subscribe(org => this.organizerOfCategory = org.filter(o => o.category.name === categoryName))
+  loadOrganizerOnSubcategories(category: Category){
+
+    this.organizerService.filterOrganizerByEventsCategory(category).subscribe(organizers => {
+      console.log(organizers)
+      this.organizerOfCategory = organizers
+    })
   }
 
-  loadEvents(organizerId: string){
+  loadEvents(organizerId: string, categoryId: string){
 
-    this.eventService.getEventsOnDate(new Date()).subscribe( x=> console.log('on date',x))
-    this.eventService.getAllUpcomingEvents().subscribe(event => log.debug(event));
-    this.eventsOfOrganizer = this.allUpcomingEvents.filter(event => event._organizerId === organizerId)
+      this.eventService.getAllUpcomingEvents().subscribe(
+        events => {
+          this.eventsOfOrganizer = events.filter(event => event._organizerId === organizerId && event.category._id === categoryId)
+
+        }
+    );
   }
 
 
@@ -367,6 +374,15 @@ export class EventViewComponent implements OnInit {
     }
 
 
+  getHotEvents(){
+      const date = moment(new Date()).utcOffset(0, false).set({hour:0,minute:0,second:0,millisecond:0})
+      this.eventService.getEventsOnDate(date).subscribe(ev =>
+      {
+        this.allHotEvents = ev
+      })
+
+
+  }
 
   setCategory(value){
     this.category = value

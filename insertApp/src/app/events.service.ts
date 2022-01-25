@@ -5,6 +5,8 @@ import { HttpRequest } from '@angular/common/http';
 import { filter, map, catchError, share } from 'rxjs/operators';
 import { Event } from './models/event';
 import {Category} from "./models/category";
+import * as moment from 'moment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +67,7 @@ export class EventsService {
       return obs;
   }
 
+
      getAllEvents(): Observable<Event[]> {
        const obs = this.webService.get('events').pipe(
          map((res: HttpRequest<any>) => res as unknown as Event[]),
@@ -93,8 +96,23 @@ export class EventsService {
         return obs;
     }
 
+    getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]>{
+        const obs = this.webService.post('eventOnDateCatAndSubcat', { fil }).pipe(
+            map((res: HttpRequest<any>) =>
+                res as unknown as Event[]),
+            catchError((error: any) => {
+                console.error('an error occured', error);
+                return observableThrowError(error.error.message || error);
+            }),
+            share());
+        obs.toPromise().then((response) => {
+            this._events.next(response);
+        })
+        return obs;
+    }
     getAllUpcomingEvents(): Observable<Event[]> {
-      const obs = this.webService.get('upcomingEvents').pipe(
+      const  date = moment(new Date()).utcOffset(0, false).set({hour:0,minute:0,second:0,millisecond:0})
+      const obs = this.webService.post('upcomingEvents', { date }).pipe(
         map((res: HttpRequest<any>) => res as unknown as Event[]),
         catchError((error: any) => {
           console.error('an error occured', error);

@@ -95,20 +95,21 @@ router.post('/eventOnDateCatAndSubcat', (req, res) => {
 });
 
 
-router.get('/upcomingEvents', (req, res) => {
+router.post('/upcomingEvents', (req, res) => {
+    let date = new Date(req.body.date)
     Event.find(
         {
             $or: [
                 {
-                    'date.start': { $gte: new Date() }  //-1 um den heutigen Tag mit zu finden
+                    'date.start': { $gte: date}  //-1 um den heutigen Tag mit zu finden
                 },
                 {
                     $and: [
                         {
-                            'date.start': { $lte: new Date() }  //-1 um den heutigen Tag mit zu finden
+                            'date.start': { $lte: date }  //-1 um den heutigen Tag mit zu finden
                         },
                         {
-                            'date.end':  { $gte: new Date() }
+                            'date.end':  { $gte: date }
                         }
                     ]
                 }
