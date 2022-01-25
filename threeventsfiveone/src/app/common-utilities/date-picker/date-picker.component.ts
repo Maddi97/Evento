@@ -16,6 +16,7 @@ export class DatePickerComponent implements OnInit {
 
   public nextMonth: DateClicked[] = [];
   public numberOfDates: number = 7;
+  public displayNumberOfDates: number = 7
   public firstDate: number = 0;
   constructor() { }
 
@@ -23,40 +24,52 @@ export class DatePickerComponent implements OnInit {
     this.createDateList()
   }
 
-  safeDate(day: Date) {
+  safeDate(day: string) {
     this.nextMonth.map(m => {
       if (m.date === day) {
-        m.isClicked = true;
+        m.isClicked = true
       } else {
         m.isClicked = false;
       }
     });
-    this.clickedDate.emit(this.nextMonth.find(m => m.date === day));
+    let emitDate = this.nextMonth.find(m => m.date === day)
+    this.clickedDate.emit(emitDate);
   }
 
   createDateList() {
-    const thisDay = moment(this.nextMonth[this.firstDate - 1] ? this.nextMonth[this.firstDate - 1].date : new Date());
+
+    const thisDay = moment(this.nextMonth[this.firstDate - 1] ? this.transformDateFormat(new Date()) : this.transformDateFormat(new Date()));
     for ( let i = this.firstDate; i < this.numberOfDates; i++) {
-      const day = thisDay.add(1, "days")
-      this.nextMonth[i] = new DateClicked();
-      this.nextMonth[i].date = new Date(day.toLocaleString());
+    let day = thisDay.clone().add(i, 'days')
+
+    this.nextMonth[i] = new DateClicked();
+      this.nextMonth[i].date = day
       if (i == this.firstDate) {
         this.safeDate(this.nextMonth[i].date)
       }
       else {
         this.nextMonth[i].isClicked = false;
-      }    }
+      }
+    }
   }
 
   addDates() {
     // TODO maybe try to add number of dates dynamically
-    this.numberOfDates += 7;
-    this.firstDate += 7;
+    this.numberOfDates += this.displayNumberOfDates;
+    this.firstDate += this.displayNumberOfDates;
     this.createDateList()
   }
+
+  transformDateFormat(date){
+    date = moment(date.toISOString()).utcOffset(0, false)
+    date.set({hour:0,minute:0,second:0,millisecond:0})
+    //date.toISOString()
+    return moment(date)
+  }
+
 }
 
 class DateClicked {
-  date: Date;
+  date: moment;
   isClicked: boolean;
 }

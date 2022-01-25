@@ -92,6 +92,9 @@ const OrganizerSchema = new mongoose.Schema({
   isEvent: {
     type: Boolean,
   },
+  ifEventid: {
+    type: String,
+  },
   geo_data: {
     lat: {
       type: String,

@@ -23,7 +23,6 @@ export class CategoryViewComponent implements OnInit{
   @ViewChild('imageUploadSubcat') inputSubcat: ElementRef;
   @ViewChild('imageUploadUpdateSubcategory') inputUpdateSubcat: ElementRef;
 
-  imageUploadUpdateSubcategory
 
   categoryName = new FormControl('')
   subcategoryName = new FormControl('')
@@ -33,7 +32,7 @@ export class CategoryViewComponent implements OnInit{
   uploadedFile:any
   clickedSubcategory: number;
   private _allowed_image_types = ["image/png", "image/jpeg", "image/jpg"]
-  private _max_image_size = 10000
+  private _max_image_size = 50000
   constructor(
     private categoryService: CategoryService,
     private fileService: FileUploadService,
