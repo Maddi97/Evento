@@ -75,6 +75,7 @@ import {CommonModule} from "@angular/common";
         MatSlideToggleModule,
         ReactiveFormsModule,
         ReactiveFormsModule,
+        CommonModule,
         CommonModule
     ],
   providers: [],

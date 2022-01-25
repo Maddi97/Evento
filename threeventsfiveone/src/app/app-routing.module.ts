@@ -21,7 +21,8 @@ const routes: Routes = [
   {
     path: 'full-event',
     component: FullEventComponent
-  }
+  },
+  { path: '**', component: EventsComponent }
 ];
 
 @NgModule({

@@ -8,6 +8,10 @@ import {NominatimGeoService} from '../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ActivatedRoute, Router} from '@angular/router';
 import * as log from 'loglevel';
+import {filter, map} from "rxjs/operators";
+import {flatMap} from "rxjs/internal/operators";
+import * as moment from 'moment';
+
 
 @Component({
   selector: 'vents-events',
@@ -26,13 +30,14 @@ export class EventsComponent implements OnInit {
   filteredList: Event[] = [];
 
   // Applied filtered Category IDs
-  filteredCategory:Category;
+  filteredCategory: any = 'hot';
 
   //filteredSubcategories
   filteredSubcategories = [];
 
   //clicked date
-  filteredDate: Date = new Date();
+  filteredDate: moment = moment(new Date()).utcOffset(0, false).set({hour:0,minute:0,second:0,millisecond:0})
+  ;
 
   // Range for the events
   filteredDistance = 10;
@@ -64,9 +69,10 @@ export class EventsComponent implements OnInit {
   ngOnInit(): void {
 
 
-    this.eventService.events.subscribe((ev: Event[]) => {
-      this.eventList = ev;
-      this.filteredList = ev;
+    this.eventService.events.pipe(
+      map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance )),
+    ).subscribe((ev: Event[]) => {
+      this.filteredList=ev;
     });
 
     this.categoriesService.categories.subscribe((cat: Category[]) => {
@@ -97,7 +103,6 @@ export class EventsComponent implements OnInit {
               }
             })
         });
-      console.log(this.filteredSubcategories)
 
 
       this.applyFilters()
@@ -110,39 +115,34 @@ export class EventsComponent implements OnInit {
   applyFilters() {
     //Request backend for date, category and subcategory filter
     //filter object
-    let filter = {date: this.filteredDate, cat: [], subcat: []}
-
-    if (this.filteredCategory == null) filter.cat = this.categoryList
-    else filter.cat = [this.filteredCategory]
-
-    if(this.filteredSubcategories.length < 1) filter.subcat = []
-    else filter.subcat = this.filteredSubcategories
-
     this.currentPosition = this.positionService.getCurrentPosition();
-    this.filteredList = []
-    this.spinner.show();
-    this.eventService.getEventsOnDateCategoryAndSubcategory(filter).subscribe(
-      events => {
-        events.forEach(event => {
-         // TODO is too slow
-          // this.filterByDistance(event)
-        });
+    let fil = {date: this.filteredDate, cat: [], subcat: []}
 
-      }
-    )
+    if (this.filteredCategory == null) fil.cat = this.categoryList
+    else fil.cat = [this.filteredCategory]
+
+    if(this.filteredSubcategories.length < 1) fil.subcat = []
+    else fil.subcat = this.filteredSubcategories
+
+    this.spinner.show();
+    // if category is not hot
+    if (!fil.cat.includes('hot')) {
+      this.eventService.getEventsOnDateCategoryAndSubcategory(fil)
+    }
+    else {
+      // if hot filter by date
+      this.eventService.getEventsOnDate(this.filteredDate)
+    }
     this.spinner.hide();
 
   }
-
-  filterByDistance(event)
+  get_distance_to_current_position(event)
   {
-    //filter by distance
-    this.geoService.get_distance(this.currentPosition, [event.geo_data.lat, event.geo_data.lon]).subscribe(
-      geo => {
-        let dist = geo['routes'][0].distance / 1000
-        if (dist < this.filteredDistance) this.filteredList.push(event)
-      }
-    )
+    //get distance
+    this.currentPosition = this.positionService.getCurrentPosition()
+    let dist = this.geoService.get_distance(this.currentPosition, [event.geo_data.lat, event.geo_data.lon])
+    return dist
+
   }
 
   searchForDay(filter: DateClicked) {
@@ -158,9 +158,9 @@ export class EventsComponent implements OnInit {
   }
 
   //add or remove clicked category to list of filter
-  addCategoryToFilter(cat: Category){
+  addCategoryToFilter(cat: any){
     if (this.filteredCategory == cat) {
-      this.filteredCategory = null
+      return
     }
     else this.filteredCategory = cat
 

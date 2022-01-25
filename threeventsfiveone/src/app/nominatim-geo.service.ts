@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {map, take} from 'rxjs/operators';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -43,11 +44,29 @@ export class NominatimGeoService {
   }
 
   get_distance(start_position, end_position) {
-    return this.http.get(this.osm_api_url_start + start_position[1] + "," + start_position[0] + ";" + end_position[1] + "," + end_position[0] + this.osm_api_url_end).pipe(
-      map( object => {
-        return object
-      })
-    )
+    let lat1 = start_position[0]
+    let lon1 = start_position[1]
+
+    let lat2 = end_position[0]
+    let lon2 = end_position[1]
+
+    if ((lat1 == lat2) && (lon1 == lon2)) {
+      return 0;
+    }
+    else {
+      var radlat1 = Math.PI * lat1/180;
+      var radlat2 = Math.PI * lat2/180;
+      var theta = lon1-lon2;
+      var radtheta = Math.PI * theta/180;
+      var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+      if (dist > 1) {
+        dist = 1;
+      }
+      dist = Math.acos(dist);
+      dist = dist * 180/Math.PI;
+      dist = dist * 60 * 1.1515 * 1.609344;
+      return dist;
+    }
   }
 
 }

@@ -6,6 +6,7 @@ import { filter, map, catchError, share, switchMap } from 'rxjs/operators';
 import { HttpRequest } from '@angular/common/http';
 import { Organizer } from '../models/organizer';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +16,6 @@ export class EventService {
 
   constructor(
     private webService: WebService,
-
   ) { }
 
   get events(): Observable<Event[]> {
@@ -77,7 +77,7 @@ export class EventService {
     return obs;
   }
 
-  getEventsOnDate(date: Date): Observable<Event[]>{
+  getEventsOnDate(date: string): Observable<Event[]>{
     const obs = this.webService.post('eventOnDate', { date }).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
@@ -91,18 +91,18 @@ export class EventService {
     return obs;
   }
 
-  getEventsOnDateCategoryAndSubcategory(filter: any): Observable<Event[]>{
-    const obs = this.webService.post('eventOnDateCatAndSubcat', { filter }).pipe(
-      map((res: HttpRequest<any>) => res as unknown as Event[]),
+  getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]>{
+    const obs = this.webService.post('eventOnDateCatAndSubcat', { fil }).pipe(
+      map((res: HttpRequest<any>) =>
+          res as unknown as Event[]),
       catchError((error: any) => {
         console.error('an error occured', error);
         return observableThrowError(error.error.message || error);
       }),
-      share());
+         share());
     obs.toPromise().then((response) => {
       this._events.next(response);
     })
     return obs;
   }
-
 }

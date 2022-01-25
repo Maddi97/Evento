@@ -1,4 +1,6 @@
 import { Category } from './category'
+import {Day} from "./organizer";
+import * as moment from 'moment';
 
 export class Event {
     _id: string;
@@ -7,14 +9,15 @@ export class Event {
     organizerName: string;
     address: Address
     date: {
-        start: Date;
-        end: Date;
+        start: moment.Moment;
+        end: moment.Moment;
     };
     times:{
         start: string,
         end: string
     }
     category: Category;
+    openingTimes?: Day[];
     description: string;
     link: string;
     price: string;

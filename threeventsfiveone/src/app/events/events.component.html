@@ -16,24 +16,30 @@
         </div>
       </div>
       <div fxLayout="column" style="margin-bottom: .5rem;">
-<!--        <span class="distance-label">Entfernung (in km)</span>-->
-<!--        <mat-slider-->
-<!--          class="slider"-->
-<!--          thumbLabel-->
-<!--          min="1"-->
-<!--          max="100"-->
-<!--          step="1"-->
-<!--          [(ngModel)]="filteredDistance"-->
-<!--          (change)="searchForDistance($event)">-->
-<!--        </mat-slider>-->
-        <span class="distance-label">Kategorien</span>
+        <span class="distance-label">Entfernung (in km)</span>
+        <mat-slider
+          class="slider"
+          thumbLabel
+          min="1"
+          max="100"
+          step="1"
+          style="z-index: 0"
+          [(ngModel)]="filteredDistance"
+          (change)="searchForDistance($event)">
+        </mat-slider>
+        <span class="category-label">Kategorien</span>
+        <div class="category-container">
+          <span class="category" [ngClass]="isElementPicked('hot')" (click)="addCategoryToFilter('hot')">
+              Hot
+          </span>
+        </div>
         <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
           <div class="category-container">
           <span class="category" [ngClass]="isElementPicked(category)" (click)="addCategoryToFilter(category)">
               {{ category.name }}
           </span>
             <div class="subcategory-container" *ngIf="category.subcategories.length > 0
-                                                && isElementPicked(category) == 'category-picked'"
+                                                 && isElementPicked(category) == 'category-picked'"
                  style="padding-left: 1rem">
               <div *ngFor="let subcategory of category.subcategories">
                 <span class="subcategory" [ngClass]="isElementPicked(subcategory)" (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>

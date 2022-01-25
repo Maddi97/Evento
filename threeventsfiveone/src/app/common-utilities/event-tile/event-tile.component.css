@@ -16,8 +16,12 @@
 }
 
 .event-pic {
-  height: 100%;
+  height: max-content;
   width: 25%;
+}
+
+img{
+  height: 5rem;
 }
 
 .date {

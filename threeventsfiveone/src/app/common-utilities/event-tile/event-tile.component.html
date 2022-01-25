@@ -1,9 +1,10 @@
 <div class="event-tile" fxLayout="row">
     <div class="event-pic" fxLayoutAlign="center center">
-<!--        TODO-->
+      <img [src]="IconURL" >
     </div>
     <div fxLayout="column" style="width: 75%;">
         <div fxLayout="row" style="width: 100%;">
+
             <div style="width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
                 {{ event?.name }}
             </div>

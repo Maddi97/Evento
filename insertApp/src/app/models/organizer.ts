@@ -14,6 +14,7 @@ export class Organizer {
     lastUpdated: Date;
     openingTimes?: Day[];
     isEvent: boolean;
+    ifEventid: string;
     geo_data:{
         lat: string,
         lon: string,
