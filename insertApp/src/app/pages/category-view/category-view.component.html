@@ -13,7 +13,6 @@
       </div>
       <div *ngIf='uploadedFile'>
       <div>{{uploadedFile.path}}</div>
-        <img style='width: 200px; height: 100px'[src]='uploadedFile'>
      </div>
     </div>
 
@@ -25,8 +24,8 @@
           <mat-panel-title>
             {{category.name}}
           </mat-panel-title>
-<!--          >-->
-          <div (click)="deleteCategory(category)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;margin-right: 1em;"fxLayoutAlign="center center">
+            <img class = "category-icon" [src]="category.iconTemporaryURL">
+            <div (click)="deleteCategory(category)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;margin-right: 1em;"fxLayoutAlign="center center">
             Delete
         </div>
         </mat-expansion-panel-header>
@@ -49,7 +48,8 @@
             <div style="width: 80%;" fxLayoutAlign="start center" (click)="this.clickSubcategory(sub._id)">
               {{sub.name}}
             </div>
-            <div (click)="deleteSubcategory(category, sub)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+<!--                <img class = "category-icon" [src]="downloadImage(sub)">-->
+                <div (click)="deleteSubcategory(category, sub)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
                 Delete
             </div>
         </div>

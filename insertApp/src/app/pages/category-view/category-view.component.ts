@@ -27,6 +27,7 @@ export class CategoryViewComponent implements OnInit{
   categoryName = new FormControl('')
   subcategoryName = new FormControl('')
   categories: Category[]
+  category$;
   image: File
   chosen:boolean
   uploadedFile:any
@@ -42,9 +43,14 @@ export class CategoryViewComponent implements OnInit{
 
 
   ngOnInit(): void {
-    this.categoryService.categories.subscribe(cat => {
-      this.categories = cat
-    });
+    this.category$ = this.categoryService.categories
+        .pipe(
+            map(
+                cat => {
+                  this.downloadImage(cat)
+                  this.categories = cat
+    }));
+    this.category$.subscribe()
   }
 
   addNewCategory():void {
@@ -152,22 +158,23 @@ export class CategoryViewComponent implements OnInit{
   }
 
   //Problem: dadurch, dass auf Icon Download gewartet werden muss aber mehrfach angefragt wird, werden die Bilder oft gedownloaded, bis der iconTemporaryPath aktualisiert wurde
-  downloadImage(categoryId){
-    let iconURL;
-    this.categories.forEach(cat =>{
-      if (cat._id === categoryId){
-        if(cat.iconTemporaryURL === undefined){
-          this.fileService.downloadFile( cat.iconPath ).subscribe(imageData => {
+
+  downloadImage(categories){
+    categories.forEach( cat => {
+      let IconUrl = null
+      if (cat.iconPath != undefined) {
+        if (cat.iconTemporaryURL === undefined) {
+          this.fileService.downloadFile(cat.iconPath).subscribe(imageData => {
             // create temporary Url for the downloaded image and bypass security
             const unsafeImg = URL.createObjectURL(imageData);
-            const tempIconURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-            cat.iconTemporaryURL = tempIconURL
+            IconUrl = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+            cat.iconTemporaryURL = IconUrl
           })
         }
-        iconURL = cat.iconTemporaryURL
-      }}
-    )
-    return iconURL
+
+      }
+      return IconUrl
+    })
   }
 
   clickSubcategory(id){

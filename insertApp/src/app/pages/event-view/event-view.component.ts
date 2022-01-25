@@ -131,7 +131,8 @@ export class EventViewComponent implements OnInit {
     event.price = this.eventForm.get('price').value;
     event.permanent = this.eventForm.get('permanent').value;
     event.category = this.category;
-    event.date = {start: new Date, end: new Date }
+    event.date = {start: moment(new Date()).utcOffset(0, true),
+                  end: moment(new Date()).utcOffset(0, true) }
 
 
 
@@ -147,8 +148,8 @@ export class EventViewComponent implements OnInit {
       event.date.end = end
     }
     else{
-      event.date.start = new Date()
-      event.date.end = new Date()
+      event.date.start = moment(new Date()).utcOffset(0, true)
+      event.date.end = moment(new Date()).utcOffset(0, true)
     }
 
     console.log(event.date)
@@ -239,12 +240,10 @@ export class EventViewComponent implements OnInit {
   setEventForm(event: Event) : void{
     log.debug(event)
     //prepare dates
-    let start = new Date(event.date.start)
-    start.setDate(start.getDate())
-    start = moment(new Date(start.toISOString())).utcOffset(0, true).format();
-    let end = new Date(event.date.end)
-    end.setDate(end.getDate())
-    end = moment(new Date(end.toISOString())).utcOffset(0, true).format();
+
+    let start = moment(event.date.start).toDate()
+    let end = moment(event.date.end).toDate()
+
 
     this.updateEventId = event._id
     const organizer = this.organizers.find(org => org._id === event._organizerId)
@@ -303,7 +302,7 @@ export class EventViewComponent implements OnInit {
     event.price = this.eventForm.get('price').value;
     event.permanent = this.eventForm.get('permanent').value;
     event.category = this.category;
-    event.date = {start: new Date, end: new Date }
+    event.date = {start: moment(new Date()).utcOffset(0, true), end: moment(new Date()).utcOffset(0, true) }
 
       if(this.eventForm.get('permanent').value === 'false') {
         let start = this.eventForm.get('start').value
@@ -318,8 +317,8 @@ export class EventViewComponent implements OnInit {
         event.date.end = end
       }
       else{
-        event.date.start = new Date()
-        event.date.end = new Date()
+        event.date.start = moment(new Date()).utcOffset(0, true)
+        event.date.end = moment(new Date()).utcOffset(0, true)
       }
 
     const time = {start:this.times.start.value, end: this.times.end.value}
