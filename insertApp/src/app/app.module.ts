@@ -24,7 +24,6 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 
 import { HttpClientModule } from "@angular/common/http";
@@ -50,7 +49,6 @@ import {CommonModule} from "@angular/common";
     MapViewComponent
   ],
     imports: [
-        LeafletModule,
         MatSnackBarModule,
         FormsModule,
         MatExpansionModule,

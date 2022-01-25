@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, Input} from '@angular/core';
+import {Component, OnChanges, OnInit, Input, OnDestroy} from '@angular/core';
 import * as L from 'leaflet';
 import {PositionService} from "./position.service";
 import {Router} from "@angular/router";
@@ -50,6 +50,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.updatePosition(this.positionService.getDefaultLocation())
   }
+
 
   updatePosition(location_list) {
     this.current_position.lat = location_list[0]
