@@ -139,7 +139,7 @@ export class EventsService {
         return obs;
     }
 
-    getEventsOnDate(date: Date): Observable<Event[]>{
+    getEventsOnDate(date: moment.Moment): Observable<Event[]>{
         const obs = this.webService.post('eventOnDate', { date }).pipe(
             map((res: HttpRequest<any>) => res as unknown as Event[]),
             catchError((error: any) => {

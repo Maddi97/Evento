@@ -5,6 +5,7 @@ import { WebService } from '../web.service';
 import { filter, map, catchError, share, switchMap } from 'rxjs/operators';
 import { HttpRequest } from '@angular/common/http';
 import { Organizer } from '../models/organizer';
+import * as moment from 'moment';
 
 
 @Injectable({
@@ -77,7 +78,7 @@ export class EventService {
     return obs;
   }
 
-  getEventsOnDate(date: string): Observable<Event[]>{
+  getEventsOnDate(date: moment.Moment): Observable<Event[]>{
     const obs = this.webService.post('eventOnDate', { date }).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
