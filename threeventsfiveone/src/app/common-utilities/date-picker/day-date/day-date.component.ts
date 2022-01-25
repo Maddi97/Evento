@@ -8,7 +8,7 @@ import * as moment from 'moment';
 })
 export class DayDateComponent implements OnInit {
 
-  @Input() date: moment;
+  @Input() date: moment.Moment;
 
   @Input() isClicked = false;
 

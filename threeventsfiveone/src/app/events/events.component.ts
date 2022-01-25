@@ -36,7 +36,7 @@ export class EventsComponent implements OnInit {
   filteredSubcategories = [];
 
   //clicked date
-  filteredDate: moment = moment(new Date()).utcOffset(0, false).set({hour:0,minute:0,second:0,millisecond:0})
+  filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({hour:0,minute:0,second:0,millisecond:0})
   ;
 
   // Range for the events
@@ -196,6 +196,6 @@ export class EventsComponent implements OnInit {
 }
 
 class DateClicked {
-  date: Date;
+  date: moment.Moment;
   isClicked: boolean;
 }

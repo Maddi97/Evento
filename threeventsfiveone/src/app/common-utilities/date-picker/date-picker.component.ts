@@ -24,7 +24,7 @@ export class DatePickerComponent implements OnInit {
     this.createDateList()
   }
 
-  safeDate(day: string) {
+  safeDate(day: moment.Moment) {
     this.nextMonth.map(m => {
       if (m.date === day) {
         m.isClicked = true
@@ -70,6 +70,6 @@ export class DatePickerComponent implements OnInit {
 }
 
 class DateClicked {
-  date: moment;
+  date: moment.Moment;
   isClicked: boolean;
 }
