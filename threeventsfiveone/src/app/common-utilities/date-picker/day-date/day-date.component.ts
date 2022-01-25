@@ -8,7 +8,7 @@ import * as moment from 'moment';
 })
 export class DayDateComponent implements OnInit {
 
-  @Input() date: Date;
+  @Input() date: moment;
 
   @Input() isClicked = false;
 
@@ -28,11 +28,11 @@ export class DayDateComponent implements OnInit {
   }
 
   dayToString(): string {
-    return moment(this.date).format("ddd");
+    return this.date.format('ddd');
   }
 
   dateToString(): string {
-    return moment(this.date).format("DD.MM");
+    return  this.date.format('DD.MM');
   }
 
 }

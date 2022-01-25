@@ -17,7 +17,7 @@ router.get('/organizer/:organizerId/events', (req, res) => {
 
 
 router.post('/eventOnDate', (req, res) => {
-    let date = new Date(req.body.date)
+    let date = req.body.date
     Event.find(
         {
            $and: [

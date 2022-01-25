@@ -10,6 +10,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import * as log from 'loglevel';
 import {filter, map} from "rxjs/operators";
 import {flatMap} from "rxjs/internal/operators";
+import * as moment from 'moment';
+
 
 @Component({
   selector: 'vents-events',
@@ -34,7 +36,8 @@ export class EventsComponent implements OnInit {
   filteredSubcategories = [];
 
   //clicked date
-  filteredDate: Date = new Date();
+  filteredDate: moment = moment(new Date()).utcOffset(0, false).set({hour:0,minute:0,second:0,millisecond:0})
+  ;
 
   // Range for the events
   filteredDistance = 10;
@@ -113,7 +116,6 @@ export class EventsComponent implements OnInit {
     //Request backend for date, category and subcategory filter
     //filter object
     this.currentPosition = this.positionService.getCurrentPosition();
-
     let fil = {date: this.filteredDate, cat: [], subcat: []}
 
     if (this.filteredCategory == null) fil.cat = this.categoryList

@@ -10,6 +10,8 @@ import { CategoryService } from 'src/app/category.service';
 import { NominatimGeoService } from '../../nominatim-geo.service'
 import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
 import * as log from "loglevel";
+import * as moment from 'moment';
+
 
 
 @Component({
@@ -75,6 +77,7 @@ export class EventViewComponent implements OnInit {
 
 
   ngOnInit(): void {
+      console.log(moment(new Date()).utcOffset(0, true).format())
     this.categoryService.categories.subscribe(cat => this.categories = cat)
     this.organizerService.organizers.subscribe(org => this.organizers = org);
     this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
@@ -130,15 +133,17 @@ export class EventViewComponent implements OnInit {
     event.category = this.category;
     event.date = {start: new Date, end: new Date }
 
+
+
     if(this.eventForm.get('permanent').value === 'false') {
       let start = this.eventForm.get('start').value
-      start.setDate(start.getDate() + 1)
-      start = new Date(start.toISOString());
+      start.setDate(start.getDate() )
+      start = moment(new Date(start.toISOString())).utcOffset(0, true).format();
       event.date.start = start
 
       let end = this.eventForm.get('end').value
-      end.setDate(end.getDate() + 1)
-      end = new Date(end.toISOString());
+      end.setDate(end.getDate())
+      end = moment(new Date(end.toISOString())).utcOffset(0, true).format();
       event.date.end = end
     }
     else{
@@ -146,9 +151,10 @@ export class EventViewComponent implements OnInit {
       event.date.end = new Date()
     }
 
+    console.log(event.date)
     const time = {start:this.times.start.value, end: this.times.end.value}
     event.times = time
-
+    console.log(event.date)
     if(this.toggleIsChecked.value) {
       event.geo_data = this.geo_data
       // first fetch geo data from osm API and than complete event data type and send to backend
@@ -160,7 +166,7 @@ export class EventViewComponent implements OnInit {
           }),
           share()
       ).toPromise().then(undefined =>
-          this.eventService.createEvent(event).subscribe(event_response => log.debug(event_response))
+          this.eventService.createEvent(event).subscribe(event_response => log.debug(event_response.date))
       )
     }
     else {
@@ -224,31 +230,21 @@ export class EventViewComponent implements OnInit {
 
   loadEvents(organizerId: string){
 
-    console.log(new Date())
     this.eventService.getEventsOnDate(new Date()).subscribe( x=> console.log('on date',x))
     this.eventService.getAllUpcomingEvents().subscribe(event => log.debug(event));
     this.eventsOfOrganizer = this.allUpcomingEvents.filter(event => event._organizerId === organizerId)
   }
 
-  nullEventsOfOrganizer(){
-    this.eventsOfOrganizer = []
-  }
-
-  setDate(value){
-    const date = new Date(value)
-    this.date.setValue(date);
-
-    }
 
   setEventForm(event: Event) : void{
     log.debug(event)
     //prepare dates
     let start = new Date(event.date.start)
-    start.setDate(start.getDate() - 1)
-    start = new Date(start.toISOString());
+    start.setDate(start.getDate())
+    start = moment(new Date(start.toISOString())).utcOffset(0, true).format();
     let end = new Date(event.date.end)
-    end.setDate(end.getDate() - 1)
-    end = new Date(end.toISOString());
+    end.setDate(end.getDate())
+    end = moment(new Date(end.toISOString())).utcOffset(0, true).format();
 
     this.updateEventId = event._id
     const organizer = this.organizers.find(org => org._id === event._organizerId)
@@ -311,13 +307,14 @@ export class EventViewComponent implements OnInit {
 
       if(this.eventForm.get('permanent').value === 'false') {
         let start = this.eventForm.get('start').value
-        start.setDate(start.getDate() + 1)
-        start = new Date(start.toISOString());
+        start.setDate(start.getDate())
+
+        start = moment(new Date(start.toISOString())).utcOffset(0, true).format();
         event.date.start = start
 
         let end = this.eventForm.get('end').value
-        end.setDate(end.getDate() + 1)
-        end = new Date(end.toISOString());
+        end.setDate(end.getDate())
+        end = moment(new Date(end.toISOString())).utcOffset(0, true).format();
         event.date.end = end
       }
       else{
