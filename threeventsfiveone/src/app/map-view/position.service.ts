@@ -1,8 +1,6 @@
-import {BehaviorSubject, Observable} from "rxjs";
 import {Injectable} from "@angular/core";
 import {NominatimGeoService} from "../nominatim-geo.service";
 import {map} from 'rxjs/operators';
-import {resolve} from "@angular/compiler-cli/src/ngtsc/file_system";
 
 @Injectable({
   providedIn: 'root'
