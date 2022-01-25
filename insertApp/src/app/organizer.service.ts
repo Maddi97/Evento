@@ -32,6 +32,21 @@ export class OrganizerService {
       return obs;
   }
 
+    filterOrganizerByEventsCategory(category: any): Observable<Organizer[]> {
+            const obs = this.webService.post('organizerByEventCategory', { category }).pipe(
+                map((r: HttpRequest<any>) => r as unknown as Organizer[]),
+                catchError((error: any) => {
+                    console.error('an error occurred', error);
+                    return observableThrowError(error.error.message || error);
+                }),
+                share());
+            obs.toPromise().then((response) => {
+                this._organizers.next(response);
+            })
+            return obs;
+        }
+
+
  createOrganizer(organizer: Organizer): Observable<Organizer> {
   const obs = this.webService.post('organizer', { organizer }).pipe(
     map((r: HttpRequest<any>) => r as unknown as Organizer),

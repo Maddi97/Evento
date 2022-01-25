@@ -166,7 +166,7 @@
   <div style="width: 90%; margin-top: 3em;">
     <mat-accordion>
       <div *ngFor="let category of categories" fxLayout="column" fxLayoutAlign="center center">
-        <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="loadOrganizer(category.name)">
+        <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="loadOrganizerOnSubcategories(category)">
           <mat-expansion-panel-header>
             <mat-panel-title>
               {{category.name}}
@@ -177,7 +177,7 @@
           </mat-expansion-panel-header>
 
       <div *ngFor="let organizer of organizerOfCategory" fxLayout="column" fxLayoutAlign="center center">
-      <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" [ngStyle]="{'background': getColor(organizer)}" (afterExpand)="loadEvents(organizer._id)">
+      <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" [ngStyle]="{'background': getColor(organizer)}" (afterExpand)="loadEvents(organizer._id, category._id)">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{organizer.name}}
@@ -232,6 +232,30 @@
              </div>
          </mat-expansion-panel>
      </div>
+
+      <div class="all-hot-events-expansion-panel" >
+          <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="getHotEvents()">
+              <mat-expansion-panel-header>
+                  <mat-panel-title>
+                     All Hot Events
+                  </mat-panel-title>
+                  <mat-panel-description>
+                      Open to see all events
+                  </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              <div *ngFor="let event of allHotEvents" fxLayout="row">
+                  <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;" fxLayout="row">
+                      <div style="width: 80%;" fxLayoutAlign="start center" (click)="setEventForm(event)" >
+                          {{event.name}}
+                      </div>
+                      <div (click)="deleteEvent(event._organizerId, event._id)" style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"fxLayoutAlign="center center">
+                          Delete
+                      </div>
+                  </div>
+              </div>
+          </mat-expansion-panel>
+      </div>
 </div>
 
 </div>
