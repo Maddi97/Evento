@@ -4,8 +4,14 @@ WORKDIR /app
 
 ENV PATH /app/node_modules/.bin:$PATH
 
+#RUN yarn cache clean --all
+RUN npm cache clean --force
+
 COPY package.json /app/package.json
-RUN yarn install
+
+RUN npm install --legacy-peer-deps
+
+#RUN yarn install
 
 COPY . /app
 

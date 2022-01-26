@@ -7,10 +7,9 @@ import {PositionService} from '../map-view/position.service';
 import {NominatimGeoService} from '../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ActivatedRoute, Router} from '@angular/router';
-import * as log from 'loglevel';
 import {filter, map} from "rxjs/operators";
-import {flatMap} from "rxjs/internal/operators";
 import * as moment from 'moment';
+import * as log from 'loglevel';
 
 
 @Component({
