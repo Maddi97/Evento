@@ -1,9 +1,18 @@
-FROM node:16.2.0
+FROM node:17.4.0
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-COPY package.json /usr/src/app
-RUN npm install
-COPY . /usr/src/app
-EXPOSE 4200
-CMD ["npm","start"]
+WORKDIR /app
+
+ENV PATH /app/node_modules/.bin:$PATH
+
+#RUN yarn cache clean --all
+RUN npm cache clean --force
+
+COPY package.json /app/package.json
+
+RUN npm install --legacy-peer-deps
+
+#RUN yarn install
+
+COPY . /app
+
+CMD ng serve --host 0.0.0.0 --prod=false

@@ -14,3 +14,4 @@ letsencrypt/config/nginx/*
 !letsencrypt/config/nginx/proxy-confs/
 letsencrypt/config/nginx/proxy-confs/*
 !letsencrypt/config/nginx/proxy-confs/*.conf
+/**/.angular

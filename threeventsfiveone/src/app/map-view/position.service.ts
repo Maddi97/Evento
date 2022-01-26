@@ -45,7 +45,6 @@ export class PositionService {
         position => {
           const {latitude, longitude} = position.coords;
           this.searched_center = [latitude, longitude];
-          resolve()
         });
     })
   }
