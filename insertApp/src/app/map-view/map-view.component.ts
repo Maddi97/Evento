@@ -1,7 +1,6 @@
 import {Component, OnChanges, OnInit, Input, OnDestroy} from '@angular/core';
 import * as L from 'leaflet';
 import {PositionService} from "./position.service";
-import {Router} from "@angular/router";
 
 @Component({
     selector: 'map-view',
@@ -40,22 +39,14 @@ export class MapViewComponent implements OnInit, OnChanges {
 
     constructor(
         private positionService: PositionService,
-        private router: Router
     ) {}
 
-    sanitizeInput(value) {
-        return value.replace(/ /g, '+')
-    }
 
     ngOnInit(): void {
         this.updatePosition(this.positionService.getDefaultLocation())
     }
 
 
-    ngOnDestroy(){
-        // this.map.off()
-        // this.map.remove()
-    }
     updatePosition(location_list) {
         this.current_position.lat = location_list[0]
         this.current_position.lon = location_list[1]
@@ -65,22 +56,8 @@ export class MapViewComponent implements OnInit, OnChanges {
         this.updatePosition(this.positionService.getCurrentPosition())
         this.setPositionMarker()
         this.map.panTo((new L.LatLng(this.current_position.lat, this.current_position.lon)))
-        this.router.navigate(['/', 'events'], {queryParams: {'positionUpdate': true}})
     }
 
-    searchForLocationInput() {
-        let address = this.sanitizeInput(this.address)
-
-        this.positionService.getPositionByInput(address).toPromise().then(() => {
-            this.resetCenter()
-        })
-    }
-
-    getCurrentPosition() {
-        this.positionService.getPositionByLocation().then(() => {
-            this.resetCenter()
-        })
-    }
 
     ngOnChanges(): void {
         if (typeof this.map == 'undefined') {
@@ -135,7 +112,6 @@ export class MapViewComponent implements OnInit, OnChanges {
                     L.marker([marker.geo_data.lat, marker.geo_data.lon])
                         .setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
                         .addTo(this.markerGroup)
-                        .on('click', () => {this.router.navigate(['/', 'full-event'], {fragment: marker._id})})
                 }
             })
         }
