@@ -43,6 +43,7 @@ jobs:
           tags: ${{secrets.dockerhub_user}}/3vents51_insert-app:latest
 
   deploy:
+    needs: build
     runs-on: self-hosted
     steps:
       - name: Login to DockerHub
@@ -51,11 +52,11 @@ jobs:
           username: ${{ secrets.dockerhub_user }}
           password: ${{ secrets.dockerhub_password }}
       - name: Pull Backend Docker Container
-        run: docker pull 3vents51_backend:latest
+        run: docker pull ${{secrets.dockerhub_user}}/3vents51_backend:latest
       - name: Pull Frontend  Docker Containers
-        run: docker pull 3vents51_threeventsfiveone:latest
+        run: docker pull ${{secrets.dockerhub_user}}/3vents51_threeventsfiveone:latest
       - name: Pull Insert-App Docker Container
-        run: docker pull 3vents51_insert-app:latest
+        run: docker pull ${{secrets.dockerhub_user}}/3vents51_insert-app:latest
       - name: Create Environment File
         env:
           duckdns_token: ${{ secrets.PI }}
