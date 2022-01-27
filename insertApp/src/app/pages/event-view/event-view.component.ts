@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {OrganizerService} from 'src/app/organizer.service';
 import {Organizer, Address} from 'src/app/models/organizer';
-import {FormGroup, FormBuilder, FormControl} from '@angular/forms';
-import {startWith, map, share, catchError} from 'rxjs/operators';
+import {FormBuilder, FormControl} from '@angular/forms';
+import {startWith, map, share,} from 'rxjs/operators';
 import {EventsService} from 'src/app/events.service';
 import {Event} from '../../models/event';
 import {Category} from 'src/app/models/category';
 import {CategoryService} from 'src/app/category.service';
 import {NominatimGeoService} from '../../nominatim-geo.service'
-import {Observable, throwError as observableThrowError, BehaviorSubject} from 'rxjs';
-import * as log from "loglevel";
+import {Observable} from 'rxjs';
+import * as log from 'loglevel';
 import * as moment from 'moment';
 
 
@@ -53,7 +53,7 @@ export class EventViewComponent implements OnInit {
         end: new FormControl('00:00')
     }
 
-    geo_data = {
+    geoData = {
         lat: '',
         lon: ''
     }
@@ -111,16 +111,16 @@ export class EventViewComponent implements OnInit {
         address.plz = this.eventForm.get('plz').value;
         address.city = this.eventForm.get('city').value;
 
-        let address_splitted = this.eventForm.get('street').value.split(' ')
-        if (address_splitted[0] == "" && address_splitted.length == 2) {
-            address.street = address_splitted[1]
-            address.streetNumber = ""
-        } else if (address_splitted.length == 1) {
-            address.street = address_splitted[0]
-            address.streetNumber = ""
+        const addressSplit = this.eventForm.get('street').value.split(' ')
+        if (addressSplit[0] === '' && addressSplit.length === 2) {
+            address.street = addressSplit[1]
+            address.streetNumber = ''
+        } else if (addressSplit.length === 1) {
+            address.street = addressSplit[0]
+            address.streetNumber = ''
         } else {
-            address.street = address_splitted.slice(0, -1).join(' ');
-            address.streetNumber = address_splitted.slice(-1)[0];
+            address.street = addressSplit.slice(0, -1).join(' ');
+            address.streetNumber = addressSplit.slice(-1)[0];
         }
 
 
@@ -154,37 +154,36 @@ export class EventViewComponent implements OnInit {
             event.date.end = moment(new Date()).utcOffset(0, true)
         }
 
-        console.log(event.date)
-        const time = {start: this.times.start.value, end: this.times.end.value}
-        event.times = time
+        event.times = {start: this.times.start.value, end: this.times.end.value}
         console.log(event.date)
         if (this.toggleIsChecked.value) {
-            event.geo_data = this.geo_data
+            event.geo_data = this.geoData
             // first fetch geo data from osm API and than complete event data type and send to backend
             this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
-                map(geo_data => {
+                map(geoData => {
 
-                    event.geo_data.lat = geo_data[0].lat;
-                    event.geo_data.lon = geo_data[0].lon;
+                    event.geo_data.lat = geoData[0].lat;
+                    event.geo_data.lon = geoData[0].lon;
                 }),
                 share()
-            ).toPromise().then(undefined =>
-                this.eventService.createEvent(event).subscribe(event_response => log.debug(event_response.date))
+            ).toPromise().then(() =>
+                this.eventService.createEvent(event).subscribe(eventResponse => log.debug(eventResponse.date))
             )
         } else {
-            let coord = this.eventForm.get('coord').value
-            this.geo_data.lat = coord.split(",")[0].trim()
-            this.geo_data.lon = coord.split(",")[1].trim()
-            event.geo_data = this.geo_data
-            this.geoService.get_address_from_coordinates(this.geo_data).pipe(
-                map((geo_json: any) => {
-                    event.address.plz = geo_json.address.postcode;
-                    event.address.street = geo_json.address.road;
-                    event.address.country = this.eventForm.get('country').value // name land in response ist englisch, deshalb erstmal auf Deutschland gesetzt
+            const coord = this.eventForm.get('coord').value
+            this.geoData.lat = coord.split(',')[0].trim()
+            this.geoData.lon = coord.split(',')[1].trim()
+            event.geo_data = this.geoData
+            this.geoService.get_address_from_coordinates(this.geoData).pipe(
+                map((geoJSON: any) => {
+                    event.address.plz = geoJSON.address.postcode;
+                    event.address.street = geoJSON.address.road;
+                    // name land in response ist englisch, deshalb erstmal auf Deutschland gesetzt
+                    event.address.country = this.eventForm.get('country').value;
                 }),
                 share()
-            ).toPromise().then(undefined =>
-                this.eventService.createEvent(event).subscribe(event_response => log.debug(event_response))
+            ).toPromise().then(() =>
+                this.eventService.createEvent(event).subscribe(eventResponse => log.debug(eventResponse))
             )
         }
 
@@ -245,13 +244,9 @@ export class EventViewComponent implements OnInit {
 
 
     setEventForm(event: Event): void {
-        log.debug(event)
-        //prepare dates
-
-        let start = moment(event.date.start).toDate()
-        let end = moment(event.date.end).toDate()
-
-
+        // prepare dates
+        const start = moment(event.date.start).toDate()
+        const end = moment(event.date.end).toDate()
         this.updateEventId = event._id
         const organizer = this.organizers.find(org => org._id === event._organizerId)
         this.organizerName.setValue(organizer.name)
@@ -267,8 +262,8 @@ export class EventViewComponent implements OnInit {
             link: event.link,
             permanent: String(event.permanent),
             price: event.price,
-            start: start,
-            end: end,
+            start,
+            end,
             coord: event.geo_data.lat + ', ' + event.geo_data.lon,
         })
         this.category = event.category
@@ -287,16 +282,16 @@ export class EventViewComponent implements OnInit {
         event.name = this.eventForm.get('name').value;
         address.plz = this.eventForm.get('plz').value;
         address.city = this.eventForm.get('city').value;
-        let address_splitted = this.eventForm.get('street').value.split(' ')
-        if (address_splitted[0] == "" && address_splitted.length == 2) {
-            address.street = address_splitted[1]
-            address.streetNumber = ""
-        } else if (address_splitted.length == 1) {
-            address.street = address_splitted[0]
-            address.streetNumber = ""
+        const adressSplit = this.eventForm.get('street').value.split(' ')
+        if (adressSplit[0] === '' && adressSplit.length === 2) {
+            address.street = adressSplit[1]
+            address.streetNumber = ''
+        } else if (adressSplit.length === 1) {
+            address.street = adressSplit[0]
+            address.streetNumber = ''
         } else {
-            address.street = address_splitted.slice(0, -1).join(' ');
-            address.streetNumber = address_splitted.slice(-1)[0];
+            address.street = adressSplit.slice(0, -1).join(' ');
+            address.streetNumber = adressSplit.slice(-1)[0];
         }
         address.country = this.eventForm.get('country').value;
 
@@ -325,38 +320,38 @@ export class EventViewComponent implements OnInit {
             event.date.end = moment(new Date()).utcOffset(0, true)
         }
 
-        const time = {start: this.times.start.value, end: this.times.end.value}
-        event.times = time
+        event.times = {start: this.times.start.value, end: this.times.end.value}
         event._id = this.updateEventId
 
         if (this.toggleIsChecked.value) {
-            event.geo_data = this.geo_data
+            event.geo_data = this.geoData
             this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
-                map(geo_data => {
-                    event.geo_data.lat = geo_data[0].lat;
-                    event.geo_data.lon = geo_data[0].lon;
+                map(geoData => {
+                    event.geo_data.lat = geoData[0].lat;
+                    event.geo_data.lon = geoData[0].lon;
                 }),
                 share()
-            ).toPromise().then(moin => {
-                    this.eventService.updateEvent(event._organizerId, event._id, event).subscribe(event => log.debug(event))
+            ).toPromise().then(() => {
+                    this.eventService.updateEvent(event._organizerId, event._id, event).subscribe()
                     organizer.lastUpdated = new Date()
                     this.organizerService.updateOrganizer(organizer._id, organizer)
                 }
             )
         } else {
-            let coord = this.eventForm.get('coord').value
-            this.geo_data.lat = coord.split(",")[0].trim()
-            this.geo_data.lon = coord.split(",")[1].trim()
-            event.geo_data = this.geo_data
-            this.geoService.get_address_from_coordinates(this.geo_data).pipe(
-                map((geo_json: any) => {
-                    event.address.plz = geo_json.address.postcode;
-                    event.address.street = geo_json.address.road;
-                    event.address.country = this.eventForm.get('country').value // name land in response ist englisch, deshalb erstmal auf Deutschland gesetzt
+            const coord = this.eventForm.get('coord').value
+            this.geoData.lat = coord.split(',')[0].trim()
+            this.geoData.lon = coord.split(',')[1].trim()
+            event.geo_data = this.geoData
+            this.geoService.get_address_from_coordinates(this.geoData).pipe(
+                map((geoJSON: any) => {
+                    event.address.plz = geoJSON.address.postcode;
+                    event.address.street = geoJSON.address.road;
+                    // name land in response ist englisch, deshalb erstmal auf Deutschland gesetzt
+                    event.address.country = this.eventForm.get('country').value
                 }),
                 share()
-            ).toPromise().then(undefined => {
-                    this.eventService.updateEvent(event._organizerId, event._id, event).subscribe(event_response => log.debug(event_response))
+            ).toPromise().then(() => {
+                    this.eventService.updateEvent(event._organizerId, event._id, event).subscribe(eventResponse => log.debug(eventResponse))
                     organizer.lastUpdated = new Date()
                     this.organizerService.updateOrganizer(organizer._id, organizer)
                 }
@@ -417,8 +412,7 @@ export class EventViewComponent implements OnInit {
 
     timeSinceInteger(date) {
         const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
-        const interval = seconds / 86400;
-        return interval
+        return seconds / 86400;
     }
 
     getColor(organizer: Organizer): string {
@@ -436,8 +430,7 @@ export class EventViewComponent implements OnInit {
     }
 
     checkDisabled() {
-        if (!this.eventForm.invalid && this.category !== undefined) return false
-        else return true
+        return !(!this.eventForm.invalid && this.category !== undefined);
     }
 
     loadEventsByCategory(category: Category) {
