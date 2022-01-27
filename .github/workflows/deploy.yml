@@ -52,7 +52,7 @@ jobs:
           username: ${{ secrets.dockerhub_user }}
           password: ${{ secrets.dockerhub_password }}
       - name: Pull Backend Docker Container
-        run: docker pull 3${{secrets.dockerhub_user}}/vents51_backend:latest
+        run: docker pull ${{secrets.dockerhub_user}}/3vents51_backend:latest
       - name: Pull Frontend  Docker Containers
         run: docker pull ${{secrets.dockerhub_user}}/3vents51_threeventsfiveone:latest
       - name: Pull Insert-App Docker Container
