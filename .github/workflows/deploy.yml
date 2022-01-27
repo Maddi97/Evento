@@ -23,21 +23,21 @@ jobs:
       - name: Build Backend Docker Containers
         uses: docker/build-push-action@v2
         with:
-          context: ./backend
+          context: https://github.com/Maddi97/3vents51.git#develop:backend
           file: ./prod.Dockerfile
           push: true
           tags: 3vents51_backend:latest
       - name: Build Frontend Docker Containers
         uses: docker/build-push-action@v2
         with:
-          context: ./threeventsfiveone
+          context: https://github.com/Maddi97/3vents51.git#develop:threeventsfiveone
           file: ./prod.Dockerfile
           push: true
           tags: 3vents51_threeventsfiveone:latest
       - name: Build Insert-App Docker Containers
         uses: docker/build-push-action@v2
         with:
-          context: ./insertApp
+          context: https://github.com/Maddi97/3vents51.git#develop:insertApp
           file: ./prod.Dockerfile
           push: true 
           tags: 3vents51_insert-app:latest
