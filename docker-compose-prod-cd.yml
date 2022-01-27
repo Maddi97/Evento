@@ -2,7 +2,7 @@ version: "3"
 
 services:
   threeventsfiveone:
-    image: 3vents51/3vents51_threeventsfiveone
+    image: 3vents51/3vents51_threeventsfiveone:latest
     container_name: 3vents51_threeventsfiveone
     ports:
       - 10000:80
@@ -13,7 +13,7 @@ services:
       - letsencrypt
 
   insert-app:
-    image: 3vents51/3vents51_insert-app
+    image: 3vents51/3vents51_insert-app:latest
     container_name: 3vents51_insert-app
     ports:
       - 10001:80
@@ -24,7 +24,7 @@ services:
       - letsencrypt
 
   backend:
-    image: 3vents51/3vents51_backend
+    image: 3vents51/3vents51_backend:latest
     container_name: 3vents51_backend
     ports:
       - 10002:3000
