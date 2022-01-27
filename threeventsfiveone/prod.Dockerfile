@@ -15,7 +15,7 @@ RUN npm install --legacy-peer-deps
 
 COPY . /app
 
-RUN ng build --output-path=dist --prod=true
+RUN ng build --output-path=dist --configuration production
 
 FROM nginx:1.16.0-alpine
 
