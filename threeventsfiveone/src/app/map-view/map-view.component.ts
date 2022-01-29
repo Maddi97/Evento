@@ -41,7 +41,8 @@ export class MapViewComponent implements OnInit, OnChanges {
   constructor(
     private positionService: PositionService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   sanitizeInput(value) {
     return value.replace(/ /g, '+')
@@ -114,13 +115,15 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private setMarkers(marker_data): void {
     this.markerGroup.clearLayers();
-    if (typeof marker_data != 'undefined') {
+    if (typeof marker_data !== 'undefined') {
       marker_data.map(marker => {
-        if (typeof marker.geo_data != 'undefined') {
-          L.marker([marker.geo_data.lat, marker.geo_data.lon])
+        if (typeof marker.geoData !== 'undefined') {
+          L.marker([marker.geoData.lat, marker.geoData.lon])
             .setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
             .addTo(this.markerGroup)
-            .on('click', () => {this.router.navigate(['/', 'full-event'], {fragment: marker._id})})
+            .on('click', () => {
+              this.router.navigate(['/', 'full-event'], {fragment: marker._id})
+            })
         }
       })
     }

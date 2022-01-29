@@ -1,4 +1,4 @@
-import { Category } from './category'
+import {Category} from './category'
 import {Day} from "./organizer";
 
 export class Event {
@@ -11,7 +11,7 @@ export class Event {
     start: Date,
     end: Date,
   };
-  times:{
+  times: {
     start: string,
     end: string
   };
@@ -21,7 +21,7 @@ export class Event {
   description: string;
   link: string;
   price: string;
-  geo_data:{
+  geoData: {
     lat: string,
     lon: string,
   };

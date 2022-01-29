@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {OrganizerService} from 'src/app/organizer.service';
+import {OrganizerService} from 'src/app/services/organizer.service';
 import {Organizer, Address} from 'src/app/models/organizer';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {startWith, map, share,} from 'rxjs/operators';
-import {EventsService} from 'src/app/events.service';
-import {Event} from '../../models/event';
+import {EventsService} from 'src/app/services/events.service';
+import {Event} from '../../../models/event';
 import {Category} from 'src/app/models/category';
-import {CategoryService} from 'src/app/category.service';
-import {NominatimGeoService} from '../../nominatim-geo.service'
+import {CategoryService} from 'src/app/services/category.service';
+import {NominatimGeoService} from '../../../services/nominatim-geo.service'
 import {Observable} from 'rxjs';
 import * as log from 'loglevel';
 import * as moment from 'moment';
@@ -22,9 +22,6 @@ export class EventViewComponent implements OnInit {
 
     updateOrganizerId = '';
     updateEventId = '';
-
-    eventsFilteredByCategory: Event[];
-
     eventForm = this.fb.group({
         name: new FormControl('', []),
         city: new FormControl('Leipzig', []),
@@ -40,7 +37,6 @@ export class EventViewComponent implements OnInit {
         end: new FormControl('', []),
         coord: new FormControl('', []),
     })
-
     categories: Category[]
 
     date = new FormControl(new Date())
@@ -60,12 +56,13 @@ export class EventViewComponent implements OnInit {
 
     organizerName = new FormControl();
     organizers: Organizer[] = [];
-    organizerOfCategory: Organizer[];
 
     filteredOptions: Observable<string[]>;
-    allUpcomingEvents: Event[] = [];
-    allHotEvents: Event[];
-    eventsOfOrganizer: Event[];
+    allFilteredEvents: Event[];
+
+    category$: Observable<Category[]>
+    organizer$: Observable<Organizer[]>
+    event$: Observable<Event[]>
 
     constructor(
         private categoryService: CategoryService,
@@ -76,18 +73,22 @@ export class EventViewComponent implements OnInit {
     ) {
     }
 
-
     ngOnInit(): void {
-        this.categoryService.categories.subscribe(cat => this.categories = cat)
-        this.organizerService.organizers.subscribe(org => this.organizers = org);
-        this.eventService.event.subscribe(event => this.allUpcomingEvents = event);
-        this.eventService.getAllUpcomingEvents().subscribe()
+        this.category$ = this.categoryService.categories
+        this.organizer$ = this.organizerService.organizers
+        this.event$ = this.eventService.event
+
         this.eventService.getEventsOnDate(moment(new Date()).utcOffset(0, false).set({
             hour: 0,
             minute: 0,
             second: 0,
             millisecond: 0
         })).subscribe()
+
+        this.category$.subscribe(cat => this.categories = cat);
+        this.organizer$.subscribe(org => this.organizers = org);
+        this.event$.subscribe(event => this.allFilteredEvents = event);
+
         this.filteredOptions = this.organizerName.valueChanges.pipe(
             startWith(''),
             map(value => this._filter(value)),
@@ -157,13 +158,13 @@ export class EventViewComponent implements OnInit {
         event.times = {start: this.times.start.value, end: this.times.end.value}
         console.log(event.date)
         if (this.toggleIsChecked.value) {
-            event.geo_data = this.geoData
+            event.geoData = this.geoData
             // first fetch geo data from osm API and than complete event data type and send to backend
             this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
                 map(geoData => {
 
-                    event.geo_data.lat = geoData[0].lat;
-                    event.geo_data.lon = geoData[0].lon;
+                    event.geoData.lat = geoData[0].lat;
+                    event.geoData.lon = geoData[0].lon;
                 }),
                 share()
             ).toPromise().then(() =>
@@ -173,7 +174,7 @@ export class EventViewComponent implements OnInit {
             const coord = this.eventForm.get('coord').value
             this.geoData.lat = coord.split(',')[0].trim()
             this.geoData.lon = coord.split(',')[1].trim()
-            event.geo_data = this.geoData
+            event.geoData = this.geoData
             this.geoService.get_address_from_coordinates(this.geoData).pipe(
                 map((geoJSON: any) => {
                     event.address.plz = geoJSON.address.postcode;
@@ -183,12 +184,11 @@ export class EventViewComponent implements OnInit {
                 }),
                 share()
             ).toPromise().then(() =>
-                this.eventService.createEvent(event).subscribe(eventResponse => log.debug(eventResponse))
+                this.eventService.createEvent(event).subscribe(eventResponse => log.debug('Created Event: ', eventResponse))
             )
         }
 
-        // geo_data is observable
-        log.debug(event)
+        // geoData is observable
         organizer.lastUpdated = new Date()
         this.organizerService.updateOrganizer(organizer._id, organizer).subscribe()
         this.nullFormField();
@@ -225,26 +225,24 @@ export class EventViewComponent implements OnInit {
     }
 
     loadOrganizerOnSubcategories(category: Category) {
-
-        this.organizerService.filterOrganizerByEventsCategory(category).subscribe(organizers => {
-            console.log(organizers)
-            this.organizerOfCategory = organizers
-        })
+        this.organizerService.filterOrganizerByEventsCategory(category)
     }
 
     loadEvents(organizerId: string, categoryId: string) {
 
-        this.eventService.getAllUpcomingEvents().subscribe(
-            events => {
-                this.eventsOfOrganizer = events.filter(event => event._organizerId === organizerId && event.category._id === categoryId)
-
-            }
+        this.eventService.getAllUpcomingEvents().pipe(
+            map(
+                events => {
+                    this.allFilteredEvents = events.filter(event => event._organizerId === organizerId && event.category._id === categoryId)
+                }
+            )
         );
     }
 
 
     setEventForm(event: Event): void {
         // prepare dates
+        console.log(event)
         const start = moment(event.date.start).toDate()
         const end = moment(event.date.end).toDate()
         this.updateEventId = event._id
@@ -264,7 +262,7 @@ export class EventViewComponent implements OnInit {
             price: event.price,
             start,
             end,
-            coord: event.geo_data.lat + ', ' + event.geo_data.lon,
+            coord: event.geoData.lat + ', ' + event.geoData.lon,
         })
         this.category = event.category
 
@@ -324,11 +322,11 @@ export class EventViewComponent implements OnInit {
         event._id = this.updateEventId
 
         if (this.toggleIsChecked.value) {
-            event.geo_data = this.geoData
+            event.geoData = this.geoData
             this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
                 map(geoData => {
-                    event.geo_data.lat = geoData[0].lat;
-                    event.geo_data.lon = geoData[0].lon;
+                    event.geoData.lat = geoData[0].lat;
+                    event.geoData.lon = geoData[0].lon;
                 }),
                 share()
             ).toPromise().then(() => {
@@ -341,7 +339,7 @@ export class EventViewComponent implements OnInit {
             const coord = this.eventForm.get('coord').value
             this.geoData.lat = coord.split(',')[0].trim()
             this.geoData.lon = coord.split(',')[1].trim()
-            event.geo_data = this.geoData
+            event.geoData = this.geoData
             this.geoService.get_address_from_coordinates(this.geoData).pipe(
                 map((geoJSON: any) => {
                     event.address.plz = geoJSON.address.postcode;
@@ -365,11 +363,7 @@ export class EventViewComponent implements OnInit {
 
     getHotEvents() {
         const date = moment(new Date()).utcOffset(0, false).set({hour: 0, minute: 0, second: 0, millisecond: 0})
-        this.eventService.getEventsOnDate(date).subscribe(ev => {
-            this.allHotEvents = ev
-        })
-
-
+        this.eventService.getEventsOnDate(date)
     }
 
     setCategory(value) {
@@ -434,7 +428,7 @@ export class EventViewComponent implements OnInit {
     }
 
     loadEventsByCategory(category: Category) {
-        this.eventService.getEventsOnCategory(category).subscribe((events: Event[]) => this.eventsFilteredByCategory = events)
+        this.eventService.getEventsOnCategory(category)
     }
 
 }
