@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {NominatimGeoService} from "../nominatim-geo.service";
+import {NominatimGeoService} from "../../../services/nominatim-geo.service";
 import {map} from 'rxjs/operators';
 
 @Injectable({
@@ -34,8 +34,8 @@ export class PositionService {
 
     getPositionByInput(address_input) {
         return this.geoService.get_geo_data_address(address_input).pipe(
-            map(geo_data => {
-                this.searched_center = [geo_data[0].lat, geo_data[0].lon]
+            map(geoData => {
+                this.searched_center = [geoData[0].lat, geoData[0].lon]
             }))
     }
 

@@ -1,4 +1,4 @@
-import { Category } from './category'
+import {Category} from './category'
 
 
 export class Organizer {
@@ -14,8 +14,8 @@ export class Organizer {
     lastUpdated: Date;
     openingTimes?: Day[];
     isEvent: boolean;
-    ifEventid: string;
-    geo_data:{
+    ifEventId: string;
+    geoData: {
         lat: string,
         lon: string,
     };

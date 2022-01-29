@@ -1,10 +1,11 @@
 import {FormControl} from '@angular/forms';
-import {Address, Day, Organizer} from "../../models/organizer";
-import {Event} from "../../models/event";
+import {Address, Day, Organizer} from '../../../models/organizer';
+import {Event} from '../../../models/event';
 
 
 export function getOrganizerFormTemplate() {
-    let organizerForm = {
+// return organizer Form
+    return {
         name: new FormControl('', []),
         city: new FormControl('Leipzig', []),
         plz: new FormControl('', []),
@@ -18,11 +19,10 @@ export function getOrganizerFormTemplate() {
         frequency: new FormControl(7, []),
         isEvent: new FormControl('false', [])
     }
-    return organizerForm
 }
 
-export function getOpeningTimesTemplate(){
-    let openingTimes : Day[] = [
+export function getOpeningTimesTemplate() {
+    const openingTimes: Day[] = [
         {day: 'Monday', start: '00:00', end: '00:00'},
         {day: 'Tuesday', start: '00:00', end: '00:00'},
         {day: 'Wednesday', start: '00:00', end: '00:00'},
@@ -36,17 +36,17 @@ export function getOpeningTimesTemplate(){
 
 export function getGeoDataTemplate() {
     return {
-        lat: "",
-        lon: ""
+        lat: '',
+        lon: ''
     }
 }
-export function transformFormFieldToOrganizer(organizerForm, category, openingTimes, geo_data){
+
+export function transformFormFieldToOrganizer(organizerForm, category, openingTimes, geoData, organizerId) {
     const org = new Organizer()
     org.name = organizerForm.get('name').value;
 
-
-    let address = createAdressObject(organizerForm)
-    org.address = address
+    if (!(organizerId === '')) org._id = organizerId
+    org.address = createAdressObject(organizerForm)
 
     org.email = organizerForm.get('email').value;
     org.telephone = organizerForm.get('telephone').value;
@@ -55,43 +55,39 @@ export function transformFormFieldToOrganizer(organizerForm, category, openingTi
     org.frequency = organizerForm.get('frequency').value;
     org.isEvent = organizerForm.get('isEvent').value;
     org.category = category;
-    //this.organizerForm.get('category').value;
-
-    org.openingTimes=openingTimes
+    org.openingTimes = openingTimes
     org.lastUpdated = new Date()
 
-    org.geo_data = geo_data
+    org.geoData = geoData
 
     return org
 
 }
 
-function createAdressObject(organizerForm){
-    let address = new Address()
-    address.plz =  organizerForm.get('plz').value;
-    address.city =  organizerForm.get('city').value;
+function createAdressObject(organizerForm) {
+    const address = new Address()
+    address.plz = organizerForm.get('plz').value;
+    address.city = organizerForm.get('city').value;
 
-    let address_splitted =  organizerForm.get('street').value.split(' ')
+    const adressSplit = organizerForm.get('street').value.split(' ')
 
-    if (address_splitted[0]=="" && address_splitted.length == 2) {
-        address.street = address_splitted[1]
-        address.streetNumber = ""
+    if (adressSplit[0] === '' && adressSplit.length === 2) {
+        address.street = adressSplit[1]
+        address.streetNumber = ''
+    } else if (adressSplit.length === 1) {
+        address.street = adressSplit[0]
+        address.streetNumber = ''
+    } else {
+        address.street = adressSplit.slice(0, -1).join(' ');
+        address.streetNumber = adressSplit.slice(-1)[0];
     }
-    else if(address_splitted.length==1){
-        address.street = address_splitted[0]
-        address.streetNumber = ""
-    }
-    else{
-        address.street = address_splitted.slice(0,-1).join(' ');
-        address.streetNumber =  address_splitted.slice(-1)[0];
-    }
-    address.country =  organizerForm.get('country').value;
+    address.country = organizerForm.get('country').value;
 
 
     return address
 }
 
-export function createEventFromOrg(org){
+export function createEventFromOrg(org) {
     const event = new Event()
 
     event.name = org.name
@@ -102,6 +98,6 @@ export function createEventFromOrg(org){
     event.permanent = true
     event.openingTimes = org.openingTimes
     event.link = org.link
-    event.geo_data = org.geo_data
+    event.geoData = org.geoData
     return event
 }

@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import {PositionService} from "./position.service";
 
 @Component({
-    selector: 'map-view',
+    selector: 'app-map-view',
     templateUrl: './map-view.component.html',
     styleUrls: ['./map-view.component.css']
 })
@@ -39,7 +39,8 @@ export class MapViewComponent implements OnInit, OnChanges {
 
     constructor(
         private positionService: PositionService,
-    ) {}
+    ) {
+    }
 
 
     ngOnInit(): void {
@@ -78,13 +79,12 @@ export class MapViewComponent implements OnInit, OnChanges {
             this.updatePosition(this.positionService.getCurrentPosition())
         }
 
-        if(document.getElementById('map').className == '') {
+        if (document.getElementById('map').className == '') {
             this.map = L.map('map', {
                 center: [this.current_position.lat, this.current_position.lon],
                 zoom: 11
             });
-        }
-        else {
+        } else {
             document.getElementById('map').remove()
             this.map = L.map('map', {
                 center: [this.current_position.lat, this.current_position.lon],
@@ -106,10 +106,10 @@ export class MapViewComponent implements OnInit, OnChanges {
 
     private setMarkers(marker_data): void {
         this.markerGroup.clearLayers();
-        if (typeof marker_data != 'undefined') {
+        if (typeof marker_data !== 'undefined') {
             marker_data.map(marker => {
-                if (typeof marker.geo_data != 'undefined') {
-                    L.marker([marker.geo_data.lat, marker.geo_data.lon])
+                if (typeof marker.geoData !== 'undefined') {
+                    L.marker([marker.geoData.lat, marker.geoData.lon])
                         .setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
                         .addTo(this.markerGroup)
                 }

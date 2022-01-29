@@ -35,7 +35,12 @@ export class EventsComponent implements OnInit {
   filteredSubcategories = [];
 
   //clicked date
-  filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({hour:0,minute:0,second:0,millisecond:0})
+  filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({
+    hour: 0,
+    minute: 0,
+    second: 0,
+    millisecond: 0
+  })
   ;
 
   // Range for the events
@@ -69,9 +74,9 @@ export class EventsComponent implements OnInit {
 
 
     this.eventService.events.pipe(
-      map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance )),
+      map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)),
     ).subscribe((ev: Event[]) => {
-      this.filteredList=ev;
+      this.filteredList = ev;
     });
 
     this.categoriesService.categories.subscribe((cat: Category[]) => {
@@ -88,15 +93,14 @@ export class EventsComponent implements OnInit {
         params => {
           let cat = params['category']
           if (cat != undefined) {
-            this.categoryList.forEach(c =>
-            {
+            this.categoryList.forEach(c => {
               if (c._id == cat) this.filteredCategory = c
             })
           }
 
           let sub = params['subcategory']
           if (sub != undefined)
-            this.subcategoryList.forEach( s => {
+            this.subcategoryList.forEach(s => {
               if (s._id == sub) {
                 this.filteredSubcategories.push(s)
               }
@@ -120,26 +124,25 @@ export class EventsComponent implements OnInit {
     if (this.filteredCategory == null) fil.cat = this.categoryList
     else fil.cat = [this.filteredCategory]
 
-    if(this.filteredSubcategories.length < 1) fil.subcat = []
+    if (this.filteredSubcategories.length < 1) fil.subcat = []
     else fil.subcat = this.filteredSubcategories
 
     this.spinner.show();
     // if category is not hot
     if (!fil.cat.includes('hot')) {
       this.eventService.getEventsOnDateCategoryAndSubcategory(fil)
-    }
-    else {
+    } else {
       // if hot filter by date
       this.eventService.getEventsOnDate(this.filteredDate)
     }
     this.spinner.hide();
 
   }
-  get_distance_to_current_position(event)
-  {
+
+  get_distance_to_current_position(event) {
     //get distance
-    this.currentPosition = this.positionService.getCurrentPosition()
-    let dist = this.geoService.get_distance(this.currentPosition, [event.geo_data.lat, event.geo_data.lon])
+    this.currentPosition = this.positionService.getCurrentPosition();
+    let dist = this.geoService.get_distance(this.currentPosition, [event.geoData.lat, event.geoData.lon])
     return dist
 
   }
@@ -157,20 +160,20 @@ export class EventsComponent implements OnInit {
   }
 
   //add or remove clicked category to list of filter
-  addCategoryToFilter(cat: any){
+  addCategoryToFilter(cat: any) {
     if (this.filteredCategory == cat) {
       return
-    }
-    else this.filteredCategory = cat
+    } else this.filteredCategory = cat
 
     //if remove category also remove subcategories
-    if(cat.subcategories != undefined){
+    if (cat.subcategories != undefined) {
       this.filteredSubcategories = []
     }
 
     this.applyFilters()
   }
-  addSubcategoryToFilter(subcat: Subcategory){
+
+  addSubcategoryToFilter(subcat: Subcategory) {
     if (!this.filteredSubcategories.includes(subcat)) {
       this.filteredSubcategories.push(subcat)
     } else {
@@ -180,7 +183,7 @@ export class EventsComponent implements OnInit {
     this.applyFilters()
   }
 
- // change color if category picked
+  // change color if category picked
   isElementPicked(cat: any) {
     if (this.filteredCategory == cat || this.filteredSubcategories.includes(cat)) {
       return 'category-picked';
