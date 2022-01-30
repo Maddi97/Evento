@@ -36,6 +36,7 @@ jobs:
 
   build_frontend: 
     needs: analyze
+    name: Build And Push Events
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -65,6 +66,7 @@ jobs:
 
   build_backend: 
     needs: analyze
+    name: Build And Push Backend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -94,6 +96,7 @@ jobs:
 
   build_insert-app: 
     needs: analyze
+    name: Build And Push Insert
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -123,6 +126,7 @@ jobs:
 
   deploy:
     needs: [build_backend, build_frontend, build_insert-app]
+    name: Deploy On PI
     runs-on: self-hosted
     steps:
       - name: Checkout Repository
