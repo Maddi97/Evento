@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable, throwError as observableThrowError, BehaviorSubject} from 'rxjs';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient} from '@angular/common/http';
 import {HttpRequest} from '@angular/common/http';
 import {filter, map, catchError, share, take} from 'rxjs/operators';
 import {Event} from '../models/event';
@@ -11,14 +11,14 @@ import {Event} from '../models/event';
 export class NominatimGeoService {
     readonly ROOT_URL;
     readonly URL_END;
-    readonly osm_api_url_start;
-    readonly osm_api_url_end;
+    readonly osmApiUrlStart;
+    readonly osmApiUrlEnd;
 
     constructor(private http: HttpClient) {
-        this.ROOT_URL = "https://nominatim.openstreetmap.org/search?q=";
+        this.ROOT_URL = 'https://nominatim.openstreetmap.org/search?q=';
         this.URL_END = '&limit=2&format=json'
-        this.osm_api_url_start = "https://router.project-osrm.org/route/v1/foot/"
-        this.osm_api_url_end = ".json"
+        this.osmApiUrlStart = 'https://router.project-osrm.org/route/v1/foot/'
+        this.osmApiUrlEnd = '.json'
     }
 
     get_geo_data(city, street, streetNumber) {
@@ -27,7 +27,7 @@ export class NominatimGeoService {
             take(1),
             map(geoData => {
                 if (Object.keys(geoData).length < 1)
-                    throw console.error(("No coordinates found to given address"));
+                    throw console.error(('No coordinates found to given address'));
                 return geoData
             }),
         )
@@ -38,7 +38,7 @@ export class NominatimGeoService {
             take(1),
             map(geoData => {
                 if (Object.keys(geoData).length < 1) {
-                    throw console.error(("No coordinates found to given address"));
+                    throw console.error(('No coordinates found to given address'));
                 }
                 return geoData
             }),
@@ -46,11 +46,12 @@ export class NominatimGeoService {
     }
 
     get_address_from_coordinates(coord) {
-        return this.http.get('https://nominatim.openstreetmap.org/reverse?lat=' + coord.lat + '&lon=' + coord.lon + '&limit=2&format=json').pipe(
+        return this.http.get('https://nominatim.openstreetmap.org/reverse?lat='
+            + coord.lat + '&lon=' + coord.lon + '&limit=2&format=json').pipe(
             take(1),
             map(geoData => {
                 if (Object.keys(geoData).length < 1)
-                    throw console.error(("No coordinates found to given address"));
+                    throw console.error(('No coordinates found to given address'));
                 return geoData
             }),
         )

@@ -4,7 +4,7 @@ import {Observable, throwError as observableThrowError, BehaviorSubject} from 'r
 import {HttpRequest} from '@angular/common/http';
 import {filter, map, catchError, share} from 'rxjs/operators';
 import {Event} from '../models/event';
-import {Category} from "../models/category";
+import {Category} from '../models/category';
 import * as moment from 'moment';
 
 
@@ -56,8 +56,8 @@ export class EventsService {
             (response: Event) => {
                 const tempEvent = this._events.getValue();
                 let indeX: number;
-                tempEvent.map((event: Event, index) => {
-                    if (event._id === eventId) {
+                tempEvent.map((eventResponse: Event, index) => {
+                    if (eventResponse._id === eventId) {
                         indeX = index;
                     }
                 });
