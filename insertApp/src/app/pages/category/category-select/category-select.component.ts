@@ -40,7 +40,6 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         this.categoryName.setValue(changes.loadedCategory.currentValue?.name)
         this.selectedCategory = this.categories.find(cat => cat.name === this.categoryName.value)
-
         this.selectedSubcategories.setValue(changes.loadedCategory.currentValue?.subcategories)
     }
 
@@ -50,7 +49,7 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     }
 
     selectCategory() {
-        this.selectedCategory = this.categories.find(cat => cat.name === this.categoryName.value)
+        this.selectedCategory = this.categories.find(categoryResponse => categoryResponse.name === this.categoryName.value)
         const cat = {
             _id: this.selectedCategory._id,
             name: this.selectedCategory.name,
@@ -58,6 +57,8 @@ export class CategorySelectComponent implements OnInit, OnChanges {
             iconTemporaryURL: this.selectedCategory.iconTemporaryURL,
             subcategories: [],
         }
+        console.log(this.selectedSubcategories)
+
         this.newCategorySelect.emit(cat)
     }
 

@@ -1,5 +1,5 @@
-import {Injectable} from "@angular/core";
-import {NominatimGeoService} from "../nominatim-geo.service";
+import {Injectable} from '@angular/core';
+import {NominatimGeoService} from '../nominatim-geo.service';
 import {map} from 'rxjs/operators';
 
 @Injectable({
@@ -7,13 +7,13 @@ import {map} from 'rxjs/operators';
 })
 export class PositionService {
 
-  searched_center = []
+  searchedCenter = [];
 
   // Leipzig Center
-  default_center_position = [51.33962, 12.37129]
+  defaultCenterPosition = [51.33962, 12.37129];
 
   // New York Center
-  //default_center_position = [40.7142700, -74.0059700]
+  // default_center_position = [40.7142700, -74.0059700]
 
   constructor(
     private geoService: NominatimGeoService
@@ -21,22 +21,22 @@ export class PositionService {
   }
 
   getCurrentPosition() {
-    if (this.searched_center.length === 2) {
-      return this.searched_center
+    if (this.searchedCenter.length === 2) {
+      return this.searchedCenter;
     } else {
-      return this.default_center_position
+      return this.defaultCenterPosition;
     }
   }
 
   getDefaultLocation() {
-    return this.default_center_position
+    return this.defaultCenterPosition;
   }
 
-  getPositionByInput(address_input) {
-    return this.geoService.get_geo_data_address(address_input).pipe(
+  getPositionByInput(addressInput) {
+    return this.geoService.get_geo_data_address(addressInput).pipe(
       map(geoData => {
-        this.searched_center = [geoData[0].lat, geoData[0].lon]
-      }))
+        this.searchedCenter = [geoData[0].lat, geoData[0].lon];
+      }));
   }
 
   getPositionByLocation() {
@@ -44,9 +44,9 @@ export class PositionService {
       navigator.geolocation.getCurrentPosition(
         position => {
           const {latitude, longitude} = position.coords;
-          this.searched_center = [latitude, longitude];
+          this.searchedCenter = [latitude, longitude];
         });
-    })
+    });
   }
 
 }

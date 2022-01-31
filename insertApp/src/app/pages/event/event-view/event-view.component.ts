@@ -63,7 +63,7 @@ export class EventViewComponent implements OnInit {
     }
 
     updateEvent(event) {
-        this.eventService.updateEvent(event._organizerId, event._id, event).subscribe(event => log.debug(event))
+        this.eventService.updateEvent(event._organizerId, event._id, event).subscribe()
     }
 
 

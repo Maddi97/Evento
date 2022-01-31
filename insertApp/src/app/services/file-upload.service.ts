@@ -3,7 +3,7 @@ import { WebService } from './web.service';
 import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
 import { HttpRequest } from '@angular/common/http';
 import { filter, map, catchError, share, shareReplay } from 'rxjs/operators';
-import * as log from "loglevel";
+import * as log from 'loglevel';
 @Injectable({
   providedIn: 'root'
 })
