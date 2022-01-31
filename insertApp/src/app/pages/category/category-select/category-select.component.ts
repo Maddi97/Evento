@@ -40,7 +40,7 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         this.categoryName.setValue(changes.loadedCategory.currentValue?.name)
         this.selectedCategory = this.categories.find(cat => cat.name === this.categoryName.value)
-        this.selectedSubcategories.setValue(this.loadedCategory.subcategories)
+        this.selectedSubcategories.setValue(changes.loadedCategory.currentValue?.subcategories)
     }
 
     private _filter(value: Category): string[] {
