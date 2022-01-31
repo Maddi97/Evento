@@ -1,5 +1,5 @@
 import {Category} from './category'
-import {Day} from "./organizer";
+import {Day} from './organizer';
 import * as moment from 'moment';
 
 export class Event {

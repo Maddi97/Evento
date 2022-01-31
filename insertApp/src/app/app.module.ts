@@ -25,7 +25,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 
-import {HttpClientModule} from "@angular/common/http";
+import {HttpClientModule} from '@angular/common/http';
 import {OrganizerViewComponent} from './pages/organizer/organizer-view/organizer-view.component';
 
 import {FlexLayoutModule} from '@angular/flex-layout';

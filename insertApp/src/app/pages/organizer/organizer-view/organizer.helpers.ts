@@ -1,7 +1,7 @@
 import {FormControl} from '@angular/forms';
 import {Address, Day, Organizer} from '../../../models/organizer';
 import {Event} from '../../../models/event';
-import * as moment from "moment";
+import * as moment from 'moment';
 
 
 export function getOrganizerFormTemplate() {
