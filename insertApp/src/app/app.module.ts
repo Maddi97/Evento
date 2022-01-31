@@ -36,6 +36,7 @@ import {CategoryViewComponent} from './pages/category/category-view/category-vie
 import {MapViewComponent} from './pages/map/map-view/map-view.component'
 import {CommonModule} from '@angular/common';
 import { OrganizerFormComponent } from './pages/organizer/organizer-form/organizer-form.component';
+import { EventFormComponent } from './pages/event/event-form/event-form.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { OrganizerFormComponent } from './pages/organizer/organizer-form/organiz
         CategorySelectComponent,
         CategoryViewComponent,
         MapViewComponent,
-        OrganizerFormComponent
+        OrganizerFormComponent,
+        EventFormComponent
     ],
     imports: [
         MatSnackBarModule,
