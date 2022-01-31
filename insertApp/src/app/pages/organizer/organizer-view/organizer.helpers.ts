@@ -1,6 +1,7 @@
 import {FormControl} from '@angular/forms';
 import {Address, Day, Organizer} from '../../../models/organizer';
 import {Event} from '../../../models/event';
+import * as moment from "moment";
 
 
 export function getOrganizerFormTemplate() {
@@ -89,7 +90,11 @@ function createAdressObject(organizerForm) {
 
 export function createEventFromOrg(org) {
     const event = new Event()
-
+    const date = {
+        start: moment(new Date()).utcOffset(0, false),
+        end: moment(new Date()).utcOffset(0, false)
+    }
+    const times = {start: '00:00', end: '00:00'}
     event.name = org.name
     event.description = org.description
     event.address = org.address
@@ -97,7 +102,10 @@ export function createEventFromOrg(org) {
     event.organizerName = org.name
     event.permanent = true
     event.openingTimes = org.openingTimes
+    event.times = times
     event.link = org.link
     event.geoData = org.geoData
+    event.date = date
+    event.price = ''
     return event
 }

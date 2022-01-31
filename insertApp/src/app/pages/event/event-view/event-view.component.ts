@@ -57,17 +57,19 @@ export class EventViewComponent implements OnInit {
     }
 
     addNewEvent(event) {
+        // set _id undefined otherwise error occurs
+        event._id = undefined
         this.eventService.createEvent(event).subscribe(eventResponse => log.debug(eventResponse.date))
     }
 
     updateEvent(event) {
-
-        this.eventService.updateEvent(event._organizerId, event._id, event).subscribe()
+        this.eventService.updateEvent(event._organizerId, event._id, event).subscribe(event => log.debug(event))
     }
 
 
     loadOrganizerOnSubcategories(category: Category) {
         this.organizerService.filterOrganizerByEventsCategory(category)
+        console.log(this.organizers)
     }
 
     loadEvents(organizerId: string, categoryId: string) {
@@ -84,6 +86,7 @@ export class EventViewComponent implements OnInit {
     getHotEvents() {
         const date = moment(new Date()).utcOffset(0, false).set({hour: 0, minute: 0, second: 0, millisecond: 0})
         this.eventService.getEventsOnDate(date)
+        console.log(this.allFilteredEvents)
     }
 
     deleteEvent(organizerId: string, eventId: string) {

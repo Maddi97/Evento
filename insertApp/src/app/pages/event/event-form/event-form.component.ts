@@ -1,14 +1,21 @@
+// import packages
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
-import {Address, Organizer} from '../../../models/organizer';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormBuilder} from '@angular/forms';
+import {map, share} from 'rxjs/operators';
+import * as moment from 'moment';
+
+// import models
+import {Organizer} from '../../../models/organizer';
 import {Category} from '../../../models/category';
 import {Event} from '../../../models/event';
-import * as moment from 'moment';
-import {map, share} from 'rxjs/operators';
-import {FormBuilder} from '@angular/forms';
-import * as log from 'loglevel';
+
+// import services
 import {NominatimGeoService} from '../../../services/nominatim-geo.service';
 import {OrganizerService} from '../../../services/organizer.service';
+
+// import helper functions
+import {getEventFormTemplate, getEventFromForm} from '../event.helpers';
+import * as log from 'loglevel';
 
 @Component({
     selector: 'app-event-form',
@@ -25,21 +32,7 @@ export class EventFormComponent implements OnInit, OnChanges {
 
     updateOrganizerId = '';
     updateEventId = '';
-    eventForm = this.fb.group({
-        name: new FormControl('', []),
-        city: new FormControl('Leipzig', []),
-        plz: new FormControl('', []),
-        street: new FormControl('', []),
-        streetNumber: new FormControl('', []),
-        country: new FormControl('Deutschland', []),
-        description: new FormControl('', []),
-        link: new FormControl('', []),
-        price: new FormControl('', []),
-        permanent: new FormControl('false', []),
-        start: new FormControl('', []),
-        end: new FormControl('', []),
-        coord: new FormControl('', []),
-    })
+    eventForm = this.fb.group(getEventFormTemplate())
 
     date = new FormControl(new Date())
     category: Category;
@@ -68,6 +61,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(): void {
+        console.log(this.eventIn)
         if (this.eventIn !== undefined) {
             this.setEventForm()
         }
@@ -76,62 +70,12 @@ export class EventFormComponent implements OnInit, OnChanges {
     emitAddNewEvent() {
 
         const organizer = this.organizersIn.find(org => org.name === this.organizerName.value)
-        const event = new Event()
-        const address = new Address()
-        event._organizerId = organizer._id;
-        event.organizerName = organizer.name;
-        event.name = this.eventForm.get('name').value;
-        address.plz = this.eventForm.get('plz').value;
-        address.city = this.eventForm.get('city').value;
-
-        const addressSplit = this.eventForm.get('street').value.split(' ')
-        if (addressSplit[0] === '' && addressSplit.length === 2) {
-            address.street = addressSplit[1]
-            address.streetNumber = ''
-        } else if (addressSplit.length === 1) {
-            address.street = addressSplit[0]
-            address.streetNumber = ''
-        } else {
-            address.street = addressSplit.slice(0, -1).join(' ');
-            address.streetNumber = addressSplit.slice(-1)[0];
-        }
-
-
-        address.country = this.eventForm.get('country').value;
-
-        event.address = address
-
-        event.description = this.eventForm.get('description').value;
-        event.link = this.eventForm.get('link').value;
-        event.price = this.eventForm.get('price').value;
-        event.permanent = this.eventForm.get('permanent').value;
-        event.category = this.category;
-        event.date = {
-            start: moment(new Date()).utcOffset(0, true),
-            end: moment(new Date()).utcOffset(0, true)
-        }
-
-
-        if (this.eventForm.get('permanent').value === 'false') {
-            let start = this.eventForm.get('start').value
-            start.setDate(start.getDate())
-            start = moment(new Date(start.toISOString())).utcOffset(0, true).format();
-            event.date.start = start
-
-            let end = this.eventForm.get('end').value
-            end.setDate(end.getDate())
-            end = moment(new Date(end.toISOString())).utcOffset(0, true).format();
-            event.date.end = end
-        } else {
-            event.date.start = moment(new Date()).utcOffset(0, true)
-            event.date.end = moment(new Date()).utcOffset(0, true)
-        }
-
-        event.times = {start: this.times.start.value, end: this.times.end.value}
+        const event = getEventFromForm(this.eventForm, organizer, this.category, this.times, this.updateEventId);
+        const address = event.address;
 
         if (this.toggleIsChecked.value) {
             event.geoData = this.geoData
-            // first fetch geo data from osm API and than complete event data type and send to backend
+            // first fetch geo data from osm API and than emit event data
             this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
                 map(geoData => {
 
@@ -168,54 +112,8 @@ export class EventFormComponent implements OnInit, OnChanges {
 
     emitUpdateEvent() {
         const organizer = this.organizersIn.find(org => org.name === this.organizerName.value);
-        const event = new Event()
-        const address = new Address()
-        event._organizerId = organizer._id
-        event.organizerName = organizer.name
-        event.name = this.eventForm.get('name').value;
-        address.plz = this.eventForm.get('plz').value;
-        address.city = this.eventForm.get('city').value;
-        const adressSplit = this.eventForm.get('street').value.split(' ')
-        if (adressSplit[0] === '' && adressSplit.length === 2) {
-            address.street = adressSplit[1]
-            address.streetNumber = ''
-        } else if (adressSplit.length === 1) {
-            address.street = adressSplit[0]
-            address.streetNumber = ''
-        } else {
-            address.street = adressSplit.slice(0, -1).join(' ');
-            address.streetNumber = adressSplit.slice(-1)[0];
-        }
-        address.country = this.eventForm.get('country').value;
-
-        event.address = address
-
-        event.description = this.eventForm.get('description').value;
-        event.link = this.eventForm.get('link').value;
-        event.price = this.eventForm.get('price').value;
-        event.permanent = this.eventForm.get('permanent').value;
-        event.category = this.category;
-        event.date = {start: moment(new Date()).utcOffset(0, true), end: moment(new Date()).utcOffset(0, true)}
-
-        if (this.eventForm.get('permanent').value === 'false') {
-            let start = this.eventForm.get('start').value
-            start.setDate(start.getDate())
-
-            start = moment(new Date(start.toISOString())).utcOffset(0, true).format();
-            event.date.start = start
-
-            let end = this.eventForm.get('end').value
-            end.setDate(end.getDate())
-            end = moment(new Date(end.toISOString())).utcOffset(0, true).format();
-            event.date.end = end
-        } else {
-            event.date.start = moment(new Date()).utcOffset(0, true)
-            event.date.end = moment(new Date()).utcOffset(0, true)
-        }
-
-        event.times = {start: this.times.start.value, end: this.times.end.value}
-        event._id = this.updateEventId
-
+        const event = getEventFromForm(this.eventForm, organizer, this.category, this.times, this.updateEventId);
+        const address = event.address;
         if (this.toggleIsChecked.value) {
             event.geoData = this.geoData
             this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
@@ -257,7 +155,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     setEventForm(): void {
         // prepare dates
         this.updateEventId = this.eventIn._id
-
+        console.log(this.eventIn)
         const start = moment(this.eventIn.date.start).toDate()
         const end = moment(this.eventIn.date.end).toDate()
         const organizer = this.organizersIn.find(org => org._id === this.eventIn._organizerId)
@@ -293,21 +191,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     nullFormField() {
         this.updateEventId = ''
         this.organizerName.setValue('')
-        this.eventForm.setValue({
-            name: '',
-            city: 'Dresden',
-            plz: '',
-            street: '',
-            streetNumber: '',
-            country: 'Deutschland',
-            description: '',
-            link: '',
-            permanent: 'false',
-            price: '',
-            start: '',
-            end: '',
-            coord: '',
-        })
+        this.eventForm = this.fb.group(getEventFormTemplate())
         this.category = undefined
         this.times.start.setValue('00:00')
         this.times.end.setValue('00:00')
