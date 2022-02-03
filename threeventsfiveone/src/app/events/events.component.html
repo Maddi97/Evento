@@ -1,6 +1,6 @@
 <div style="width: 100%;" fxLayoutAlign="center center">
   <div fxLayout="column" fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%" fxFlex.gt-md="40%"
-       fxLayoutAlign="start center" >
+       fxLayoutAlign="start center">
     <vents-date-picker style="width: 100%;" (clickedDate)="searchForDay($event)"></vents-date-picker>
     <div style="margin-top: 1rem;" fxLayout="column" style="margin-bottom: 5rem; width: 100%;">
       <div fxLayout="row" fxLayoutAlign="end center" style="margin-bottom: .5rem;">
@@ -42,7 +42,8 @@
                                                  && isElementPicked(category) == 'category-picked'"
                  style="padding-left: 1rem">
               <div *ngFor="let subcategory of category.subcategories">
-                <span class="subcategory" [ngClass]="isElementPicked(subcategory)" (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>
+                <span class="subcategory" [ngClass]="isElementPicked(subcategory)"
+                      (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>
               </div>
             </div>
           </div>
@@ -50,7 +51,7 @@
       </div>
       <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
       <div *ngIf="this.mapView">
-        <map-view [marker_data]="this.filteredList"></map-view>
+        <map-view [markerData]="this.filteredList"></map-view>
       </div>
       <div *ngIf="this.mapView === false">
         <div fxLayout="column" *ngFor="let event of filteredList">

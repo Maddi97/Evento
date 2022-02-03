@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {WebService} from "./web.service";
-import {catchError, map, share} from "rxjs/operators";
+import {WebService} from './web.service';
+import {catchError, map, share} from 'rxjs/operators';
 import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class FileService {
     obs.toPromise().then(
       (response: any) => {
       }
-    )
+    );
     return obs;
   }
 

@@ -1,17 +1,18 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Category} from '../models/category';
 import {CategoriesService} from './categories.service';
-import {map} from "rxjs/operators";
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'vents-categories',
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.css']
 })
-export class CategoriesComponent implements OnInit {
+export class CategoriesComponent implements OnInit, OnDestroy {
 
   categoryList: Category[] = [];
   category$;
+
   constructor(
     private categoriesService: CategoriesService,
   ) {
@@ -25,12 +26,12 @@ export class CategoriesComponent implements OnInit {
           if (cat.length === 0) {
             this.categoriesService.getAllCategories();
           }
-    }));
-    this.category$.subscribe()
+        }));
+    this.category$.subscribe();
   }
 
   ngOnDestroy(): void {
-    this.category$.unsubscribe()
+    this.category$.unsubscribe();
   }
 
 }
