@@ -74,7 +74,7 @@ export class EventService {
       share());
     obs.toPromise().then((response) => {
       this._events.next(response);
-    })
+    });
     return obs;
   }
 
@@ -88,7 +88,7 @@ export class EventService {
       share());
     obs.toPromise().then((response) => {
       this._events.next(response);
-    })
+    });
     return obs;
   }
 
@@ -103,7 +103,7 @@ export class EventService {
          share());
     obs.toPromise().then((response) => {
       this._events.next(response);
-    })
+    });
     return obs;
   }
 }

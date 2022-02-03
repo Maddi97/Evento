@@ -7,7 +7,7 @@ import {PositionService} from '../map-view/position.service';
 import {NominatimGeoService} from '../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ActivatedRoute, Router} from '@angular/router';
-import {filter, map} from "rxjs/operators";
+import {filter, map} from 'rxjs/operators';
 import * as moment from 'moment';
 import * as log from 'loglevel';
 
@@ -31,10 +31,10 @@ export class EventsComponent implements OnInit {
   // Applied filtered Category IDs
   filteredCategory: any = 'hot';
 
-  //filteredSubcategories
+  // filteredSubcategories
   filteredSubcategories = [];
 
-  //clicked date
+  // clicked date
   filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({
     hour: 0,
     minute: 0,
@@ -85,107 +85,118 @@ export class EventsComponent implements OnInit {
       // add subcats to list
       cat.forEach(c => {
         c.subcategories.forEach(sub => {
-          this.subcategoryList.push(sub)
-        })
-      })
+          this.subcategoryList.push(sub);
+        });
+      });
 
       this._activatedRoute.queryParams.subscribe(
         params => {
-          let cat = params['category']
-          if (cat != undefined) {
+          const category = params.category;
+          if (category !== undefined) {
             this.categoryList.forEach(c => {
-              if (c._id == cat) this.filteredCategory = c
-            })
+              if (c._id === category) {
+                this.filteredCategory = c;
+              }
+            });
           }
 
-          let sub = params['subcategory']
-          if (sub != undefined)
+          const sub = params.subcategory;
+          if (sub !== undefined) {
             this.subcategoryList.forEach(s => {
-              if (s._id == sub) {
-                this.filteredSubcategories.push(s)
+              if (s._id === sub) {
+                this.filteredSubcategories.push(s);
               }
-            })
+            });
+          }
         });
 
 
-      this.applyFilters()
+      this.applyFilters();
     });
 
-    //request categories
+    // request categories
     this.categoriesService.getAllCategories();
   }
 
   applyFilters() {
-    //Request backend for date, category and subcategory filter
-    //filter object
+    // Request backend for date, category and subcategory filter
+    // filter object
     this.currentPosition = this.positionService.getCurrentPosition();
-    let fil = {date: this.filteredDate, cat: [], subcat: []}
+    const fil = {date: this.filteredDate, cat: [], subcat: []};
 
-    if (this.filteredCategory == null) fil.cat = this.categoryList
-    else fil.cat = [this.filteredCategory]
+    if (this.filteredCategory == null) {
+      fil.cat = this.categoryList;
+    } else {
+      fil.cat = [this.filteredCategory];
+    }
 
-    if (this.filteredSubcategories.length < 1) fil.subcat = []
-    else fil.subcat = this.filteredSubcategories
+    if (this.filteredSubcategories.length < 1) {
+      fil.subcat = [];
+    } else {
+      fil.subcat = this.filteredSubcategories;
+    }
 
     this.spinner.show();
     // if category is not hot
     if (!fil.cat.includes('hot')) {
-      this.eventService.getEventsOnDateCategoryAndSubcategory(fil)
+      this.eventService.getEventsOnDateCategoryAndSubcategory(fil);
     } else {
       // if hot filter by date
-      this.eventService.getEventsOnDate(this.filteredDate)
+      this.eventService.getEventsOnDate(this.filteredDate);
     }
     this.spinner.hide();
 
   }
 
   get_distance_to_current_position(event) {
-    //get distance
+    // get distance
     this.currentPosition = this.positionService.getCurrentPosition();
-    let dist = this.geoService.get_distance(this.currentPosition, [event.geoData.lat, event.geoData.lon])
-    return dist
+    const dist = this.geoService.get_distance(this.currentPosition, [event.geoData.lat, event.geoData.lon]);
+    return dist;
 
   }
 
   searchForDay(filter: DateClicked) {
-    this.filteredDate = filter.date
-    this.applyFilters()
+    this.filteredDate = filter.date;
+    this.applyFilters();
 
   }
 
 
   searchForDistance(distance) {
     this.distanceChanged = true;
-    this.applyFilters()
+    this.applyFilters();
   }
 
-  //add or remove clicked category to list of filter
+  // add or remove clicked category to list of filter
   addCategoryToFilter(cat: any) {
-    if (this.filteredCategory == cat) {
-      return
-    } else this.filteredCategory = cat
-
-    //if remove category also remove subcategories
-    if (cat.subcategories != undefined) {
-      this.filteredSubcategories = []
+    if (this.filteredCategory === cat) {
+      return;
+    } else {
+      this.filteredCategory = cat;
     }
 
-    this.applyFilters()
+    // if remove category also remove subcategories
+    if (cat.subcategories !== undefined) {
+      this.filteredSubcategories = [];
+    }
+
+    this.applyFilters();
   }
 
   addSubcategoryToFilter(subcat: Subcategory) {
     if (!this.filteredSubcategories.includes(subcat)) {
-      this.filteredSubcategories.push(subcat)
+      this.filteredSubcategories.push(subcat);
     } else {
-      //remove subcat from list
+      // remove subcat from list
       this.filteredSubcategories = this.filteredSubcategories.filter(obj => obj !== subcat);
     }
-    this.applyFilters()
+    this.applyFilters();
   }
 
   // change color if category picked
   isElementPicked(cat: any) {
-    if (this.filteredCategory == cat || this.filteredSubcategories.includes(cat)) {
+    if (this.filteredCategory === cat || this.filteredSubcategories.includes(cat)) {
       return 'category-picked';
     } else {
       return 'category-non-picked';

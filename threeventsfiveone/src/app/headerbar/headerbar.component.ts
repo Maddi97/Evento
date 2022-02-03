@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'vents-headerbar',
@@ -7,12 +7,12 @@ import { Location } from '@angular/common';
   styleUrls: ['./headerbar.component.css']
 })
 export class HeaderbarComponent implements OnInit {
-  searchText = ''
+  searchText = '';
 
   constructor(
     private location: Location,
-
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }

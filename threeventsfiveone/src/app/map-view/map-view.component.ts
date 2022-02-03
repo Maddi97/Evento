@@ -1,7 +1,7 @@
 import {Component, OnChanges, OnInit, Input, OnDestroy} from '@angular/core';
 import * as L from 'leaflet';
-import {PositionService} from "./position.service";
-import {Router} from "@angular/router";
+import {PositionService} from './position.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'map-view',
@@ -9,16 +9,16 @@ import {Router} from "@angular/router";
   styleUrls: ['./map-view.component.css']
 })
 export class MapViewComponent implements OnInit, OnChanges {
-  @Input() marker_data = [];
+  @Input() markerData = [];
   private map;
-  private markerGroup
-  private positionMarkerGroup
-  address = ""
+  private markerGroup;
+  private positionMarkerGroup;
+  address = '';
 
-  current_position = {
-    lat: "",
-    lon: ""
-  }
+  currentPosition = {
+    lat: '',
+    lon: ''
+  };
 
   private defaultIconRetina = './assets/leaflet_color_markers/marker-icon-2x-blue.png';
   private defaultIcon = './assets/leaflet_color_markers/marker-icon-blue.png';
@@ -45,43 +45,43 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   sanitizeInput(value) {
-    return value.replace(/ /g, '+')
+    return value.replace(/ /g, '+');
   }
 
   ngOnInit(): void {
-    this.updatePosition(this.positionService.getDefaultLocation())
+    this.updatePosition(this.positionService.getDefaultLocation());
   }
 
 
-  updatePosition(location_list) {
-    this.current_position.lat = location_list[0]
-    this.current_position.lon = location_list[1]
+  updatePosition(locationList) {
+    this.currentPosition.lat = locationList[0];
+    this.currentPosition.lon = locationList[1];
   }
 
   resetCenter() {
-    this.updatePosition(this.positionService.getCurrentPosition())
-    this.setPositionMarker()
-    this.map.panTo((new L.LatLng(this.current_position.lat, this.current_position.lon)))
-    this.router.navigate(['/', 'events'], {queryParams: {'positionUpdate': true}})
+    this.updatePosition(this.positionService.getCurrentPosition());
+    this.setPositionMarker();
+    this.map.panTo((new L.LatLng(this.currentPosition.lat, this.currentPosition.lon)));
+    this.router.navigate(['/', 'events'], {queryParams: {positionUpdate: true}});
   }
 
   searchForLocationInput() {
-    let address = this.sanitizeInput(this.address)
+    const address = this.sanitizeInput(this.address);
 
     this.positionService.getPositionByInput(address).toPromise().then(() => {
-      this.resetCenter()
-    })
+      this.resetCenter();
+    });
   }
 
   getCurrentPosition() {
     this.positionService.getPositionByLocation().then(() => {
-      this.resetCenter()
-    })
+      this.resetCenter();
+    });
   }
 
   ngOnChanges(): void {
-    if (typeof this.map == 'undefined') {
-      this.initMap()
+    if (typeof this.map === 'undefined') {
+      this.initMap();
     }
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -89,16 +89,16 @@ export class MapViewComponent implements OnInit, OnChanges {
     });
     tiles.addTo(this.map);
 
-    this.setPositionMarker()
-    this.setMarkers(this.marker_data)
+    this.setPositionMarker();
+    this.setMarkers(this.markerData);
   }
 
   private initMap(): void {
-    if (this.current_position.lat === "" || this.current_position.lon === "") {
-      this.updatePosition(this.positionService.getCurrentPosition())
+    if (this.currentPosition.lat === '' || this.currentPosition.lon === '') {
+      this.updatePosition(this.positionService.getCurrentPosition());
     }
     this.map = L.map('map', {
-      center: [this.current_position.lat, this.current_position.lon],
+      center: [this.currentPosition.lat, this.currentPosition.lon],
       zoom: 11
     });
 
@@ -108,24 +108,24 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private setPositionMarker(): void {
     this.positionMarkerGroup.clearLayers();
-    L.marker([this.current_position.lat, this.current_position.lon])
+    L.marker([this.currentPosition.lat, this.currentPosition.lon])
       .setIcon(new this.LeafIcon({iconUrl: this.locationIcon, iconRetinaUrl: this.locationIconRetina}))
       .addTo(this.positionMarkerGroup);
   }
 
-  private setMarkers(marker_data): void {
+  private setMarkers(markerData): void {
     this.markerGroup.clearLayers();
-    if (typeof marker_data !== 'undefined') {
-      marker_data.map(marker => {
+    if (typeof markerData !== 'undefined') {
+      markerData.map(marker => {
         if (typeof marker.geoData !== 'undefined') {
           L.marker([marker.geoData.lat, marker.geoData.lon])
             .setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
             .addTo(this.markerGroup)
             .on('click', () => {
-              this.router.navigate(['/', 'full-event'], {fragment: marker._id})
-            })
+              this.router.navigate(['/', 'full-event'], {fragment: marker._id});
+            });
         }
-      })
+      });
     }
   }
 }
