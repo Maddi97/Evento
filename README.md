@@ -54,3 +54,7 @@ The containers are then reachable via localhost and the specific ports:
 [Backend](http://localhost:3000)
 
 Here only http is supported.
+
+## TechStack
+* node 16.13.2
+* angular 13.1.3 
