@@ -1,21 +1,47 @@
-<div style="width: 100%;" fxLayoutAlign="center center">
-  <div fxLayout="column" fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%" fxFlex.gt-md="40%"
-       fxLayoutAlign="start center">
-    <vents-date-picker style="width: 100%;" (clickedDate)="searchForDay($event)"></vents-date-picker>
-    <div style="margin-top: 1rem;" fxLayout="column" style="margin-bottom: 5rem; width: 100%;">
-      <div fxLayout="row" fxLayoutAlign="end center" style="margin-bottom: .5rem;">
-        <div *ngIf="this.mapView" fxLayout="row" fxLayoutAlign="space-around center">
-          <mat-icon class="icon" (click)="changeToMapView()">
-            event
-          </mat-icon>
-        </div>
-        <div *ngIf="!this.mapView" fxLayout="row" fxLayoutAlign="space-around center">
-          <mat-icon class="icon" (click)="changeToMapView()">
-            map
-          </mat-icon>
+<div class="event-page">
+
+  <div class="filter-container">
+    <vents-date-picker class="date-picker" (clickedDate)="searchForDay($event)"></vents-date-picker>
+
+    <span class="category-label">Kategorien</span>
+
+    <div class="main-category-container">
+
+      <span class="category" [ngClass]="isElementPicked('hot')" (click)="addCategoryToFilter('hot')">
+              Hot
+          </span>
+
+      <div *ngFor="let category of categoryList">
+          <span class="category" [ngClass]="isElementPicked(category)" (click)="addCategoryToFilter(category)">
+              {{ category.name }}
+          </span>
+        <div class="subcategory-container" *ngIf="category.subcategories.length > 0
+                                                 && isElementPicked(category) == 'category-picked'">
+          <div *ngFor="let subcategory of category.subcategories">
+                <span class="subcategory" [ngClass]="isElementPicked(subcategory)"
+                      (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>
+          </div>
         </div>
       </div>
-      <div fxLayout="column" style="margin-bottom: .5rem;">
+    </div>
+  </div>
+  <div class="spinner-container">
+    <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
+  </div>
+  <div class="event-map-container">
+
+    <div class="event-container">
+
+      <div fxLayout="column" *ngFor="let event of filteredList">
+        <vents-event-tile routerLink="/full-event" fragment={{event._id}} [event]="event"></vents-event-tile>
+      </div>
+      <div *ngIf="filteredList.length == 0">
+        Sorry für das angegebene Datum haben wir keine Events gespeichert.
+      </div>
+    </div>
+
+    <div class="map-container">
+      <div class="distance-filter">
         <span class="distance-label">Entfernung (in km)</span>
         <mat-slider
           class="slider"
@@ -27,40 +53,8 @@
           [(ngModel)]="filteredDistance"
           (change)="searchForDistance($event)">
         </mat-slider>
-        <span class="category-label">Kategorien</span>
-        <div class="category-container">
-          <span class="category" [ngClass]="isElementPicked('hot')" (click)="addCategoryToFilter('hot')">
-              Hot
-          </span>
-        </div>
-        <div fxLayout="row wrap" fxLayoutAlign="start center" *ngFor="let category of categoryList">
-          <div class="category-container">
-          <span class="category" [ngClass]="isElementPicked(category)" (click)="addCategoryToFilter(category)">
-              {{ category.name }}
-          </span>
-            <div class="subcategory-container" *ngIf="category.subcategories.length > 0
-                                                 && isElementPicked(category) == 'category-picked'"
-                 style="padding-left: 1rem">
-              <div *ngFor="let subcategory of category.subcategories">
-                <span class="subcategory" [ngClass]="isElementPicked(subcategory)"
-                      (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
-      <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
-      <div *ngIf="this.mapView">
-        <map-view [markerData]="this.filteredList"></map-view>
-      </div>
-      <div *ngIf="this.mapView === false">
-        <div fxLayout="column" *ngFor="let event of filteredList">
-          <vents-event-tile routerLink="/full-event" fragment={{event._id}} [event]="event"></vents-event-tile>
-        </div>
-        <div *ngIf="filteredList.length == 0">
-          Sorry für das angegebene Datum haben wir keine Events gespeichert.
-        </div>
-      </div>
+      <map-view [markerData]="this.filteredList"></map-view>
     </div>
   </div>
 </div>

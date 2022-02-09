@@ -1,25 +1,26 @@
-<div class="event-tile" fxLayout="row">
-    <div class="event-pic" fxLayoutAlign="center center">
-      <img [src]="IconURL" >
+<div class="event-tile">
+  <div class="event-pic">
+    <img [src]="IconURL">
+  </div>
+  <div class="event-tile-information">
+    <div class="event-tile-information-name-date">
+      <div>
+        name
+      </div>
+      <div class="event-name">
+        {{ event?.name }}
+      </div>
+      <div class="category">
+        {{ event?.category?.name }}
+      </div>
     </div>
-    <div fxLayout="column" style="width: 75%;">
-        <div fxLayout="row" style="width: 100%;">
-
-            <div style="width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
-                {{ event?.name }}
-            </div>
-            <div fxLayoutAlign="end end" class="date-start">
-                {{ event?.date?.start | date }}
-            </div>
-          <div fxLayoutAlign="end end" class="date-end">
-            {{ event?.date?.end | date }}
-          </div>
-        </div>
-        <div fxLayoutAlign="start start">
-            name
-        </div>
-        <div classs="category">
-            {{ event?.category?.name }}
-        </div>
+  </div>
+  <div class="date">
+    <div class="date-start">
+      {{ event?.date?.start | date }}
     </div>
+    <div class="date-end">
+      {{ event?.date?.end | date }}
+    </div>
+  </div>
 </div>

@@ -1,51 +1,97 @@
 .event-tile {
-    background-color: rgb(238, 238, 238);
-    border-radius: 10px;
-    height: 95%;
-    margin: auto;
-    margin-top: .5rem;
-    padding-bottom: .5rem;
-    box-shadow: 0px 2px 2px rgb(61, 61, 61);
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+  height: auto;
+
+  background-color: rgb(238, 238, 238);
+  border-radius: 10px;
+  margin: auto;
+  margin-top: .5rem;
+  padding-bottom: .5rem;
+  box-shadow: 0px 2px 2px rgb(61, 61, 61);
+}
+
+.event-tile-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.event-pic {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 5rem;
+  width: 6rem;
+}
+
+.pic {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 5px;
+}
+
+.event-tile-information {
+  display: flex;
+  flex-direction: column;
+}
+
+.information-first-row {
+  padding-top: .5rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
 }
 
 .category {
-    background-color: rgb(245, 241, 0);
-    border-radius: 7px;
-    padding: 0px 3px 0px 3px;
-    width:fit-content;
-    font-size: .7rem;
+  background-color: rgb(245, 241, 0);
+  border-radius: 7px;
+  padding: 0px 3px 0px 3px;
+  width: fit-content;
+  font-size: .7rem;
 }
 
-.subcategories{
+.subcategories {
   background-color: rgb(184, 182, 99);
   border-radius: 7px;
   padding: 0px 3px 0px 3px;
-  width:fit-content;
+  width: fit-content;
   font-size: .6rem;
 }
 
 .date {
-    width: 100%;
-    color: rgb(114, 114, 114);
-    padding: 0px 3px 0px 0px;
-    font-size: .7rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+
+  width: 100%;
+  color: rgb(114, 114, 114);
+  padding: 0px 3px 0px 0px;
+  font-size: .7rem;
 }
 
-.pic {
-    width: 4rem;
-    height: 4rem;
-    border-radius: 5px;
+.organizer-name {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.address {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .description {
-    color: rgb(138, 138, 138);
-    font-size: .8rem; width: 95%;
-    background-color: white;
-    border-radius: 10px;
-    padding: 5px
+  display: flex;
+  align-self: center;
+  color: rgb(138, 138, 138);
+  font-size: .8rem;
+  width: 95%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 5px
 }
 
-.event-pic {
-    height: 5rem;
-    width: 6rem;
-}

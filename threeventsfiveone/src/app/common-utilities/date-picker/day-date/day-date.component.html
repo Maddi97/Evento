@@ -1,10 +1,10 @@
 <div [ngClass]="{'day-date': !isClicked, 'day-date-clicked': isClicked}">
-    <div fxLayout="column">
-        <div fxLayoutAlign="center center" class="day">
-            {{ dayToString() }}
-        </div>
-        <div fxLayoutAlign="center center" class="date">
-            {{ dateToString() }}
-        </div>
+  <div class="date-container">
+    <div class="day">
+      {{ dayToString() }}
     </div>
+    <div class="date">
+      {{ dateToString() }}
+    </div>
+  </div>
 </div>
