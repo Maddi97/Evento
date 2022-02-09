@@ -25,8 +25,9 @@
       </div>
     </div>
   </div>
-  <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
-
+  <div class="spinner-container">
+    <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
+  </div>
   <div class="event-map-container">
 
     <div class="event-container">
@@ -56,5 +57,4 @@
       <map-view [markerData]="this.filteredList"></map-view>
     </div>
   </div>
-
 </div>

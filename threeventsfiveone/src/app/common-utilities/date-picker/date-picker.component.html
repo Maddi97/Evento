@@ -1,10 +1,12 @@
 <div class="date-picker">
-    <div fxLayout="row" class="scroll">
-        <vents-day-date *ngFor="let day of nextMonth" [date]="day.date" [isClicked]="day.isClicked" (click)="safeDate(day.date)"
-                          [ngClass]="{'clicked' : day.isClicked}">
-        style="height: 100%;"></vents-day-date>
-        <div (click)="addDates()" class="add-dates">
-            ...
-        </div>
+  <div class="scroll">
+    <vents-day-date class="events-day-date" *ngFor="let day of nextMonth" [date]="day.date" [isClicked]="day.isClicked"
+                    (click)="safeDate(day.date)"
+                    [ngClass]="{'clicked' : day.isClicked}">
+      >
+    </vents-day-date>
+    <div (click)="addDates()" class="add-dates">
+      ...
     </div>
+  </div>
 </div>

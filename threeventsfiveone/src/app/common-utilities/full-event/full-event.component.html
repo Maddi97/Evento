@@ -1,47 +1,48 @@
-<div class="event-tile" fxLayout="column" fxFlex.gt-sm="50%" fxFlex.lt-sm="95%" fxFlex.sm="70%">
-    <div fxLayout="row">
-        <div class="event-pic" fxLayoutAlign="center center">
-            <img class="pic" src="assets/test-pictures/test.png">
-        </div>
-        <div fxLayout="column" style="width: 95%;">
-            <div fxLayout="row" style="padding-top: .5rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 100%;">
+<div class="event-tile">
+  <div class="event-tile-container">
+    <div class="event-pic">
+      <img class="pic" src="assets/test-pictures/test.png">
+    </div>
+    <div class="event-tile-information">
+      <div class="information-first-row">
                 <span>
                     {{event?.name}}
                 </span>
-                <div fxLayoutAlign="end end" class="date-start">
-                    {{ event?.date?.start | date }}
-                </div>
-              <div fxLayoutAlign="end end" class="date-end">
-                {{ event?.date?.end | date }}
-              </div>
-            </div>
-            <div fxLayoutAlign="start start">
-                {{ event?.organizerName}}
-            </div>
-            <div class="category">
-                {{ event?.category.name}}
-            </div>
-          <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
-            {{ subcategory?.name }}
+
+        <div class="date">
+          <div class="date-start">
+            {{ event?.date?.start | date }}
+          </div>
+          <div class="date-end">
+            {{ event?.date?.end | date }}
           </div>
         </div>
+      </div>
+      <div class="organizer-name">
+        {{ event?.organizerName}}
+      </div>
+      <div class="category">
+        {{ event?.category.name}}
+      </div>
+      <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
+        {{ subcategory?.name }}
+      </div>
     </div>
-    <div fxLayoutAlign="center center">
-        <div style="width: 95%">
-            Addresse:
-            <br/>
-            {{event?.address?.street}} {{event?.address?.streetNumber}}
-            <br/>
-            {{event?.address?.plz}} {{event?.address?.city}}
+  </div>
+  <div class="address">
+    <div>
+      Addresse:
+      <br/>
+      {{event?.address?.street}} {{event?.address?.streetNumber}}
+      <br/>
+      {{event?.address?.plz}} {{event?.address?.city}}
 
-        </div>
     </div>
-    <div fxLayoutAlign="center center">
-        <div class="description">
-            Kurze Beschreibung:
-            <p>
-                {{event?.description}}
-            </p>
-        </div>
-    </div>
+  </div>
+  <div class="description">
+    Kurze Beschreibung:
+    <p>
+      {{event?.description}}
+    </p>
+  </div>
 </div>

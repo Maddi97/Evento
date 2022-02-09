@@ -1,4 +1,7 @@
 .event-tile {
+  display: flex;
+  flex-direction: row;
+
   width: 100%;
   background-color: rgb(238, 238, 238);
   /* background-color: rgb(241, 241, 241); */
@@ -10,9 +13,23 @@
 }
 
 .pic {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   width: 4rem;
   height: 4rem;
   border-radius: 5px;
+}
+
+.event-tile-information {
+  flex-direction: column;
+  width: 75%;
+}
+
+.event-tile-information-name-date {
+  flex-direction: row;
+  width: 100%;
 }
 
 .event-pic {
@@ -20,16 +37,38 @@
   width: 25%;
 }
 
-img{
-  height: 5rem;
+.event-name {
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .date {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  
   width: 100%;
   color: rgb(114, 114, 114);
   padding: 0px 3px 0px 0px;
-  font-size: .7rem;
+  font-size: 1rem;
 }
+
+.date-start {
+
+}
+
+.date-end {
+
+}
+
+
+img {
+  height: 5rem;
+}
+
 
 .category {
   background-color: rgb(255, 238, 0);

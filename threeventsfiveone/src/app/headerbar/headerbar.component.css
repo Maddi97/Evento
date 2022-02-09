@@ -1,5 +1,8 @@
 .header {
   position: sticky;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   top: 0;
   left: 0;
   width: 100%;
@@ -12,8 +15,9 @@
 .logo {
   color: rgb(0, 0, 0);
   font-size: 2rem;
-  position: relative;
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .arrow-back {
