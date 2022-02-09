@@ -58,12 +58,14 @@ const EventSchema = new mongoose.Schema({
         name: {
             type: String,
         },
-        iconTemporaryURL: {
-            type: String
-        },
+        iconTemporaryURL: {},
         iconPath: {
             type: String
         },
+        stockImagePath: {
+            type: String,
+        },
+        stockTemporaryURL: {},
         subcategories:
             [
                 {
@@ -76,9 +78,11 @@ const EventSchema = new mongoose.Schema({
                     iconPath: {
                         type: String,
                     },
-                    iconTemporaryURL: {
-                        type: String
+                    iconTemporaryURL: {},
+                    stockImagePath: {
+                        type: String,
                     },
+                    stockTemporaryURL: {},
                 },
             ],
     },

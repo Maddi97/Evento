@@ -12,6 +12,7 @@ export class EventTileComponent implements OnInit {
 
   @Input() event: Event;
   IconURL = null;
+  ImageURL = null;
 
   constructor(
     private fileService: FileService,
@@ -27,7 +28,17 @@ export class EventTileComponent implements OnInit {
   // uses only image from category -> may change
   downloadImage() {
     const cat = this.event.category;
-    if (cat.iconPath !== undefined) {
+    console.log(cat);
+    if (cat.stockImagePath !== undefined) {
+      if (cat.stockImageTemporaryURL === undefined) {
+        this.fileService.downloadFile(cat.stockImagePath).subscribe(imageData => {
+          // create temporary Url for the downloaded image and bypass security
+          const unsafeImg = URL.createObjectURL(imageData);
+          this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          console.log(this.ImageURL);
+        });
+      }
+    } else if (cat.iconPath !== undefined) {
       if (cat.iconTemporaryURL === undefined) {
         this.fileService.downloadFile(cat.iconPath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security

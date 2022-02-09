@@ -1,5 +1,8 @@
 /**/node_modules/
-backend/category_images/
+backend/images
+backend/temp_dir
+
+
 .idea
 .env.prod
 

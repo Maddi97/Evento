@@ -55,6 +55,8 @@ export class CategorySelectComponent implements OnInit, OnChanges {
             name: this.selectedCategory.name,
             iconPath: this.selectedCategory.iconPath,
             iconTemporaryURL: this.selectedCategory.iconTemporaryURL,
+            stockImagePath: this.selectedCategory.stockImagePath,
+            stockImageTemporaryURL: this.selectedCategory.stockImageTemporaryURL,
             subcategories: [],
         }
         console.log(this.selectedSubcategories)
@@ -68,6 +70,8 @@ export class CategorySelectComponent implements OnInit, OnChanges {
             name: this.selectedCategory.name,
             iconPath: this.selectedCategory.iconPath,
             iconTemporaryURL: this.selectedCategory.iconTemporaryURL,
+            stockImagePath: this.selectedCategory.stockImagePath,
+            stockImageTemporaryURL: this.selectedCategory.stockImageTemporaryURL,
             subcategories: this.selectedSubcategories.value
         }
         this.newCategorySelect.emit(cat)
