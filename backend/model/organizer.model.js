@@ -39,12 +39,14 @@ const OrganizerSchema = new mongoose.Schema({
         name: {
             type: String,
         },
-        iconTemporaryURL: {
-            type: String
-        },
         iconPath: {
             type: String
         },
+        iconTemporaryURL: {},
+        stockImagePath: {
+            type: String,
+        },
+        stockTemporaryURL: {},
         subcategories:
             [
                 {
@@ -58,7 +60,7 @@ const OrganizerSchema = new mongoose.Schema({
                         type: String,
                     },
                     iconTemporaryURL: {
-                        type: String
+                        type: String,
                     },
                 },
             ],

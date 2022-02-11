@@ -1,8 +1,8 @@
 <div class="event-tile">
   <div class="event-tile-container">
     <div class="event-pic">
-      <img class="pic" src="assets/test-pictures/test.png">
-    </div>
+      <img class='pic' [src]="ImageURL">
+      <img class='pic' *ngIf="ImageURL===undefined" [src]="IconURL"></div>
     <div class="event-tile-information">
       <div class="information-first-row">
                 <span>

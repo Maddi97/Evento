@@ -8,6 +8,10 @@ const SubcategorySchema = new mongoose.Schema({
     iconPath: {
         type: String,
     },
+    stockImagePath: {
+        type: String,
+    },
+
 
 });
 
@@ -20,10 +24,11 @@ const CategorySchema = new mongoose.Schema({
     iconPath: {
         type: String,
     },
+    stockImagePath: {
+        type: String,
+    },
     subcategories: [SubcategorySchema]
 });
-
-
 
 
 const Category = mongoose.model('Category', CategorySchema);
