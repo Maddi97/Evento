@@ -74,9 +74,13 @@ export class EventsComponent implements OnInit {
 
 
     this.eventService.events.pipe(
-      map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)),
+      map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)
+      ),
     ).subscribe((ev: Event[]) => {
-      this.filteredList = ev;
+      this.filteredList = ev.sort((ev1, ev2) =>
+        this.get_distance_to_current_position(ev1) - this.get_distance_to_current_position(ev2)
+      )
+      ;
     });
 
     this.categoriesService.categories.subscribe((cat: Category[]) => {
@@ -153,7 +157,6 @@ export class EventsComponent implements OnInit {
     this.currentPosition = this.positionService.getCurrentPosition();
     const dist = this.geoService.get_distance(this.currentPosition, [event.geoData.lat, event.geoData.lon]);
     return dist;
-
   }
 
   searchForDay(filter: DateClicked) {
