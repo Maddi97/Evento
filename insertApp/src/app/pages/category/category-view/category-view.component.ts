@@ -21,7 +21,7 @@ export class CategoryViewComponent implements OnInit {
     @ViewChild('stockFotoUpload') inputCat2: ElementRef;
 
     @ViewChild('iconUploadSubcat') inputSubcat: ElementRef;
-    @ViewChild('imageUploadUpdateSubcategory') inputUpdateSubcat: ElementRef;
+    @ViewChild('stockFotoUploadSubcat') inputUpdateSubcat: ElementRef;
 
     stockImagePath = 'images/category_stockImages/'
     iconPath = 'images/category_icons/'
@@ -83,7 +83,6 @@ export class CategoryViewComponent implements OnInit {
             this.categoryService.createCategory(category).pipe(
                 map(catRes => {
                     category = catRes
-                    console.log('cat', category)
                     const categoryImagePath = this.iconPath + catRes._id
                     const formdata: FormData = new FormData();
                     formdata.append('files', this.icon);
@@ -93,7 +92,6 @@ export class CategoryViewComponent implements OnInit {
                     formdata.append('files', this.stockImage);
                     formdata.append('stockImagePath', categoryStockImagePath)
                     this.fileService.uploadCategoryFiles(formdata).subscribe((response) => {
-                        console.log('res', response)
                         category.iconPath = response.icon.path
                         category.stockImagePath = response.stockImage.path
                         this.categoryService.updateCategory(category._id, category).subscribe(
@@ -131,7 +129,7 @@ export class CategoryViewComponent implements OnInit {
             this.resetForms()
             return
         }
-        if (this.icon) {
+        if (this.icon && this.stockImage) {
             let subcategory = new Subcategory()
             subcategory.name = this.subcategoryName.value
             category.subcategories.push(subcategory)
@@ -143,12 +141,16 @@ export class CategoryViewComponent implements OnInit {
                     )
                     const subcategoryImagePath = this.iconPath + catRes._id + '/' + subcategory._id
                     const formdata: FormData = new FormData();
-                    formdata.append('file', this.icon);
+                    formdata.append('files', this.icon);
                     formdata.append('file_path', subcategoryImagePath)
+                    const subcategoryStockImagePath = this.stockImagePath + catRes._id
+                    formdata.append('files', this.stockImage);
+                    formdata.append('stockImagePath', subcategoryStockImagePath)
                     this.fileService.uploadCategoryFiles(formdata).subscribe((response) => {
                         category.subcategories.map(sub => {
                             if (sub._id === subcategory._id) {
-                                sub.iconPath = response.path
+                                sub.iconPath = response.icon.path
+                                sub.stockImagePath = response.stockImage.path
                             }
                         })
                         this.categoryService.updateCategory(category._id, category).subscribe(
@@ -186,13 +188,11 @@ export class CategoryViewComponent implements OnInit {
         }
     }
 
-    // Problem: dadurch, dass auf Icon Download gewartet werden muss aber mehrfach angefragt
-    // wird, werden die Bilder oft gedownloaded, bis der iconTemporaryPath aktualisiert wurde
-
     downloadImage(categories) {
         categories.forEach(cat => {
             let IconUrl = null
             let StockImageURL = null
+
             if (cat.iconPath !== undefined) {
                 if (cat.iconTemporaryURL === undefined) {
                     this.fileService.downloadFile(cat.iconPath).subscribe(imageData => {
@@ -218,6 +218,12 @@ export class CategoryViewComponent implements OnInit {
                                 const unsafeImg = URL.createObjectURL(imageData);
                                 IconUrl = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
                                 sub.iconTemporaryURL = IconUrl;
+                            })
+                            this.fileService.downloadFile(sub.stockImagePath).subscribe(imageData => {
+                                // create temporary Url for the downloaded image and bypass security
+                                const unsafeImg = URL.createObjectURL(imageData);
+                                StockImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+                                sub.stockImageTemporaryURL = StockImageURL
                             })
                         }
                     }
@@ -251,11 +257,12 @@ export class CategoryViewComponent implements OnInit {
         if (this.icon) {
             const categoryImagePath = this.iconPath + category._id
             const formdata: FormData = new FormData();
-            formdata.append('file', this.icon);
+            formdata.append('files', this.icon);
             formdata.append('file_path', categoryImagePath)
             // TODO delete old Icon
             this.fileService.uploadCategoryFiles(formdata).subscribe((response) => {
-                category.iconPath = response.path
+
+                category.iconPath = response.icon.path
                 this.categoryService.updateCategory(category._id, category).subscribe(
                     categoryResponse => this.openSnackBar('Successfully uploaded category: ' + categoryResponse.name, 'success'),
                     err => this.openSnackBar('An error occured: ' + err, 'error'),
@@ -263,8 +270,25 @@ export class CategoryViewComponent implements OnInit {
             })
 
             this.resetForms()
+        }
+        if (this.stockImage) {
+            const categoryStockImagePath = this.iconPath + category._id
+            const formdata: FormData = new FormData();
+            formdata.append('files', this.stockImage);
+            formdata.append('stockImagePath', categoryStockImagePath)
+            // TODO delete old Icon
+            this.fileService.uploadCategoryFiles(formdata).subscribe((response) => {
 
-        } else {
+
+                category.stockImagePath = response.stockImage.path
+                this.categoryService.updateCategory(category._id, category).subscribe(
+                    categoryResponse => this.openSnackBar('Successfully uploaded category: ' + categoryResponse.name, 'success'),
+                    err => this.openSnackBar('An error occured: ' + err, 'error'),
+                )
+            })
+
+            this.resetForms()
+        } else if (!this.icon && !this.stockImage) {
             this.categoryService.updateCategory(category._id, category).subscribe(
                 categoryResponse => this.openSnackBar('Successfully uploaded category: ' + categoryResponse.name, 'success'),
                 err => this.openSnackBar('An error occured: ' + err, 'error'),
@@ -274,8 +298,8 @@ export class CategoryViewComponent implements OnInit {
     }
 
     updateSubcategory(category) {
-
-
+        const icon = this.icon;
+        const stockImage = this.stockImage
         if (this.icon && this.icon.size > this.uploadedIconSize) {
             this.openSnackBar('File size too big!', 'error')
             this.resetForms()
@@ -286,32 +310,57 @@ export class CategoryViewComponent implements OnInit {
             this.resetForms()
             return
         }
-        if (this.icon) {
+        if (icon) {
             const subcategory = this.updateSubcategoryObject
             subcategory.name = this.subcategoryName.value
 
             this.categoryService.updateCategory(category._id, category).subscribe(
                 catRes => {
                     category = catRes
-
-                    const subcategoryImagePath = this.iconPath + catRes._id + '/' + subcategory._id
+                    const subcategoryIconPath = this.iconPath + catRes._id + '/' + subcategory._id
                     const formdata: FormData = new FormData();
-                    formdata.append('file', this.icon);
-                    formdata.append('file_path', subcategoryImagePath)
+                    formdata.append('files', icon);
+                    console.log('lol', icon, formdata)
+                    formdata.append('file_path', subcategoryIconPath)
                     this.fileService.uploadCategoryFiles(formdata).subscribe(response => {
                         category.subcategories.map(sub => {
                             if (sub._id === subcategory._id) {
-                                sub.iconPath = response.path
+                                sub.iconPath = response.icon.path
                             }
                         })
                         this.categoryService.updateCategory(category._id, category).subscribe(
                             () => this.openSnackBar('Successfully uploaded subcategory: ' + subcategory.name, 'success'),
-                            err => this.openSnackBar('An error occured: ' + err, 'error'),
-                            () => this.resetForms())
+                            err => this.openSnackBar('An error occured: ' + err, 'error'))
                     })
                 },
             )
-        } else {
+        }
+        if (stockImage) {
+            const subcategory = this.updateSubcategoryObject
+            subcategory.name = this.subcategoryName.value
+
+            this.categoryService.updateCategory(category._id, category).subscribe(
+                catRes => {
+                    category = catRes
+                    const subcategoryStockImagePath = this.stockImagePath + catRes._id + '/' + subcategory._id
+                    const formdata: FormData = new FormData();
+                    formdata.append('files', stockImage);
+                    formdata.append('stockImagePath', subcategoryStockImagePath)
+                    // TODO delete old Icon
+                    this.fileService.uploadCategoryFiles(formdata).subscribe((response) => {
+                        category.subcategories.map(sub => {
+                            if (sub._id === subcategory._id) {
+                                sub.stockImagePath = response.stockImage.path
+                            }
+                        })
+                        this.categoryService.updateCategory(category._id, category).subscribe(
+                            categoryResponse => this.openSnackBar('Successfully uploaded category: ' + categoryResponse.name, 'success'),
+                            err => this.openSnackBar('An error occured: ' + err, 'error'),
+                        )
+                    })
+                },
+            )
+        } else if (!this.icon && !this.stockImage) {
             const subcategory = this.updateSubcategoryObject
             subcategory.name = this.subcategoryName.value
 

@@ -31,39 +31,92 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, next) {
-    const icon = req.files[0]
-    const stockImage = req.files[1]
+
+    console.log(req.files)
     destinationIcon = req.body.file_path
+    let icon = undefined
+    //in case update updates only stockImage the Icon stays undefined
+    if (destinationIcon !== undefined) {
+        icon = req.files[0]
+    }
+
     destinationStockImage = req.body.stockImagePath
+    console.log(destinationIcon, destinationStockImage)
+    let stockImage = undefined
+    //case both are updated
+    if (destinationStockImage !== undefined && destinationIcon !== undefined) {
+        stockImage = req.files[1]
+    }
+    if (destinationStockImage !== undefined && destinationIcon === undefined) {
+        stockImage = req.files[0]
+    }
     //check if dest path exists otherwise create
-    fs.mkdirSync(destinationIcon, {recursive: true});
-    //move icon from temp dir to destination
-    fs.rename(
-        icon.path,
-        destinationIcon + '/' + icon.filename,
-        function (err) {
-            if (err) {
-                return console.error(err);
+
+    if (icon !== undefined && stockImage === undefined) {
+        fs.mkdirSync(destinationIcon, {recursive: true});
+        //move icon from temp dir to destination
+        fs.rename(
+            icon.path,
+            destinationIcon + '/' + icon.filename,
+            function (err) {
+                if (err) {
+                    return console.error(err);
+                }
+                icon.path = destinationIcon + "/" + icon.filename
+                res.json({'icon': icon, 'stockImage': stockImage});
+
             }
-            icon.path = destinationIcon + "/" + icon.filename
-        }
-    );
+        );
+    }
 
-    fs.mkdirSync(destinationStockImage, {recursive: true});
+    if (stockImage !== undefined && icon === undefined) {
+        fs.mkdirSync(destinationStockImage, {recursive: true});
 
 
-    //move icon from temp dir to destination
-    fs.rename(
-        stockImage.path,
-        destinationStockImage + '/' + stockImage.filename,
-        function (err) {
-            if (err) {
-                return console.error(err);
+        //move icon from temp dir to destination
+        fs.rename(
+            stockImage.path,
+            destinationStockImage + '/' + stockImage.filename,
+            function (err) {
+                if (err) {
+                    return console.error(err);
+                }
+                stockImage.path = destinationStockImage + "/" + stockImage.filename
+                res.json({'icon': icon, 'stockImage': stockImage});
             }
-            stockImage.path = destinationStockImage + "/" + stockImage.filename
-            res.json({'icon': icon, 'stockImage': stockImage});
-        }
-    );
+        );
+    }
+    if (icon !== undefined && stockImage !== undefined) {
+        //check if dest path exists otherwise create
+        fs.mkdirSync(destinationIcon, {recursive: true});
+        //move icon from temp dir to destination
+        fs.rename(
+            icon.path,
+            destinationIcon + '/' + icon.filename,
+            function (err) {
+                if (err) {
+                    return console.error(err);
+                }
+                icon.path = destinationIcon + "/" + icon.filename
+            }
+        );
+
+        fs.mkdirSync(destinationStockImage, {recursive: true});
+
+
+        //move icon from temp dir to destination
+        fs.rename(
+            stockImage.path,
+            destinationStockImage + '/' + stockImage.filename,
+            function (err) {
+                if (err) {
+                    return console.error(err);
+                }
+                stockImage.path = destinationStockImage + "/" + stockImage.filename
+                res.json({'icon': icon, 'stockImage': stockImage});
+            }
+        );
+    }
 
 });
 

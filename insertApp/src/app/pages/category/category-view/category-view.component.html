@@ -60,7 +60,10 @@
                                 <mat-error *ngIf="subcategoryName.invalid">Subcategory name minimum length is 2
                                 </mat-error>
                             </mat-form-field>
-                            <span class='col'><input type='file' #iconUploadSubcat (input)=iconChosen($event)></span>
+                            <span class='col'>Select category icon: <input type='file' #iconUploadSubcat
+                                                                           (input)=iconChosen($event)></span>
+                            <span class='col'>Select category stock foto: <input type='file' #stockFotoUploadSubcat
+                                                                                 (input)=stockImageChosen($event)></span>
                             <button *ngIf="!updateSub" class='btn btn-warning' (click)="addNewSubcategory(category)">Add
                                 Subcategory
                             </button>
@@ -76,7 +79,9 @@
                                 <div style="width: 80%;" fxLayoutAlign="start center"
                                      (click)="this.clickSubcategory(sub._id)">
                                     {{sub.name}}
-                                    <img style="padding-left: 70%;" class="category-icon" [src]="sub.iconTemporaryURL">
+                                    <img style="padding-left: 10%;" class="category-icon" [src]="sub.iconTemporaryURL">
+                                    <img style="padding-left: 10%;" class="category-icon"
+                                         [src]="sub.stockImageTemporaryURL">
 
                                 </div>
                                 <button (click)="$event.stopPropagation(); editSubcategoryClicked(category, sub)"
