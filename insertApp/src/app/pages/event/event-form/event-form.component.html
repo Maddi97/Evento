@@ -159,7 +159,10 @@
                 </div>
             </div>
         </div>
-
+        <div>
+        <span class='col'>Select event image: <input type='file' #imageUpload
+                                                     (input)=iconChosen($event)></span>
+        </div>
     </form>
 
     <div fxLayout="column" fxLayoutAlign="spacing-around center" style="margin: 1em;">

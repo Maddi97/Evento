@@ -1,5 +1,5 @@
 // import packages
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild} from '@angular/core';
 import {FormControl, FormBuilder} from '@angular/forms';
 import {map, share} from 'rxjs/operators';
 import * as moment from 'moment';
@@ -30,6 +30,8 @@ export class EventFormComponent implements OnInit, OnChanges {
     @Output() updateEvent: EventEmitter<Event> = new EventEmitter<Event>();
     @Output() addNewEvent: EventEmitter<Event> = new EventEmitter<Event>();
 
+    @ViewChild('imageUpload') inputImage: ElementRef;
+
     updateOrganizerId = '';
     updateEventId = '';
     eventForm = this.fb.group(getEventFormTemplate())
@@ -50,6 +52,8 @@ export class EventFormComponent implements OnInit, OnChanges {
 
     organizerName = new FormControl();
 
+    image: any;
+
     constructor(
         private fb: FormBuilder,
         private geoService: NominatimGeoService,
@@ -61,7 +65,6 @@ export class EventFormComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(): void {
-        console.log(this.eventIn)
         if (this.eventIn !== undefined) {
             this.setEventForm()
         }
@@ -72,15 +75,20 @@ export class EventFormComponent implements OnInit, OnChanges {
         const organizer = this.organizersIn.find(org => org.name === this.organizerName.value)
         const event = getEventFromForm(this.eventForm, organizer, this.category, this.times, this.updateEventId);
         const address = event.address;
+        const formdata: FormData = new FormData();
+        if (this.image !== undefined) {
+            formdata.append('files', this.image);
+            event['fd'] = formdata;
+        } else event['fd'] = undefined
 
         if (this.toggleIsChecked.value) {
             event.geoData = this.geoData
             // first fetch geo data from osm API and than emit event data
             this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
                 map(geoData => {
-
                     event.geoData.lat = geoData[0].lat;
                     event.geoData.lon = geoData[0].lon;
+
                 }),
                 share()
             ).toPromise().then(() =>
@@ -114,6 +122,13 @@ export class EventFormComponent implements OnInit, OnChanges {
         const organizer = this.organizersIn.find(org => org.name === this.organizerName.value);
         const event = getEventFromForm(this.eventForm, organizer, this.category, this.times, this.updateEventId);
         const address = event.address;
+
+        const formdata: FormData = new FormData();
+        if (this.image !== undefined) {
+            formdata.append('files', this.image);
+            event['fd'] = formdata;
+        } else event['fd'] = undefined
+
         if (this.toggleIsChecked.value) {
             event.geoData = this.geoData
             this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
@@ -151,7 +166,6 @@ export class EventFormComponent implements OnInit, OnChanges {
         this.nullFormField();
     }
 
-
     setEventForm(): void {
         // prepare dates
         this.updateEventId = this.eventIn._id
@@ -188,6 +202,12 @@ export class EventFormComponent implements OnInit, OnChanges {
         this.eventForm.get('street').setValue(org.address.street + ' ' + org.address.streetNumber);
     }
 
+    iconChosen(event: any) {
+        if (event.target.value) {
+            this.image = (event.target.files[0] as File);
+        }
+    }
+
     nullFormField() {
         this.updateEventId = ''
         this.organizerName.setValue('')
@@ -195,6 +215,8 @@ export class EventFormComponent implements OnInit, OnChanges {
         this.category = undefined
         this.times.start.setValue('00:00')
         this.times.end.setValue('00:00')
+        this.inputImage.nativeElement.value = '';
+
     }
 
     setCategory(value) {

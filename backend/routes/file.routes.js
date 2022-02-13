@@ -32,7 +32,6 @@ const upload = multer({storage});
 
 router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, next) {
 
-    console.log(req.files)
     destinationIcon = req.body.file_path
     let icon = undefined
     //in case update updates only stockImage the Icon stays undefined
@@ -120,8 +119,32 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
 
 });
 
+
+router.post('/uploadEventImage', upload.array('files'), function (req, res, next) {
+
+        const destinationEventImage = req.body.eventImagePath
+        const eventImage = req.files[0]
+
+        fs.mkdirSync(destinationEventImage, {recursive: true});
+
+
+        //move icon from temp dir to destination
+        fs.rename(
+            eventImage.path,
+            destinationEventImage + '/' + eventImage.filename,
+            function (err) {
+                if (err) {
+                    return console.error(err);
+                }
+                eventImage.path = destinationEventImage + "/" + eventImage.filename
+                res.json({'eventImage': eventImage});
+            }
+        );
+    }
+)
+
 router.post('/downloadFile', function (req, res, next) {
-    dest = req.body.path
+    const dest = req.body.path
     res.download(dest)
 })
 

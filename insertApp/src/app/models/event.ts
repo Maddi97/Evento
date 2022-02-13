@@ -26,6 +26,8 @@ export class Event {
         lat: string,
         lon: string,
     };
+    eventImageTemporaryURL: string;
+    eventImagePath: string;
 }
 
 export class Address {

@@ -13,3 +13,13 @@
 .mat-radio-button ~ .mat-radio-button {
     margin-left: 16px;
 }
+
+.event-image {
+    padding-right: 5%;
+    height: 100%;
+}
+
+.form-and-image-upload {
+    display: flex;
+    flex-direction: column;
+}
