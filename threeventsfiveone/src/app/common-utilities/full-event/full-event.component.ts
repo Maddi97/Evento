@@ -37,14 +37,20 @@ export class FullEventComponent implements OnInit {
 
   downloadImage() {
     const cat = this.event.category;
-    console.log(cat);
-    if (cat.stockImagePath !== undefined) {
+    if (this.event.eventImagePath !== undefined) {
+      if (this.event.eventImageTemporaryURL === undefined) {
+        this.fileService.downloadFile(this.event.eventImagePath).subscribe(imageData => {
+          // create temporary Url for the downloaded image and bypass security
+          const unsafeImg = URL.createObjectURL(imageData);
+          this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+        });
+      }
+    } else if (cat.stockImagePath !== undefined) {
       if (cat.stockImageTemporaryURL === undefined) {
         this.fileService.downloadFile(cat.stockImagePath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
           const unsafeImg = URL.createObjectURL(imageData);
           this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-          console.log(this.ImageURL);
         });
       }
     } else if (cat.iconPath !== undefined) {

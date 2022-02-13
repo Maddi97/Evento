@@ -129,6 +129,9 @@ const EventSchema = new mongoose.Schema({
             type: String,
         },
     },
+    eventImagePath: {
+        type: String,
+    },
 });
 
 const Event = mongoose.model('Event', EventSchema);
