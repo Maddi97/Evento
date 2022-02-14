@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError as observableThrowError } from 'rxjs';
-import { Event } from '../models/event';
-import { WebService } from '../web.service';
-import { filter, map, catchError, share, switchMap } from 'rxjs/operators';
-import { HttpRequest } from '@angular/common/http';
-import { Organizer } from '../models/organizer';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, throwError as observableThrowError} from 'rxjs';
+import {Event} from '../models/event';
+import {WebService} from '../web.service';
+import {filter, map, catchError, share, switchMap} from 'rxjs/operators';
+import {HttpRequest} from '@angular/common/http';
+import {Organizer} from '../models/organizer';
 import * as moment from 'moment';
 
 
@@ -17,7 +17,8 @@ export class EventService {
 
   constructor(
     private webService: WebService,
-  ) { }
+  ) {
+  }
 
   get events(): Observable<Event[]> {
     return this._events;
@@ -38,9 +39,9 @@ export class EventService {
       share());
     obs.toPromise().then((response) => {
       const ids = response.map(o => {
-        this.getEventForOrgId(o._id);
-      }
-    );
+          this.getEventForOrgId(o._id);
+        }
+      );
     });
   }
 
@@ -78,8 +79,8 @@ export class EventService {
     return obs;
   }
 
-  getEventsOnDate(date: moment.Moment): Observable<Event[]>{
-    const obs = this.webService.post('eventOnDate', { date }).pipe(
+  getEventsOnDate(date: moment.Moment): Observable<Event[]> {
+    const obs = this.webService.post('eventOnDate', {date}).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
         console.error('an error occured', error);
@@ -92,18 +93,19 @@ export class EventService {
     return obs;
   }
 
-  getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]>{
-    const obs = this.webService.post('eventOnDateCatAndSubcat', { fil }).pipe(
+  getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
+    const obs = this.webService.post('eventOnDateCatAndSubcat', {fil}).pipe(
       map((res: HttpRequest<any>) =>
-          res as unknown as Event[]),
+        res as unknown as Event[]),
       catchError((error: any) => {
         console.error('an error occured', error);
         return observableThrowError(error.error.message || error);
       }),
-         share());
+      share());
     obs.toPromise().then((response) => {
       this._events.next(response);
     });
     return obs;
   }
+
 }
