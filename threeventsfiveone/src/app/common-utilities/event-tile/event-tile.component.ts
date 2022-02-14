@@ -2,6 +2,7 @@ import {Component, OnInit, Input} from '@angular/core';
 import {Event} from '../../models/event';
 import {DomSanitizer} from '@angular/platform-browser';
 import {FileService} from '../../file.service';
+import {OrganizerService} from '../../organizer.service';
 
 @Component({
   selector: 'vents-event-tile',
@@ -13,15 +14,22 @@ export class EventTileComponent implements OnInit {
   @Input() event: Event;
   IconURL = null;
   ImageURL = null;
+  organizer = null;
 
   constructor(
     private fileService: FileService,
+    private organizerService: OrganizerService,
     private sanitizer: DomSanitizer,
   ) {
   }
 
   ngOnInit(): void {
-    this.downloadImage();
+    this.organizerService.getOrganizerById(this.event._organizerId).subscribe(
+      organizerResponse => {
+        this.organizer = organizerResponse[0];
+        this.downloadImage();
+      }
+    );
   }
 
 
@@ -31,6 +39,14 @@ export class EventTileComponent implements OnInit {
     if (this.event.eventImagePath !== undefined) {
       if (this.event.eventImageTemporaryURL === undefined) {
         this.fileService.downloadFile(this.event.eventImagePath).subscribe(imageData => {
+          // create temporary Url for the downloaded image and bypass security
+          const unsafeImg = URL.createObjectURL(imageData);
+          this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+        });
+      }
+    } else if (this.organizer.organizerImagePath !== undefined) {
+      if (this.organizer.organizerImageTemporaryURL === undefined) {
+        this.fileService.downloadFile(this.organizer.organizerImagePath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
           const unsafeImg = URL.createObjectURL(imageData);
           this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
