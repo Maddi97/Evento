@@ -1,0 +1,9 @@
+hosts:
+  
+vars: 
+  user:
+
+roles: 
+  - role: docker
+  - role: docker-compose
+  - role: kubeadm

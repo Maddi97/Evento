@@ -2,6 +2,7 @@
 backend/images
 backend/temp_dir
 
+/**/hosts.yml
 
 .idea
 .env.prod
