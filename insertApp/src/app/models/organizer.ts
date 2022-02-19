@@ -19,6 +19,8 @@ export class Organizer {
         lat: string,
         lon: string,
     };
+    organizerImageTemporaryURL: string;
+    organizerImagePath: string;
 }
 
 export class Address {

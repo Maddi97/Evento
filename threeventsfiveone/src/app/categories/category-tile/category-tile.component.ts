@@ -23,6 +23,7 @@ export class CategoryTileComponent implements OnInit {
 
   ngOnInit(): void {
     this.downloadImage();
+    this.downloadImageSubcategories();
   }
 
   onClick() {
@@ -45,4 +46,18 @@ export class CategoryTileComponent implements OnInit {
     }
   }
 
+  downloadImageSubcategories() {
+    this.category.subcategories.forEach(subcategory => {
+      if (subcategory.iconPath !== undefined) {
+        if (subcategory.iconTemporaryURL === undefined) {
+          this.fileService.downloadFile(subcategory.iconPath).subscribe(imageData => {
+            // create temporary Url for the downloaded image and bypass security
+            const unsafeImg = URL.createObjectURL(imageData);
+            subcategory.iconTemporaryURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          });
+        }
+
+      }
+    });
+  }
 }
