@@ -32,14 +32,9 @@
 }
 
 .category-icon {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  font-size: 3rem;
   height: 3rem;
   width: 3rem;
-  padding-bottom: 3px;
-  padding-right: 3px;
+
 }
 
 .small-icon {

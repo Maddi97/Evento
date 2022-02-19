@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild} from '@angular/core';
 import {Organizer} from '../../../models/organizer';
 import {Category} from '../../../models/category';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -21,6 +21,8 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
     @Output() updateOrganizer: EventEmitter<Organizer> = new EventEmitter<Organizer>();
     @Output() addNewOrganizer: EventEmitter<Organizer> = new EventEmitter<Organizer>();
 
+    @ViewChild('imageUpload') inputImage: ElementRef;
+
     organizerForm: FormGroup = this.fb.group(getOrganizerFormTemplate())
     category: Category;
     openingTimes = getOpeningTimesTemplate()
@@ -29,6 +31,7 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
     ifEventId;
     isOpeningTimesRequired = false;
 
+    image: any;
 
     constructor(
         private fb: FormBuilder,
@@ -45,12 +48,32 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
     emitUpdate(organizerForm) {
         const organizer = transformFormFieldToOrganizer(organizerForm, this.category,
             this.openingTimes, this.geoData, this.updateOrganizerId)
+        const formdata: FormData = new FormData();
+
+        if (this.image !== undefined) {
+            formdata.append('files', this.image);
+            organizer['fd'] = formdata;
+        } else organizer['fd'] = undefined
         this.updateOrganizer.emit(organizer)
     }
 
     emitAddOrganizer(organizerForm) {
         const organizer = transformFormFieldToOrganizer(organizerForm, this.category, this.openingTimes, this.geoData, '')
+
+        const formdata: FormData = new FormData();
+        if (this.image !== undefined) {
+            formdata.append('files', this.image);
+            organizer['fd'] = formdata;
+        } else organizer['fd'] = undefined
+
+
         this.addNewOrganizer.emit(organizer)
+    }
+
+    iconChosen(event: any) {
+        if (event.target.value) {
+            this.image = (event.target.files[0] as File);
+        }
     }
 
     setOrganizerForm(org: Organizer): void {
@@ -85,6 +108,8 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
         this.category = undefined
         this.updateOrganizerId = ''
         this.ifEventId = ''
+        this.inputImage.nativeElement.value = '';
+
     }
 
     checkDisabled() {

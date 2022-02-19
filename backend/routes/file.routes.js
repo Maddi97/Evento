@@ -143,6 +143,30 @@ router.post('/uploadEventImage', upload.array('files'), function (req, res, next
     }
 )
 
+
+router.post('/uploadOrganizerImage', upload.array('files'), function (req, res, next) {
+
+        const destinationOrganizerImage = req.body.organizerImagePath
+        const organizerImage = req.files[0]
+
+        fs.mkdirSync(destinationOrganizerImage, {recursive: true});
+
+
+        //move icon from temp dir to destination
+        fs.rename(
+            organizerImage.path,
+            destinationOrganizerImage + '/' + organizerImage.filename,
+            function (err) {
+                if (err) {
+                    return console.error(err);
+                }
+                organizerImage.path = destinationOrganizerImage + "/" + organizerImage.filename
+                res.json({'organizerImage': organizerImage});
+            }
+        );
+    }
+)
+
 router.post('/downloadFile', function (req, res, next) {
     const dest = req.body.path
     res.download(dest)

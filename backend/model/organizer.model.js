@@ -105,6 +105,9 @@ const OrganizerSchema = new mongoose.Schema({
             type: String,
         },
     },
+    organizerImagePath: {
+        type: String,
+    },
 });
 
 const Organizer = mongoose.model('Organizer', OrganizerSchema);
