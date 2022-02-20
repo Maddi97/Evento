@@ -11,7 +11,7 @@ import * as log from 'loglevel';
 import {forkJoin} from 'rxjs';
 
 
-//constants
+// constants
 const TYPE_ADD = 'add'
 const TYPE_UPDATE = 'update'
 const TYPE_CATEGORY = 'category'
@@ -67,9 +67,7 @@ export class CategoryViewComponent implements OnInit {
     private uploadedIconSize = 50000
     private uploadedStockImageSize = 50000000; // 500MB?
 
-    ngOnInit()
-        :
-        void {
+    ngOnInit(): void {
         this.category$ = this.categoryService.categories
             .pipe(
                 map(
@@ -84,6 +82,7 @@ export class CategoryViewComponent implements OnInit {
 
     }
 
+    // complex subscriptions
     completeAddCategory$ = (category) => this.createCategory$(category)
         .pipe(
             map((createCategoryResponse: Category) => {
@@ -168,6 +167,7 @@ export class CategoryViewComponent implements OnInit {
             },
         ))
 
+    // functions
     addNewCategory(): void {
         if (this.check_if_icon_and_stock_foto_valid(TYPE_ADD)
         ) {
@@ -284,8 +284,8 @@ export class CategoryViewComponent implements OnInit {
         if (this.icon && !this.stockImage) {
             this.uploadIconUpdateSubcategory$(category, subcategory).subscribe({
                 complete: () => {
-                    this.openSnackBar('Successfully uploaded subcategory: ' + subcategory.name, 'success'),
-                        this.resetForms()
+                    this.openSnackBar('Successfully uploaded subcategory: ' + subcategory.name, 'success')
+                    this.resetForms()
                 },
                 error: err => this.openSnackBar('An error occurred: ' + err, 'error')
             })
@@ -293,8 +293,8 @@ export class CategoryViewComponent implements OnInit {
         if (this.stockImage && !this.icon) {
             this.uploadStockFotoUpdateSubcategory$(category, subcategory).subscribe({
                 complete: () => {
-                    this.openSnackBar('Successfully uploaded subcategory: ' + subcategory.name, 'success'),
-                        this.resetForms()
+                    this.openSnackBar('Successfully uploaded subcategory: ' + subcategory.name, 'success')
+                    this.resetForms()
                 },
                 error: err => this.openSnackBar('An error occurred: ' + err, 'error')
             })
@@ -314,8 +314,8 @@ export class CategoryViewComponent implements OnInit {
         this.updateCategory$(category._id, category).subscribe(
             {
                 complete: () => {
-                    this.openSnackBar('Successfully uploaded subcategory: ' + subcategory.name, 'success'),
-                        this.resetForms()
+                    this.openSnackBar('Successfully uploaded subcategory: ' + subcategory.name, 'success')
+                    this.resetForms()
                 },
                 error: err => this.openSnackBar('An error occurred: ' + err, 'error')
             })
@@ -427,22 +427,18 @@ export class CategoryViewComponent implements OnInit {
 
     downloadImage(categories) {
         categories.forEach(cat => {
-            let IconUrl = null
-            let StockImageURL = null
-
             if (cat.iconPath !== undefined) {
                 if (cat.iconTemporaryURL === undefined) {
                     this.fileService.downloadFile(cat.iconPath).subscribe(imageData => {
                         // create temporary Url for the downloaded image and bypass security
                         const unsafeImg = URL.createObjectURL(imageData);
-                        IconUrl = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-                        cat.iconTemporaryURL = IconUrl
+                        cat.iconTemporaryURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+
                     })
                     this.fileService.downloadFile(cat.stockImagePath).subscribe(imageData => {
                         // create temporary Url for the downloaded image and bypass security
                         const unsafeImg = URL.createObjectURL(imageData);
-                        StockImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-                        cat.stockImageTemporaryURL = StockImageURL
+                        cat.stockImageTemporaryURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
                     })
                 }
             }
@@ -453,14 +449,12 @@ export class CategoryViewComponent implements OnInit {
                             this.fileService.downloadFile(sub.iconPath).subscribe(imageData => {
                                 // create temporary Url for the downloaded image and bypass security
                                 const unsafeImg = URL.createObjectURL(imageData);
-                                IconUrl = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-                                sub.iconTemporaryURL = IconUrl;
+                                sub.iconTemporaryURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
                             })
                             this.fileService.downloadFile(sub.stockImagePath).subscribe(imageData => {
                                 // create temporary Url for the downloaded image and bypass security
                                 const unsafeImg = URL.createObjectURL(imageData);
-                                StockImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-                                sub.stockImageTemporaryURL = StockImageURL
+                                sub.stockImageTemporaryURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
                             })
                         }
                     }
