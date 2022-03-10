@@ -1,13 +1,18 @@
-<div fxLayout="row">
+<div class="event-container">
     <div class="form-and-image-upload">
         <app-event-form (updateEvent)="updateEvent($event)" (addNewEvent)="addNewEvent($event)"
                         [organizersIn]="organizers"
                         [eventIn]="eventIn"></app-event-form>
     </div>
-    <div style="width: 90%; margin-top: 3em;">
+    <div class="events">
+        <div class="map-container">
+            <app-map-view [markerData]="allFilteredEvents"></app-map-view>
+        </div>
+
         <mat-accordion>
-            <div *ngFor="let category of categories" fxLayout="column" fxLayoutAlign="center center">
-                <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;"
+            All events grouped by category and organizer
+            <div *ngFor="let category of categories" class="category-panel">
+                <mat-expansion-panel
                                      (afterExpand)="loadOrganizerOnSubcategories(category)">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
@@ -18,8 +23,8 @@
                         </mat-panel-description>
                     </mat-expansion-panel-header>
 
-                    <div *ngFor="let organizer of organizers" fxLayout="column" fxLayoutAlign="center center">
-                        <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;"
+                    <div class="organizer-panel" *ngFor="let organizer of organizers">
+                        <mat-expansion-panel
                                              [ngStyle]="{'background': getColor(organizer)}"
                                              (afterExpand)="loadEvents(organizer._id, category._id)">
                             <mat-expansion-panel-header>
@@ -32,17 +37,15 @@
                                 <p>Last Updated: {{ timeSince(organizer.lastUpdated) }}</p>
                             </mat-expansion-panel-header>
 
-                            <div *ngFor="let event of allFilteredEvents" fxLayout="row">
-                                <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;"
-                                     fxLayout="row">
-                                    <div style="width: 80%;" fxLayoutAlign="start center" (click)="eventIn = event">
+                            <div class="event-panel-collection" *ngFor="let event of allFilteredEvents">
+                                <div class="event-panel">
+                                    <div  (click)="eventIn = event">
                                         {{event.name}}
                                     </div>
                                     <img class="event-image"
                                          [src]="event.eventImageTemporaryURL">
-                                    <div (click)="deleteEvent(organizer._id, event._id)"
-                                         style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"
-                                         fxLayoutAlign="center center">
+                                    <div class="delete-event-button"
+                                        (click)="deleteEvent(organizer._id, event._id)">
                                         Delete
                                     </div>
                                 </div>
@@ -54,12 +57,11 @@
                 </mat-expansion-panel>
             </div>
         </mat-accordion>
-        <div style="margin-top: 2em;">
-            <app-map-view [markerData]="allFilteredEvents"></app-map-view>
-        </div>
+
+        All events grouped by category
 
         <div class="all-events-expansion-panel" *ngFor="let category of categories">
-            <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;"
+            <mat-expansion-panel
                                  (afterExpand)="loadEventsByCategory(category)">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -70,17 +72,17 @@
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
-                <div *ngFor="let event of allFilteredEvents" fxLayout="row">
-                    <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;"
-                         fxLayout="row">
-                        <div style="width: 80%;" fxLayoutAlign="start center"
+                <div *ngFor="let event of allFilteredEvents">
+                    <div class="event-panel"
+                         >
+                        <div
                              (click)="eventIn = event">
                             {{event.name}}
                         </div>
                         <img class="event-image" [src]="event.eventImageTemporaryURL">
-                        <div (click)="deleteEvent(event._organizerId, event._id)"
-                             style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"
-                             fxLayoutAlign="center center">
+                        <div    class="delete-event-button"
+                                (click)="deleteEvent(event._organizerId, event._id)"
+                             >
                             Delete
                         </div>
                     </div>
@@ -88,8 +90,10 @@
             </mat-expansion-panel>
         </div>
 
+        All hot events
+
         <div class="all-hot-events-expansion-panel">
-            <mat-expansion-panel style="max-width: 100%; width: 100%; margin-top: 1em;" (afterExpand)="getHotEvents()">
+            <mat-expansion-panel (afterExpand)="getHotEvents()">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         All Hot Events
@@ -99,16 +103,16 @@
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
-                <div *ngFor="let event of allFilteredEvents" fxLayout="row">
-                    <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;"
-                         fxLayout="row">
-                        <div style="width: 80%;" fxLayoutAlign="start center" (click)="eventIn = event">
+                <div *ngFor="let event of allFilteredEvents">
+                    <div class="event-panel"
+                        >
+                        <div (click)="eventIn = event">
                             {{event.name}}
                         </div>
                         <img class="event-image" [src]="event.eventImageTemporaryURL">
-                        <div (click)="deleteEvent(event._organizerId, event._id)"
-                             style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"
-                             fxLayoutAlign="center center">
+                        <div    class="delete-event-button"
+                                (click)="deleteEvent(event._organizerId, event._id)"
+                             >
                             Delete
                         </div>
                     </div>

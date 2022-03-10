@@ -1,28 +1,29 @@
-<app-organizer-form [organizerIn]="organizerInformation" (addNewOrganizer)="addNewOrganizer($event)"
-                    (updateOrganizer)="updateOrganizer($event)"></app-organizer-form>
+<div class="organizer-view-container">
+    <div class="organizer-page">
+        <app-organizer-form class="organizer-form" [organizerIn]="organizerInformation" (addNewOrganizer)="addNewOrganizer($event)"
+                            (updateOrganizer)="updateOrganizer($event)"></app-organizer-form>
 
 
-<div>
-    <div *ngFor="let organizer of organizers" fxLayout="column" fxLayoutAlign="center center"
-         (click)="organizerInformation=organizer">
-        <div style="width: 85%; height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;"
-             fxLayout="row">
-            <div style="width: 80%;" fxLayoutAlign="start center">
-                {{organizer.name}}
+        <div class="organizer-container">
+            <div class="map-container">
+                <app-map-view [markerData]="organizers"></app-map-view>
             </div>
-            <img class="organizer-image"
-                 [src]="organizer.organizerImageTemporaryURL">
-            <div (click)="deleteOrganizer(organizer._id)"
-                 style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"
-                 fxLayoutAlign="center center">
-                Delete
+
+            <div *ngFor="let organizer of organizers"
+                 (click)="organizerInformation=organizer">
+                <div class="organizer-panel">
+                    <div class="organizer-name">
+                        {{organizer.name}}
+                    </div>
+                    <img class="organizer-image"
+                         [src]="organizer.organizerImageTemporaryURL">
+                    <div class="delete-button" (click)="deleteOrganizer(organizer._id)">
+                        Delete
+                    </div>
+                </div>
             </div>
+
+
         </div>
     </div>
-
-    <div style="margin-top: 2em;">
-        <app-map-view [markerData]="organizers"></app-map-view>
-    </div>
 </div>
-
-  

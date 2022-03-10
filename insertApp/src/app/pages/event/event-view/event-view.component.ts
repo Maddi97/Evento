@@ -11,7 +11,7 @@ import {Observable} from 'rxjs';
 import * as log from 'loglevel';
 import * as moment from 'moment';
 import {FileUploadService} from '../../../services/file-upload.service';
-import {DomSanitizer} from "@angular/platform-browser";
+import {DomSanitizer} from '@angular/platform-browser';
 
 
 @Component({
@@ -136,7 +136,6 @@ export class EventViewComponent implements OnInit {
     getHotEvents() {
         const date = moment(new Date()).utcOffset(0, false).set({hour: 0, minute: 0, second: 0, millisecond: 0})
         this.eventService.getEventsOnDate(date)
-        console.log(this.allFilteredEvents)
     }
 
     deleteEvent(organizerId
@@ -209,7 +208,6 @@ export class EventViewComponent implements OnInit {
     }
 
     downloadImage() {
-
         this.allFilteredEvents.forEach(event => {
             let imageURL = null
             if (event.eventImagePath !== undefined) {

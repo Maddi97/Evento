@@ -1,15 +1,88 @@
-.subcategory-form{
-    margin: 2rem;
-    box-shadow: 0px 0px 0px 4px rgba(0, 0, 0, 0.2),0px 1px 1px 0px rgba(0, 0, 0, 0.14),0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;
+.category-view-container {
+
 }
 
-.upload-buttons{
+.add-category-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem;
+}
+
+.update-category-button {
+    width: 20%;
+    background-color: blue;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 1em;
+}
+
+.category-panel-collection {
+    margin: 2rem;
+}
+
+.category-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.category-edit-button {
+    width: 20%;
+    background-color: blue;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 1em;
+}
+
+.category-delete-button {
+    width: 20%;
+    background-color: red;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 1em;
+}
+
+.subcategory-panel-collection {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    border-style: groove;
+    margin: 1rem;
+    width: 85%;
+}
+
+.subcategory-panel {
+    display: flex;
+    flex-direction: row;
+    height: 2rem;
+    background-color: rgb(214 214 214);
+    margin-bottom: 0.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.subcategory-form {
+    margin: 2rem;
+    box-shadow: 0 0 0 4px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%) !important;
+}
+
+.upload-buttons {
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
 
-.category-icon{
+.category-icon {
     width: 2rem;
     height: 100%;
+    padding-left: 1rem;
+}
+
+mat-form-field {
+    width: 100%;
 }

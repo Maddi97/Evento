@@ -1,9 +1,7 @@
-<div style="margin: 2em">
+<div class="category-view-container">
 
-    <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
-
-        <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
-            <mat-form-field appearance="fill" style="width: 100%;">
+    <div class="add-category-form">
+         <mat-form-field appearance="fill">
                 <mat-label *ngIf="!update">Add Category</mat-label>
                 <mat-label *ngIf="update">Update Category</mat-label>
 
@@ -18,42 +16,37 @@
                                                                  (input)=stockImageChosen($event)></span>
 
             <button *ngIf="!update" class='btn btn-warning' (click)="addNewCategory()">Add Category</button>
-            <button *ngIf="update"
-                    style="width: 20%; background-color: blue; color:white; border-radius: 5px; cursor: pointer;margin-right: 1em;"
+            <button class="update-category-button"
+                    *ngIf="update"
                     (click)="updateCategory()">Update Category
             </button>
-
-        </div>
-        <div *ngIf='uploadedIcon'>
-            <div>{{uploadedIcon.path}}</div>
-        </div>
     </div>
 
-    <div style="width: 90%; margin-top: 3em;" *ngFor="let category of categories" [categories]>
+    <div class="category-panel-collection" *ngFor="let category of categories" [categories]>
         <mat-accordion>
-            <div fxLayout="column" fxLayoutAlign="center center">
-                <mat-expansion-panel style="max-width: 100%; width: 75%; margin-top: 1em;">
+            <div class="category-panel">
+                <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title style="justify-content: space-between">
+                        <mat-panel-title>
                             {{category.name}}
                             <img class="category-icon" [src]="category.iconTemporaryURL">
                             <img class="category-icon" [src]="category.stockImageTemporaryURL">
                         </mat-panel-title>
-                        <div (click)="$event.stopPropagation(); editCategoryClicked(category)"
-                             style="width: 20%; background-color: blue; color:white; border-radius: 5px; cursor: pointer;margin-right: 1em;"
-                             fxLayoutAlign="center center">
+                        <div class="category-edit-button"
+                                (click)="$event.stopPropagation(); editCategoryClicked(category)"
+                        >
                             Edit
                         </div>
-                        <div (click)="deleteCategory(category)"
-                             style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;margin-right: 1em;"
-                             fxLayoutAlign="center center">
+                        <div class="category-delete-button"
+                                (click)="deleteCategory(category)"
+                             >
                             Delete
                         </div>
                     </mat-expansion-panel-header>
 
-                    <div style="width: 85%;">
+                    <div class="subcategory-container">
                         <mat-card class="subcategory-form">
-                            <mat-form-field appearance="fill" style="width: 100%;">
+                            <mat-form-field appearance="fill">
                                 <mat-label>Add Subcategory</mat-label>
                                 <input matInput #target required="true" [formControl]="subcategoryName"
                                        (keydown.enter)="!updateSub ? addNewSubcategory(category) : updateSubcategory(category); target.value = '' ">
@@ -72,30 +65,27 @@
                         </mat-card>
                     </div>
 
-                    <div *ngFor="let sub of category.subcategories " fxLayout="column">
-                        <div style="border-radius: 10px; border-style:groove; margin: 1rem; width:85%">
-                            <div style="height: 2rem; background-color: rgb(214, 214, 214); margin-bottom: .2rem; border-radius: 5px; cursor: pointer;"
-                                 fxLayout="row">
-                                <div style="width: 80%;" fxLayoutAlign="start center"
+                    <div class="subcategory-panel-collection" *ngFor="let sub of category.subcategories ">
+                            <div class="subcategory-panel">
+                                <div
                                      (click)="this.clickSubcategory(sub._id)">
                                     {{sub.name}}
-                                    <img style="padding-left: 10%;" class="category-icon" [src]="sub.iconTemporaryURL">
-                                    <img style="padding-left: 10%;" class="category-icon"
+                                    <img class="category-icon" [src]="sub.iconTemporaryURL">
+                                    <img class="category-icon"
                                          [src]="sub.stockImageTemporaryURL">
 
                                 </div>
-                                <button (click)="$event.stopPropagation(); editSubcategoryClicked(category, sub)"
-                                        style="width: 20%; background-color: blue; color:white; border-radius: 5px; cursor: pointer;margin-right: 1em;"
+                                <button class="category-edit-button"
+                                        (click)="$event.stopPropagation(); editSubcategoryClicked(category, sub)"
+
                                 >Edit
                                 </button>
-                                <div (click)="deleteSubcategory(category, sub)"
-                                     style="width: 20%; background-color: red; border-radius: 5px; cursor: pointer;"
-                                     fxLayoutAlign="center center">
+                                <div class="category-delete-button"
+                                        (click)="deleteSubcategory(category, sub)"
+                                     >
                                     Delete
                                 </div>
                             </div>
-
-                        </div>
                     </div>
                 </mat-expansion-panel>
             </div>

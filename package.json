@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "codelyzer": "^6.0.2",
+    "stylelint": "^14.5.3"
+  }
+}
