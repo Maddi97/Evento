@@ -1,7 +1,7 @@
 /**/node_modules/
 backend/images
 backend/temp_dir
-
+node_modules
 
 .idea
 .env.prod

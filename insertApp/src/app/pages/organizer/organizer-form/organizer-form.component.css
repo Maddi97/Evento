@@ -1,0 +1,77 @@
+.form-container{
+
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+.organizer-name {
+    display: flex;
+    flex-direction: column;
+}
+
+.address {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.plz{
+
+}
+
+.city{
+
+}
+
+.street {
+    flex-grow: 0.9;
+}
+
+.additional-information {
+    display: flex;
+    flex-direction: column;
+}
+
+.category{
+}
+
+.radio-group-organizer-is-event {
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem;
+}
+
+.opening-times-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.opening-times-required {
+    display: flex;
+    justify-content: center;
+    margin: 1rem;
+}
+
+.opening-times-form{
+
+}
+.opening-times-start{
+
+}
+
+.opening-times-end{
+
+}
+
+.image-upload {
+    display: flex;
+    justify-content: center;
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 2rem;
+}

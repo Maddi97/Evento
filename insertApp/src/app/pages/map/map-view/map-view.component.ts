@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, Input, OnDestroy} from '@angular/core';
+import {Component, OnChanges, OnInit, Input} from '@angular/core';
 import * as L from 'leaflet';
 import {PositionService} from './position.service';
 
