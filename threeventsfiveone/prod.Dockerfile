@@ -1,21 +1,18 @@
-FROM node:17.4.0 as build
+FROM node:16.13.2 as build
 
 WORKDIR /app
 
 ENV PATH /app/node_modules/.bin:$PATH
 
-#RUN yarn cache clean --all
-RUN npm cache clean --force
-
 COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
 
-RUN npm install --legacy-peer-deps
-
-#RUN yarn install
+RUN npm ci
 
 COPY . /app
 
-RUN ng build --output-path=dist --prod=true
+ENV NODE_OPTIONS="--max-old-space-size=8192"
+RUN ng build --output-path=dist --sourceMap=false --configuration production
 
 FROM nginx:1.16.0-alpine
 
