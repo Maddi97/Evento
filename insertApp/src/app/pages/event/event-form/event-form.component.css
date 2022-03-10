@@ -1,0 +1,68 @@
+.event-form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.organizer-name {
+}
+
+.event-name {
+    display: flex;
+}
+
+.plz{
+
+}
+
+.city {
+
+}
+
+.street{
+
+}
+
+.coordinates {
+
+}
+
+.category {
+    margin: 1rem;
+}
+
+.description{
+
+}
+
+.link{
+
+}
+
+.price{
+
+}
+
+.is-permanent{
+
+}
+
+.time{
+
+}
+
+.start{
+
+}
+
+.end{
+
+}
+
+.confirm-buttons{
+
+}
+
+mat-form-field {
+    width: 100%;
+}
