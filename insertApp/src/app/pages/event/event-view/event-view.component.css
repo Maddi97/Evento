@@ -1,8 +1,7 @@
 .event-container {
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
 }
-
 .form-and-image-upload {
     display: flex;
     flex-direction: column;
@@ -69,7 +68,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
     width: 20%;
     background-color: red;
     border-radius: 5px;
