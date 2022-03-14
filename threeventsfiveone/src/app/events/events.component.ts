@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {EventService} from './event.service';
 import {Event} from '../models/event';
 import {CategoriesService} from '../categories/categories.service';
@@ -7,7 +7,9 @@ import {PositionService} from '../map-view/position.service';
 import {NominatimGeoService} from '../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ActivatedRoute, Router} from '@angular/router';
-import {filter, map} from 'rxjs/operators';
+import {filter, flatMap, map, mergeMap} from 'rxjs/operators';
+import {concat} from 'rxjs'
+
 import * as moment from 'moment';
 import * as log from 'loglevel';
 
@@ -17,7 +19,7 @@ import * as log from 'loglevel';
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.css']
 })
-export class EventsComponent implements OnInit {
+export class EventsComponent implements OnInit, OnDestroy {
 
   public isDropdown = false;
 
@@ -73,29 +75,35 @@ export class EventsComponent implements OnInit {
   ngOnInit(): void {
 
 
-    this.eventService.events.pipe(
+    const events$ = this.eventService.events.pipe(
       map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)
       ),
-    ).subscribe((ev: Event[]) => {
+    )
+
+    // filter events by distance
+    events$.subscribe((ev: Event[]) => {
       this.filteredList = ev.sort((ev1, ev2) =>
         this.get_distance_to_current_position(ev1) - this.get_distance_to_current_position(ev2)
-      )
-      ;
+      );
     });
 
-    this.categoriesService.categories.subscribe((cat: Category[]) => {
-      this.categoryList = cat;
+    const categories$ = this.categoriesService.categories.pipe(
+      map((categories: Category[]) => {
+         this.categoryList = categories;
+         console.log(categories)
+         categories.forEach((category: Category) => {
+            category.subcategories.forEach(subcategory => {
+              this.subcategoryList.push(subcategory);
+            })
+         })
+    })
+    )
 
-      // add subcats to list
-      cat.forEach(c => {
-        c.subcategories.forEach(sub => {
-          this.subcategoryList.push(sub);
-        });
-      });
 
-      this._activatedRoute.queryParams.subscribe(
-        params => {
+    const params$ = this._activatedRoute.queryParams.pipe(
+        map( params => {
           const category = params.category;
+          console.log(category)
           if (category !== undefined) {
             this.categoryList.forEach(c => {
               if (c._id === category) {
@@ -103,6 +111,7 @@ export class EventsComponent implements OnInit {
               }
             });
           }
+
 
           const sub = params.subcategory;
           if (sub !== undefined) {
@@ -112,21 +121,28 @@ export class EventsComponent implements OnInit {
               }
             });
           }
-        });
+        }));
 
+    categories$
+      .pipe(
+      mergeMap(() => params$)
+      )
+      .subscribe(() => this.applyFilters())
 
-      this.applyFilters();
-    });
-
+    this.applyFilters()
     // request categories
     this.categoriesService.getAllCategories();
+  }
+
+  ngOnDestroy() {
+    this.empty_filters()
   }
 
   applyFilters() {
     // Request backend for date, category and subcategory filter
     // filter object
     this.currentPosition = this.positionService.getCurrentPosition();
-    const fil = {date: this.filteredDate, cat: [], subcat: []};
+    let fil = {date: this.filteredDate, cat: [], subcat: []};
 
     if (this.filteredCategory == null) {
       fil.cat = this.categoryList;
@@ -149,6 +165,8 @@ export class EventsComponent implements OnInit {
       this.eventService.getEventsOnDate(this.filteredDate);
     }
     this.spinner.hide();
+
+    fil = {date: this.filteredDate, cat: [], subcat: []};
 
   }
 
@@ -209,6 +227,11 @@ export class EventsComponent implements OnInit {
   changeToMapView() {
     this.mapView ? this.mapView = false : this.mapView = true;
   }
+  empty_filters() {
+    this.filteredCategory = []
+    this.filteredSubcategories = []
+  }
+
 }
 
 class DateClicked {
