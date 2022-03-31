@@ -25,14 +25,6 @@ const TYPE_SUBCATEGORY = 'subcategory'
 
 export class CategoryViewComponent implements OnInit {
 
-    constructor(
-        private categoryService: CategoryService,
-        private fileService: FileUploadService,
-        private sanitizer: DomSanitizer,
-        private _snackbar: MatSnackBar,
-    ) {
-    }
-
     @ViewChild('iconUpload')
     inputCat: ElementRef;
     @ViewChild('stockFotoUpload')
@@ -66,6 +58,14 @@ export class CategoryViewComponent implements OnInit {
     private allowedImageTypes = ['image/png', 'image/jpeg', 'image/jpg']
     private uploadedIconSize = 50000
     private uploadedStockImageSize = 50000000; // 500MB?
+
+    constructor(
+        private categoryService: CategoryService,
+        private fileService: FileUploadService,
+        private sanitizer: DomSanitizer,
+        private _snackbar: MatSnackBar,
+    ) {
+    }
 
     ngOnInit(): void {
         this.category$ = this.categoryService.categories
@@ -203,7 +203,7 @@ export class CategoryViewComponent implements OnInit {
     }
 
     updateCategory() {
-        if (!this.check_if_icon_and_stock_foto_valid(TYPE_UPDATE)) return
+        if (!this.check_if_icon_and_stock_foto_valid(TYPE_UPDATE)) { return }
 
         const category = this.updateCategoryObject;
         category.name = this.categoryName.value;
@@ -276,7 +276,7 @@ export class CategoryViewComponent implements OnInit {
     }
 
     updateSubcategory(category) {
-        if (!this.check_if_icon_and_stock_foto_valid(TYPE_UPDATE)) return
+        if (!this.check_if_icon_and_stock_foto_valid(TYPE_UPDATE)) { return }
 
         const subcategory = this.updateSubcategoryObject
         subcategory.name = this.subcategoryName.value

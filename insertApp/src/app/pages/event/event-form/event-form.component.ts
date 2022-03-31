@@ -1,20 +1,20 @@
 // import packages
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild} from '@angular/core';
-import {FormControl, FormBuilder} from '@angular/forms';
-import {map, share} from 'rxjs/operators';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { FormControl, FormBuilder } from '@angular/forms';
+import { map, share } from 'rxjs/operators';
 import * as moment from 'moment';
 
 // import models
-import {Organizer} from '../../../models/organizer';
-import {Category} from '../../../models/category';
-import {Event} from '../../../models/event';
+import { Organizer } from '../../../models/organizer';
+import { Category } from '../../../models/category';
+import { Event } from '../../../models/event';
 
 // import services
-import {NominatimGeoService} from '../../../services/nominatim-geo.service';
-import {OrganizerService} from '../../../services/organizer.service';
+import { NominatimGeoService } from '../../../services/nominatim-geo.service';
+import { OrganizerService } from '../../../services/organizer.service';
 
 // import helper functions
-import {getEventFormTemplate, getEventFromForm} from '../event.helpers';
+import { getEventFormTemplate, getEventFromForm } from '../event.helpers';
 import * as log from 'loglevel';
 
 @Component({
@@ -79,7 +79,10 @@ export class EventFormComponent implements OnInit, OnChanges {
         if (this.image !== undefined) {
             formdata.append('files', this.image);
             event['fd'] = formdata;
-        } else event['fd'] = undefined
+        }
+        else {
+            event['fd'] = undefined
+        }
 
         if (this.toggleIsChecked.value) {
             event.geoData = this.geoData
@@ -94,7 +97,8 @@ export class EventFormComponent implements OnInit, OnChanges {
             ).toPromise().then(() =>
                 this.addNewEvent.emit(event)
             )
-        } else {
+        }
+        else {
             const coord = this.eventForm.get('coord').value
             this.geoData.lat = coord.split(',')[0].trim()
             this.geoData.lon = coord.split(',')[1].trim()
@@ -127,7 +131,10 @@ export class EventFormComponent implements OnInit, OnChanges {
         if (this.image !== undefined) {
             formdata.append('files', this.image);
             event['fd'] = formdata;
-        } else event['fd'] = undefined
+        }
+        else {
+            event['fd'] = undefined
+        }
 
         if (this.toggleIsChecked.value) {
             event.geoData = this.geoData
@@ -141,7 +148,8 @@ export class EventFormComponent implements OnInit, OnChanges {
                     this.updateEvent.emit(event)
                 }
             )
-        } else {
+        }
+        else {
             const coord = this.eventForm.get('coord').value
             this.geoData.lat = coord.split(',')[0].trim()
             this.geoData.lon = coord.split(',')[1].trim()

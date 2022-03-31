@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
 
-  height: 3.5rem;
-  width: 3.5rem;
+  height: 5rem;
+  width: 5rem;
   background-color: white;
   border-radius: 5px;
   margin: 10px;
@@ -29,8 +29,8 @@
 }
 
 .day-date-clicked {
-  height: 3.5rem;
-  width: 3.5rem;
+  height: 5rem;
+  width: 5rem;
   border-radius: 10px;
   margin: 10px;
   box-shadow: inset 0px 0px 18px -14px rgb(61 61 61);
