@@ -1,5 +1,6 @@
-<div style="width: 100%; margin-top: 1rem;" fxLayout="column" fxLayoutAlign="center center">
-    <mat-form-field appearance="fill" style="width: 90%;">
+<div class="event-form-container">
+    <div class="organizer-name">
+    <mat-form-field appearance="fill">
         <mat-label>Organizer</mat-label>
         <input matInput
                [formControl]="organizerName"
@@ -15,11 +16,13 @@
         </mat-autocomplete>
         <mat-error *ngIf="organizerName.hasError('required')">Organizer is required</mat-error>
     </mat-form-field>
+    </div>
 
-    <form [formGroup]="eventForm" style="width: 90%;">
 
-        <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="column">
-            <mat-form-field appearance="fill" style="width: 100%;">
+    <form class="form-container" [formGroup]="eventForm">
+
+        <div class="event-name">
+            <mat-form-field appearance="fill">
                 <mat-label>Event Name</mat-label>
                 <input matInput #target required formControlName="name"
                        (keydown.enter)="emitAddNewEvent(); target.value = ''">
@@ -28,10 +31,10 @@
         </div>
 
         <mat-slide-toggle [formControl]="toggleIsChecked">Address or coordinates?</mat-slide-toggle>
-        <div *ngIf="toggleIsChecked.value">
-            <div class="city" style="width: 100%;" fxLayoutAlign="center center" fxLayout="row">
-                <div style="width: 50%;" fxLayoutAlign="center center">
-                    <mat-form-field appearance="fill" style="width: 100%;">
+
+        <div class="address" *ngIf="toggleIsChecked.value">
+                <div class="plz">
+                    <mat-form-field appearance="fill">
                         <mat-label>Plz</mat-label>
                         <input matInput #target required minlength="5" maxlength="5" formControlName="plz"
                                (keydown.enter)="emitAddNewEvent(); target.value = ''">
@@ -41,19 +44,17 @@
                     </mat-form-field>
                 </div>
 
-                <div style="width: 50%;" fxLayoutAlign="end center" fxLayout="column">
-                    <mat-form-field appearance="fill" style="width: 100%;">
+                <div class="city">
+                    <mat-form-field appearance="fill">
                         <mat-label>City</mat-label>
                         <input matInput #target required formControlName="city"
                                (keydown.enter)="emitAddNewEvent(); target.value = ''">
                         <mat-error *ngIf="eventForm.get('city').hasError('required')">City is required</mat-error>
                     </mat-form-field>
                 </div>
-            </div>
 
-            <div class="street" style="width: 100%;" fxLayoutAlign="center center" fxLayout="row">
-                <div style="width: 85%;" fxLayout="column">
-                    <mat-form-field appearance="fill" style="width: 90%;">
+            <div class="street">
+                    <mat-form-field appearance="fill" >
                         <mat-label>Street</mat-label>
                         <input matInput #target required formControlName="street"
                                (keydown.enter)="emitAddNewEvent(); target.value = ''">
@@ -61,20 +62,11 @@
                         </mat-error>
 
                     </mat-form-field>
-                </div>
-                <!--
-                      <div style="width: 15%;" fxLayoutAlign="center center" fxLayout="column">
-                          <mat-form-field appearance="fill" style="width: 100%;">
-                          <mat-label>Number</mat-label>
-                          <input matInput #target required="true" formControlName="streetNumber" (keydown.enter)="addNewEvent(); target.value = ''">
-                          </mat-form-field>
-                      </div> -->
             </div>
         </div>
 
         <div class="coordinates" *ngIf="!toggleIsChecked.value">
-            <div style="width: 85%;" fxLayout="column">
-                <mat-form-field appearance="fill" style="width: 90%;">
+                <mat-form-field appearance="fill">
                     <mat-label>Coordinates:</mat-label>
                     <input matInput #target required formControlName="coord"
                            (keydown.enter)="emitAddNewEvent(); target.value = ''">
@@ -82,40 +74,40 @@
                         is given
                     </mat-error>
                 </mat-form-field>
-            </div>
         </div>
 
 
-        <div class="category" style="width: 100%;" fxLayoutAlign="center center">
-            <mat-card style="width: 100%;">
+        <div class="category">
+            <mat-card>
                 <app-category-select [loadedCategory]="category"
                                      (newCategorySelect)="setCategory($event)"></app-category-select>
             </mat-card>
         </div>
 
-        <div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column">
-            <mat-form-field appearance="fill" style="width: 100%;">
-                <mat-label>Description</mat-label>
-                <input matInput #target required="true" formControlName="description"
-                       (keydown.enter)="emitAddNewEvent(); target.value = ''">
-                <mat-error *ngIf="eventForm.get('description').hasError('required')">Description is required
-                </mat-error>
-            </mat-form-field>
-        </div>
+        <div class="additional-information">
+            <div class="description">
+                <mat-form-field appearance="fill">
+                    <mat-label>Description</mat-label>
+                    <input matInput #target required="true" formControlName="description"
+                           (keydown.enter)="emitAddNewEvent(); target.value = ''">
+                    <mat-error *ngIf="eventForm.get('description').hasError('required')">Description is required
+                    </mat-error>
+                </mat-form-field>
+            </div>
 
-        <div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column">
-            <mat-form-field appearance="fill" style="width: 100%;">
-                <mat-label>Link</mat-label>
-                <input matInput #target formControlName="link" (keydown.enter)="emitAddNewEvent(); target.value = ''">
-            </mat-form-field>
+            <div class="link">
+                <mat-form-field appearance="fill">
+                    <mat-label>Link</mat-label>
+                    <input matInput #target formControlName="link" (keydown.enter)="emitAddNewEvent(); target.value = ''">
+                </mat-form-field>
+            </div>
+            <div class="price">
+                <mat-form-field appearance="fill">
+                    <mat-label>Price: 0,00</mat-label>
+                    <input matInput #target formControlName="price" (keydown.enter)="emitAddNewEvent(); target.value = ''">
+                </mat-form-field>
+            </div>
         </div>
-        <div style="width: 100%; margin-top: 2em;" fxLayoutAlign="center center" fxLayout="column">
-            <mat-form-field appearance="fill" style="width: 100%;">
-                <mat-label>Price: 0,00</mat-label>
-                <input matInput #target formControlName="price" (keydown.enter)="emitAddNewEvent(); target.value = ''">
-            </mat-form-field>
-        </div>
-
         <div class="radio-group-permanent-event">
             <label id="permanent-radio-group-label">Is event permanent?</label>
             <mat-radio-group formControlName="permanent">
@@ -124,9 +116,7 @@
             </mat-radio-group>
         </div>
 
-        <div *ngIf="eventForm.get('permanent').value === 'false'" fxLayout="row wrap"
-             style="width: 90%; padding-bottom: .5rem;" fxLayoutAlign="start start">
-            <div>
+        <div class="is-permanent" *ngIf="eventForm.get('permanent').value === 'false'" >
                 <mat-form-field appearance="fill">
                     <mat-label>Enter a date range</mat-label>
                     <mat-date-range-input [rangePicker]="picker">
@@ -136,12 +126,11 @@
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-date-range-picker #picker></mat-date-range-picker>
                 </mat-form-field>
-            </div>
         </div>
 
 
-        <div fxLayout="row" fxLayoutAlign="space-between center">
-            <div style="padding-left: 1rem;" fxLayout="row">
+        <div class="time">
+            <div class="start">
                 <p>Start :</p>
                 <div class="ngx-timepicker-field-example">
 
@@ -150,7 +139,7 @@
                                           [defaultTime]="'00:00'"></ngx-timepicker-field>
                 </div>
             </div>
-            <div style="padding-left: 1rem;" fxLayout="row">
+            <div class="end">
                 <p>Ende:</p>
                 <div class="ngx-timepicker-field-example">
                     <ngx-timepicker-field #endTime [formControl]="times.end"
@@ -159,19 +148,18 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div class="image-upload">
         <span class='col'>Select event image: <input type='file' #imageUpload
                                                      (input)=iconChosen($event)></span>
         </div>
     </form>
 
-    <div fxLayout="column" fxLayoutAlign="spacing-around center" style="margin: 1em;">
+    <div class="confirm-buttons">
         <button mat-raised-button color="primary" (click)="updateEventId !== '' ? emitUpdateEvent() : emitAddNewEvent()"
-                [disabled]="checkDisabled()" style="width: 100%; cursor: pointer;" fxLayoutAlign="center center">
+                [disabled]="checkDisabled()">
             {{ updateEventId !== '' ? 'Update' : 'Submit'}}
         </button>
-        <button mat-raised-button color="secondary" (click)="nullFormField()"
-                style="width: 100%;cursor: pointer; margin-top:1em;" fxLayoutAlign="center center">
+        <button mat-raised-button color="accent" (click)="nullFormField()">
             Clear
         </button>
     </div>

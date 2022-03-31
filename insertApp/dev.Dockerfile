@@ -1,4 +1,4 @@
-FROM node:17.4.0
+FROM node:16.13.2
 
 WORKDIR /app
 
@@ -15,4 +15,4 @@ RUN npm install --legacy-peer-deps
 
 COPY . /app
 
-CMD ng serve --host 0.0.0.0 --prod=false
+CMD ng serve --host 0.0.0.0 --sourceMap=false --prod=false

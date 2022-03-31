@@ -1,0 +1,9 @@
+.selection-container{
+    display:flex;
+    flex-direction: row;
+}
+
+button{
+    border-radius: 10px;
+    flex-grow: 1
+}
