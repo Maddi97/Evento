@@ -1,4 +1,4 @@
-import {Component, OnInit, Output, EventEmitter, ViewChild} from '@angular/core';
+import {Component, OnInit, Output, EventEmitter, ViewChild, HostListener} from '@angular/core';
 import {MatCalendar} from '@angular/material/datepicker';
 import * as moment from 'moment';
 
@@ -13,16 +13,25 @@ export class DatePickerComponent implements OnInit {
 
   @ViewChild(MatCalendar) datePicker: MatCalendar<Date>;
 
+  public getScreenWidth: any;
 
   public nextMonth: DateClicked[] = [];
-  public numberOfDates = 7;
-  public displayNumberOfDates = 7;
+  public numberOfDates = 10;
+  public displayNumberOfDates = 5;
   public firstDate = 0;
+
 
   constructor() {
   }
 
   ngOnInit(): void {
+    this.getScreenWidth = window.innerWidth;
+
+    if (this.getScreenWidth > 800) {
+      this.numberOfDates = 12
+    } else if (this.getScreenWidth > 1800) {
+      this.numberOfDates = 16
+    }
     this.createDateList();
   }
 
@@ -53,6 +62,14 @@ export class DatePickerComponent implements OnInit {
         this.nextMonth[i].isClicked = false;
       }
     }
+  }
+
+  @HostListener('scroll') onScroll(e: Event): void {
+    this.getYPosition(e);
+  }
+
+  getYPosition(e: Event): void {
+    console.log(e)
   }
 
   addDates() {

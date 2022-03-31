@@ -92,5 +92,6 @@
 }
 
 .date-picker {
-  max-width: 85%;
+  margin: 1rem;
+  max-width: 80%;
 }
