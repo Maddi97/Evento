@@ -5,8 +5,10 @@
                     [ngClass]="{'clicked' : day.isClicked}">
       >
     </vents-day-date>
-    <div (click)="addDates()" class="add-dates">
-      ...
+    <div class="add-dates">
+      <div (click)="addDates()" class="add-text">
+        <img class="view-more-icon" src="assets/static-icons/view-more.png"/>
+      </div>
     </div>
   </div>
 </div>

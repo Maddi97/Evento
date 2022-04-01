@@ -1,5 +1,5 @@
-import {Component, OnInit, Output, EventEmitter, ViewChild, HostListener} from '@angular/core';
-import {MatCalendar} from '@angular/material/datepicker';
+import { Component, OnInit, Output, EventEmitter, ViewChild, HostListener } from '@angular/core';
+import { MatCalendar } from '@angular/material/datepicker';
 import * as moment from 'moment';
 
 @Component({
@@ -27,11 +27,13 @@ export class DatePickerComponent implements OnInit {
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
 
-    if (this.getScreenWidth > 800) {
-      this.numberOfDates = 12
-    } else if (this.getScreenWidth > 1800) {
-      this.numberOfDates = 16
+    if (this.getScreenWidth > 700) {
+      this.numberOfDates = Number(this.getScreenWidth / 100)
     }
+    else {
+      this.numberOfDates = 7;
+    }
+
     this.createDateList();
   }
 
@@ -39,7 +41,8 @@ export class DatePickerComponent implements OnInit {
     this.nextMonth.map(m => {
       if (m.date === day) {
         m.isClicked = true;
-      } else {
+      }
+      else {
         m.isClicked = false;
       }
     });
@@ -58,7 +61,8 @@ export class DatePickerComponent implements OnInit {
       this.nextMonth[i].date = day;
       if (i === this.firstDate) {
         this.safeDate(this.nextMonth[i].date);
-      } else {
+      }
+      else {
         this.nextMonth[i].isClicked = false;
       }
     }
