@@ -46,6 +46,13 @@
   background-color: rgb(245, 241, 0);
 }
 
+.distance-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5rem;
+}
+
 .distance-label {
   text-align: center;
   font-size: 0.8rem;
@@ -53,6 +60,7 @@
 }
 
 .slider {
+  width: 50%;
   padding-bottom: 0;
   padding-top: 0;
 }
@@ -79,11 +87,11 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .event-container {
   width: 50%;
-  margin: 3rem;
 }
 
 .map-container {

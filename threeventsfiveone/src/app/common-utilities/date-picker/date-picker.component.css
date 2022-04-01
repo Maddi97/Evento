@@ -55,6 +55,13 @@
 
 .events-day-date {
   height: 100%;
+  position: relative;
+  top: 0;
+  transition: top ease 0.3s;
+}
+
+.events-day-date:hover:has(.day-date) {
+  top: -1rem
 }
 
 .clicked {

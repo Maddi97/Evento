@@ -12,12 +12,16 @@
   height: 5rem;
   width: 5rem;
   /*background-color: #ecececc7;*/
-  border-radius: 5px;
   margin: 10px;
   border-radius: 10px;
   box-shadow: 0 0 30px -7px rgba(221, 221, 221, 0.77) inset;
   box-sizing: border-box;
 }
+
+/*.day-date:hover {*/
+/*  margin-top: -1.5rem;*/
+/*}*/
+
 
 .day {
   display: flex;

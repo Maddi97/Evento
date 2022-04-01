@@ -28,6 +28,19 @@
   <div class="spinner-container">
     <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
   </div>
+  <div class="distance-filter">
+    <span class="distance-label">Entfernung (in km)</span>
+    <mat-slider
+      class="slider"
+      thumbLabel
+      min="1"
+      max="100"
+      step="1"
+      style="z-index: 0"
+      [(ngModel)]="filteredDistance"
+      (change)="searchForDistance($event)">
+    </mat-slider>
+  </div>
   <div class="event-map-container">
 
     <div class="event-container">
@@ -41,19 +54,6 @@
     </div>
 
     <div class="map-container">
-      <div class="distance-filter">
-        <span class="distance-label">Entfernung (in km)</span>
-        <mat-slider
-          class="slider"
-          thumbLabel
-          min="1"
-          max="100"
-          step="1"
-          style="z-index: 0"
-          [(ngModel)]="filteredDistance"
-          (change)="searchForDistance($event)">
-        </mat-slider>
-      </div>
       <map-view [markerData]="this.filteredList"></map-view>
     </div>
   </div>
