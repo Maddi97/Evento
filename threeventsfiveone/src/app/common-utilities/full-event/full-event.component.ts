@@ -1,9 +1,11 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {Event} from '../../models/event';
-import {ActivatedRoute} from '@angular/router';
-import {EventService} from 'src/app/events/event.service';
-import {FileService} from '../../file.service';
-import {DomSanitizer} from "@angular/platform-browser";
+import { Component, OnInit, Input, Inject } from '@angular/core';
+import { Event } from '../../models/event';
+import { ActivatedRoute } from '@angular/router';
+import { EventService } from 'src/app/events/event.service';
+import { FileService } from '../../file.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'vents-full-event',
@@ -23,14 +25,20 @@ export class FullEventComponent implements OnInit {
     private eventService: EventService,
     private fileService: FileService,
     private sanitizer: DomSanitizer,
-  ) {
+    @Inject(MAT_DIALOG_DATA)
+      data) {
+    this.eventId = data.eventId;
   }
 
-  ngOnInit(): void {
-    this.route.fragment.subscribe(r => {
-      this.eventId = r;
-      this.event = this.eventService.eventForId(this.eventId);
-    });
+
+  ngOnInit()
+    :
+    void {
+    // this.route.fragment.subscribe(r => {
+    //   this.eventId = r;
+    //   this.event = this.eventService.eventForId(this.eventId);
+    // });
+    this.event = this.eventService.eventForId(this.eventId)
     this.downloadImage();
 
   }
@@ -45,7 +53,8 @@ export class FullEventComponent implements OnInit {
           this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
         });
       }
-    } else if (cat.stockImagePath !== undefined) {
+    }
+    else if (cat.stockImagePath !== undefined) {
       if (cat.stockImageTemporaryURL === undefined) {
         this.fileService.downloadFile(cat.stockImagePath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
@@ -53,7 +62,8 @@ export class FullEventComponent implements OnInit {
           this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
         });
       }
-    } else if (cat.iconPath !== undefined) {
+    }
+    else if (cat.iconPath !== undefined) {
       if (cat.iconTemporaryURL === undefined) {
         this.fileService.downloadFile(cat.iconPath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security

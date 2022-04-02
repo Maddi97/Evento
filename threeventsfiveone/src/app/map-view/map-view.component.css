@@ -6,13 +6,15 @@
 }
 
 .map-frame {
-  border: 2px solid black;
+  border: 1px solid black;
   height: 100%;
+  border-radius: 15px;
 }
 
 #map {
-z-index: 0;
-padding-top: 75%;
+  z-index: 0;
+  padding-top: 75%;
+  border-radius: 15px;
 }
 
 .input-line {

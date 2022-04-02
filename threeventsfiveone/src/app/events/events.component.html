@@ -45,8 +45,8 @@
 
     <div class="event-container">
 
-      <div fxLayout="column" *ngFor="let event of filteredList">
-        <vents-event-tile routerLink="/full-event" fragment={{event._id}} [event]="event"></vents-event-tile>
+      <div class="event-tile-list" *ngFor="let event of filteredList">
+        <vents-event-tile (click)="openDialog(event)" [event]="event"></vents-event-tile>
       </div>
       <div *ngIf="filteredList.length == 0">
         Sorry für das angegebene Datum haben wir keine Events gespeichert.

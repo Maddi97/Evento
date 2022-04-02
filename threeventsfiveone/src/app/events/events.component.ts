@@ -1,15 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {EventService} from './event.service';
-import {Event} from '../models/event';
-import {CategoriesService} from '../categories/categories.service';
-import {Category, Subcategory} from '../models/category';
-import {PositionService} from '../map-view/position.service';
-import {NominatimGeoService} from '../nominatim-geo.service';
-import {NgxSpinnerService} from 'ngx-spinner';
-import {ActivatedRoute, Router} from '@angular/router';
-import {filter, map} from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { EventService } from './event.service';
+import { Event } from '../models/event';
+import { CategoriesService } from '../categories/categories.service';
+import { Category, Subcategory } from '../models/category';
+import { PositionService } from '../map-view/position.service';
+import { NominatimGeoService } from '../nominatim-geo.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
+import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import * as log from 'loglevel';
+
+import { MatDialog } from '@angular/material/dialog';
+import { FullEventComponent } from '../common-utilities/full-event/full-event.component';
 
 
 @Component({
@@ -66,7 +69,8 @@ export class EventsComponent implements OnInit {
     private positionService: PositionService,
     private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
-    private _activatedRoute: ActivatedRoute
+    private _activatedRoute: ActivatedRoute,
+    private dialog: MatDialog
   ) {
   }
 
@@ -130,13 +134,15 @@ export class EventsComponent implements OnInit {
 
     if (this.filteredCategory == null) {
       fil.cat = this.categoryList;
-    } else {
+    }
+    else {
       fil.cat = [this.filteredCategory];
     }
 
     if (this.filteredSubcategories.length < 1) {
       fil.subcat = [];
-    } else {
+    }
+    else {
       fil.subcat = this.filteredSubcategories;
     }
 
@@ -144,7 +150,8 @@ export class EventsComponent implements OnInit {
     // if category is not hot
     if (!fil.cat.includes('hot')) {
       this.eventService.getEventsOnDateCategoryAndSubcategory(fil);
-    } else {
+    }
+    else {
       // if hot filter by date
       this.eventService.getEventsOnDate(this.filteredDate);
     }
@@ -175,7 +182,8 @@ export class EventsComponent implements OnInit {
   addCategoryToFilter(cat: any) {
     if (this.filteredCategory === cat) {
       return;
-    } else {
+    }
+    else {
       this.filteredCategory = cat;
     }
 
@@ -190,7 +198,8 @@ export class EventsComponent implements OnInit {
   addSubcategoryToFilter(subcat: Subcategory) {
     if (!this.filteredSubcategories.includes(subcat)) {
       this.filteredSubcategories.push(subcat);
-    } else {
+    }
+    else {
       // remove subcat from list
       this.filteredSubcategories = this.filteredSubcategories.filter(obj => obj !== subcat);
     }
@@ -201,7 +210,8 @@ export class EventsComponent implements OnInit {
   isElementPicked(cat: any) {
     if (this.filteredCategory === cat || this.filteredSubcategories.includes(cat)) {
       return 'category-picked';
-    } else {
+    }
+    else {
       return 'category-non-picked';
     }
   }
@@ -209,6 +219,13 @@ export class EventsComponent implements OnInit {
   changeToMapView() {
     this.mapView ? this.mapView = false : this.mapView = true;
   }
+
+  openDialog(event: Event) {
+    this.dialog.open(FullEventComponent, {
+      data: {eventId: event._id}
+    });
+  }
+
 }
 
 class DateClicked {

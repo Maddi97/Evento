@@ -12,7 +12,7 @@ RUN npm ci
 COPY . /app
 
 ENV NODE_OPTIONS="--max-old-space-size=8192"
-RUN ng build --output-path=dist --sourceMap=false --configuration production
+RUN ng build --output-path=dist --configuration production
 
 FROM nginx:1.16.0-alpine
 

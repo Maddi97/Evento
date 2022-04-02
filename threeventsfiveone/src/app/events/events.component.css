@@ -91,15 +91,30 @@
 }
 
 .event-container {
+  margin-top: 2rem;
   width: 50%;
+  height: 50rem;
+  overflow-x: scroll;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1rem;
 }
 
 .map-container {
   width: 40%;
   height: auto;
+  padding-top: 1rem;
+
 }
 
 .date-picker {
-  margin: 1rem;
+  margin: 1.5rem;
   max-width: 80%;
+}
+
+.event-tile-list {
+  width: 80%;
+  margin: 0.5rem;
 }
