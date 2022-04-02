@@ -44,8 +44,8 @@
   height: 80%;
   width: 75%;
 
-  margin-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  justify-content: center;
+  display: flex;
 }
 
 .event-tile-information-name-date {

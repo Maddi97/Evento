@@ -25,6 +25,7 @@ export class EventTileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.event)
     this.organizerService.getOrganizerById(this.event._organizerId).subscribe(
       organizerResponse => {
         this.organizer = organizerResponse[0];

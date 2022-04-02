@@ -13,6 +13,8 @@ import * as log from 'loglevel';
 
 import { MatDialog } from '@angular/material/dialog';
 import { FullEventComponent } from '../common-utilities/full-event/full-event.component';
+import { FileService } from '../file.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -70,7 +72,10 @@ export class EventsComponent implements OnInit {
     private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
     private _activatedRoute: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private fileService: FileService,
+    private sanitizer: DomSanitizer
+    ,
   ) {
   }
 
@@ -118,7 +123,7 @@ export class EventsComponent implements OnInit {
           }
         });
 
-
+      this.downloadSubcategoryIcons()
       this.applyFilters();
     });
 
@@ -223,6 +228,22 @@ export class EventsComponent implements OnInit {
   openDialog(event: Event) {
     this.dialog.open(FullEventComponent, {
       data: {eventId: event._id}
+    });
+  }
+
+  downloadSubcategoryIcons() {
+
+    this.categoryList.forEach(category => {
+      if (category.iconPath !== undefined) {
+        if (category.iconTemporaryURL === undefined) {
+          this.fileService.downloadFile(category.iconPath).subscribe(imageData => {
+            // create temporary Url for the downloaded image and bypass security
+            const unsafeImg = URL.createObjectURL(imageData);
+            category.iconTemporaryURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          });
+        }
+
+      }
     });
   }
 

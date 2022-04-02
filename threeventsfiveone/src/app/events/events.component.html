@@ -8,12 +8,14 @@
     <div class="main-category-container">
 
       <span class="category" [ngClass]="isElementPicked('hot')" (click)="addCategoryToFilter('hot')">
+                <img src="assets/static-icons/icons8-flame-60.png"/>
               Hot
           </span>
 
       <div *ngFor="let category of categoryList">
           <span class="category" [ngClass]="isElementPicked(category)" (click)="addCategoryToFilter(category)">
-              {{ category.name }}
+          <img [src]="category.iconTemporaryURL"/>
+            {{ category.name }}
           </span>
         <div class="subcategory-container" *ngIf="category.subcategories.length > 0
                                                  && isElementPicked(category) == 'category-picked'">
