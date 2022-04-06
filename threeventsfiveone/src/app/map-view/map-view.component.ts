@@ -1,7 +1,7 @@
-import {Component, OnChanges, OnInit, Input, OnDestroy} from '@angular/core';
+import { Component, OnChanges, OnInit, Input, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
-import {PositionService} from './position.service';
-import {Router} from '@angular/router';
+import { PositionService } from './position.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'map-view',
@@ -10,6 +10,8 @@ import {Router} from '@angular/router';
 })
 export class MapViewComponent implements OnInit, OnChanges {
   @Input() markerData = [];
+  @Input() hoveredData = null;
+
   private map;
   private markerGroup;
   private positionMarkerGroup;
@@ -52,6 +54,9 @@ export class MapViewComponent implements OnInit, OnChanges {
     this.updatePosition(this.positionService.getDefaultLocation());
   }
 
+  // when hover input changes and ngOnChange is triggered
+  ngOnChange(): void {
+  }
 
   updatePosition(locationList) {
     this.currentPosition.lat = locationList[0];
