@@ -80,7 +80,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-
     const events$ = this.eventService.events.pipe(
       map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)
       ),
@@ -96,7 +95,6 @@ export class EventsComponent implements OnInit, OnDestroy {
     const categories$ = this.categoriesService.categories.pipe(
       map((categories: Category[]) => {
         this.categoryList = categories;
-        console.log(categories)
         categories.forEach((category: Category) => {
           category.subcategories.forEach(subcategory => {
             this.subcategoryList.push(subcategory);
@@ -131,8 +129,10 @@ export class EventsComponent implements OnInit, OnDestroy {
       .pipe(
         mergeMap(() => params$)
       )
-      .subscribe(() => this.applyFilters())
-    this.downloadSubcategoryIcons()
+      .subscribe(() => {
+        this.downloadCategoryIcon()
+        this.applyFilters()
+      })
     this.applyFilters()
     // request categories
     this.categoriesService.getAllCategories();
@@ -237,12 +237,12 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   empty_filters() {
-    this.filteredCategory = []
+    this.filteredCategory = 'hot'
     this.filteredSubcategories = []
   }
 
 
-  downloadSubcategoryIcons() {
+  downloadCategoryIcon() {
 
     this.categoryList.forEach(category => {
       if (category.iconPath !== undefined) {

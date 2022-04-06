@@ -12,7 +12,7 @@
               Hot
           </span>
 
-      <div *ngFor="let category of categoryList">
+      <div *ngFor="let category of categoryList" class="category-list">
           <span class="category" [ngClass]="isElementPicked(category)" (click)="addCategoryToFilter(category)">
           <img [src]="category.iconTemporaryURL"/>
             {{ category.name }}

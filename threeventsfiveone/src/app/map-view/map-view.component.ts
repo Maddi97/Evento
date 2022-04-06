@@ -133,16 +133,25 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private setMarkers(markerData): void {
+    let mark = null
+    const popup = L.popup().setContent('hello')
+
     this.markerGroup.clearLayers();
     if (typeof markerData !== 'undefined') {
       markerData.map(marker => {
         if (typeof marker.geoData !== 'undefined') {
-          L.marker([marker.geoData.lat, marker.geoData.lon])
-            .setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
+          mark = L.marker([marker.geoData.lat, marker.geoData.lon])
+          mark.setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
             .addTo(this.markerGroup)
-            .on('click', () => {
-              this.router.navigate(['/', 'full-event'], {fragment: marker._id});
-            });
+            // .on('click', () => {
+            //   //this.router.navigate(['/', 'full-event'], {fragment: marker._id});
+            // })
+            .bindPopup(
+              popup
+            )
+          mark.on('click', () => {
+            mark.openPopup();
+          })
         }
       });
     }
