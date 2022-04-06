@@ -10,6 +10,8 @@ import { CategoriesModule } from './categories/categories.module';
 import { SettingsModule } from './settings/settings.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+
 import { CommonUtilitiesModule } from './common-utilities/common-utilities.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -30,7 +32,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     Angular Material
     */
     MatIconModule,
-
+    MatDialogModule,
     /*
     Own Modules
     */
@@ -43,4 +45,5 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

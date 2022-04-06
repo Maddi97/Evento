@@ -1,17 +1,20 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {EventService} from './event.service';
-import {Event} from '../models/event';
-import {CategoriesService} from '../categories/categories.service';
-import {Category, Subcategory} from '../models/category';
-import {PositionService} from '../map-view/position.service';
-import {NominatimGeoService} from '../nominatim-geo.service';
-import {NgxSpinnerService} from 'ngx-spinner';
-import {ActivatedRoute, Router} from '@angular/router';
-import {filter, flatMap, map, mergeMap} from 'rxjs/operators';
-import {concat} from 'rxjs'
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { EventService } from './event.service';
+import { Event } from '../models/event';
+import { CategoriesService } from '../categories/categories.service';
+import { Category, Subcategory } from '../models/category';
+import { PositionService } from '../map-view/position.service';
+import { NominatimGeoService } from '../nominatim-geo.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
+import { filter, flatMap, map, mergeMap } from 'rxjs/operators';
+import { concat } from 'rxjs'
 
 import * as moment from 'moment';
 import * as log from 'loglevel';
+
+import { FileService } from '../file.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -68,7 +71,10 @@ export class EventsComponent implements OnInit, OnDestroy {
     private positionService: PositionService,
     private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
-    private _activatedRoute: ActivatedRoute
+    private _activatedRoute: ActivatedRoute,
+    private fileService: FileService,
+    private sanitizer: DomSanitizer
+    ,
   ) {
   }
 
@@ -89,46 +95,44 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     const categories$ = this.categoriesService.categories.pipe(
       map((categories: Category[]) => {
-         this.categoryList = categories;
-         console.log(categories)
-         categories.forEach((category: Category) => {
-            category.subcategories.forEach(subcategory => {
-              this.subcategoryList.push(subcategory);
-            })
-         })
-    })
+        this.categoryList = categories;
+        console.log(categories)
+        categories.forEach((category: Category) => {
+          category.subcategories.forEach(subcategory => {
+            this.subcategoryList.push(subcategory);
+          })
+        })
+      })
     )
 
 
     const params$ = this._activatedRoute.queryParams.pipe(
-        map( params => {
-          const category = params.category;
-          console.log(category)
-          if (category !== undefined) {
-            this.categoryList.forEach(c => {
-              if (c._id === category) {
-                this.filteredCategory = c;
-              }
-            });
-          }
+      map(params => {
+        const category = params.category;
+        if (category !== undefined) {
+          this.categoryList.forEach(c => {
+            if (c._id === category) {
+              this.filteredCategory = c;
+            }
+          });
+        }
 
-
-          const sub = params.subcategory;
-          if (sub !== undefined) {
-            this.subcategoryList.forEach(s => {
-              if (s._id === sub) {
-                this.filteredSubcategories.push(s);
-              }
-            });
-          }
-        }));
+        const sub = params.subcategory;
+        if (sub !== undefined) {
+          this.subcategoryList.forEach(s => {
+            if (s._id === sub) {
+              this.filteredSubcategories.push(s);
+            }
+          });
+        }
+      }));
 
     categories$
       .pipe(
-      mergeMap(() => params$)
+        mergeMap(() => params$)
       )
       .subscribe(() => this.applyFilters())
-
+    this.downloadSubcategoryIcons()
     this.applyFilters()
     // request categories
     this.categoriesService.getAllCategories();
@@ -146,13 +150,15 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     if (this.filteredCategory == null) {
       fil.cat = this.categoryList;
-    } else {
+    }
+    else {
       fil.cat = [this.filteredCategory];
     }
 
     if (this.filteredSubcategories.length < 1) {
       fil.subcat = [];
-    } else {
+    }
+    else {
       fil.subcat = this.filteredSubcategories;
     }
 
@@ -160,7 +166,8 @@ export class EventsComponent implements OnInit, OnDestroy {
     // if category is not hot
     if (!fil.cat.includes('hot')) {
       this.eventService.getEventsOnDateCategoryAndSubcategory(fil);
-    } else {
+    }
+    else {
       // if hot filter by date
       this.eventService.getEventsOnDate(this.filteredDate);
     }
@@ -193,7 +200,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   addCategoryToFilter(cat: any) {
     if (this.filteredCategory === cat) {
       return;
-    } else {
+    }
+    else {
       this.filteredCategory = cat;
     }
 
@@ -208,7 +216,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   addSubcategoryToFilter(subcat: Subcategory) {
     if (!this.filteredSubcategories.includes(subcat)) {
       this.filteredSubcategories.push(subcat);
-    } else {
+    }
+    else {
       // remove subcat from list
       this.filteredSubcategories = this.filteredSubcategories.filter(obj => obj !== subcat);
     }
@@ -219,7 +228,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   isElementPicked(cat: any) {
     if (this.filteredCategory === cat || this.filteredSubcategories.includes(cat)) {
       return 'category-picked';
-    } else {
+    }
+    else {
       return 'category-non-picked';
     }
   }
@@ -227,9 +237,27 @@ export class EventsComponent implements OnInit, OnDestroy {
   changeToMapView() {
     this.mapView ? this.mapView = false : this.mapView = true;
   }
+
   empty_filters() {
     this.filteredCategory = []
     this.filteredSubcategories = []
+  }
+
+
+  downloadSubcategoryIcons() {
+
+    this.categoryList.forEach(category => {
+      if (category.iconPath !== undefined) {
+        if (category.iconTemporaryURL === undefined) {
+          this.fileService.downloadFile(category.iconPath).subscribe(imageData => {
+            // create temporary Url for the downloaded image and bypass security
+            const unsafeImg = URL.createObjectURL(imageData);
+            category.iconTemporaryURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          });
+        }
+
+      }
+    });
   }
 
 }

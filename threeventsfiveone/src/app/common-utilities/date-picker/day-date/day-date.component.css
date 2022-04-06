@@ -1,16 +1,27 @@
+@media screen and (max-width: 640px) {
+  .day-date {
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+  }
+}
+
 .day-date {
   display: flex;
   flex-direction: column;
 
   height: 5rem;
   width: 5rem;
-  background-color: white;
-  border-radius: 5px;
+  /*background-color: #ecececc7;*/
   margin: 10px;
   border-radius: 10px;
-  box-shadow: 0px 0px 17px -9px rgb(61 61 61);
+  box-shadow: 0 0 30px -7px rgba(221, 221, 221, 0.77) inset;
   box-sizing: border-box;
 }
+
+/*.day-date:hover {*/
+/*  margin-top: -1.5rem;*/
+/*}*/
+
 
 .day {
   display: flex;
@@ -28,11 +39,36 @@
   height: 1.0rem;
 }
 
+@media screen and (max-width: 640px) {
+  .day-date-clicked {
+    width: 5.2rem !important;
+    height: 5.2rem !important;
+  }
+}
+
 .day-date-clicked {
-  height: 5rem;
-  width: 5rem;
+  height: 6.5rem;
+  width: 6.5rem;
   border-radius: 10px;
   margin: 10px;
-  box-shadow: inset 0px 0px 18px -14px rgb(61 61 61);
+  box-shadow: 0 0 37px -14px #1374c7;
   box-sizing: border-box;
+}
+
+.day-date-clicked .day {
+  font-size: 2.0rem;
+  margin: 0.3rem;
+}
+
+.day-date-clicked .date {
+  font-size: 1.0rem;
+  margin: 0.3rem;
+}
+
+.date-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
 }

@@ -5,23 +5,30 @@
   </div>
   <div class="event-tile-information">
     <div class="event-tile-information-name-date">
-      <div>
-        name
-      </div>
       <div class="event-name">
         {{ event?.name }}
       </div>
-      <div class="category">
-        {{ event?.category?.name }}
+
+      <div class="event-organizer-name">
+        {{event.organizerName}}
       </div>
+      <!--      <div class="category">-->
+      <!--        {{ event?.category?.name }}-->
+      <!--      </div>-->
     </div>
   </div>
   <div class="date">
+    <!--    <div class="date-start">-->
+    <!--      {{ event?.date?.start | date }}-->
+    <!--    </div>-->
+    <!--    <div class="date-end">-->
+    <!--      {{ event?.date?.end | date }}-->
+    <!--    </div>-->
     <div class="date-start">
-      {{ event?.date?.start | date }}
+      Start: {{ event.times.start }} Uhr
     </div>
     <div class="date-end">
-      {{ event?.date?.end | date }}
+      Ende: {{ event.times.end }} Uhr
     </div>
   </div>
 </div>

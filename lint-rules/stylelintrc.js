@@ -2,15 +2,20 @@
 
 
 module.exports = {
-	"extends": "../node_modules/stylelint-config-standard",
-	"plugins": [
-		"../node_modules/stylelint-no-browser-hacks/lib"
+	extends: "stylelint-config-standard",
+	plugins: [
+		"stylelint-no-browser-hacks/lib"
 	],
-	"rules": {
+
+	customSyntax: "postcss-html",
+	"stylelint.validate": [// ↓ Add "html" language.
+		"html",
+	],
+	rules: {
 		"block-closing-brace-newline-after": "always",
 		"color-no-invalid-hex": true,
 		"block-no-empty": null,
-		"indentation": 4,
+		"indentation": 2,
 		"property-no-unknown": true,
 		"plugin/no-browser-hacks": [true, {
 			"browsers": [
