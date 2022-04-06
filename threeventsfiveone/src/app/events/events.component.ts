@@ -11,8 +11,6 @@ import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import * as log from 'loglevel';
 
-import { MatDialog } from '@angular/material/dialog';
-import { FullEventComponent } from '../common-utilities/full-event/full-event.component';
 import { FileService } from '../file.service';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -72,7 +70,6 @@ export class EventsComponent implements OnInit {
     private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
     private _activatedRoute: ActivatedRoute,
-    private dialog: MatDialog,
     private fileService: FileService,
     private sanitizer: DomSanitizer
     ,
@@ -223,12 +220,6 @@ export class EventsComponent implements OnInit {
 
   changeToMapView() {
     this.mapView ? this.mapView = false : this.mapView = true;
-  }
-
-  openDialog(event: Event) {
-    this.dialog.open(FullEventComponent, {
-      data: {eventId: event._id}
-    });
   }
 
   downloadSubcategoryIcons() {

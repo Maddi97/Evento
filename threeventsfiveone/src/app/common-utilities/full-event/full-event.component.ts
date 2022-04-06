@@ -5,6 +5,7 @@ import { EventService } from 'src/app/events/event.service';
 import { FileService } from '../../file.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { map } from 'rxjs';
 
 
 @Component({
@@ -25,21 +26,22 @@ export class FullEventComponent implements OnInit {
     private eventService: EventService,
     private fileService: FileService,
     private sanitizer: DomSanitizer,
-    @Inject(MAT_DIALOG_DATA)
-      data) {
-    this.eventId = data.eventId;
+  ) {
   }
 
 
-  ngOnInit()
-    :
-    void {
-    // this.route.fragment.subscribe(r => {
-    //   this.eventId = r;
-    //   this.event = this.eventService.eventForId(this.eventId);
-    // });
-    this.event = this.eventService.eventForId(this.eventId)
-    this.downloadImage();
+  ngOnInit(): void {
+    this.route.fragment.pipe(
+      map(r => {
+        console.log(r)
+        this.eventId = r;
+        this.eventService.getEventById(this.eventId).subscribe(
+          event => {
+            this.event = event[0]
+            this.downloadImage();
+          });
+      })).subscribe()
+    // this.event = this.eventService.eventForId(this.eventId)
 
   }
 

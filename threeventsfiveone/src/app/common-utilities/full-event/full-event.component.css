@@ -1,12 +1,21 @@
+.full-event-page {
+  display: flex;
+  justify-content: center;
+}
+
 .event-tile {
   display: flex;
   flex-direction: column;
 
-  background-color: #eee;
-  border-radius: 10px;
+
+  background-color: rgba(249, 251, 255, 0.82);
+  border-radius: 23px;
 
   box-shadow: 0 2px 2px #3d3d3d;
-  min-width: 300px
+  min-width: 300px;
+
+  width: 80%;
+  margin: 5rem;
 }
 
 .event-tile-container {
@@ -34,12 +43,12 @@
   flex-direction: column;
 }
 
-.information-first-row {
-  padding-top: .5rem;
+.event-name {
+  width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: 100%;
+  font-size: 1.5rem;
 }
 
 .category {

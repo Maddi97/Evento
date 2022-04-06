@@ -1,14 +1,17 @@
-<div class="event-tile">
-  <div class="event-tile-container">
-    <div class="event-pic">
-      <img class='pic' [src]="ImageURL">
-      <img class='pic' *ngIf="ImageURL===undefined" [src]="IconURL"></div>
-    <div class="event-tile-information">
-      <div class="information-first-row">
+<div class="full-event-page">
+  <div class="event-tile">
+    <div class="event-tile-container">
+      <div class="event-pic">
+        <img class='pic' [src]="ImageURL">
+        <img class='pic' *ngIf="ImageURL===undefined" [src]="IconURL"></div>
+      <div class="event-tile-information">
+        <div class="event-name">
                 <span>
                     {{event?.name}}
                 </span>
 
+
+        </div>
         <div class="date">
           <div class="date-start">
             {{ event?.date?.start | date }}
@@ -17,32 +20,32 @@
             {{ event?.date?.end | date }}
           </div>
         </div>
-      </div>
-      <div class="organizer-name">
-        {{ event?.organizerName}}
-      </div>
-      <div class="category">
-        {{ event?.category.name}}
-      </div>
-      <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
-        {{ subcategory?.name }}
+        <div class="organizer-name">
+          {{ event?.organizerName}}
+        </div>
+        <div class="category">
+          {{ event?.category.name}}
+        </div>
+        <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
+          {{ subcategory?.name }}
+        </div>
       </div>
     </div>
-  </div>
-  <div class="address">
-    <div>
-      Addresse:
-      <br/>
-      {{event?.address?.street}} {{event?.address?.streetNumber}}
-      <br/>
-      {{event?.address?.plz}} {{event?.address?.city}}
+    <div class="address">
+      <div>
+        Addresse:
+        <br/>
+        {{event?.address?.street}} {{event?.address?.streetNumber}}
+        <br/>
+        {{event?.address?.plz}} {{event?.address?.city}}
 
+      </div>
     </div>
-  </div>
-  <div class="description">
-    Kurze Beschreibung:
-    <p>
-      {{event?.description}}
-    </p>
+    <div class="description">
+      Kurze Beschreibung:
+      <p>
+        {{event?.description}}
+      </p>
+    </div>
   </div>
 </div>
