@@ -1,7 +1,7 @@
-import { Component, OnChanges, OnInit, Input, OnDestroy } from '@angular/core';
+import {Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges} from '@angular/core';
 import * as L from 'leaflet';
-import { PositionService } from './position.service';
-import { Router } from '@angular/router';
+import {PositionService} from './position.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'map-view',
@@ -15,6 +15,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   private map;
   private markerGroup;
   private positionMarkerGroup;
+  private hoverMarkerGroup;
   address = '';
 
   currentPosition = {
@@ -28,6 +29,10 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private locationIcon = './assets/leaflet_color_markers/marker-icon-red.png';
   private locationIconRetina = './assets/leaflet_color_markers/marker-icon-2x-red.png';
+
+  private hoverIcon = './assets/leaflet_color_markers/marker-icon-yellow.png';
+  private hoverIconRetina = './assets/leaflet_color_markers/marker-icon-2x-yellow.png';
+
 
   private LeafIcon = L.Icon.extend({
     options: {
@@ -54,9 +59,6 @@ export class MapViewComponent implements OnInit, OnChanges {
     this.updatePosition(this.positionService.getDefaultLocation());
   }
 
-  // when hover input changes and ngOnChange is triggered
-  ngOnChange(): void {
-  }
 
   updatePosition(locationList) {
     this.currentPosition.lat = locationList[0];
@@ -96,6 +98,10 @@ export class MapViewComponent implements OnInit, OnChanges {
 
     this.setPositionMarker();
     this.setMarkers(this.markerData);
+
+    if (this.hoveredData !== null) {
+      this.setHoverMarker(this.hoveredData.geoData.lat, this.hoveredData.geoData.lon)
+    }
   }
 
   private initMap(): void {
@@ -108,7 +114,15 @@ export class MapViewComponent implements OnInit, OnChanges {
     });
 
     this.positionMarkerGroup = L.layerGroup().addTo(this.map);
+    this.hoverMarkerGroup = L.layerGroup().addTo(this.map);
     this.markerGroup = L.layerGroup().addTo(this.map);
+  }
+
+  private setHoverMarker(lat, lon): void {
+    this.hoverMarkerGroup.clearLayers();
+    L.marker([lat, lon])
+      .setIcon(new this.LeafIcon({iconUrl: this.hoverIcon, iconRetinaUrl: this.hoverIconRetina}))
+      .addTo(this.hoverMarkerGroup);
   }
 
   private setPositionMarker(): void {

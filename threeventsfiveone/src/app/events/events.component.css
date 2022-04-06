@@ -23,6 +23,7 @@
 
 .subcategory-container {
   display: flex;
+  position: absolute;
   flex-direction: row;
   margin-top: .5rem;
 }

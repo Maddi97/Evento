@@ -26,6 +26,7 @@
   box-shadow: 1px 1px 12px #8389a4;
   margin-bottom: 1rem;
   cursor: pointer;
+  width: 100%;
 }
 
 .pic {
