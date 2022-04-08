@@ -112,7 +112,6 @@
 .event-container {
   margin-top: 2rem;
   width: 50%;
-  height: 50rem;
   overflow-x: scroll;
 
   display: flex;
