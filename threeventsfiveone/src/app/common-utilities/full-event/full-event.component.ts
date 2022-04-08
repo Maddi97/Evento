@@ -1,11 +1,13 @@
-import { Component, OnInit, Input, Inject } from '@angular/core';
-import { Event } from '../../models/event';
-import { ActivatedRoute } from '@angular/router';
-import { EventService } from 'src/app/events/event.service';
-import { FileService } from '../../file.service';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { map } from 'rxjs';
+import {Component, OnInit, Input, Inject} from '@angular/core';
+import {Event} from '../../models/event';
+import {ActivatedRoute} from '@angular/router';
+import {EventService} from 'src/app/events/event.service';
+import {FileService} from '../../file.service';
+import {DomSanitizer} from '@angular/platform-browser';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {map} from 'rxjs';
+import {Organizer} from '../../models/organizer';
+import {OrganizerService} from '../../organizer.service';
 
 
 @Component({
@@ -18,6 +20,8 @@ export class FullEventComponent implements OnInit {
   eventId: string;
 
   event: Event;
+  organizer: Organizer;
+
   IconURL = null;
   ImageURL = null;
 
@@ -26,6 +30,7 @@ export class FullEventComponent implements OnInit {
     private eventService: EventService,
     private fileService: FileService,
     private sanitizer: DomSanitizer,
+    private organizerService: OrganizerService,
   ) {
   }
 
@@ -33,12 +38,16 @@ export class FullEventComponent implements OnInit {
   ngOnInit(): void {
     this.route.fragment.pipe(
       map(r => {
-        console.log(r)
         this.eventId = r;
         this.eventService.getEventById(this.eventId).subscribe(
           event => {
             this.event = event[0]
-            this.downloadImage();
+            this.organizerService.getOrganizerById(this.event._organizerId).subscribe(
+              organizerResponse => {
+                this.organizer = organizerResponse[0];
+                this.downloadImage();
+              }
+            );
           });
       })).subscribe()
     // this.event = this.eventService.eventForId(this.eventId)
@@ -55,8 +64,15 @@ export class FullEventComponent implements OnInit {
           this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
         });
       }
-    }
-    else if (cat.stockImagePath !== undefined) {
+    } else if (this.organizer.organizerImagePath !== undefined) {
+      if (this.organizer.organizerImageTemporaryURL === undefined) {
+        this.fileService.downloadFile(this.organizer.organizerImagePath).subscribe(imageData => {
+          // create temporary Url for the downloaded image and bypass security
+          const unsafeImg = URL.createObjectURL(imageData);
+          this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+        });
+      }
+    } else if (cat.stockImagePath !== undefined) {
       if (cat.stockImageTemporaryURL === undefined) {
         this.fileService.downloadFile(cat.stockImagePath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
@@ -64,8 +80,7 @@ export class FullEventComponent implements OnInit {
           this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
         });
       }
-    }
-    else if (cat.iconPath !== undefined) {
+    } else if (cat.iconPath !== undefined) {
       if (cat.iconTemporaryURL === undefined) {
         this.fileService.downloadFile(cat.iconPath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
