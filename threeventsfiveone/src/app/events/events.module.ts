@@ -6,17 +6,16 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from '../app-routing.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
-import { HttpClientModule } from "@angular/common/http";
-import {MapViewComponent} from "../map-view/map-view.component";
-import {FormsModule} from "@angular/forms";
-import {NgxSpinnerModule} from "ngx-spinner";
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 @NgModule({
   declarations: [
     EventsComponent,
-    MapViewComponent
   ],
+  exports: [],
   imports: [
     AppRoutingModule,
     CommonModule,
@@ -38,4 +37,5 @@ import {NgxSpinnerModule} from "ngx-spinner";
     NgxSpinnerModule,
   ]
 })
-export class EventsModule { }
+export class EventsModule {
+}

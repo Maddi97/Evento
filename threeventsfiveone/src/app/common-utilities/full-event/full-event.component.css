@@ -23,32 +23,48 @@
   flex-direction: row;
 }
 
+.event-tile-row-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.event-tile-column-container {
+  width: 100%
+
+}
+
 .event-pic {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 
-  height: 5rem;
-  width: 6rem;
+  flex-basis: 33%;
+  margin: 2vw;
 }
 
 .pic {
-  width: 4rem;
-  height: 4rem;
-  border-radius: 5px;
+  width: 100%;
+  border-radius: 23px;
 }
 
 .event-tile-information {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  width: 100%;
+  margin: 2rem 2rem 2rem 0rem;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 .event-name {
-  width: 100%;
-  text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;
-  font-size: 1.5rem;
+  margin: 2.5vw 2vw 0.7vw 0.5vw;
+  font-size: 2vw;
+}
+
+.names-column-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .category {
@@ -57,6 +73,7 @@
   padding: 0px 3px 0px 3px;
   width: fit-content;
   font-size: .7rem;
+  margin: 0.5vw;
 }
 
 .subcategories {
@@ -69,35 +86,47 @@
 
 .date {
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-
-  width: 100%;
-  color: rgb(114, 114, 114);
   padding: 0px 3px 0px 0px;
-  font-size: .7rem;
+  margin-left: 1vw;
 }
 
 .organizer-name {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
+  margin-left: 0.5vw;
+  font-size: 1vw;
 }
 
 .address {
   display: flex;
-  justify-content: center;
-  align-items: center;
+}
+
+.description-map-container {
+  display: flex;
+  flex-direction: row;
 }
 
 .description {
   display: flex;
-  align-self: center;
-  color: rgb(138, 138, 138);
-  font-size: .8rem;
-  width: 95%;
-  background-color: white;
+  flex-direction: column;
+  font-size: 1vw;
   border-radius: 10px;
-  padding: 5px
+  margin: 2vw;
+  margin-left: 0.5vw;
+  flex-basis: 50%;
+
 }
 
+.description > p {
+  margin-top: 0.5vw;
+  font-size: 0.7vw;
+}
+
+.map-container {
+  height: auto;
+  margin-right: 1vw;
+  margin-bottom: 1vw;
+  flex-basis: 50%;
+
+}

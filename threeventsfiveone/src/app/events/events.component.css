@@ -23,6 +23,7 @@
 
 .subcategory-container {
   display: flex;
+  position: absolute;
   flex-direction: row;
   margin-top: .5rem;
 }
@@ -45,7 +46,6 @@
   justify-content: center;
   align-items: center;
   margin-left: 0.5rem;
-  margin-right: 0.5rem;
 }
 
 .category-picked {
@@ -57,7 +57,6 @@
   justify-content: center;
   align-items: center;
   margin-left: 0.5rem;
-  margin-right: 0.5rem;
 }
 
 .category-yellow {
@@ -142,4 +141,5 @@
 img {
   height: 100%;
   padding-right: 1rem;
+  min-width: 1rem;
 }

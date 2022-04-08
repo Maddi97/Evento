@@ -1,5 +1,5 @@
-import {Category} from './category'
-import {Day} from "./organizer";
+import { Category } from './category'
+import { Day } from './organizer';
 
 export class Event {
   _id: string;
@@ -11,6 +11,7 @@ export class Event {
     start: Date,
     end: Date,
   };
+  permanent: boolean;
   times: {
     start: string,
     end: string

@@ -3,7 +3,7 @@ import { EventService } from './event.service';
 import { Event } from '../models/event';
 import { CategoriesService } from '../categories/categories.service';
 import { Category, Subcategory } from '../models/category';
-import { PositionService } from '../map-view/position.service';
+import { PositionService } from '../common-utilities/map-view/position.service';
 import { NominatimGeoService } from '../nominatim-geo.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -32,7 +32,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   distanceList = [];
   // List of filtered Events
   filteredList: Event[] = [];
-
+  hoveredEvent: Event = null;
   // Applied filtered Category IDs
   filteredCategory: any = 'hot';
 
@@ -80,7 +80,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-
     const events$ = this.eventService.events.pipe(
       map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)
       ),
@@ -96,7 +95,6 @@ export class EventsComponent implements OnInit, OnDestroy {
     const categories$ = this.categoriesService.categories.pipe(
       map((categories: Category[]) => {
         this.categoryList = categories;
-        console.log(categories)
         categories.forEach((category: Category) => {
           category.subcategories.forEach(subcategory => {
             this.subcategoryList.push(subcategory);
@@ -131,8 +129,10 @@ export class EventsComponent implements OnInit, OnDestroy {
       .pipe(
         mergeMap(() => params$)
       )
-      .subscribe(() => this.applyFilters())
-    this.downloadSubcategoryIcons()
+      .subscribe(() => {
+        this.downloadCategoryIcon()
+        this.applyFilters()
+      })
     this.applyFilters()
     // request categories
     this.categoriesService.getAllCategories();
@@ -234,17 +234,21 @@ export class EventsComponent implements OnInit, OnDestroy {
     }
   }
 
+  hover(event: Event) {
+    this.hoveredEvent = event;
+  }
+
   changeToMapView() {
     this.mapView ? this.mapView = false : this.mapView = true;
   }
 
   empty_filters() {
-    this.filteredCategory = []
+    this.filteredCategory = 'hot'
     this.filteredSubcategories = []
   }
 
 
-  downloadSubcategoryIcons() {
+  downloadCategoryIcon() {
 
     this.categoryList.forEach(category => {
       if (category.iconPath !== undefined) {
