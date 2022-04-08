@@ -4,48 +4,77 @@
       <div class="event-pic">
         <img class='pic' [src]="ImageURL">
         <img class='pic' *ngIf="ImageURL===undefined" [src]="IconURL"></div>
-      <div class="event-tile-information">
-        <div class="event-name">
+
+      <div class="event-tile-column-container">
+
+        <div class="event-tile-row-container">
+
+          <div class="names-column-container">
+            <div class="event-name">
                 <span>
                     {{event?.name}}
                 </span>
-
-
-        </div>
-        <div class="date">
-          <div class="date-start">
-            {{ event?.date?.start | date }}
+            </div>
+            <div class="category">
+              {{ event?.category.name}}
+            </div>
+            <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
+              {{ subcategory?.name }}
+            </div>
+            <div class="organizer-name">
+                <span>
+                    Veranstalter: {{organizer?.name}}
+                </span>
+            </div>
           </div>
-          <div class="date-end">
-            {{ event?.date?.end | date }}
+          <div class="event-tile-information">
+            <div class="address">
+              <div>
+                Addresse:
+                <br/>
+                {{event?.address?.street}} {{event?.address?.streetNumber}}
+                <br/>
+                {{event?.address?.plz}} {{event?.address?.city}}
+
+              </div>
+            </div>
+            <div class="date" *ngIf="!event.permanent">
+              <div *ngIf="event.date.start !== event.date.end">
+                Termin:
+                <div class="date-start">
+                  von: {{ event?.date?.start | date }}
+                </div>
+                <div class="date-end">
+                  bis: {{ event?.date?.end | date }}
+                </div>
+              </div>
+              <div *ngIf="event.date.start === event.date.end">
+                <div class="date-start">
+                  Termin: {{ event?.date?.start | date }}
+                </div>
+              </div>
+            </div>
+            <div class="event-permanent" *ngIf="event.permanent">
+              always open
+            </div>
           </div>
         </div>
-        <div class="organizer-name">
-          {{ event?.organizerName}}
-        </div>
-        <div class="category">
-          {{ event?.category.name}}
-        </div>
-        <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
-          {{ subcategory?.name }}
+        <div class="description-map-container">
+          <div class="description">
+            Description
+            <p>
+              {{event?.description}}
+            </p>
+          </div>
+          <div class="map-container">
+            <map-view [markerData]="[event]" [zoomInput]="14"
+                      [centerInput]="[event.geoData.lat, event.geoData.lon]"></map-view>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="address">
-      <div>
-        Addresse:
-        <br/>
-        {{event?.address?.street}} {{event?.address?.streetNumber}}
-        <br/>
-        {{event?.address?.plz}} {{event?.address?.city}}
 
-      </div>
     </div>
-    <div class="description">
-      Kurze Beschreibung:
-      <p>
-        {{event?.description}}
-      </p>
-    </div>
+
+
   </div>
 </div>

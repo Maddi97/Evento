@@ -1,7 +1,7 @@
-import {Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges} from '@angular/core';
+import { Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges } from '@angular/core';
 import * as L from 'leaflet';
-import {PositionService} from './position.service';
-import {Router} from '@angular/router';
+import { PositionService } from './position.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'map-view',
@@ -11,6 +11,8 @@ import {Router} from '@angular/router';
 export class MapViewComponent implements OnInit, OnChanges {
   @Input() markerData = [];
   @Input() hoveredData = null;
+  @Input() zoomInput = 11;
+  @Input() centerInput = null;
 
   private map;
   private markerGroup;
@@ -108,10 +110,19 @@ export class MapViewComponent implements OnInit, OnChanges {
     if (this.currentPosition.lat === '' || this.currentPosition.lon === '') {
       this.updatePosition(this.positionService.getCurrentPosition());
     }
-    this.map = L.map('map', {
-      center: [this.currentPosition.lat, this.currentPosition.lon],
-      zoom: 11
-    });
+
+    if (this.centerInput === null) {
+      this.map = L.map('map', {
+        center: [this.currentPosition.lat, this.currentPosition.lon],
+        zoom: this.zoomInput
+      });
+    }
+    else {
+      this.map = L.map('map', {
+        center: this.centerInput,
+        zoom: this.zoomInput
+      });
+    }
 
     this.positionMarkerGroup = L.layerGroup().addTo(this.map);
     this.hoverMarkerGroup = L.layerGroup().addTo(this.map);

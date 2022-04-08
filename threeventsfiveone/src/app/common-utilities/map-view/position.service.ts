@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {NominatimGeoService} from '../nominatim-geo.service';
-import {map} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { NominatimGeoService } from '../../nominatim-geo.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,8 @@ export class PositionService {
   getCurrentPosition() {
     if (this.searchedCenter.length === 2) {
       return this.searchedCenter;
-    } else {
+    }
+    else {
       return this.defaultCenterPosition;
     }
   }
