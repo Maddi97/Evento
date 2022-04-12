@@ -15,6 +15,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { CommonUtilitiesModule } from './common-utilities/common-utilities.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CategoriesModule,
     SettingsModule,
     CommonUtilitiesModule,
+    FontAwesomeModule,
   ],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
