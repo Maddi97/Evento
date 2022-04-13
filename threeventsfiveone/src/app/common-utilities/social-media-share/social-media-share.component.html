@@ -5,8 +5,9 @@
     <span><i class="fab gg-clipboard"></i></span>
   </li>
 
-  <a href="whatsapp://send?text={{url}}" data-text=shareText
-     class="wa_btn wa_btn_s">
+  <a [href]="sanitize(whatsappLink)"
+     title="Share On Whatsapp"
+  >
     <li class="icon whatsapp">
 
       <span class="tooltip">WhatsApp</span>
