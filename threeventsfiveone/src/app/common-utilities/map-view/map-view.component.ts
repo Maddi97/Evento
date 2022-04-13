@@ -83,6 +83,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   getCurrentPosition() {
+    console.log('hallo')
     this.positionService.getPositionByLocation().then(() => {
       this.resetCenter();
     });

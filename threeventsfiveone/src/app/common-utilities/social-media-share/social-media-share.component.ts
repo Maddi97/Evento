@@ -29,9 +29,8 @@ export class SocialMediaShareComponent implements OnInit {
   }
 
   openSnackBar(message) {
-    console.log(message)
     this._snackbar.open(message, '', {
-      duration: 3000,
+      duration: 2000,
       verticalPosition: 'top',
       horizontalPosition: 'center',
       panelClass: ['green-snackbar'],
