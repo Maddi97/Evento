@@ -3,10 +3,12 @@
     <div class="event-tile-container">
       <div class="event-pic">
         <img class='pic' [src]="ImageURL">
-        <img class='pic' *ngIf="ImageURL===undefined" [src]="IconURL"></div>
+        <img class='pic' *ngIf="ImageURL===undefined" [src]="IconURL">
+        <vents-social-media-share class="social-media-buttons"></vents-social-media-share>
+
+      </div>
 
       <div class="event-tile-column-container">
-        <vents-social-media-share></vents-social-media-share>
         <div class="event-tile-row-container">
 
           <div class="names-column-container">

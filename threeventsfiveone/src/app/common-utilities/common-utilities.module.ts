@@ -12,6 +12,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { SocialMediaShareComponent } from './social-media-share/social-media-share.component';
 import { MatIconModule } from '@angular/material/icon';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -22,6 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
     DayDateComponent,
     MapViewComponent,
     SocialMediaShareComponent,
+
   ],
   imports: [
     CommonModule,
@@ -30,7 +33,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatNativeDateModule,
     FormsModule,
-    MatIconModule
+    MatIconModule,
+    ClipboardModule,
+    MatSnackBarModule
 
   ],
   exports: [

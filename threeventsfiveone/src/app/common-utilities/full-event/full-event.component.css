@@ -35,9 +35,8 @@
 
 .event-pic {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-
+  align-items: center;
+  flex-direction: column;
   flex-basis: 33%;
   margin: 2vw;
 }
@@ -45,6 +44,10 @@
 .pic {
   width: 100%;
   border-radius: 23px;
+}
+
+.social-media-buttons {
+  margin-top: 2.2rem;
 }
 
 .event-tile-information {
