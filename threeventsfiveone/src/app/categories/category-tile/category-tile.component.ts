@@ -13,13 +13,11 @@ export class CategoryTileComponent implements OnInit {
   @Input() category: Category;
 
   showSubcategories = false;
-
+  
   constructor(private fileService: FileService,
               private sanitizer: DomSanitizer,) {
 
   }
-
-  IconUrl = null;
 
   ngOnInit(): void {
     this.downloadImage();
@@ -39,7 +37,7 @@ export class CategoryTileComponent implements OnInit {
         this.fileService.downloadFile(cat.iconPath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
           const unsafeImg = URL.createObjectURL(imageData);
-          this.IconUrl = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          this.category.iconTemporaryURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
         });
       }
 

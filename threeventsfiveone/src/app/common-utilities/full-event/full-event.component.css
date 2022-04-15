@@ -63,7 +63,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2.2rem;
 }
 
 .event-tile-information {
@@ -85,8 +84,19 @@
   margin: 0.5vw;
 }
 
+.organizer-name {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 0.5vw;
+}
+
 .price {
-  margin: 0.5vw;
+  margin-left: 0.5vw;
+}
+
+.opening-times {
+  margin-left: 0.5vw;
 }
 
 
@@ -132,21 +142,11 @@
   padding: 0px 3px 0px 0px;
 }
 
-.organizer-name {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-left: 0.5vw;
-}
 
 .address {
   display: flex;
 }
 
-.opening-times {
-  margin: 1rem 0rem 2rem 0rem;
-  align-self: center;
-}
 
 .description {
   display: flex;
@@ -169,6 +169,7 @@
   margin-right: 0.5vw;
   margin-bottom: 0.5vw;
   margin-left: 0.5vw;
+  margin-top: 3rem;
   flex-basis: 50%;
 
 }

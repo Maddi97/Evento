@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: space-around;
   margin-top: 2%;
+  min-height: 100%;
 }
 
 .category-component {
@@ -12,5 +13,6 @@
 
 .header {
   text-align: center;
-  padding-top: 10px;
+  padding-top: 20px;
+  font-size: 45px;
 }

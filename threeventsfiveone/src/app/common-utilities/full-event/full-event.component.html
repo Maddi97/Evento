@@ -35,6 +35,9 @@
       <div class="price" *ngIf="event.price">
         <span>Preis: {{event?.price}} Euro</span>
       </div>
+      <div class="opening-times">
+        <span> Geöfnet: {{event.times.start}} Uhr - {{event.times.end}} Uhr</span>
+      </div>
       <div class="description">
         Description
         <p>
@@ -77,9 +80,6 @@
             always open
           </div>
         </div>
-      </div>
-      <div class="opening-times">
-        <span> offen von {{event.times.start}} Uhr bis {{event.times.end}} Uhr</span>
       </div>
       <div class="map-container">
 
