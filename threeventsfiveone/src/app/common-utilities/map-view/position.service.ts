@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { NominatimGeoService } from '../../nominatim-geo.service';
-import { map } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {Injectable} from '@angular/core';
+import {NominatimGeoService} from '../../nominatim-geo.service';
+import {map} from 'rxjs/operators';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +25,7 @@ export class PositionService {
   getCurrentPosition() {
     if (this.searchedCenter.length === 2) {
       return this.searchedCenter;
-    }
-    else {
+    } else {
       return this.defaultCenterPosition;
     }
   }
@@ -43,12 +42,13 @@ export class PositionService {
   }
 
   getPositionByLocation() {
-    console.log('moin')
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(
         position => {
+
           const {latitude, longitude} = position.coords;
           this.searchedCenter = [latitude, longitude];
+          console.log(this.searchedCenter)
         },
         err => {
           this.openErrorSnackBar(err.message)

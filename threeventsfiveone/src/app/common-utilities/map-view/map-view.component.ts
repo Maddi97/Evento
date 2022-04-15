@@ -1,7 +1,7 @@
-import { Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges } from '@angular/core';
+import {Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges} from '@angular/core';
 import * as L from 'leaflet';
-import { PositionService } from './position.service';
-import { Router } from '@angular/router';
+import {PositionService} from './position.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'map-view',
@@ -71,7 +71,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     this.updatePosition(this.positionService.getCurrentPosition());
     this.setPositionMarker();
     this.map.panTo((new L.LatLng(this.currentPosition.lat, this.currentPosition.lon)));
-    this.router.navigate(['/', 'events'], {queryParams: {positionUpdate: true}});
+    //this.router.navigate(['/', 'events'], {queryParams: {positionUpdate: true}});
   }
 
   searchForLocationInput() {
@@ -83,7 +83,6 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   getCurrentPosition() {
-    console.log('hallo')
     this.positionService.getPositionByLocation().then(() => {
       this.resetCenter();
     });
@@ -117,8 +116,7 @@ export class MapViewComponent implements OnInit, OnChanges {
         center: [this.currentPosition.lat, this.currentPosition.lon],
         zoom: this.zoomInput
       });
-    }
-    else {
+    } else {
       this.map = L.map('map', {
         center: this.centerInput,
         zoom: this.zoomInput

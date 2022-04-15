@@ -1,8 +1,9 @@
 <div class="map-container">
   <div class="input-line">
     <div>
-      <input class="address-input" (change)="searchForLocationInput()" placeholder="Address" [(ngModel)]="address">
-      <button class="address-search" (click)="searchForLocationInput()">Go!</button>
+      <input class="address-input" (change)="searchForLocationInput()" placeholder="Dein Standort ..."
+             [(ngModel)]="address">
+      <button class="address-search" (click)="searchForLocationInput()">Suchen!</button>
     </div>
     <div>
     <span class="material-icons gps-button" (click)="getCurrentPosition()">
