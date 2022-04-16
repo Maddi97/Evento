@@ -85,8 +85,9 @@
   font-size: 30px;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (min-width: 600px) {
   .event-name {
+    text-align: unset !important;
     margin-bottom: 1rem !important;
   }
 }

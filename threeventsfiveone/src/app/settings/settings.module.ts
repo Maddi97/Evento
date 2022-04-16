@@ -8,6 +8,7 @@ import {InsertEventComponent} from './pages/insert-event/insert-event.component'
 import {DatenschutzComponent} from './pages/datenschutz/datenschutz.component';
 import {ImpressumComponent} from './pages/impressum/impressum.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     MatIconModule,
     MatInputModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSnackBarModule
   ]
 })
 export class SettingsModule {
