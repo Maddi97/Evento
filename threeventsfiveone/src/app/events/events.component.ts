@@ -1,20 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { EventService } from './event.service';
-import { Event } from '../models/event';
-import { CategoriesService } from '../categories/categories.service';
-import { Category, Subcategory } from '../models/category';
-import { PositionService } from '../common-utilities/map-view/position.service';
-import { NominatimGeoService } from '../nominatim-geo.service';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
-import { filter, flatMap, map, mergeMap } from 'rxjs/operators';
-import { concat } from 'rxjs'
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {EventService} from './event.service';
+import {Event} from '../models/event';
+import {CategoriesService} from '../categories/categories.service';
+import {Category, Subcategory} from '../models/category';
+import {PositionService} from '../common-utilities/map-view/position.service';
+import {NominatimGeoService} from '../nominatim-geo.service';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {ActivatedRoute, Router} from '@angular/router';
+import {filter, flatMap, map, mergeMap} from 'rxjs/operators';
+import {concat} from 'rxjs'
 
 import * as moment from 'moment';
 import * as log from 'loglevel';
 
-import { FileService } from '../file.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import {FileService} from '../file.service';
+import {DomSanitizer} from '@angular/platform-browser';
 
 
 @Component({
@@ -65,6 +65,9 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   subcategoryList: Subcategory[] = [];
 
+  public getScreenWidth: any;
+
+
   constructor(
     private eventService: EventService,
     private categoriesService: CategoriesService,
@@ -79,6 +82,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.getScreenWidth = window.innerWidth;
+
 
     const events$ = this.eventService.events.pipe(
       map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)
@@ -150,15 +155,13 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     if (this.filteredCategory == null) {
       fil.cat = this.categoryList;
-    }
-    else {
+    } else {
       fil.cat = [this.filteredCategory];
     }
 
     if (this.filteredSubcategories.length < 1) {
       fil.subcat = [];
-    }
-    else {
+    } else {
       fil.subcat = this.filteredSubcategories;
     }
 
@@ -166,8 +169,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     // if category is not hot
     if (!fil.cat.includes('hot')) {
       this.eventService.getEventsOnDateCategoryAndSubcategory(fil);
-    }
-    else {
+    } else {
       // if hot filter by date
       this.eventService.getEventsOnDate(this.filteredDate);
     }
@@ -200,8 +202,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   addCategoryToFilter(cat: any) {
     if (this.filteredCategory === cat) {
       return;
-    }
-    else {
+    } else {
       this.filteredCategory = cat;
     }
 
@@ -216,8 +217,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   addSubcategoryToFilter(subcat: Subcategory) {
     if (!this.filteredSubcategories.includes(subcat)) {
       this.filteredSubcategories.push(subcat);
-    }
-    else {
+    } else {
       // remove subcat from list
       this.filteredSubcategories = this.filteredSubcategories.filter(obj => obj !== subcat);
     }
@@ -228,8 +228,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   isElementPicked(cat: any) {
     if (this.filteredCategory === cat || this.filteredSubcategories.includes(cat)) {
       return 'category-picked';
-    }
-    else {
+    } else {
       return 'category-non-picked';
     }
   }
@@ -262,6 +261,11 @@ export class EventsComponent implements OnInit, OnDestroy {
 
       }
     });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  getScreenSize(event?) {
+    this.getScreenWidth = window.innerWidth;
   }
 
 }

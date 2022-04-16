@@ -1,43 +1,59 @@
 .full-event-page {
   display: flex;
   justify-content: center;
+  flex-direction: row;
+}
+
+.column-container-1 {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 30%;
+}
+
+@media screen and (max-width: 1000px) {
+  .column-container-2 {
+    align-items: center;
+  }
+
+}
+
+.column-container-2 {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 40%;
+}
+
+.column-container-3 {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 30%;
+}
+
+@media screen and (max-width: 1000px) {
+  .event-tile {
+    flex-direction: column !important;
+    margin: 2rem !important;
+    margin-bottom: 5rem !important;
+    width: 100% !important;
+
+  }
 }
 
 .event-tile {
   display: flex;
-  flex-direction: column;
-
-
+  flex-direction: row;
   background-color: rgba(249, 251, 255, 0.82);
   border-radius: 23px;
-
   box-shadow: 0 2px 2px #3d3d3d;
   min-width: 300px;
-
   width: 80%;
   margin: 5rem;
 }
 
-.event-tile-container {
-  display: flex;
-  flex-direction: row;
-}
-
-.event-tile-row-container {
-  display: flex;
-  flex-direction: row;
-}
-
-.event-tile-column-container {
-  width: 100%
-
-}
-
 .event-pic {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-
+  align-items: center;
+  flex-direction: column;
   flex-basis: 33%;
   margin: 2vw;
 }
@@ -47,47 +63,36 @@
   border-radius: 23px;
 }
 
+.social-media-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .event-tile-information {
   display: flex;
   flex-direction: row;
   width: 100%;
-  margin: 2rem 2rem 2rem 0rem;
-  justify-content: space-evenly;
+  margin: 5vw 2rem 2rem 0rem;
+  justify-content: space-around;
   align-items: center;
 }
 
 .event-name {
-  white-space: nowrap;
+  text-align: center;
+  line-height: 2rem;
   margin: 2.5vw 2vw 0.7vw 0.5vw;
-  font-size: 2vw;
+  font-size: 30px;
 }
 
-.names-column-container {
-  display: flex;
-  flex-direction: column;
+@media screen and (max-width: 600px) {
+  .event-name {
+    margin-bottom: 1rem !important;
+  }
 }
 
-.category {
-  background-color: rgb(245, 241, 0);
-  border-radius: 7px;
-  padding: 0px 3px 0px 3px;
-  width: fit-content;
-  font-size: .7rem;
+.event-link {
   margin: 0.5vw;
-}
-
-.subcategories {
-  background-color: rgb(184, 182, 99);
-  border-radius: 7px;
-  padding: 0px 3px 0px 3px;
-  width: fit-content;
-  font-size: .6rem;
-}
-
-.date {
-  display: flex;
-  padding: 0px 3px 0px 0px;
-  margin-left: 1vw;
 }
 
 .organizer-name {
@@ -95,38 +100,93 @@
   justify-content: flex-start;
   align-items: flex-start;
   margin-left: 0.5vw;
-  font-size: 1vw;
 }
+
+.price {
+  margin-left: 0.5vw;
+}
+
+.opening-times {
+  margin-left: 0.5vw;
+}
+
+
+.category-container {
+  display: flex;
+  flex-direction: row;
+  margin: 0.5vw;
+
+}
+
+.category {
+  height: 1rem;
+  background-color: #e8ebe8;
+  border: 1px solid #373434;
+  border-radius: 23px;
+  color: #373434;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  padding: 0.1rem 1rem 0.1rem 1rem;
+  margin-right: 0.5vw;
+}
+
+.subcategories {
+  height: 1rem;
+  background-color: #e8ebe8;
+  border: 1px solid #373434;
+  border-radius: 23px;
+  color: #373434;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  padding: 0.1rem 1rem 0.1rem 1rem;
+  margin-left: 0.5vw;
+  margin-right: .5vw;
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 3px 0px 0px;
+}
+
 
 .address {
   display: flex;
 }
 
-.description-map-container {
-  display: flex;
-  flex-direction: row;
+
+@media screen and (max-width: 1000px) {
+  .description {
+    margin: 1rem !important;
+  }
 }
 
 .description {
   display: flex;
   flex-direction: column;
-  font-size: 1vw;
   border-radius: 10px;
   margin: 2vw;
   margin-left: 0.5vw;
   flex-basis: 50%;
+  font-size: 22px;
 
 }
 
 .description > p {
   margin-top: 0.5vw;
-  font-size: 0.7vw;
+  font-size: 16px;
 }
 
 .map-container {
   height: auto;
-  margin-right: 1vw;
-  margin-bottom: 1vw;
+  margin-right: 0.5vw;
+  margin-bottom: 0.5vw;
+  margin-left: 0.5vw;
+  margin-top: 3rem;
   flex-basis: 50%;
 
 }

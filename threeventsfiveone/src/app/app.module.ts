@@ -10,6 +10,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { SettingsModule } from './settings/settings.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
+
 import { MatDialogModule } from '@angular/material/dialog';
 
 import { CommonUtilitiesModule } from './common-utilities/common-utilities.module';
@@ -42,7 +43,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CommonUtilitiesModule,
   ],
   providers: [],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

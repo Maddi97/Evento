@@ -1,7 +1,7 @@
-import { Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges } from '@angular/core';
+import {Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges} from '@angular/core';
 import * as L from 'leaflet';
-import { PositionService } from './position.service';
-import { Router } from '@angular/router';
+import {PositionService} from './position.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'map-view',
@@ -71,7 +71,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     this.updatePosition(this.positionService.getCurrentPosition());
     this.setPositionMarker();
     this.map.panTo((new L.LatLng(this.currentPosition.lat, this.currentPosition.lon)));
-    this.router.navigate(['/', 'events'], {queryParams: {positionUpdate: true}});
+    //this.router.navigate(['/', 'events'], {queryParams: {positionUpdate: true}});
   }
 
   searchForLocationInput() {
@@ -116,8 +116,7 @@ export class MapViewComponent implements OnInit, OnChanges {
         center: [this.currentPosition.lat, this.currentPosition.lon],
         zoom: this.zoomInput
       });
-    }
-    else {
+    } else {
       this.map = L.map('map', {
         center: this.centerInput,
         zoom: this.zoomInput
@@ -145,12 +144,12 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private setMarkers(markerData): void {
     let mark = null
-    const popup = L.popup().setContent('hello')
 
     this.markerGroup.clearLayers();
     if (typeof markerData !== 'undefined') {
       markerData.map(marker => {
         if (typeof marker.geoData !== 'undefined') {
+          console.log(marker)
           mark = L.marker([marker.geoData.lat, marker.geoData.lon])
           mark.setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
             .addTo(this.markerGroup)
@@ -158,7 +157,9 @@ export class MapViewComponent implements OnInit, OnChanges {
             //   //this.router.navigate(['/', 'full-event'], {fragment: marker._id});
             // })
             .bindPopup(
-              popup
+              `<div>${marker.name} </div>`
+              +
+              `<div class="popup-org-name"> ${marker.organizerName} </div>`
             )
           mark.on('click', () => {
             mark.openPopup();
@@ -167,4 +168,5 @@ export class MapViewComponent implements OnInit, OnChanges {
       });
     }
   }
+
 }

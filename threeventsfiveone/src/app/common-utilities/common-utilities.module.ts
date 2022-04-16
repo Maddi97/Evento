@@ -10,6 +10,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { SocialMediaShareComponent } from './social-media-share/social-media-share.component';
+import { MatIconModule } from '@angular/material/icon';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -19,6 +23,8 @@ import { FormsModule } from '@angular/forms';
     DatePickerComponent,
     DayDateComponent,
     MapViewComponent,
+    SocialMediaShareComponent,
+
   ],
   imports: [
     CommonModule,
@@ -26,7 +32,10 @@ import { FormsModule } from '@angular/forms';
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
-    FormsModule
+    FormsModule,
+    MatIconModule,
+    ClipboardModule,
+    MatSnackBarModule
 
   ],
   exports: [
