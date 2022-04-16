@@ -1,0 +1,40 @@
+.insert-container {
+  display: flex;
+  justify-content: center;
+  background-color: rgba(249, 251, 255, 0.82);
+  border-radius: 23px;
+  box-shadow: 1px 1px 12px #8389a4;
+  cursor: pointer;
+  margin-bottom: 1rem;
+
+
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+
+  margin-bottom: 1rem;
+  width: 90%;
+}
+
+.form > div {
+  display: flex;
+  justify-content: center;
+}
+
+div {
+  width: 100%;
+}
+
+div > mat-form-field {
+  width: 70%;
+}
+
+@media screen and (max-width: 600px) {
+  div > mat-form-field {
+    width: 95%;
+  }
+}

@@ -1,0 +1,17 @@
+.datenschutz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(249, 251, 255, 0.82);
+  border-radius: 23px;
+  box-shadow: 1px 1px 12px #8389a4;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  width: 90%;
+}
+
+.datenschutz-container {
+  display: flex;
+  justify-content: center;
+}

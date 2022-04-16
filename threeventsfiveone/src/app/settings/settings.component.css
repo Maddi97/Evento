@@ -1,4 +1,8 @@
 .settings-container {
+  padding-bottom: 5rem;
+}
+
+.settings {
   display: flex;
   flex-direction: column;
   align-items: center;

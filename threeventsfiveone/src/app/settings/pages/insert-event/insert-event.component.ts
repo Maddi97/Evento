@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormControl} from '@angular/forms';
 
 @Component({
   selector: 'vents-insert-event',
@@ -7,7 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InsertEventComponent implements OnInit {
 
-  constructor() { }
+  eventForm = this.fb.group({
+    eventName: new FormControl('', []),
+    organizerName: new FormControl('', []),
+    adress: new FormControl('', []),
+    link: new FormControl('', []),
+    description: new FormControl('', []),
+  })
+
+
+  constructor(private fb: FormBuilder,
+  ) {
+  }
 
   ngOnInit(): void {
   }
