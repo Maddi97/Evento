@@ -1,3 +1,4 @@
+e
 <div class="form-container">
     <form [formGroup]="organizerForm">
 
@@ -38,8 +39,8 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="street" >
-                <mat-form-field appearance="fill" >
+            <div class="street">
+                <mat-form-field appearance="fill">
                     <mat-label>Street</mat-label>
                     <input matInput #target required formControlName="street"
                            (keydown.enter)="updateOrganizerId !== '' ? emitUpdate(organizerForm) : emitAddOrganizer(organizerForm); target.value = ''"
@@ -89,7 +90,7 @@
 
 
         <div class="category">
-            <mat-card >
+            <mat-card>
                 <app-category-select [loadedCategory]="category"
                                      (newCategorySelect)="setCategory($event)"></app-category-select>
             </mat-card>
@@ -106,15 +107,15 @@
 
         <div class="opening-times-container">
             <div class="opening-times-required">
-                <mat-checkbox  [checked]="isOpeningTimesRequired"
-                               (change)="isOpeningTimesRequired = !isOpeningTimesRequired">Opening times required?
+                <mat-checkbox [checked]="isOpeningTimesRequired"
+                              (change)="isOpeningTimesRequired = !isOpeningTimesRequired">Opening times required?
                 </mat-checkbox>
             </div>
             <div class="opening-times-form" *ngIf="isOpeningTimesRequired">
 
                 <div *ngFor="let day of openingTimes">
                     <mat-divider></mat-divider>
-                    <p > {{day.day}} </p>
+                    <p> {{day.day}} </p>
 
                     <div>
                         <div class="opening-times-start">
