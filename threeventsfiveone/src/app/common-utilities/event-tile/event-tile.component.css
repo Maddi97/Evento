@@ -53,6 +53,44 @@
   flex-direction: row;
 }
 
+/*medium screen size*/
+@media screen and (min-width: 440px) and (max-width: 600px) {
+  .event-name {
+    font-size: 1rem !important;
+  }
+
+  .event-organizer-name {
+    font-size: 0.9rem !important;
+  }
+
+  .event-distance {
+    font-size: 0.9rem !important;
+  }
+
+  .date {
+    font-size: 0.9rem !important;
+  }
+}
+
+/*small screen size like iphone*/
+@media screen and (max-width: 440px) {
+  .event-name {
+    font-size: .8rem !important;
+  }
+
+  .event-organizer-name {
+    font-size: 0.7rem !important;
+  }
+
+  .event-distance {
+    font-size: 0.7rem !important;
+  }
+
+  .date {
+    font-size: 0.7rem !important;
+  }
+
+}
 
 .event-name {
   text-overflow: ellipsis;

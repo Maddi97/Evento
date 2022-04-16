@@ -32,6 +32,10 @@
 @media screen and (max-width: 1000px) {
   .event-tile {
     flex-direction: column !important;
+    margin: 2rem !important;
+    margin-bottom: 5rem !important;
+    width: 100% !important;
+
   }
 }
 
@@ -75,9 +79,16 @@
 }
 
 .event-name {
-  white-space: nowrap;
+  text-align: center;
+  line-height: 2rem;
   margin: 2.5vw 2vw 0.7vw 0.5vw;
   font-size: 30px;
+}
+
+@media screen and (max-width: 600px) {
+  .event-name {
+    margin-bottom: 1rem !important;
+  }
 }
 
 .event-link {
@@ -147,6 +158,12 @@
   display: flex;
 }
 
+
+@media screen and (max-width: 1000px) {
+  .description {
+    margin: 1rem !important;
+  }
+}
 
 .description {
   display: flex;

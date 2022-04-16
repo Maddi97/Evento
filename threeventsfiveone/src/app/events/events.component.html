@@ -43,7 +43,8 @@
       (change)="searchForDistance($event)">
     </mat-slider>
   </div>
-  <div class="event-map-container">
+
+  <div class="event-map-container" *ngIf="getScreenWidth>1000">
 
     <div class="event-container">
 
@@ -58,6 +59,24 @@
     </div>
 
     <div class="map-container">
+      <map-view [markerData]="filteredList" [hoveredData]="hoveredEvent"></map-view>
+    </div>
+  </div>
+  <div class="event-map-container" *ngIf="getScreenWidth<1000">
+    <div class="event-container" *ngIf="!mapView">
+      <mat-icon class="change-view-icon" (click)="changeToMapView()">map</mat-icon>
+      <div class="event-tile-list" *ngFor="let event of filteredList">
+        <vents-event-tile routerLink="/full-event" fragment={{event._id}} [event]="event"
+                          [distance]="get_distance_to_current_position(event)"
+                          (mouseenter)="hover(event)" (mouseleave)="hover(null)"></vents-event-tile>
+      </div>
+      <div *ngIf="filteredList.length == 0">
+        Sorry für das angegebene Datum haben wir keine Events gespeichert.
+      </div>
+    </div>
+
+    <div class="map-container" *ngIf="mapView">
+      <mat-icon class="change-view-icon" (click)="changeToMapView()">event</mat-icon>
       <map-view [markerData]="filteredList" [hoveredData]="hoveredEvent"></map-view>
     </div>
   </div>
