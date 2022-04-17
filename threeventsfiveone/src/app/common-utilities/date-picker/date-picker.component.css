@@ -62,6 +62,13 @@
   -moz-transition: top ease 0.3s;
 }
 
+/*no animation on mobile devices*/
+@media (hover: none) and (pointer: coarse) {
+  .events-day-date:hover {
+    top: 0 !important;
+  }
+}
+
 .events-day-date:hover {
   top: -1rem
 }
