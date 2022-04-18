@@ -92,7 +92,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     // filter events by distance
     this.events$.subscribe((ev: Event[]) => {
-      console.log('events', ev)
       this.filteredList = ev.sort((ev1, ev2) =>
         this.get_distance_to_current_position(ev1) - this.get_distance_to_current_position(ev2)
       );
@@ -141,7 +140,9 @@ export class EventsComponent implements OnInit, OnDestroy {
       })
     // this.applyFilters()
     // request categories
-    // this.categoriesService.getAllCategories();
+    if (this.categoryList.length < 1) {
+      this.categoriesService.getAllCategories();
+    }
 
   }
 
@@ -168,7 +169,6 @@ export class EventsComponent implements OnInit, OnDestroy {
       fil.subcat = this.filteredSubcategories;
     }
     this.spinner.show();
-    console.log(fil)
     // if category is not hot
     if (!fil.cat.includes('hot')) {
       this.eventService.getEventsOnDateCategoryAndSubcategory(fil);
