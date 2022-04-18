@@ -58,9 +58,12 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.positionService.getPositionByLocation().subscribe((res) => {
+      this.resetCenter();
+    })
     this.updatePosition(this.positionService.getDefaultLocation());
-  }
 
+  }
 
   updatePosition(locationList) {
     this.currentPosition.lat = locationList[0];
@@ -77,13 +80,13 @@ export class MapViewComponent implements OnInit, OnChanges {
   searchForLocationInput() {
     const address = this.sanitizeInput(this.address);
 
-    this.positionService.getPositionByInput(address).toPromise().then(() => {
+    this.positionService.getPositionByInput(address).subscribe(() => {
       this.resetCenter();
     });
   }
 
   getCurrentPosition() {
-    this.positionService.getPositionByLocation().then(() => {
+    this.positionService.getPositionByLocation().subscribe((res) => {
       this.resetCenter();
     });
   }

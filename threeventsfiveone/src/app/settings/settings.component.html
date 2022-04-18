@@ -16,6 +16,21 @@
       </div>
     </div>
     <div class="container">
+      <div class="tile" (click)="clickPanel(FEEDBACK)">
+        <div class="tile-name-container">
+        <span>
+            Feedback & Kontakt
+        </span>
+        </div>
+        <mat-icon class="material-icons small-icon">
+          expand_more
+        </mat-icon>
+      </div>
+      <div class="feedback-panel" *ngIf="showFeedback">
+        <vents-feedback></vents-feedback>
+      </div>
+    </div>
+    <div class="container">
       <div class="tile" (click)="clickPanel(IMPRESSUM)">
         <div class="tile-name-container">
         <span>

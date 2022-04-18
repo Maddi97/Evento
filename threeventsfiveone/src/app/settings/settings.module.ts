@@ -9,7 +9,7 @@ import {DatenschutzComponent} from './pages/datenschutz/datenschutz.component';
 import {ImpressumComponent} from './pages/impressum/impressum.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-
+import {FeedbackComponent} from './pages/feedback/feedback.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +17,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     InsertEventComponent,
     DatenschutzComponent,
     ImpressumComponent,
+    FeedbackComponent
 
   ],
   imports: [
@@ -25,7 +26,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ]
 })
 export class SettingsModule {

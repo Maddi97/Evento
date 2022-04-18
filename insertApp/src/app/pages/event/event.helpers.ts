@@ -1,4 +1,4 @@
-import {FormControl} from '@angular/forms';
+import {FormControl, Validators} from '@angular/forms';
 import {Event} from '../../models/event';
 import {Address} from '../../models/organizer';
 import * as moment from 'moment';
@@ -59,7 +59,7 @@ export function getEventFromForm(eventForm, organizer, category, times, updateEv
 
 export function getEventFormTemplate() {
     return {
-        name: new FormControl('', []),
+        name: new FormControl('', [Validators.required, Validators.minLength(3)]),
         city: new FormControl('Leipzig', []),
         plz: new FormControl('', []),
         street: new FormControl('', []),

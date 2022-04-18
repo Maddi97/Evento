@@ -14,6 +14,8 @@ const allowedOrigins = [
     'http://localhost',
     'http://localhost:8080',
     'http://localhost:8100',
+    'http://localhost:4200',
+    'http://localhost:4201'
 ];
 
 // Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)

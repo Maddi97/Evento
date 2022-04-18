@@ -1,4 +1,4 @@
-import {FormControl} from '@angular/forms';
+import {FormControl, Validator, Validators} from '@angular/forms';
 import {Address, Day, Organizer} from '../../../models/organizer';
 import {Event} from '../../../models/event';
 import * as moment from 'moment';
@@ -7,15 +7,15 @@ import * as moment from 'moment';
 export function getOrganizerFormTemplate() {
 // return organizer Form
     return {
-        name: new FormControl('', []),
-        city: new FormControl('Leipzig', []),
-        plz: new FormControl('', []),
-        street: new FormControl('', []),
+        name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+        city: new FormControl('Leipzig', [Validators.required, Validators.minLength(3)]),
+        plz: new FormControl('04107', []),
+        street: new FormControl('', [Validators.required, Validators.minLength(3)]),
         streetNumber: new FormControl('', []),
         country: new FormControl('Deutschland', []),
         email: new FormControl('', []),
         telephone: new FormControl('', []),
-        description: new FormControl('', []),
+        description: new FormControl('test description', [Validators.required, Validators.minLength(3)]),
         link: new FormControl('', []),
         frequency: new FormControl(7, []),
         isEvent: new FormControl('false', [])

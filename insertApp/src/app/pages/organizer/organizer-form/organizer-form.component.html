@@ -1,4 +1,3 @@
-e
 <div class="form-container">
     <form [formGroup]="organizerForm">
 
@@ -9,6 +8,11 @@ e
                        (keydown.enter)="updateOrganizerId !== '' ? emitUpdate(organizerForm) : emitAddOrganizer(organizerForm); target.value = ''"
                 >
                 <mat-error *ngIf="organizerForm.get('name').hasError('required')">Organizer is required</mat-error>
+                <mat-error
+                        *ngIf="organizerForm.get('name').hasError('minlength') && !organizerForm.get('name').hasError('required')">
+                    Organizer minlength is 3
+                </mat-error>
+
             </mat-form-field>
         </div>
 
@@ -45,7 +49,12 @@ e
                     <input matInput #target required formControlName="street"
                            (keydown.enter)="updateOrganizerId !== '' ? emitUpdate(organizerForm) : emitAddOrganizer(organizerForm); target.value = ''"
                     >
-                    <mat-error *ngIf="organizerForm.get('street').hasError('required')">Street is required</mat-error>
+                    <mat-error *ngIf="organizerForm.get('street').hasError('required')">Street is required
+                    </mat-error>
+                    <mat-error
+                            *ngIf="organizerForm.get('street').hasError('minlength') && !organizerForm.get('street').hasError('required')">
+                        Street input minlength is 3
+                    </mat-error>
                 </mat-form-field>
             </div>
 
@@ -68,10 +77,14 @@ e
 
             <mat-form-field appearance="fill">
                 <mat-label>Description</mat-label>
-                <input matInput #target required formControlName="description"
-                       (keydown.enter)="updateOrganizerId !== '' ? emitUpdate(organizerForm) : emitAddOrganizer(organizerForm); target.value = ''"
-                >
+                <textarea matInput #target required formControlName="description" placeholder="Beschreibung"
+                          (keydown.enter)="updateOrganizerId !== '' ? emitUpdate(organizerForm) : emitAddOrganizer(organizerForm); target.value = ''"
+                ></textarea>
                 <mat-error *ngIf="organizerForm.get('description').hasError('required')">Description is required
+                </mat-error>
+                <mat-error
+                        *ngIf="organizerForm.get('description').hasError('minlength') && !organizerForm.get('description').hasError('required')">
+                    Description minlength is 3
                 </mat-error>
             </mat-form-field>
 

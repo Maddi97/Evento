@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {OrganizerService} from 'src/app/services/organizer.service';
 import {Address, Organizer} from 'src/app/models/organizer';
-import {map, share} from 'rxjs/operators';
+import {catchError, map, share} from 'rxjs/operators';
 import {EventsService} from 'src/app/services/events.service';
 import {Event} from '../../../models/event';
 import {Category} from 'src/app/models/category';
@@ -12,6 +12,7 @@ import * as log from 'loglevel';
 import * as moment from 'moment';
 import {FileUploadService} from '../../../services/file-upload.service';
 import {DomSanitizer} from '@angular/platform-browser';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 
 @Component({
@@ -26,6 +27,8 @@ export class EventViewComponent implements OnInit {
 
     categories: Category[]
     organizers: Organizer[] = [];
+    allOrganizers: Organizer[] = [];
+
 
     filteredOptions: Observable<string[]>;
     allFilteredEvents: Event[];
@@ -42,6 +45,7 @@ export class EventViewComponent implements OnInit {
         private eventService: EventsService,
         private fileService: FileUploadService,
         private sanitizer: DomSanitizer,
+        private _snackbar: MatSnackBar,
     ) {
     }
 
@@ -63,6 +67,9 @@ export class EventViewComponent implements OnInit {
             this.allFilteredEvents = event
             this.downloadImage()
         });
+        this.organizerService.getOrganizer().subscribe(org => {
+            this.allOrganizers = org
+        })
 
     }
 
@@ -85,7 +92,8 @@ export class EventViewComponent implements OnInit {
                             this.eventService.updateEvent(event._organizerId, event._id, event)
                         })).subscribe()
                 }
-            })
+                this.openSnackBar('Successfully added Event: ' + event.name, 'success')
+            }),
         ).subscribe()
     }
 
@@ -102,8 +110,10 @@ export class EventViewComponent implements OnInit {
                         map(uploadImageResponse => {
                             event.eventImagePath = uploadImageResponse.eventImage.path
                             this.eventService.updateEvent(event._organizerId, event._id, event)
+
                         })).subscribe()
                 }
+                this.openSnackBar('Successfully updated Event: ' + event.name, 'success')
             })
         ).subscribe()
     }
@@ -200,11 +210,19 @@ export class EventViewComponent implements OnInit {
         }
     }
 
-    loadEventsByCategory(category
-                             :
-                             Category
+    loadEventsByCategory(category: Category
     ) {
         this.eventService.getEventsOnCategory(category)
+    }
+
+    openSnackBar(message, state) {
+        this._snackbar.open(message, '', {
+            duration: 1000,
+            verticalPosition: 'top',
+            horizontalPosition: 'center',
+            panelClass: [state !== 'error' ? 'green-snackbar' : 'red-snackbar']
+
+        });
     }
 
     downloadImage() {
