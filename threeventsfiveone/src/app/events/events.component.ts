@@ -92,10 +92,10 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     // filter events by distance
     this.events$.subscribe((ev: Event[]) => {
+      console.log('events', ev)
       this.filteredList = ev.sort((ev1, ev2) =>
         this.get_distance_to_current_position(ev1) - this.get_distance_to_current_position(ev2)
       );
-      console.log('helkkooooo', this.filteredList)
     });
 
     const categories$ = this.categoriesService.categories.pipe(
@@ -139,9 +139,10 @@ export class EventsComponent implements OnInit, OnDestroy {
         this.downloadCategoryIcon()
         this.applyFilters()
       })
-    this.applyFilters()
+    // this.applyFilters()
     // request categories
-    this.categoriesService.getAllCategories();
+    // this.categoriesService.getAllCategories();
+
   }
 
   ngOnDestroy() {
@@ -166,8 +167,8 @@ export class EventsComponent implements OnInit, OnDestroy {
     } else {
       fil.subcat = this.filteredSubcategories;
     }
-    console.log('filter', fil)
     this.spinner.show();
+    console.log(fil)
     // if category is not hot
     if (!fil.cat.includes('hot')) {
       this.eventService.getEventsOnDateCategoryAndSubcategory(fil);

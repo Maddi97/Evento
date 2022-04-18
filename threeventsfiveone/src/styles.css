@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~leaflet/dist/leaflet.css';
+@import 'assets/fonts/fonts.css';
 
 
 html, body {
@@ -9,6 +10,9 @@ html, body {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  height: calc(100% + (var(--safe-area-inset-top) + var(--safe-area-inset-bottom)));
 }
 
 .green-snackbar {

@@ -31,6 +31,7 @@
     "css.gg": "^2.0.0",
     "leaflet": "^1.7.1",
     "loglevel": "^1.8.0",
+    "material-design-icons": "^3.0.1",
     "moment": "^2.29.1",
     "ngx-spinner": "^13.0.0",
     "rxjs": "~7.5.2",

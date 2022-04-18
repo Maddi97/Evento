@@ -86,6 +86,9 @@ export class PositionService {
   }
 
   openErrorSnackBar(message) {
+    if (message.length < 3) {
+      message = 'Standort konnte nicht ermittelt werden'
+    }
     this._snackbar.open(message, '', {
       duration: 3000,
       verticalPosition: 'top',
