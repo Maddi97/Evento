@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { DomSanitizer } from '@angular/platform-browser';
+import {Component, OnInit} from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {DomSanitizer} from '@angular/platform-browser';
 
 
 @Component({
@@ -31,7 +31,7 @@ export class SocialMediaShareComponent implements OnInit {
   openSnackBar(message) {
     this._snackbar.open(message, '', {
       duration: 2000,
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       horizontalPosition: 'center',
       panelClass: ['green-snackbar'],
 

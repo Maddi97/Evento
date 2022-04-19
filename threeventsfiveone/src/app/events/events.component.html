@@ -30,19 +30,19 @@
   <div class="spinner-container">
     <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
   </div>
-  <div class="distance-filter">
-    <span class="distance-label">Entfernung (in Km):</span>
-    <mat-slider
-      class="slider"
-      thumbLabel
-      min="1"
-      max="100"
-      step="1"
-      style="z-index: 0"
-      [(ngModel)]="filteredDistance"
-      (change)="searchForDistance($event)">
-    </mat-slider>
-  </div>
+  <!--  <div class="distance-filter">-->
+  <!--    <span class="distance-label">Entfernung (in Km):</span>-->
+  <!--    <mat-slider-->
+  <!--      class="slider"-->
+  <!--      thumbLabel-->
+  <!--      min="1"-->
+  <!--      max="100"-->
+  <!--      step="1"-->
+  <!--      style="z-index: 0"-->
+  <!--      [(ngModel)]="filteredDistance"-->
+  <!--      (change)="searchForDistance($event)">-->
+  <!--    </mat-slider>-->
+  <!--  </div>-->
 
   <div class="event-map-container" *ngIf="getScreenWidth>1000">
 
@@ -53,8 +53,9 @@
                           [distance]="get_distance_to_current_position(event)"
                           (mouseenter)="hover(event)" (mouseleave)="hover(null)"></vents-event-tile>
       </div>
-      <div *ngIf="filteredList.length == 0">
-        Sorry für das angegebene Datum haben wir keine Events gespeichert.
+      <div class="nothing-found" *ngIf="filteredList.length == 0">
+        <mat-icon>block</mat-icon>
+        Sorry für das angegebene Datum haben wir keine Events in deinem Umkreis gefunden!.
       </div>
     </div>
 
@@ -70,8 +71,9 @@
                           [distance]="get_distance_to_current_position(event)"
                           (mouseenter)="hover(event)" (mouseleave)="hover(null)"></vents-event-tile>
       </div>
-      <div *ngIf="filteredList.length == 0">
-        Sorry für das angegebene Datum haben wir keine Events gespeichert.
+      <div class="nothing-found" *ngIf="filteredList.length == 0">
+        <mat-icon>block</mat-icon>
+        Sorry für das angegebene Datum haben wir keine Events in deinem Umkreis gefunden!.
       </div>
     </div>
 

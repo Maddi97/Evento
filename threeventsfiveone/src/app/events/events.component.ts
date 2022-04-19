@@ -49,7 +49,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   ;
 
   // Range for the events
-  filteredDistance = 10;
+  filteredDistance = 300;
 
   // List of events in range to current position with filteredDistance
   eventsInRange = [];

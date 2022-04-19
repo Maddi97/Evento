@@ -91,7 +91,7 @@ export class PositionService {
     }
     this._snackbar.open(message, '', {
       duration: 3000,
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       horizontalPosition: 'center',
       panelClass: ['red-snackbar'],
 

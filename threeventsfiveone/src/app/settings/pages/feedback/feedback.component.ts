@@ -54,7 +54,7 @@ export class FeedbackComponent implements OnInit {
   openSnackBar(message, state) {
     this._snackbar.open(message, '', {
       duration: 2000,
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       horizontalPosition: 'center',
       panelClass: [state !== 'error' ? 'green-snackbar' : 'red-snackbar']
 
