@@ -2,6 +2,7 @@ import {Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges} from '@an
 import * as L from 'leaflet';
 import {PositionService} from './position.service';
 import {Router} from '@angular/router';
+import {Geolocation} from '@capacitor/geolocation';
 
 @Component({
   selector: 'map-view',
@@ -85,7 +86,12 @@ export class MapViewComponent implements OnInit, OnChanges {
     });
   }
 
-  getCurrentPosition() {
+  async getCurrentPosition() {
+    const coordinates = await Geolocation.getCurrentPosition();
+
+    console.log('Current position:', coordinates);
+
+
     this.positionService.getPositionByLocation().subscribe((res) => {
       this.resetCenter();
     });
