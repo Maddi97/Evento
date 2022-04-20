@@ -12,7 +12,7 @@ export class SocialMediaShareComponent implements OnInit {
 
   url: string = window.location.href;
   shareText = 'Schau dir dieses Event an, dass ich auf 3vents51 gefunden habe!';
-  whatsappLink = encodeURI('WhatsApp://send?text=' + this.shareText + '\n' + this.url);
+  whatsappLink = encodeURI(`https://wa.me?text=${encodeURIComponent(this.shareText + '/n' + this.url)}`);
 
   constructor(private _snackbar: MatSnackBar,
               private sanitizer: DomSanitizer
