@@ -10,8 +10,8 @@
   background-color: white;
   box-shadow: 0px 4px 4px 0px #3d3d3d91;
   z-index: 1;
-  margin-top: constant(safe-area-inset-top);
-  margin-top: env(safe-area-inset-top);
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
 
 
 }

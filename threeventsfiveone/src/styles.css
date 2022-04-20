@@ -14,8 +14,7 @@ html, body {
 body {
   margin-left: 0;
   margin-right: 0;
-  margin-bottom: constant(safe-area-inset-bottom);
-  margin-bottom: env(safe-area-inset-bottom);
+
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 
 }
