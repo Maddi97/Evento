@@ -1,7 +1,7 @@
 <div class="event-container">
     <div class="form-and-image-upload">
         <app-event-form (updateEvent)="updateEvent($event)" (addNewEvent)="addNewEvent($event)"
-                        [organizersIn]="organizers"
+                        [organizersIn]="allOrganizers"
                         [eventIn]="eventIn"></app-event-form>
     </div>
     <div class="events">
@@ -13,7 +13,7 @@
             All events grouped by category and organizer
             <div *ngFor="let category of categories" class="category-panel">
                 <mat-expansion-panel
-                                     (afterExpand)="loadOrganizerOnSubcategories(category)">
+                        (afterExpand)="loadOrganizerOnSubcategories(category)">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             {{category.name}}
@@ -25,8 +25,8 @@
 
                     <div class="organizer-panel" *ngFor="let organizer of organizers">
                         <mat-expansion-panel
-                                             [ngStyle]="{'background': getColor(organizer)}"
-                                             (afterExpand)="loadEvents(organizer._id, category._id)">
+                                [ngStyle]="{'background': getColor(organizer)}"
+                                (afterExpand)="loadEvents(organizer._id, category._id)">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     {{organizer.name}}
@@ -39,13 +39,13 @@
 
                             <div class="event-panel-collection" *ngFor="let event of allFilteredEvents">
                                 <div class="event-panel">
-                                    <div  (click)="eventIn = event">
+                                    <div (click)="eventIn = event">
                                         {{event.name}}
                                     </div>
                                     <img class="event-image"
                                          [src]="event.eventImageTemporaryURL">
                                     <div class="delete-event-button"
-                                        (click)="deleteEvent(organizer._id, event._id)">
+                                         (click)="deleteEvent(organizer._id, event._id)">
                                         Delete
                                     </div>
                                 </div>
@@ -62,7 +62,7 @@
 
         <div class="all-events-expansion-panel" *ngFor="let category of categories">
             <mat-expansion-panel
-                                 (afterExpand)="loadEventsByCategory(category)">
+                    (afterExpand)="loadEventsByCategory(category)">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         {{category.name}}
@@ -74,15 +74,15 @@
 
                 <div *ngFor="let event of allFilteredEvents">
                     <div class="event-panel"
-                         >
+                    >
                         <div
-                             (click)="eventIn = event">
+                                (click)="eventIn = event">
                             {{event.name}}
                         </div>
                         <img class="event-image" [src]="event.eventImageTemporaryURL">
-                        <div    class="delete-event-button"
-                                (click)="deleteEvent(event._organizerId, event._id)"
-                             >
+                        <div class="delete-event-button"
+                             (click)="deleteEvent(event._organizerId, event._id)"
+                        >
                             Delete
                         </div>
                     </div>
@@ -104,15 +104,15 @@
                 </mat-expansion-panel-header>
 
                 <div *ngFor="let event of allFilteredEvents">
-                    <div class="event-panel"
-                        >
-                        <div (click)="eventIn = event">
+                    <div class="event-panel" (click)="eventIn = event"
+                    >
+                        <div>
                             {{event.name}}
                         </div>
                         <img class="event-image" [src]="event.eventImageTemporaryURL">
-                        <div    class="delete-event-button"
-                                (click)="deleteEvent(event._organizerId, event._id)"
-                             >
+                        <div class="delete-event-button"
+                             (click)="deleteEvent(event._organizerId, event._id)"
+                        >
                             Delete
                         </div>
                     </div>

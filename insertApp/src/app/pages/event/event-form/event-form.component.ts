@@ -1,21 +1,22 @@
 // import packages
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
-import { FormControl, FormBuilder } from '@angular/forms';
-import { map, share } from 'rxjs/operators';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild} from '@angular/core';
+import {FormControl, FormBuilder, Validators} from '@angular/forms';
+import {catchError, map, share} from 'rxjs/operators';
 import * as moment from 'moment';
 
 // import models
-import { Organizer } from '../../../models/organizer';
-import { Category } from '../../../models/category';
-import { Event } from '../../../models/event';
+import {Organizer} from '../../../models/organizer';
+import {Category, Subcategory} from '../../../models/category';
+import {Event} from '../../../models/event';
 
 // import services
-import { NominatimGeoService } from '../../../services/nominatim-geo.service';
-import { OrganizerService } from '../../../services/organizer.service';
+import {NominatimGeoService} from '../../../services/nominatim-geo.service';
+import {OrganizerService} from '../../../services/organizer.service';
 
 // import helper functions
-import { getEventFormTemplate, getEventFromForm } from '../event.helpers';
+import {getEventFormTemplate, getEventFromForm} from '../event.helpers';
 import * as log from 'loglevel';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
     selector: 'app-event-form',
@@ -50,7 +51,7 @@ export class EventFormComponent implements OnInit, OnChanges {
         lon: ''
     }
 
-    organizerName = new FormControl();
+    organizerName = new FormControl('', [Validators.required]);
 
     image: any;
 
@@ -58,6 +59,7 @@ export class EventFormComponent implements OnInit, OnChanges {
         private fb: FormBuilder,
         private geoService: NominatimGeoService,
         private organizerService: OrganizerService,
+        private _snackbar: MatSnackBar,
     ) {
     }
 
@@ -79,8 +81,7 @@ export class EventFormComponent implements OnInit, OnChanges {
         if (this.image !== undefined) {
             formdata.append('files', this.image);
             event['fd'] = formdata;
-        }
-        else {
+        } else {
             event['fd'] = undefined
         }
 
@@ -89,16 +90,19 @@ export class EventFormComponent implements OnInit, OnChanges {
             // first fetch geo data from osm API and than emit event data
             this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
                 map(geoData => {
+                    if (Object.keys(geoData).length < 1) {
+                        throw new Error('No coordinates found to given address');
+                    }
                     event.geoData.lat = geoData[0].lat;
                     event.geoData.lon = geoData[0].lon;
-
+                    this.addNewEvent.emit(event)
                 }),
-                share()
-            ).toPromise().then(() =>
-                this.addNewEvent.emit(event)
-            )
-        }
-        else {
+                catchError(err => {
+                    this.openSnackBar('Error: ' + err, 'error')
+                    throw err
+                })
+            ).subscribe()
+        } else {
             const coord = this.eventForm.get('coord').value
             this.geoData.lat = coord.split(',')[0].trim()
             this.geoData.lon = coord.split(',')[1].trim()
@@ -109,11 +113,13 @@ export class EventFormComponent implements OnInit, OnChanges {
                     event.address.street = geoJSON.address.road;
                     // name land in response ist englisch, deshalb erstmal auf Deutschland gesetzt
                     event.address.country = this.eventForm.get('country').value;
+                    this.addNewEvent.emit(event)
                 }),
-                share()
-            ).toPromise().then(() =>
-                this.addNewEvent.emit(event)
-            )
+                catchError(err => {
+                    this.openSnackBar('Error: ' + err, 'error')
+                    throw err
+                })
+            ).subscribe()
         }
         // geoData is observable
         organizer.lastUpdated = new Date()
@@ -131,8 +137,7 @@ export class EventFormComponent implements OnInit, OnChanges {
         if (this.image !== undefined) {
             formdata.append('files', this.image);
             event['fd'] = formdata;
-        }
-        else {
+        } else {
             event['fd'] = undefined
         }
 
@@ -140,16 +145,20 @@ export class EventFormComponent implements OnInit, OnChanges {
             event.geoData = this.geoData
             this.geoService.get_geo_data(address.city, address.street, address.streetNumber).pipe(
                 map(geoData => {
+                    if (Object.keys(geoData).length < 1) {
+                        throw new Error('No coordinates found to given address');
+                    }
                     event.geoData.lat = geoData[0].lat;
                     event.geoData.lon = geoData[0].lon;
-                }),
-                share()
-            ).toPromise().then(() => {
                     this.updateEvent.emit(event)
-                }
-            )
-        }
-        else {
+
+                }),
+                catchError(err => {
+                    this.openSnackBar('Error: ' + err, 'error')
+                    throw err
+                })
+            ).subscribe()
+        } else {
             const coord = this.eventForm.get('coord').value
             this.geoData.lat = coord.split(',')[0].trim()
             this.geoData.lon = coord.split(',')[1].trim()
@@ -160,12 +169,13 @@ export class EventFormComponent implements OnInit, OnChanges {
                     event.address.street = geoJSON.address.road;
                     // name land in response ist englisch, deshalb erstmal auf Deutschland gesetzt
                     event.address.country = this.eventForm.get('country').value
-                }),
-                share()
-            ).toPromise().then(() => {
                     this.updateEvent.emit(event)
-                }
-            )
+                }),
+                catchError(err => {
+                    this.openSnackBar('Error: ' + err, 'error')
+                    throw err
+                })
+            ).subscribe()
         }
 
         // geoData is observable
@@ -219,6 +229,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     nullFormField() {
         this.updateEventId = ''
         this.organizerName.setValue('')
+        this.organizerName.markAsUntouched()
         this.eventForm = this.fb.group(getEventFormTemplate())
         this.category = undefined
         this.times.start.setValue('00:00')
@@ -235,4 +246,13 @@ export class EventFormComponent implements OnInit, OnChanges {
         return !(!this.eventForm.invalid && this.category !== undefined);
     }
 
+    openSnackBar(message, state) {
+        this._snackbar.open(message, '', {
+            duration: 1000,
+            verticalPosition: 'top',
+            horizontalPosition: 'center',
+            panelClass: [state !== 'error' ? 'green-snackbar' : 'red-snackbar']
+
+        });
+    }
 }

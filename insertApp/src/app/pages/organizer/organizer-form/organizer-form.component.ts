@@ -54,6 +54,8 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
             formdata.append('files', this.image);
             organizer['fd'] = formdata;
         } else organizer['fd'] = undefined
+
+        this.nullFormField()
         this.updateOrganizer.emit(organizer)
     }
 
@@ -66,7 +68,7 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
             organizer['fd'] = formdata;
         } else organizer['fd'] = undefined
 
-
+        this.nullFormField()
         this.addNewOrganizer.emit(organizer)
     }
 

@@ -2,6 +2,7 @@ import {Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges} from '@an
 import * as L from 'leaflet';
 import {PositionService} from './position.service';
 import {Router} from '@angular/router';
+import {Geolocation} from '@capacitor/geolocation';
 
 @Component({
   selector: 'map-view',
@@ -58,9 +59,12 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.updatePosition(this.positionService.getDefaultLocation());
-  }
+    // this.positionService.getPositionByLocation().subscribe((res) => {
+    //   this.resetCenter();
+    // })
+    // this.updatePosition(this.positionService.getDefaultLocation());
 
+  }
 
   updatePosition(locationList) {
     this.currentPosition.lat = locationList[0];
@@ -77,13 +81,18 @@ export class MapViewComponent implements OnInit, OnChanges {
   searchForLocationInput() {
     const address = this.sanitizeInput(this.address);
 
-    this.positionService.getPositionByInput(address).toPromise().then(() => {
+    this.positionService.getPositionByInput(address).subscribe(() => {
       this.resetCenter();
     });
   }
 
-  getCurrentPosition() {
-    this.positionService.getPositionByLocation().then(() => {
+  async getCurrentPosition() {
+    // const coordinates = await Geolocation.getCurrentPosition();
+    //
+    // console.log('Current position:', coordinates);
+
+
+    this.positionService.getPositionByLocation().subscribe((res) => {
       this.resetCenter();
     });
   }
@@ -107,13 +116,10 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private initMap(): void {
-    if (this.currentPosition.lat === '' || this.currentPosition.lon === '') {
-      this.updatePosition(this.positionService.getCurrentPosition());
-    }
 
     if (this.centerInput === null) {
       this.map = L.map('map', {
-        center: [this.currentPosition.lat, this.currentPosition.lon],
+        center: [this.positionService.getDefaultLocation()[0], this.positionService.getDefaultLocation()[1]],
         zoom: this.zoomInput
       });
     } else {
@@ -136,6 +142,10 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private setPositionMarker(): void {
+    if (this.currentPosition.lat === '0' && this.currentPosition.lon === '0') {
+      return
+    }
+
     this.positionMarkerGroup.clearLayers();
     L.marker([this.currentPosition.lat, this.currentPosition.lon])
       .setIcon(new this.LeafIcon({iconUrl: this.locationIcon, iconRetinaUrl: this.locationIconRetina}))

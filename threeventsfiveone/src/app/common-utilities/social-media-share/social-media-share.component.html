@@ -1,4 +1,4 @@
-<ul class="wrapper">
+<ul class="wrapper" *ngIf="!isDeviceMobile">
   <li [cdkCopyToClipboard]="url" [cdkCopyToClipboardAttempts]="5" (click)="openSnackBar('Copied!')"
       class="icon clipboard">
     <span class="tooltip">Copy link!</span>
@@ -38,3 +38,6 @@
 
 
 </ul>
+<div *ngIf="isDeviceMobile">
+  <button class="share-button" (click)="shareOnPhone()">Event teilen!</button>
+</div>

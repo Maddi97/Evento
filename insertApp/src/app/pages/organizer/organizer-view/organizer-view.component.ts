@@ -5,15 +5,16 @@ import {FormBuilder} from '@angular/forms';
 import {Category} from 'src/app/models/category';
 import {MatSnackBar} from '@angular/material/snack-bar'
 import {NominatimGeoService} from '../../../services/nominatim-geo.service'
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 import {EventsService} from '../../../services/events.service';
 import * as log from 'loglevel';
 
 import {
-    createEventFromOrg
+    createEventFromOrg, getOrganizerFormTemplate
 } from './organizer.helpers'
 import {FileUploadService} from "../../../services/file-upload.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import {of, throwError} from "rxjs";
 
 @Component({
     selector: 'app-organizer-view',
@@ -78,44 +79,53 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
             .pipe(
                 map(
                     geoData => {
+                        if (Object.keys(geoData).length < 1) {
+                            throw new Error('No coordinates found to given address');
+                        }
                         org.geoData.lat = geoData[0].lat;
                         org.geoData.lon = geoData[0].lon;
 
                         this.organizerService.createOrganizer(org)
-                            .pipe(map(
-                                createOrganizerResponse => {
-                                    const _id = createOrganizerResponse._id;
-                                    // upload image
-                                    org._id = createOrganizerResponse._id
-                                    const formdata = org.fd
-                                    // fd only for passing formdata form input
-                                    delete org.fd
-                                    if (formdata !== undefined) {
-                                        const fullEventImagePath = this.organizerImagePath + createOrganizerResponse._id
-                                        formdata.append('organizerImagePath', fullEventImagePath)
-                                        this.fileService.uploadOrganizerImage(formdata).subscribe(
-                                            uploadImageResponse => {
-                                                org.organizerImagePath = uploadImageResponse.organizerImage.path
-                                                this.organizerService.updateOrganizer(_id, org).subscribe()
-                                            })
-                                    }
+                            .pipe(
+                                map(
+                                    createOrganizerResponse => {
+                                        const _id = createOrganizerResponse._id;
+                                        // upload image
+                                        org._id = createOrganizerResponse._id
+                                        const formdata = org.fd
+                                        // fd only for passing formdata form input
+                                        delete org.fd
+                                        if (formdata !== undefined) {
+                                            const fullEventImagePath = this.organizerImagePath + createOrganizerResponse._id
+                                            formdata.append('organizerImagePath', fullEventImagePath)
+                                            this.fileService.uploadOrganizerImage(formdata).subscribe(
+                                                uploadImageResponse => {
+                                                    org.organizerImagePath = uploadImageResponse.organizerImage.path
+                                                    this.organizerService.updateOrganizer(_id, org).subscribe()
+                                                })
+                                        }
 
-                                    if (createOrganizerResponse.isEvent === true) {
-                                        // if org is event than create also an event object
-                                        const event = createEventFromOrg(org)
-                                        event._organizerId = _id
-                                        this.eventService.createEvent(event).subscribe(
-                                            (eventResponse) => {
-                                                org.ifEventId = eventResponse._id
-                                                this.organizerService.updateOrganizer(_id, org).subscribe(
-                                                )
-                                            }
-                                        )
-                                    }
-                                    this.openSnackBar('Successfully added: ' + createOrganizerResponse.name)
-                                })).subscribe()
+                                        if (createOrganizerResponse.isEvent === true) {
+                                            // if org is event than create also an event object
+                                            const event = createEventFromOrg(org)
+                                            event._organizerId = _id
+                                            this.eventService.createEvent(event).subscribe(
+                                                (eventResponse) => {
+                                                    org.ifEventId = eventResponse._id
+                                                    this.organizerService.updateOrganizer(_id, org).subscribe(
+                                                    )
+                                                }
+                                            )
+                                        }
+                                        this.openSnackBar('Successfully added: ' + createOrganizerResponse.name, 'success')
+                                    }),
+                            ).subscribe()
                     }
-                )).subscribe()
+                ),
+                catchError(err => {
+                    this.openSnackBar('Error: ' + err, 'error')
+                    throw err
+                })).subscribe()
     }
 
     updateOrganizer(organizer): void {
@@ -129,6 +139,9 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
             .pipe(
                 map(
                     geoData => {
+                        if (Object.keys(geoData).length < 1) {
+                            throw new Error('No coordinates found to given address');
+                        }
                         org.geoData.lat = geoData[0].lat;
                         org.geoData.lon = geoData[0].lon;
                         this.organizerService.updateOrganizer(org._id, org)
@@ -166,11 +179,15 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
                                         this.eventService.deletEvent(org._id, _id).subscribe(
                                         )
                                     }
-                                    this.openSnackBar('Successfully updated: ' + updateOrganizerResponse.name)
+                                    this.openSnackBar('Successfully updated: ' + updateOrganizerResponse.name, 'success')
                                 })
                             ).subscribe()
                     }
                 ),
+                catchError(err => {
+                    this.openSnackBar('Error: ' + err, 'error')
+                    throw err
+                })
             ).subscribe()
 
         // this.updateOrganizer$.subscribe()
@@ -198,12 +215,12 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
         })
     }
 
-    openSnackBar(message) {
+    openSnackBar(message, state) {
         this._snackbar.open(message, '', {
             duration: 1000,
             verticalPosition: 'top',
             horizontalPosition: 'center',
-            panelClass: ['green-snackbar']
+            panelClass: [state !== 'error' ? 'green-snackbar' : 'red-snackbar']
 
         });
     }

@@ -6,7 +6,7 @@
 .form-and-image-upload {
     display: flex;
     flex-direction: column;
-    flex-basis: 60%;
+    flex-basis: 50%;
     margin: 2rem;
 }
 
@@ -20,6 +20,7 @@
     flex-direction: column;
     align-items: center;
     margin: 2rem;
+    flex-basis: 35%;
 }
 
 .map-container {

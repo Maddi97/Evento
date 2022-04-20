@@ -7,7 +7,7 @@ import {PositionService} from '../common-utilities/map-view/position.service';
 import {NominatimGeoService} from '../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ActivatedRoute, Router} from '@angular/router';
-import {filter, flatMap, map, mergeMap} from 'rxjs/operators';
+import {distinctUntilChanged, filter, flatMap, map, mergeMap, take} from 'rxjs/operators';
 import {concat} from 'rxjs'
 
 import * as moment from 'moment';
@@ -49,7 +49,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   ;
 
   // Range for the events
-  filteredDistance = 10;
+  filteredDistance = 300;
 
   // List of events in range to current position with filteredDistance
   eventsInRange = [];
@@ -66,7 +66,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   subcategoryList: Subcategory[] = [];
 
   public getScreenWidth: any;
-
+  private events$;
 
   constructor(
     private eventService: EventService,
@@ -84,14 +84,14 @@ export class EventsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
 
-
-    const events$ = this.eventService.events.pipe(
+    this.filteredCategory = 'hot'
+    this.events$ = this.eventService.events.pipe(
       map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)
       ),
     )
 
     // filter events by distance
-    events$.subscribe((ev: Event[]) => {
+    this.events$.subscribe((ev: Event[]) => {
       this.filteredList = ev.sort((ev1, ev2) =>
         this.get_distance_to_current_position(ev1) - this.get_distance_to_current_position(ev2)
       );
@@ -138,12 +138,16 @@ export class EventsComponent implements OnInit, OnDestroy {
         this.downloadCategoryIcon()
         this.applyFilters()
       })
-    this.applyFilters()
+    // this.applyFilters()
     // request categories
-    this.categoriesService.getAllCategories();
+    if (this.categoryList.length < 1) {
+      this.categoriesService.getAllCategories();
+    }
+
   }
 
   ngOnDestroy() {
+    // this.events$.unsubscribe()
     this.empty_filters()
   }
 
@@ -164,7 +168,6 @@ export class EventsComponent implements OnInit, OnDestroy {
     } else {
       fil.subcat = this.filteredSubcategories;
     }
-
     this.spinner.show();
     // if category is not hot
     if (!fil.cat.includes('hot')) {

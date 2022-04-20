@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {NominatimGeoService} from '../../nominatim-geo.service';
 import {map} from 'rxjs/operators';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {from, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -41,26 +42,56 @@ export class PositionService {
       }));
   }
 
-  getPositionByLocation() {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        position => {
+  watchLocation() {
 
+    return new Observable((observer) => {
+      let watchId: number;
+
+      // Simple geolocation API check provides values to publish
+      if ('geolocation' in navigator) {
+        watchId = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
           const {latitude, longitude} = position.coords;
           this.searchedCenter = [latitude, longitude];
-          console.log(this.searchedCenter)
-        },
-        err => {
-          this.openErrorSnackBar(err.message)
-        }
-      );
+          observer.next(position);
+        }, (error: GeolocationPositionError) => {
+          this.openErrorSnackBar(error.message)
+          observer.error(error);
+        });
+      } else {
+
+        observer.error('Geolocation not available');
+      }
+    });
+  }
+
+  getPositionByLocation() {
+    return new Observable((observer) => {
+      let watchId: number;
+
+      // Simple geolocation API check provides values to publish
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
+          const {latitude, longitude} = position.coords;
+          this.searchedCenter = [latitude, longitude];
+          observer.next(position);
+        }, (error: GeolocationPositionError) => {
+          this.openErrorSnackBar(error.message)
+          observer.error(error);
+        });
+      } else {
+
+        observer.error('Geolocation not available');
+      }
     });
   }
 
   openErrorSnackBar(message) {
+    if (message.length < 3) {
+      message = 'Standort konnte nicht ermittelt werden'
+    }
     this._snackbar.open(message, '', {
       duration: 3000,
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       horizontalPosition: 'center',
       panelClass: ['red-snackbar'],
 

@@ -60,7 +60,7 @@ export class InsertEventComponent implements OnInit {
   openSnackBar() {
     this._snackbar.open('Im Formular sind Fehler enthalten.', '', {
       duration: 2000,
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       horizontalPosition: 'center',
       panelClass: 'red-snackbar'
 

@@ -5,11 +5,11 @@
 
 .organizer-form {
     display: flex;
-    flex-basis: 60%;
+    flex-basis: 50%;
     flex-direction: column;
-    width: 100%;
     flex-grow: 1;
 }
+
 .organizer-page {
     display: flex;
     flex-flow: row wrap;

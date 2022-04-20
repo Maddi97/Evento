@@ -50,7 +50,7 @@
 
 .view-more-icon:hover {
   cursor: pointer;
-  background-color: rgb(74 143 215 / 81%);
+  background-color: rgb(65 180 233 / 81%);
 }
 
 .events-day-date {
@@ -60,6 +60,13 @@
   transition: top ease 0.3s;
   -webkit-transition: all 0.25s;
   -moz-transition: top ease 0.3s;
+}
+
+/*no animation on mobile devices*/
+@media (hover: none) and (pointer: coarse) {
+  .events-day-date:hover {
+    top: 0 !important;
+  }
 }
 
 .events-day-date:hover {

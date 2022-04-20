@@ -59,7 +59,6 @@ export class CategorySelectComponent implements OnInit, OnChanges {
             stockImageTemporaryURL: this.selectedCategory.stockImageTemporaryURL,
             subcategories: [],
         }
-        console.log(this.selectedSubcategories)
 
         this.newCategorySelect.emit(cat)
     }

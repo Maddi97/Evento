@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, throwError as observableThrowError, BehaviorSubject} from 'rxjs';
+import {Observable, throwError as observableThrowError, BehaviorSubject, throwError, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {HttpRequest} from '@angular/common/http';
 import {filter, map, catchError, share, take} from 'rxjs/operators';
@@ -25,11 +25,6 @@ export class NominatimGeoService {
 
         return this.http.get(this.ROOT_URL + street + '+' + streetNumber + '+,' + city + '&limit=2&format=json').pipe(
             take(1),
-            map(geoData => {
-                if (Object.keys(geoData).length < 1)
-                    throw console.error(('No coordinates found to given address'));
-                return geoData
-            }),
         )
     }
 
@@ -38,7 +33,7 @@ export class NominatimGeoService {
             take(1),
             map(geoData => {
                 if (Object.keys(geoData).length < 1) {
-                    throw console.error(('No coordinates found to given address'));
+                    return throwError(() => ('No coordinates found to given address'));
                 }
                 return geoData
             }),
@@ -50,8 +45,9 @@ export class NominatimGeoService {
             + coord.lat + '&lon=' + coord.lon + '&limit=2&format=json').pipe(
             take(1),
             map(geoData => {
-                if (Object.keys(geoData).length < 1)
-                    throw console.error(('No coordinates found to given address'));
+                if (Object.keys(geoData).length < 1) {
+                    return throwError(() => ('No adress found to given coordinates'));
+                }
                 return geoData
             }),
         )

@@ -1,14 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~leaflet/dist/leaflet.css';
+@import 'assets/fonts/fonts.css';
 
+html {
+
+}
 
 html, body {
   height: 100%;
 }
 
+
 body {
-  margin: 0;
+  margin-left: 0;
+  margin-right: 0;
+
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+
 }
 
 .green-snackbar {
