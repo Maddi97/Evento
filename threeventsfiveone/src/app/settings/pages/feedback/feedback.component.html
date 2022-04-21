@@ -20,6 +20,21 @@
         </mat-error>
       </mat-form-field>
     </div>
+    <div class="mail">
+      <mat-form-field appearance="fill">
+        <mat-label>E-Mail</mat-label>
+        <input matInput
+               #target
+               formControlName="mail"
+               type="text">
+        <mat-error *ngIf="feedbackForm.get('mail').hasError('required')">Email-Adresse notwendig
+        </mat-error>
+        <mat-error
+          *ngIf="feedbackForm.get('mail').hasError('email') && !feedbackForm.get('mail').hasError('required')">
+          Email-Adresse hat ein falsches Format!
+        </mat-error>
+      </mat-form-field>
+    </div>
     <div class="reason">
       <mat-form-field appearance="fill">
         <mat-label>Anliegen</mat-label>

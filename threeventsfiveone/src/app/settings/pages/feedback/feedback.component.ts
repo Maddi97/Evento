@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {HttpRequest} from '@angular/common/http';
+import {WebService} from "../../../web.service";
 
 @Component({
   selector: 'vents-feedback',
@@ -11,12 +13,15 @@ export class FeedbackComponent implements OnInit {
 
   feedbackForm = this.fb.group({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    mail: new FormControl('', [Validators.email, Validators.required]),
     reason: new FormControl('', [Validators.required, Validators.minLength(3)]),
     description: new FormControl('', [Validators.required, Validators.minLength(5)]),
   })
 
   constructor(private fb: FormBuilder,
-              private _snackbar: MatSnackBar) {
+              private _snackbar: MatSnackBar,
+              private webService: WebService,
+  ) {
   }
 
   ngOnInit(): void {
@@ -25,6 +30,7 @@ export class FeedbackComponent implements OnInit {
   submitEvent(): void {
     if (this.feedbackForm.invalid) {
       this.feedbackForm.get('name').markAsTouched();
+      this.feedbackForm.get('mail').markAsTouched();
       this.feedbackForm.get('reason').markAsTouched();
       this.feedbackForm.get('description').markAsTouched();
 
@@ -35,9 +41,19 @@ export class FeedbackComponent implements OnInit {
     } else {
       const feedback = {
         name: this.feedbackForm.get('name').value,
+        mail: this.feedbackForm.get('mail').value,
         reason: this.feedbackForm.get('reason').value,
-        description: this.feedbackForm.get('feedbackForm').value,
+        description: this.feedbackForm.get('description').value,
       }
+      this.webService.post('sendFeedback', feedback).subscribe(
+        () => console.log,
+        error => {
+          this.openSnackBar('Fehler beim senden! Bitte nochmal probieren', 'error')
+        },
+        () => {
+          this.openSnackBar('Nachricht erfolgreich gesendet!', 'success')
+        }
+      )
       this.openSnackBar('Nachricht erfolgreich gesendet!', 'success')
       this.resetFormGroup()
     }
@@ -45,9 +61,10 @@ export class FeedbackComponent implements OnInit {
 
   resetFormGroup(): void {
     this.feedbackForm = this.fb.group({
-      name: new FormControl('', Validators.required),
-      reason: new FormControl('', []),
-      description: new FormControl('', []),
+      name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      mail: new FormControl('', [Validators.email, Validators.required]),
+      reason: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      description: new FormControl('', [Validators.required, Validators.minLength(5)]),
     })
   }
 
