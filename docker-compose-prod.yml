@@ -50,10 +50,10 @@ services:
     image: linuxserver/swag
     container_name: 3vents51_swag
     volumes:
-      - web-root:/var/www/html
       - ./letsencrypt/config:/config
     ports:
       - 443:443
+      - 80:80
     environment:
       - PUID=1000
       - PGID=1000
