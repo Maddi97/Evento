@@ -51,7 +51,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
-      - URL=3vents51.duckdns.org
+      - URL=evento.de
       - SUBDOMAINS=wildcard
+      - VALIDATION=http
     depends_on:
       - duckdns
