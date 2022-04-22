@@ -64,5 +64,10 @@ services:
       - "443:443"
     volumes:
       - ./letsencrypt/config/nginx/proxy-confs:/etc/nginx/conf.d
+      - ./letsencrypt/certbot/conf:/etc/letsencrypt
+      - ./letsencrypt/certbot/www:/var/www/certbot
   certbot:
     image: certbot/certbot
+    volumes:
+      - ./letsencrypt/certbot/conf:/etc/letsencrypt
+      - ./letsencrypt/certbot/www:/var/www/certbot
