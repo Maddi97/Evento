@@ -53,12 +53,11 @@ services:
       - ./letsencrypt/config:/config
     ports:
       - 443:443
-      - 80:80
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
-      - URL=evento.de
+      - URL=evento-leipzig.de
       - SUBDOMAINS=wildcard
       - VALIDATION=http
 
