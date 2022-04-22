@@ -47,7 +47,7 @@ services:
       - letsencrypt
 
   letsencrypt:
-    image: linuxserver/swag
+    image: ghcr.io/linuxserver/swag
     container_name: 3vents51_swag
     volumes:
       - ./letsencrypt/config:/config
