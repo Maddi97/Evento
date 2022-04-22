@@ -39,21 +39,30 @@ services:
     container_name: 3vents51_mongodb
     depends_on:
       - letsencrypt
+  #
+  #  letsencrypt:
+  #    image: ghcr.io/linuxserver/swag
+  #    container_name: 3vents51_swag
+  #    volumes:
+  #      - ./letsencrypt/config:/config
+  #    ports:
+  #      - 443:443
+  #      - 80:80
+  #    environment:
+  #      - PUID=1000
+  #      - PGID=1000
+  #      - TZ=Europe/Berlin
+  #      - URL=evento-leipzig.de
+  #      - SUBDOMAINS=wildcard
+  #      - VALIDATION=http
+
 
   letsencrypt:
-    image: ghcr.io/linuxserver/swag
-    container_name: 3vents51_swag
-    volumes:
-      - ./letsencrypt/config:/config
+    image: nginx:1.15-alpine
     ports:
-      - 443:443
-      - 80:80
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Berlin
-      - URL=evento-leipzig.de
-      - SUBDOMAINS=wildcard
-      - VALIDATION=http
-
-
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./letsencrypt/config/nginx/proxy-confs:/etc/nginx/conf.d
+  certbot:
+    image: certbot/certbot
