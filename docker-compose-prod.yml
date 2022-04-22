@@ -59,6 +59,5 @@ services:
       - PGID=1000
       - TZ=Europe/Berlin
       - URL=evento-leipzig.de
-      - SUBDOMAINS=wildcard
-      - VALIDATION=dns
-      - DNSPLUGIN=cloudflare
+      - SUBDOMAINS=www
+      - VALIDATION=http
