@@ -126,7 +126,7 @@ jobs:
 
   deploy:
     #    needs: [ build_backend ]
-    name: Deploy On Strato Server
+    name: Deploy On Strato
     runs-on: strato
     steps:
       - name: Checkout Repository
