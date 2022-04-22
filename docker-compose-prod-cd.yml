@@ -40,35 +40,20 @@ services:
     depends_on:
       - letsencrypt
 
-  #  letsencrypt:
-  #    image: ghcr.io/linuxserver/swag
-  #    container_name: 3vents51_swag
-  #    volumes:
-  #      - ./letsencrypt/config:/config
-  #    ports:
-  #      - 443:443
-  #      - 80:80
-  #    environment:
-  #      - PUID=1000
-  #      - PGID=1000
-  #      - TZ=Europe/Berlin
-  #      - URL=evento-leipzig.de
-  #      - SUBDOMAINS=wildcard
-  #      - VALIDATION=http
-
   letsencrypt:
-    image: nginx:latest
+    image: ghcr.io/linuxserver/swag
+    container_name: 3vents51_swag
+    volumes:
+      - ./letsencrypt/config:/config
     ports:
-      - 80:80
       - 443:443
-    restart: always
-    volumes:
-      - ./letsencrypt/config/nginx/proxy-confs/:/etc/nginx/conf.d
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf/:/etc/nginx/ssl
-  certbot:
-    image: certbot/certbot:latest
-    volumes:
-      - ./certbot/www/:/var/www/certbot
-      - ./certbot/conf/:/etc/letsencrypt
+      - 80:80
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - URL=evento-leipzig.de
+      - SUBDOMAINS=wildcard
+      - VALIDATION=http
+
 
