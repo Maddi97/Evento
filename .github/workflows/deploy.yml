@@ -35,7 +35,7 @@ jobs:
 
 
   build_frontend:
-    needs: analyze
+    #    needs: analyze
     name: Build And Push Events
     runs-on: ubuntu-latest
     steps:
@@ -95,7 +95,7 @@ jobs:
 
 
   build_insert-app:
-    needs: analyze
+    #    needs: analyze
     name: Build And Push Insert
     runs-on: ubuntu-latest
     steps:
