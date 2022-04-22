@@ -60,5 +60,7 @@ services:
       - URL=evento-leipzig.de
       - SUBDOMAINS=wildcard
       - VALIDATION=http
+      - DNSPLUGIN=cloudflare
+
 
 
