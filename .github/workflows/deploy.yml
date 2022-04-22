@@ -148,4 +148,4 @@ jobs:
         run: docker pull ${{secrets.dockerhub_user}}/3vents51_insert-app:latest
 
       - name: Start Docker Containers
-        run: docker-compose -f docker-compose-prod-cd.yml up -d
+        run: docker-compose -f docker-compose-prod-cd.yml up --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ -d evento-leipzig.de
