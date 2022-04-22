@@ -60,17 +60,5 @@ services:
       - TZ=Europe/Berlin
       - URL=evento-leipzig.de
       - SUBDOMAINS=wildcard
-      - VALIDATION=http
+      - VALIDATION=dns
       - DNSPLUGIN=cloudflare
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
-    depends_on:
-      - letsencrypt
-    command: certonly --webroot --webroot-path=/var/www/html  --staging -d evento-leipzig.de  -d www.evento-leipzig.de
-
