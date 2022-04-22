@@ -8,7 +8,6 @@ on:
 jobs:
 
   build_frontend: 
-    needs: analyze
     name: Build And Push Events
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +37,6 @@ jobs:
 
 
   build_backend: 
-    needs: analyze
     name: Build And Push Backend
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +66,6 @@ jobs:
 
 
   build_insert-app: 
-    needs: analyze
     name: Build And Push Insert
     runs-on: ubuntu-latest
     steps:
@@ -99,7 +96,7 @@ jobs:
 
   deploy:
     needs: [build_backend, build_frontend, build_insert-app]
-    name: Deploy On PI
+    name: Deploy To Strato
     runs-on: self-hosted
     steps:
       - name: Login to DockerHub
