@@ -56,7 +56,7 @@ services:
   #      - SUBDOMAINS=wildcard
   #      - VALIDATION=http
 
-  webserver:
+  letsencrypt:
     image: nginx:latest
     ports:
       - 80:80
