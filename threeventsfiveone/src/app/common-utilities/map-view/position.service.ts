@@ -39,6 +39,7 @@ export class PositionService {
     return this.geoService.get_geo_data_address(addressInput).pipe(
       map(geoData => {
         this.searchedCenter = [geoData[0].lat, geoData[0].lon];
+        sessionStorage.setItem('location', JSON.stringify(this.searchedCenter))
       }));
   }
 
@@ -52,6 +53,8 @@ export class PositionService {
         watchId = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
           const {latitude, longitude} = position.coords;
           this.searchedCenter = [latitude, longitude];
+          sessionStorage.setItem('location', JSON.stringify(this.searchedCenter))
+
           observer.next(position);
         }, (error: GeolocationPositionError) => {
           this.openErrorSnackBar(error.message)
@@ -73,6 +76,7 @@ export class PositionService {
         navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
           const {latitude, longitude} = position.coords;
           this.searchedCenter = [latitude, longitude];
+          sessionStorage.setItem('location', JSON.stringify(this.searchedCenter))
           observer.next(position);
         }, (error: GeolocationPositionError) => {
           this.openErrorSnackBar(error.message)

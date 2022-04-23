@@ -63,7 +63,14 @@ export class MapViewComponent implements OnInit, OnChanges {
     //   this.resetCenter();
     // })
     // this.updatePosition(this.positionService.getDefaultLocation());
-
+    if (sessionStorage.getItem('location') !== null) {
+      const locationFromSession = JSON.parse(sessionStorage.getItem('location'))
+      this.currentPosition.lat = locationFromSession[0]
+      this.currentPosition.lon = locationFromSession[1]
+      this.setPositionMarker()
+    } else {
+      this.getCurrentPosition()
+    }
   }
 
   updatePosition(locationList) {
