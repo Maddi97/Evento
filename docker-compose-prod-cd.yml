@@ -47,11 +47,12 @@ services:
       - ./letsencrypt/config:/config
     ports:
       - "443:443"
+      - "80:80"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
-      - URL=3vents51-leipzig.de
+      - URL=evento-leipzig.de
       - SUBDOMAINS=insert, backend
       - VALIDATION=http
       - EMAIL=business@evento-leipzig.de
