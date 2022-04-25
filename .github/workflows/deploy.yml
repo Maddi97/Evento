@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ strato-server-test ]
   workflow_dispatch:
 
 jobs:
@@ -20,28 +20,28 @@ jobs:
         language: [ 'javascript' ]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: ${{ matrix.language }}
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
-      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
 
-  build_frontend: 
+
+  build_frontend:
     needs: analyze
     name: Build And Push Events
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-        
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -64,7 +64,7 @@ jobs:
           tags: ${{secrets.dockerhub_user}}/3vents51_threeventsfiveone:latest
 
 
-  build_backend: 
+  build_backend:
     needs: analyze
     name: Build And Push Backend
     runs-on: ubuntu-latest
@@ -94,7 +94,7 @@ jobs:
           tags: ${{secrets.dockerhub_user}}/3vents51_backend:latest
 
 
-  build_insert-app: 
+  build_insert-app:
     needs: analyze
     name: Build And Push Insert
     runs-on: ubuntu-latest
@@ -104,7 +104,7 @@ jobs:
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-        
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
@@ -120,14 +120,14 @@ jobs:
           platforms: linux/arm64
           context: https://github.com/Maddi97/3vents51.git#develop:insertApp
           file: ./prod.Dockerfile
-          push: true 
+          push: true
           tags: ${{secrets.dockerhub_user}}/3vents51_insert-app:latest
 
 
   deploy:
-    needs: [build_backend, build_frontend, build_insert-app]
-    name: Deploy On PI
-    runs-on: self-hosted
+    needs: [ build_backend, build_frontend, build_insert-app ]
+    name: Deploy
+    runs-on: strato
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2

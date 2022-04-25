@@ -46,21 +46,19 @@ services:
     volumes:
       - ./letsencrypt/config:/config
     ports:
-      - 443:443
+      - "443:443"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
-      - URL=3vents51.duckdns.org
-      - DUCKDNSTOKEN=${DUCKDNSTOKEN}
-      - SUBDOMAINS=wildcard
-      - VALIDATION=duckdns
-    depends_on:
-      - duckdns
+      - URL=3vents51-leipzig.de
+      - SUBDOMAINS=insert, backend
+      - VALIDATION=http
+      - EMAIL=business@evento-leipzig.de
 
   duckdns:
-      image: linuxserver/duckdns
-      container_name: 3vents51_duckdns
-      environment:
-        - SUBDOMAINS=3vents51.duckdns.org
-        - TOKEN=${DUCKDNSTOKEN}
+    image: linuxserver/duckdns
+    container_name: 3vents51_duckdns
+    environment:
+      - SUBDOMAINS=3vents51.duckdns.org
+      - TOKEN=${DUCKDNSTOKEN}
