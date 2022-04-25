@@ -53,6 +53,6 @@ services:
       - PGID=1000
       - TZ=Europe/Berlin
       - URL=evento-leipzig.de
-      - SUBDOMAINS=insert, backend
+      - SUBDOMAINS=www, insert, backend
       - VALIDATION=http
       - EMAIL=business@evento-leipzig.de
