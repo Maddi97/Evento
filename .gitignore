@@ -8,11 +8,11 @@ node_modules
 
 #Include Only Important Configuration For Reverse-Proxy
 letsencrypt/*
-!letsencrypt/config/
-letsencrypt/config/*
-!letsencrypt/config/nginx/
-letsencrypt/config/nginx/*
-!letsencrypt/config/nginx/proxy-confs/
-letsencrypt/config/nginx/proxy-confs/*
+!letsencrypt/configStrato/
+letsencrypt/configStrato/*
+!letsencrypt/configStrato/nginx/
+letsencrypt/configStrato/nginx/*
+!letsencrypt/configStrato/nginx/proxy-confs/
+letsencrypt/configStrato/nginx/proxy-confs/*
 !letsencrypt/config/nginx/proxy-confs/*.conf
 /**/.angular
