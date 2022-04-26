@@ -50,7 +50,7 @@ services:
     image: linuxserver/swag
     container_name: 3vents51_swag
     volumes:
-      - ./letsencryptPi/config/:/config/
+      - ./letsencryptPi/config:/config
     ports:
       - "443:443"
     environment:
