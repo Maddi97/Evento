@@ -37,16 +37,10 @@ export function getEventFromForm(eventForm, organizer, category, times, updateEv
     }
 
     if (eventForm.get('permanent').value === 'false') {
-        let start = eventForm.get('start').value
-        start.setDate(start.getDate())
+        event.date.start = formatDate(eventForm.get('start').value)
 
-        start = moment(new Date(start.toISOString())).utcOffset(0, true).format();
-        event.date.start = start
+        event.date.end = formatDate(eventForm.get('end').value)
 
-        let end = eventForm.get('end').value
-        end.setDate(end.getDate())
-        end = moment(new Date(end.toISOString())).utcOffset(0, true).format();
-        event.date.end = end
     } else {
         event.date.start = moment(new Date()).utcOffset(0, true)
         event.date.end = moment(new Date()).utcOffset(0, true)
@@ -73,4 +67,13 @@ export function getEventFormTemplate() {
         end: new FormControl('', []),
         coord: new FormControl('', []),
     }
+}
+
+function formatDate(date) {
+    // remove timezone and set time to 0
+    date = moment(new Date(date))
+        .utcOffset(0, true)
+        .set({hour: 0, minute: 0, second: 0, millisecond: 0})
+        .format();
+    return date
 }

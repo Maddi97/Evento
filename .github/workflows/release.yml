@@ -1,4 +1,4 @@
-name: Deploy
+name: Release
 
 on:
   push:
@@ -57,7 +57,7 @@ jobs:
       - name: Build Frontend Docker Containers
         uses: docker/build-push-action@v2
         with:
-          platforms: linux/arm64
+          platforms: linux/x86_64
           context: https://github.com/Maddi97/3vents51.git#develop:threeventsfiveone
           file: ./prod.Dockerfile
           push: true
@@ -87,7 +87,7 @@ jobs:
       - name: Build Backend Docker Containers
         uses: docker/build-push-action@v2
         with:
-          platforms: linux/arm64
+          platforms: linux/x86_64
           context: https://github.com/Maddi97/3vents51.git#develop:backend
           file: ./prod.Dockerfile
           push: true
@@ -117,7 +117,7 @@ jobs:
       - name: Build Insert-App Docker Containers
         uses: docker/build-push-action@v2
         with:
-          platforms: linux/arm64
+          platforms: linux/x86_64
           context: https://github.com/Maddi97/3vents51.git#develop:insertApp
           file: ./prod.Dockerfile
           push: true
@@ -126,8 +126,8 @@ jobs:
 
   deploy:
     needs: [ build_backend, build_frontend, build_insert-app ]
-    name: Deploy On PI
-    runs-on: self-hosted
+    name: Deploy
+    runs-on: strato
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -153,4 +153,4 @@ jobs:
         run: touch .env.prod && echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
 
       - name: Start Docker Containers
-        run: docker-compose --env-file .env.prod -f docker-compose-deploy-dev.yml up -d
+        run: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d

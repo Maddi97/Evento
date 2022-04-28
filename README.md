@@ -1,25 +1,24 @@
 # 3vents51
 
-This repository will implement an website/app for an event organizes. 
-There are four components:
+This repository will implement an website/app for an event organizes. There are four components:
+
 1. Backend
 2. Frontend
 3. Frontend - Insert
 4. Mongo DB
-
 
 ## Running Production
 
 To start the tech stack with docker run the following command:
 
 ```shell
-docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build
+docker-compose --env-file .env.prod -f docker-compose-deploy-dev.yml up -d --build
 ```
 
 If the containers have already been built one can just run:
 
 ```shell
-docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d
+docker-compose --env-file .env.prod -f docker-compose-deploy-dev.yml up -d
 ```
 
 Afterwards the containers are reachable from the domain:
@@ -29,7 +28,6 @@ Afterwards the containers are reachable from the domain:
 [Insert](https://insert.3vents51.duckdns.org)
 
 [Backend](https://backend.3vents51.duckdns.org)
-
 
 ## Local Development
 
@@ -56,5 +54,6 @@ The containers are then reachable via localhost and the specific ports:
 Here only http is supported.
 
 ## TechStack
+
 * node 16.13.2
 * angular 13.1.3 

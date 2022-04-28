@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {WebService} from "../../../web.service";
+
 
 @Component({
   selector: 'vents-insert-event',
@@ -20,6 +22,7 @@ export class InsertEventComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private _snackbar: MatSnackBar,
+              private webService: WebService,
   ) {
   }
 
@@ -33,7 +36,7 @@ export class InsertEventComponent implements OnInit {
     }
 
     if (this.eventForm.invalid) {
-      this.openSnackBar()
+      this.openSnackBar('Im Formular sind Fehler enthalten.', 'error')
     } else {
       const event = {
         name: this.eventForm.get('eventName').value,
@@ -42,7 +45,16 @@ export class InsertEventComponent implements OnInit {
         link: this.eventForm.get('link').value,
         description: this.eventForm.get('description').value,
       }
-      console.log(event)
+
+      this.webService.post('sendEvent', event).subscribe(
+        () => console.log,
+        error => {
+          this.openSnackBar('Fehler beim senden! Bitte nochmal probieren', 'error')
+        },
+        () => {
+          this.openSnackBar('Event erfolgreich eingereicht!', 'success')
+        }
+      )
       this.resetFormGroup()
     }
   }
@@ -57,12 +69,12 @@ export class InsertEventComponent implements OnInit {
     })
   }
 
-  openSnackBar() {
-    this._snackbar.open('Im Formular sind Fehler enthalten.', '', {
+  openSnackBar(message, state) {
+    this._snackbar.open(message, '', {
       duration: 2000,
       verticalPosition: 'bottom',
       horizontalPosition: 'center',
-      panelClass: 'red-snackbar'
+      panelClass: [state !== 'error' ? 'green-snackbar' : 'red-snackbar']
 
     });
   }

@@ -3,9 +3,9 @@ version: "3"
 services:
   threeventsfiveone:
     image: 3vents51/3vents51_threeventsfiveone:latest
-    container_name: 3vents51_threeventsfiveone
+    container_name: evento_app
     ports:
-      - 10000:80
+      - "10000:80"
     volumes:
       - ./threeventsfiveone:/app
       - /app/node_modules
@@ -14,9 +14,9 @@ services:
 
   insert-app:
     image: 3vents51/3vents51_insert-app:latest
-    container_name: 3vents51_insert-app
+    container_name: insert_app
     ports:
-      - 10001:80
+      - "10001:80"
     volumes:
       - ./insertApp:/app
       - /app/node_modules
@@ -25,9 +25,9 @@ services:
 
   backend:
     image: 3vents51/3vents51_backend:latest
-    container_name: 3vents51_backend
+    container_name: backend
     ports:
-      - 10002:3000
+      - "10002:3000"
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -36,31 +36,23 @@ services:
 
   mongodb:
     image: mongo
-    container_name: 3vents51_mongodb
+    container_name: mongodb
     depends_on:
       - letsencrypt
 
   letsencrypt:
     image: linuxserver/swag
-    container_name: 3vents51_swag
+    container_name: swag
     volumes:
-      - ./letsencrypt/config:/config
+      - ./letsencryptStrato/config:/config/
     ports:
-      - 443:443
+      - "443:443"
+      - "80:80"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
-      - URL=3vents51.duckdns.org
-      - DUCKDNSTOKEN=${DUCKDNSTOKEN}
-      - SUBDOMAINS=wildcard
-      - VALIDATION=duckdns
-    depends_on:
-      - duckdns
-
-  duckdns:
-      image: linuxserver/duckdns
-      container_name: 3vents51_duckdns
-      environment:
-        - SUBDOMAINS=3vents51.duckdns.org
-        - TOKEN=${DUCKDNSTOKEN}
+      - URL=evento-leipzig.de
+      - SUBDOMAINS=www, insert, backend
+      - VALIDATION=http
+      - EMAIL=business@evento-leipzig.de

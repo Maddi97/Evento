@@ -47,6 +47,10 @@ app.use(eventRouter)
 
 var categoryRouter = require('./routes/category.routes')
 app.use(categoryRouter)
+
+var emailRouter = require('./routes/email.routes')
+app.use(emailRouter)
+
 // startup our app at http://localhost:3000
 
 var fileRouter = require('./routes/file.routes')

@@ -6,9 +6,8 @@ import {Category, Subcategory} from '../models/category';
 import {PositionService} from '../common-utilities/map-view/position.service';
 import {NominatimGeoService} from '../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {ActivatedRoute, Router} from '@angular/router';
-import {distinctUntilChanged, filter, flatMap, map, mergeMap, take} from 'rxjs/operators';
-import {concat} from 'rxjs'
+import {ActivatedRoute} from '@angular/router';
+import {map, mergeMap} from 'rxjs/operators';
 
 import * as moment from 'moment';
 import * as log from 'loglevel';
@@ -49,7 +48,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   ;
 
   // Range for the events
-  filteredDistance = 300;
+  filteredDistance = 300000;
 
   // List of events in range to current position with filteredDistance
   eventsInRange = [];

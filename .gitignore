@@ -7,12 +7,12 @@ node_modules
 .env.prod
 
 #Include Only Important Configuration For Reverse-Proxy
-letsencrypt/*
-!letsencrypt/config/
-letsencrypt/config/*
-!letsencrypt/config/nginx/
-letsencrypt/config/nginx/*
-!letsencrypt/config/nginx/proxy-confs/
-letsencrypt/config/nginx/proxy-confs/*
-!letsencrypt/config/nginx/proxy-confs/*.conf
+#letsencryptStrato/*
+#!letsencryptStrato/config/
+#letsencryptStrato/config/*
+#!letsencryptStrato/config/nginx/
+#letsencryptStrato/config/nginx/*
+#!letsencryptStrato/config/nginx/proxy-confs/
+#letsencryptStrato/config/nginx/proxy-confs/*
+#!letsencrypt/config/nginx/proxy-confs/*.conf
 /**/.angular

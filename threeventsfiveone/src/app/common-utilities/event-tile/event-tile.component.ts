@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit, Input, OnChanges} from '@angular/core';
 import {Event} from '../../models/event';
 import {DomSanitizer} from '@angular/platform-browser';
 import {FileService} from '../../file.service';
@@ -10,7 +10,7 @@ import {OrganizerService} from '../../organizer.service';
   templateUrl: './event-tile.component.html',
   styleUrls: ['./event-tile.component.css']
 })
-export class EventTileComponent implements OnInit {
+export class EventTileComponent implements OnInit, OnChanges {
 
   @Input() event: Event;
   @Input() distance;
@@ -33,9 +33,12 @@ export class EventTileComponent implements OnInit {
         this.downloadImage();
       }
     );
-    this.distance = Math.round(this.distance * 100) / 100 //2 decimals
+    this.distance = Math.round(this.distance * 100) / 100 // 2 decimals
   }
 
+  ngOnChanges() {
+    this.distance = Math.round(this.distance * 100) / 100 // 2 decimals
+  }
 
   // uses only image from category -> may change
   downloadImage() {
