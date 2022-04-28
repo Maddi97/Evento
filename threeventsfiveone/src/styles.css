@@ -16,8 +16,18 @@ body {
   margin-right: 0;
 
   font-family: Roboto, 'Helvetica Neue', sans-serif;
-
 }
+
+/*cookie consent banner to top*/
+.cc-banner.cc-bottom {
+  bottom: unset !important;
+  top: 0 !important;
+}
+
+.cc-bottom {
+  bottom: unset !important;
+}
+
 
 .green-snackbar {
   color: green;
