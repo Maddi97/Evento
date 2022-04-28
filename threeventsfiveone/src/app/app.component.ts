@@ -9,9 +9,10 @@ import {Router} from "@angular/router"
 })
 export class AppComponent implements OnInit {
   title = 'threeventsfiveone';
-  private cookieMessage = 'Diese Website verwendet Cookies. Erfahre mehr über Datenschutz und unsere Cookies und diesem Link:'
+  private cookieMessage = 'Diese Website verwendet nur essenzielle Cookies. Erfahrunge mehr über die verwendeten Cookies in unsererem Datenschutzbereich' +
+    ''
   private cookieDismiss = 'Verstanden!'
-  private cookieLinkText = 'Erfahre mehr'
+  private cookieLinkText = 'Hier gehts zur Datenschutzerklärung'
 
   constructor(private router: Router) {
   }
