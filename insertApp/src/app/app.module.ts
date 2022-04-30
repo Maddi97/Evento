@@ -35,8 +35,10 @@ import {CategorySelectComponent} from './pages/category/category-select/category
 import {CategoryViewComponent} from './pages/category/category-view/category-view.component';
 import {MapViewComponent} from './pages/map/map-view/map-view.component'
 import {CommonModule} from '@angular/common';
-import { OrganizerFormComponent } from './pages/organizer/organizer-form/organizer-form.component';
-import { EventFormComponent } from './pages/event/event-form/event-form.component';
+import {OrganizerFormComponent} from './pages/organizer/organizer-form/organizer-form.component';
+import {EventFormComponent} from './pages/event/event-form/event-form.component';
+import {LoginComponent} from './login/login.component';
+import {AuthGuardService} from "./services/auth.guard.service";
 
 
 @NgModule({
@@ -49,7 +51,8 @@ import { EventFormComponent } from './pages/event/event-form/event-form.componen
         CategoryViewComponent,
         MapViewComponent,
         OrganizerFormComponent,
-        EventFormComponent
+        EventFormComponent,
+        LoginComponent
     ],
     imports: [
         MatSnackBarModule,
@@ -79,7 +82,7 @@ import { EventFormComponent } from './pages/event/event-form/event-form.componen
         CommonModule,
         CommonModule
     ],
-    providers: [],
+    providers: [AuthGuardService],
     bootstrap: [AppComponent]
 })
 export class AppModule {
