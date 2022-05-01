@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {WebService} from '../services/web.service';
 import {TokenStorageService} from '../services/token-storage.service';
+import {NgxSpinnerService} from "ngx-spinner";
+
 
 @Component({
     selector: 'app-login',
@@ -17,7 +19,8 @@ export class LoginComponent implements OnInit {
     errorMessage = '';
     roles: string[] = [];
 
-    constructor(private webService: WebService, private tokenStorage: TokenStorageService) {
+    constructor(private webService: WebService, private tokenStorage: TokenStorageService,
+                private spinner: NgxSpinnerService) {
     }
 
     ngOnInit(): void {
@@ -29,6 +32,8 @@ export class LoginComponent implements OnInit {
 
     onSubmit(): void {
         const {username, password} = this.form;
+
+        this.spinner.show();
         this.webService.post('signin', {username, password}).subscribe(
             (data: any) => {
                 this.tokenStorage.saveToken(data.accessToken);
@@ -41,6 +46,9 @@ export class LoginComponent implements OnInit {
             err => {
                 this.errorMessage = err.error.message;
                 this.isLoginFailed = true;
+            },
+            () => {
+                this.spinner.hide();
             }
         );
     }

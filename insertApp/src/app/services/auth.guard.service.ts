@@ -12,11 +12,6 @@ export class AuthGuardService implements CanActivate {
     }
 
     canActivate() {
-        if (!!this.tokenStorageService.getToken()
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        return !!this.tokenStorageService.getToken();
     }
 }

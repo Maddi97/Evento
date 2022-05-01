@@ -23,6 +23,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {NgxSpinnerModule} from 'ngx-spinner';
 
 
 import {HttpClientModule} from '@angular/common/http';
@@ -38,7 +39,7 @@ import {CommonModule} from '@angular/common';
 import {OrganizerFormComponent} from './pages/organizer/organizer-form/organizer-form.component';
 import {EventFormComponent} from './pages/event/event-form/event-form.component';
 import {LoginComponent} from './login/login.component';
-import {AuthGuardService} from "./services/auth.guard.service";
+import {AuthGuardService} from './services/auth.guard.service';
 
 
 @NgModule({
@@ -80,7 +81,7 @@ import {AuthGuardService} from "./services/auth.guard.service";
         ReactiveFormsModule,
         ReactiveFormsModule,
         CommonModule,
-        CommonModule
+        NgxSpinnerModule
     ],
     providers: [AuthGuardService],
     bootstrap: [AppComponent]
