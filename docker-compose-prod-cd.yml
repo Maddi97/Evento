@@ -9,8 +9,8 @@ services:
     volumes:
       - ./threeventsfiveone:/app
       - /app/node_modules
-  #    depends_on:
-  #      - letsencrypt
+    depends_on:
+      - letsencrypt
 
   insert-app:
     image: 3vents51/3vents51_insert-app:latest
@@ -20,8 +20,8 @@ services:
     volumes:
       - ./insertApp:/app
       - /app/node_modules
-  #    depends_on:
-  #      - letsencrypt
+    depends_on:
+      - letsencrypt
 
   backend:
     image: 3vents51/3vents51_backend:latest
@@ -31,28 +31,28 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
-  #    depends_on:
-  #      - letsencrypt
+    depends_on:
+      - letsencrypt
 
   mongodb:
     image: mongo
     container_name: mongodb
-#    depends_on:
-#      - letsencrypt
+    depends_on:
+      - letsencrypt
 
-#  letsencrypt:
-#    image: linuxserver/swag
-#    container_name: swag
-#    volumes:
-#      - ./letsencryptStrato/config:/config/
-#    ports:
-#      - "443:443"
-#      - "80:80"
-#    environment:
-#      - PUID=1000
-#      - PGID=1000
-#      - TZ=Europe/Berlin
-#      - URL=evento-leipzig.de
-#      - SUBDOMAINS=www, insert
-#      - VALIDATION=http
-#      - EMAIL=business@evento-leipzig.de
+  letsencrypt:
+    image: linuxserver/swag
+    container_name: swag
+    volumes:
+      - ./letsencryptStrato/config:/config/
+    ports:
+      - "443:443"
+      - "80:80"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - URL=evento-leipzig.de
+      - SUBDOMAINS=www, insert
+      - VALIDATION=http
+      - EMAIL=business@evento-leipzig.de
