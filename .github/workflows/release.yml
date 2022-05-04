@@ -58,7 +58,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           platforms: linux/x86_64
-          context: https://github.com/Maddi97/3vents51.git#develop:threeventsfiveone
+          context: https://github.com/Maddi97/3vents51.git#mongodb_backup_routine:threeventsfiveone
           file: ./prod.Dockerfile
           push: true
           tags: ${{secrets.dockerhub_user}}/3vents51_threeventsfiveone:latest
@@ -88,7 +88,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           platforms: linux/x86_64
-          context: https://github.com/Maddi97/3vents51.git#develop:backend
+          context: https://github.com/Maddi97/3vents51.git#mongodb_backup_routine:backend
           file: ./prod.Dockerfile
           push: true
           tags: ${{secrets.dockerhub_user}}/3vents51_backend:latest
@@ -118,7 +118,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           platforms: linux/x86_64
-          context: https://github.com/Maddi97/3vents51.git#develop:insertApp
+          context: https://github.com/Maddi97/3vents51.git#mongodb_backup_routine:insertApp
           file: ./prod.Dockerfile
           push: true
           tags: ${{secrets.dockerhub_user}}/3vents51_insert-app:latest
