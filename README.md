@@ -53,6 +53,14 @@ The containers are then reachable via localhost and the specific ports:
 
 Here only http is supported.
 
+### Important Commands:
+
+Rebuild only one container of the docker compose
+
+``` 
+ docker-compose -f docker-compose-deploy-dev.yml up  -d --force-recreate --no-deps --build mongodb
+```
+
 ## TechStack
 
 * node 16.13.2

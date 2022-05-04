@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [ live ]
+    branches: [ mongodb_backup_routine ]
   workflow_dispatch:
 
 jobs:

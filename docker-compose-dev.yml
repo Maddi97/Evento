@@ -34,4 +34,4 @@ services:
 
   mongodb:
     image: mongo
-    container_name: 3vents51_mongodb
+    container_name: mongodb
