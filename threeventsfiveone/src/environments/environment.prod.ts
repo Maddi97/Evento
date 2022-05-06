@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://localhost:10002'
+  apiBaseUrl: 'https://backend.evento-leipzig.de'
 };
