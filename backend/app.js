@@ -15,7 +15,9 @@ const allowedOrigins = [
     'http://localhost:8080',
     'http://localhost:8100',
     'http://localhost:4200',
-    'http://localhost:4201'
+    'http://localhost:4201',
+    'https://insert.evento-leipzig.de',
+    'https://evento-leipzig.de',
 ];
 
 // Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)
