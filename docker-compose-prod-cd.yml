@@ -44,7 +44,7 @@ services:
     image: linuxserver/swag
     container_name: swag
     volumes:
-      - .letsencryptStrato/config/:/config/
+      - .letsencryptStrato/config:/config/
     ports:
       - "443:443"
       - "80:80"
