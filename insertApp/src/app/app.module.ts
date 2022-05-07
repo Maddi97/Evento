@@ -26,7 +26,9 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {NgxSpinnerModule} from 'ngx-spinner';
 
 
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
+import {authInterceptorProviders} from "./services/auth.interceptor";
+
 import {OrganizerViewComponent} from './pages/organizer/organizer-view/organizer-view.component';
 
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -83,7 +85,10 @@ import {AuthGuardService} from './services/auth.guard.service';
         CommonModule,
         NgxSpinnerModule
     ],
-    providers: [AuthGuardService],
+    providers: [
+        AuthGuardService,
+        authInterceptorProviders
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {
