@@ -64,6 +64,7 @@ else
 fi
 
 
+
 ######## Remove backups older than {BACKUP_RETAIN_DAYS} days  ########
 
 DBDELDATE=`date +"%d%b%Y" --date="${BACKUP_RETAIN_DAYS} days ago"`
