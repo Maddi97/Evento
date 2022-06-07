@@ -16,13 +16,20 @@
 
 }
 
-.logo {
+.logo-container {
   color: rgb(0, 0, 0);
   font-size: 2rem;
+  height: inherit;
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-right: 1.5rem;
+}
+
+.logo {
+  height: 90%;
+  width: auto;
 }
 
 .arrow-back {

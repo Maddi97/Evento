@@ -17,11 +17,14 @@
           <img [src]="category.iconTemporaryURL"/>
             {{ category.name }}
           </span>
-        <div class="subcategory-container" *ngIf="category.subcategories.length > 0
+        <div class="arrow-and-subcategory" *ngIf="category.subcategories.length > 0
                                                  && isElementPicked(category) == 'category-picked'">
-          <div *ngFor="let subcategory of category.subcategories">
+          <mat-icon>keyboard_arrow_down</mat-icon>
+          <div class="subcategory-container">
+            <div *ngFor="let subcategory of category.subcategories">
                 <span class="subcategory" [ngClass]="isElementPicked(subcategory)"
                       (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>
+            </div>
           </div>
         </div>
       </div>
