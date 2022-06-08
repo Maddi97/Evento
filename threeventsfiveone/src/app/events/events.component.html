@@ -3,8 +3,8 @@
   <div class="filter-container">
     <vents-date-picker class="date-picker" (clickedDate)="searchForDay($event)"></vents-date-picker>
 
-    <span class="category-label">Kategorien</span>
-
+    <!--    <span class="category-label">Kategorien</span>-->
+    <img class="category-headline" src="assets/design-elements/Kategorien_design.png">
     <div class="main-category-container">
 
       <span class="category" [ngClass]="isElementPicked('hot')" (click)="addCategoryToFilter('hot')">

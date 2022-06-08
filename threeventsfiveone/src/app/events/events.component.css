@@ -119,6 +119,14 @@
   align-items: center;
 }
 
+.category-headline {
+  height: 100%;
+  width: 15rem;
+  padding-right: 0rem !important;
+  min-width: 1rem;
+  margin-top: -1.5rem;
+  margin-bottom: -1.5rem;
+}
 
 .main-category-container {
   display: flex;
@@ -141,7 +149,6 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
-  margin-top: 2rem;
   margin-bottom: calc(5em + constant(safe-area-inset-bottom)) !important;
   margin-bottom: calc(5em + env(safe-area-inset-bottom)) !important;
 }
