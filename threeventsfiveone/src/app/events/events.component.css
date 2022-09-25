@@ -19,6 +19,12 @@
   max-width: 15rem;
 }
 
+@media screen and (max-width: 800px) {
+  .category {
+    min-width: unset;
+  }
+}
+
 .category-list.ng-star-inserted {
   width: 16rem;
 }
@@ -107,10 +113,41 @@
   padding-top: 0;
 }
 
+.bg-image-1 {
+  position: fixed;
+  overflow: hidden;
+  z-index: -1;
+  height: 20rem;
+  width: 20rem;
+  top: -108px;
+  right: -30px;
+  background: url("../../assets/design-elements/pattern1-pink-ink.png") 0 0 no-repeat;
+  background-size: 20rem;
+  transform: rotate(150deg);
+  opacity: 0.9;
+}
+
+.bg-image-2 {
+  position: fixed;
+  overflow: hidden;
+  z-index: -1;
+  height: 40rem;
+  width: 40rem;
+  bottom: -12em;
+  left: -5em;
+  background: url("../../assets/design-elements/pattern1-blue-ink.png") 0 0 no-repeat;
+  background-size: 40rem;
+  transform: rotate(310deg);
+  opacity: 0.8;
+}
+
+
 .event-page {
   width: 100%;
   justify-content: center;
   padding-bottom: 5rem;
+
+
 }
 
 .filter-container {

@@ -1,11 +1,12 @@
 <div class="event-page">
-
+  <div class="bg-image-1"></div>
+  <div class="bg-image-2"></div>
   <div class="filter-container">
     <vents-date-picker class="date-picker" (clickedDate)="searchForDay($event)"></vents-date-picker>
 
     <!--    <span class="category-label">Kategorien</span>-->
     <img class="category-headline" src="assets/design-elements/Kategorien_design.png">
-    <div class="main-category-container">
+    <div class="main-category-container" id="main-category-container">
 
       <span class="category" [ngClass]="isElementPicked('hot')" (click)="addCategoryToFilter('hot')">
                 <img src="assets/static-icons/icons8-flame-60.png"/>
@@ -13,7 +14,8 @@
           </span>
 
       <div *ngFor="let category of categoryList" class="category-list">
-          <span class="category" [ngClass]="isElementPicked(category)" (click)="addCategoryToFilter(category)">
+          <span class="category" id="{{category.name}}" [ngClass]="isElementPicked(category)"
+                (click)="addCategoryToFilter(category)">
           <img [src]="category.iconTemporaryURL"/>
             {{ category.name }}
           </span>
