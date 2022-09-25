@@ -12,6 +12,7 @@
   height: 5rem;
   width: 5rem;
   /*background-color: #ecececc7;*/
+  background-color: white;
   margin: 10px;
   border-radius: 10px;
   box-shadow: 0 0 30px -7px rgba(221, 221, 221, 0.77) inset;
@@ -53,6 +54,7 @@
   margin: 10px;
   box-shadow: 0 0 37px -14px #1374c7;
   box-sizing: border-box;
+  background-color: white;
 }
 
 .day-date-clicked .day {

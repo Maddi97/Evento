@@ -1,10 +1,10 @@
 <div class="category-tile" (click)="onClick()">
+  <img class="category-icon" [src]="category.iconTemporaryURL">
   <div class="category-tile-name-container">
         <span>
             {{category.name}}
         </span>
   </div>
-  <img class="category-icon" [src]="category.iconTemporaryURL">
   <mat-icon class="material-icons small-icon">
     expand_more
   </mat-icon>

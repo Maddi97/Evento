@@ -41,7 +41,7 @@
 .event-tile {
   display: flex;
   flex-direction: row;
-  background-color: rgba(249, 251, 255, 0.82);
+  background-color: rgba(249, 251, 255);
   border-radius: 23px;
   box-shadow: 0 2px 2px #3d3d3d;
   min-width: 300px;

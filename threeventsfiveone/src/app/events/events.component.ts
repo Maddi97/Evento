@@ -202,14 +202,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   // add or remove clicked category to list of filter
   addCategoryToFilter(cat: any) {
-    const scroll = document.getElementById('main-category-container')
-    const category = document.getElementById(cat.name)
-    const x = category.getBoundingClientRect().x
-    console.log('X: ', category.getBoundingClientRect().x)
-    console.log('Width: ', scroll.scrollWidth)
-    console.log('scrollLeft: ', scroll.scrollLeft)
-    console.log(scroll.scrollWidth / 2)
-
 
     // scroll.scrollLeft = scroll.scrollWidth / 3
 
@@ -217,18 +209,12 @@ export class EventsComponent implements OnInit, OnDestroy {
       return;
     } else {
       this.filteredCategory = cat;
-      if (x > scroll.scrollWidth / 2) {
-        scroll.scrollLeft = scroll.scrollWidth
-      } else {
-        scroll.scrollLeft = 0
-      }
     }
 
     // if remove category also remove subcategories
     if (cat.subcategories !== undefined) {
       this.filteredSubcategories = [];
     }
-
     this.applyFilters();
   }
 

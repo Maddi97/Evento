@@ -1,11 +1,31 @@
+#category-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-headline {
+  height: 100%;
+  width: 25rem;
+  padding-right: 0rem !important;
+  min-width: 1rem;
+  align-self: center;
+}
+
+@media screen and (max-width: 800px) {
+  .category-headline {
+    height: 100%;
+    width: 17px;
+  }
+}
+
+
 .category-components {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  margin-top: 2rem;
+  margin-top: 1rem;
   min-height: 100%;
-  margin-bottom: 5rem;
 }
 
 @media screen and (max-width: 1000px) {
