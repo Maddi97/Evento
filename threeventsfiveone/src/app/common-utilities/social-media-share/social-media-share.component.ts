@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {DomSanitizer} from '@angular/platform-browser';
-import {Share} from "@capacitor/share";
-import {DeviceDetectorService} from "ngx-device-detector";
+import {Share} from '@capacitor/share';
+import {DeviceDetectorService} from 'ngx-device-detector';
+import {faWhatsapp, faTelegram} from '@fortawesome/free-brands-svg-icons';
+
 
 @Component({
   selector: 'vents-social-media-share',
@@ -15,12 +17,13 @@ export class SocialMediaShareComponent implements OnInit {
   shareText = 'Schau dir dieses Event an, dass ich auf 3vents51 gefunden habe!';
   whatsappLink = encodeURI(`https://wa.me?text=${encodeURIComponent(this.shareText + '/n' + this.url)}`);
   isDeviceMobile: boolean;
+  faWhatsapp = faWhatsapp;
+  faTelegram = faTelegram;
 
   constructor(private _snackbar: MatSnackBar,
               private sanitizer: DomSanitizer,
-              private deviceService: DeviceDetectorService
+              private deviceService: DeviceDetectorService,
   ) {
-
   }
 
   ngOnInit(): void {

@@ -14,6 +14,8 @@ import {SocialMediaShareComponent} from './social-media-share/social-media-share
 import {MatIconModule} from '@angular/material/icon';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {DigitalClockComponent} from './digital-clock/digital-clock.component';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -24,6 +26,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     DayDateComponent,
     MapViewComponent,
     SocialMediaShareComponent,
+    DigitalClockComponent,
 
   ],
   imports: [
@@ -36,12 +39,14 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatIconModule,
     ClipboardModule,
     MatSnackBarModule,
+    FontAwesomeModule,
   ],
   exports: [
     EventTileComponent,
     FullEventComponent,
     DatePickerComponent,
-    MapViewComponent
+    MapViewComponent,
+    DigitalClockComponent
   ]
 })
 export class CommonUtilitiesModule {

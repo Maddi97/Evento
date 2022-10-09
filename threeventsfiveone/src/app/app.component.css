@@ -1,7 +1,7 @@
 .bg-image-1 {
   position: fixed;
   overflow: hidden;
-  z-index: 2;
+  z-index: -1;
   height: 20rem;
   width: 20rem;
   top: -108px;

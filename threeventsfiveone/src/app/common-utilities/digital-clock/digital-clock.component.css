@@ -1,0 +1,41 @@
+p {
+  font-family: Lato;
+}
+
+.clock-container {
+  font-size: 35px;
+  /*line-height:25px;*/
+  color: black;
+  height: 100%;
+  font-weight: 500;
+}
+
+.clock,
+.clock2 {
+  top: 30%;
+  width: 50%;
+  height: 100%;
+  margin: 10px auto;
+  padding: 30px;
+}
+
+.clock div,
+.clock2 div {
+  display: inline-block;
+  background-color: #ffffff;
+  width: 25%;
+  height: 100%;
+  text-align: center;
+}
+
+.clock2 {
+}
+
+.time {
+  font-family: Optima !important;
+  width: 100% !important;
+}
+
+:host {
+  font-family: Orbitron;
+}
