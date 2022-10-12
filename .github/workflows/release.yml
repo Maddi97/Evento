@@ -153,4 +153,4 @@ jobs:
         run: touch .env.prod && echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
 
       - name: Start Docker Containers
-        run: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d build_backend build_frontend build_insert-app
+        run: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
