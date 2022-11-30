@@ -16,6 +16,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {CommonUtilitiesModule} from './common-utilities/common-utilities.module';
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -42,7 +43,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     SettingsModule,
     CommonUtilitiesModule,
   ],
-  providers: [],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
   schemas: [],
   exports: [],
   bootstrap: [AppComponent]
