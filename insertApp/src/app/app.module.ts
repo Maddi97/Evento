@@ -27,7 +27,7 @@ import {NgxSpinnerModule} from 'ngx-spinner';
 
 
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
-import {authInterceptorProviders} from "./services/auth.interceptor";
+import {authInterceptorProviders} from './services/auth.interceptor';
 
 import {OrganizerViewComponent} from './pages/organizer/organizer-view/organizer-view.component';
 
@@ -37,7 +37,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {CategorySelectComponent} from './pages/category/category-select/category-select.component';
 import {CategoryViewComponent} from './pages/category/category-view/category-view.component';
 import {MapViewComponent} from './pages/map/map-view/map-view.component'
-import {CommonModule} from '@angular/common';
+import {CommonModule, HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {OrganizerFormComponent} from './pages/organizer/organizer-form/organizer-form.component';
 import {EventFormComponent} from './pages/event/event-form/event-form.component';
 import {LoginComponent} from './login/login.component';
@@ -87,7 +87,9 @@ import {AuthGuardService} from './services/auth.guard.service';
     ],
     providers: [
         AuthGuardService,
-        authInterceptorProviders
+        authInterceptorProviders,
+        {provide: LocationStrategy, useClass: HashLocationStrategy},
+
     ],
     bootstrap: [AppComponent]
 })
