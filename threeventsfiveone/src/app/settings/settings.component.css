@@ -8,7 +8,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 2rem;
   min-height: 100%;
   margin-bottom: 5rem;
 }
@@ -108,7 +107,7 @@
 @media screen and (max-width: 800px) {
   .settings-headline {
     height: 100%;
-    width: 20rem;
+    width: 18rem;
   }
 }
 

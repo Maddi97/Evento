@@ -19,7 +19,6 @@ const allowedOrigins = [
     'https://insert.evento-leipzig.de',
     'https://evento-leipzig.de',
     'https://www.evento-leipzig.de',
-
 ];
 
 // Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)
