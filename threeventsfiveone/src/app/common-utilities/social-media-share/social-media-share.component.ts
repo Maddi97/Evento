@@ -14,8 +14,8 @@ import {faWhatsapp, faTelegram} from '@fortawesome/free-brands-svg-icons';
 export class SocialMediaShareComponent implements OnInit {
 
   url: string = window.location.href;
-  shareText = 'Schau dir dieses Event an, dass ich auf 3vents51 gefunden habe!';
-  whatsappLink = encodeURI(`https://wa.me?text=${encodeURIComponent(this.shareText + '/n' + this.url)}`);
+  shareText = 'Schau dir dieses Event an, dass ich auf Evento gefunden habe!';
+  whatsappLink = encodeURI(`https://wa.me?text=${(this.url)}`);
   isDeviceMobile: boolean;
   faWhatsapp = faWhatsapp;
   faTelegram = faTelegram;
