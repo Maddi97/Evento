@@ -43,7 +43,7 @@ import {HashLocationStrategy, LocationStrategy} from "@angular/common";
     SettingsModule,
     CommonUtilitiesModule,
   ],
-  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
+  providers: [],
   schemas: [],
   exports: [],
   bootstrap: [AppComponent]

@@ -19,7 +19,7 @@ const routes: Routes = [
     component: SettingsComponent
   },
   {
-    path: 'full-event',
+    path: 'full-event/:eventId',
     component: FullEventComponent
   },
   {path: '**', component: EventsComponent}

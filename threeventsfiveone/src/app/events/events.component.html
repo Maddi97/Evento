@@ -52,7 +52,7 @@
     <div class="event-container">
 
       <div class="event-tile-list" *ngFor="let event of filteredList">
-        <vents-event-tile routerLink="/full-event" fragment={{event._id}} [event]="event"
+        <vents-event-tile [routerLink]="['/full-event', event._id]" [event]="event"
                           [distance]="get_distance_to_current_position(event)"
                           (mouseenter)="hover(event)" (mouseleave)="hover(null)"></vents-event-tile>
       </div>
