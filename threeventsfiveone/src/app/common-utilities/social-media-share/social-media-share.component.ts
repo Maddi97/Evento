@@ -15,7 +15,7 @@ export class SocialMediaShareComponent implements OnInit {
 
   url: string = window.location.href;
   shareText = 'Schau dir dieses Event an, dass ich auf Evento gefunden habe!';
-  whatsappLink = encodeURI(`https://wa.me?text=${(this.url)}`);
+  whatsappLink = encodeURI(`https://wa.me?text=${(this.shareText + '\n' + this.url)}`);
   isDeviceMobile: boolean;
   faWhatsapp = faWhatsapp;
   faTelegram = faTelegram;
