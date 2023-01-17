@@ -22,7 +22,7 @@
         <div class="category">
           {{ event?.category.name}}
         </div>
-        <div *ngIf="event?.category.subcategories.length > 0"> ></div>
+        <div *ngIf="event?.category?.subcategories?.length > 0"> ></div>
         <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
           {{ subcategory?.name }}
         </div>
