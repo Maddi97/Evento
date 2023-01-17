@@ -61,6 +61,11 @@ Rebuild only one container of the docker compose
  docker-compose -f docker-compose-deploy-dev.yml up  -d --force-recreate --no-deps --build mongodb
 ```
 
+## renew certificate
+
+Renewal of certificates fail because of the mapping of the config folder outside of the docker volume Map inside again
+and recreate Swag
+
 ## TechStack
 
 * node 16.13.2
