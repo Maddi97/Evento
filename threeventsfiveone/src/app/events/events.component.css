@@ -5,8 +5,10 @@
   cursor: pointer;
 }
 
+
 .category {
   border-radius: 13px;
+  margin: 1rem;
   padding: 3px 5px 3px 5px;
   width: fit-content;
   font-size: 1.2rem;

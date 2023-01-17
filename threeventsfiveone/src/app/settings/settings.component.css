@@ -97,8 +97,11 @@
 }
 
 .settings-headline {
-  height: 100%;
-  width: 25rem;
+  height: 80%;
+  width: 20rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 25px;
   padding-right: 0rem !important;
   min-width: 1rem;
   align-self: center;
@@ -106,8 +109,8 @@
 
 @media screen and (max-width: 800px) {
   .settings-headline {
-    height: 100%;
-    width: 18rem;
+    height: 80%;
+    width: 16rem;
   }
 }
 

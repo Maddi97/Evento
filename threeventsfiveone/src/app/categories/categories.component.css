@@ -6,6 +6,7 @@
 .category-headline {
   height: 100%;
   width: 25rem;
+  margin-right: 20px;
   padding-right: 0rem !important;
   min-width: 1rem;
   align-self: center;
@@ -35,7 +36,7 @@
 }
 
 .category-component {
-  width: 50%;
+  width: 80%;
   /*margin-bottom: 5rem;*/
 }
 

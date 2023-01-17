@@ -18,6 +18,18 @@ FROM nginx:1.16.0-alpine
 
 COPY --from=build /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+#deep links fix change the config file for nginx
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
-CMD ["nginx", "-g", "daemon off;"]
+
+
+
+
+
+
+
+
+
+
+
+
