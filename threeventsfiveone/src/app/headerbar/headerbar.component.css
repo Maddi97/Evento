@@ -30,6 +30,7 @@
 .logo {
   height: 90%;
   width: auto;
+  cursor: pointer;
 }
 
 .arrow-back {

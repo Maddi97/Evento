@@ -7,10 +7,6 @@ import {FullEventComponent} from './common-utilities/full-event/full-event.compo
 
 const routes: Routes = [
   {
-    path: 'events',
-    component: EventsComponent
-  },
-  {
     path: 'categories',
     component: CategoriesComponent
   },
