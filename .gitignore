@@ -1,4 +1,7 @@
 /**/node_modules/
+
+letsencryptCertKeys
+
 backend/images
 backend/temp_dir
 node_modules
