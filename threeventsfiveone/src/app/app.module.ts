@@ -16,7 +16,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {CommonUtilitiesModule} from './common-utilities/common-utilities.module';
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {HashLocationStrategy, LocationStrategy, PathLocationStrategy} from "@angular/common";
+import {LocationStrategy, PathLocationStrategy} from '@angular/common';
 
 @NgModule({
   declarations: [

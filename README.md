@@ -61,10 +61,24 @@ Rebuild only one container of the docker compose
  docker-compose -f docker-compose-deploy-dev.yml up  -d --force-recreate --no-deps --build mongodb
 ```
 
+## How build and deploy of apps works
+
+In docker file in app each container has own nginx proxy ( In local dockerfile managed)
+
+## Fix deep links routing problem angular
+
+- Nginx reverse proxy stuff is done in evento_app container
+- index.html file is mapped from app/dist to usr/share/nginx/html in evento_app container
+- nginx configuration is in etc/nginx/conf.d/default
+
 ## renew certificate
 
 Renewal of certificates fail because of the mapping of the config folder outside of the docker volume Map inside again
-and recreate Swag
+and recreate Swag. If you want to renew automatic delete etcm crontabs and keys folder from letsencryptStrato folder and
+push and recreate again. For debugging add those folder to avoid renewal.
+
+Zum testen mit neuen Certifikat - zertifikat neuerstellen, config rauskopieren und startoConfig mit neuer config
+aktualisieren
 
 ## TechStack
 
