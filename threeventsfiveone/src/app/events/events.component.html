@@ -68,9 +68,12 @@
   </div>
   <div class="event-map-container" *ngIf="getScreenWidth<1000">
     <div class="event-container" *ngIf="!mapView">
-      <mat-icon class="change-view-icon" (click)="changeToMapView()">map</mat-icon>
+      <div class="switchViewButton" (click)="changeToMapView()">
+        <p> Zur Karte </p>
+        <mat-icon class="change-view-icon">map</mat-icon>
+      </div>
       <div class="event-tile-list" *ngFor="let event of filteredList">
-        <vents-event-tile routerLink="/full-event" fragment={{event._id}} [event]="event"
+        <vents-event-tile [routerLink]="['/full-event', event._id]" [event]="event"
                           [distance]="get_distance_to_current_position(event)"
                           (mouseenter)="hover(event)" (mouseleave)="hover(null)"></vents-event-tile>
       </div>
@@ -81,7 +84,10 @@
     </div>
 
     <div class="map-container" *ngIf="mapView">
-      <mat-icon class="change-view-icon" (click)="changeToMapView()">event</mat-icon>
+      <div class="switchViewButton" (click)="changeToMapView()">
+        <p> Zu den Events </p>
+        <mat-icon class="change-view-icon" (click)="changeToMapView()">event</mat-icon>
+      </div>
       <map-view [markerData]="filteredList" [hoveredData]="hoveredEvent"></map-view>
     </div>
   </div>
