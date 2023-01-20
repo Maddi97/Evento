@@ -93,7 +93,6 @@ jobs:
   #          push: true
   #          tags: ${{secrets.dockerhub_user}}/3vents51_backend:latest
 
-
   build_insert-app:
     needs: analyze
     name: Build And Push Insert
