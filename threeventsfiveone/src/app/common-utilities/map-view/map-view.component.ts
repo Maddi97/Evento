@@ -26,12 +26,12 @@ export class MapViewComponent implements OnInit, OnChanges {
     lon: ''
   };
 
-  private defaultIconRetina = './assets/leaflet_color_markers/marker-icon-2x-blue.png';
-  private defaultIcon = './assets/leaflet_color_markers/marker-icon-blue.png';
+  private defaultIconRetina = './assets/leaflet_color_markers/marker-icon-2x-red.png';
+  private defaultIcon = './assets/leaflet_color_markers/marker-icon-red.png';
   private shadowUrl = './assets/leaflet_color_markers/marker-shadow.png';
 
-  private locationIcon = './assets/leaflet_color_markers/marker-icon-red.png';
-  private locationIconRetina = './assets/leaflet_color_markers/marker-icon-2x-red.png';
+  private locationIcon = './assets/leaflet_color_markers/marker-icon-blue.png';
+  private locationIconRetina = './assets/leaflet_color_markers/marker-icon-2x-blue.png';
 
   private hoverIcon = './assets/leaflet_color_markers/marker-icon-yellow.png';
   private hoverIconRetina = './assets/leaflet_color_markers/marker-icon-2x-yellow.png';
@@ -166,21 +166,19 @@ export class MapViewComponent implements OnInit, OnChanges {
     if (typeof markerData !== 'undefined') {
       markerData.map(marker => {
         if (typeof marker.geoData !== 'undefined') {
-          console.log(marker)
+          //console.log('Marker: ', marker)
           mark = L.marker([marker.geoData.lat, marker.geoData.lon])
           mark.setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
             .addTo(this.markerGroup)
-            // .on('click', () => {
-            //   //this.router.navigate(['/', 'full-event'], {fragment: marker._id});
-            // })
             .bindPopup(
               `<div>${marker.name} </div>`
               +
               `<div class="popup-org-name"> ${marker.organizerName} </div>`
             )
-          mark.on('click', () => {
-            mark.openPopup();
-          })
+          // mark.on('click', () => {
+          //   // console.log(mark)
+          //   mark.openPopup();
+          // })
         }
       });
     }

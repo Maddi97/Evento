@@ -57,9 +57,9 @@ export class FullEventComponent implements OnInit {
   }
 
   downloadImage() {
-    const cat = this.event.category;
-    if (this.event.eventImagePath !== undefined) {
-      if (this.event.eventImageTemporaryURL === undefined) {
+    const cat = this.event?.category;
+    if (this.event?.eventImagePath !== undefined) {
+      if (this.event?.eventImageTemporaryURL === undefined) {
         this.fileService.downloadFile(this.event.eventImagePath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
           const unsafeImg = URL.createObjectURL(imageData);

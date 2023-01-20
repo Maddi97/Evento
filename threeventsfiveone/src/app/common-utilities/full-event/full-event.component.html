@@ -15,7 +15,7 @@
                     {{event?.name}}
                 </span>
       </div>
-      <div class="event-link" *ngIf="event.link.length>0">
+      <div class="event-link" *ngIf="event?.link.length>0">
         <a href="{{event.link}}">Link zur Veranstaltung</a>
       </div>
       <div class="category-container">
@@ -32,7 +32,7 @@
                     Veranstalter: {{organizer?.name}}
                 </span>
       </div>
-      <div class="price" *ngIf="event.price">
+      <div class="price" *ngIf="event?.price">
         <span>Preis: {{event?.price}} Euro</span>
       </div>
       <div class="opening-times">

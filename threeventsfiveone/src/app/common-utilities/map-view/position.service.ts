@@ -58,11 +58,11 @@ export class PositionService {
           observer.next(position);
         }, (error: GeolocationPositionError) => {
           this.openErrorSnackBar(error.message)
-          observer.error(error);
+          observer.error('Standort konnte nicht ermittelt werden');
         });
       } else {
 
-        observer.error('Geolocation not available');
+        observer.error('Position konnte nicht ermittelt werden');
       }
     });
   }
@@ -79,12 +79,16 @@ export class PositionService {
           sessionStorage.setItem('location', JSON.stringify(this.searchedCenter))
           observer.next(position);
         }, (error: GeolocationPositionError) => {
-          this.openErrorSnackBar(error.message)
-          observer.error(error);
+          let message = 'Standort konnte nicht ermittelt werden';
+          if (error.code === 1) {
+            message = 'Deine Privatspähreeinstellungen verhinderen die Standortermittlung'
+          }
+          this.openErrorSnackBar(message)
+          observer.error(message);
         });
       } else {
 
-        observer.error('Geolocation not available');
+        observer.error('Standort konnte nicht ermittelt werden');
       }
     });
   }
