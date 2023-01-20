@@ -1,0 +1,44 @@
+<ul class="wrapper" *ngIf="!isDeviceMobile">
+  <li [cdkCopyToClipboard]="url" [cdkCopyToClipboardAttempts]="5" (click)="openSnackBar('Copied!')"
+      class="icon clipboard">
+    <span class="tooltip">Copy link!</span>
+    <span><i class="fab gg-clipboard"></i></span>
+  </li>
+
+  <a [href]="sanitize(whatsappLink)"
+     title="Share On Whatsapp"
+  >
+    <li class="icon whatsapp">
+      <span class="tooltip">WhatsApp</span>
+      <span>
+      <fa-icon [icon]="faWhatsapp"></fa-icon>      </span>
+    </li>
+  </a>
+
+  <a href="https://t.me/share/url?url={{url}}&text={{shareText}}"
+     class="tel-link">
+    <li class="icon telegram">
+      <span class="tooltip">Telegram</span>
+      <span>
+        <fa-icon [icon]="faTelegram"></fa-icon>
+      </span>
+    </li>
+  </a>
+  <!--  <li class="icon facebook">-->
+  <!--    <span class="tooltip">Facebook</span>-->
+  <!--    <span><i class="fab gg-facebook"></i></span>-->
+  <!--  </li>-->
+  <!--  <li class="icon twitter">-->
+  <!--    <span class="tooltip">Twitter</span>-->
+  <!--    <span><i class="fab gg-twitter"></i></span>-->
+  <!--  </li>-->
+  <!--  <li class="icon instagram">-->
+  <!--    <span class="tooltip">Instagram</span>-->
+  <!--    <span><i class="fab gg-instagram"></i></span>-->
+  <!--  </li>-->
+
+
+</ul>
+<div *ngIf="isDeviceMobile">
+  <button class="share-button" (click)="shareOnPhone()">Event teilen!</button>
+</div>

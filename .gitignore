@@ -1,0 +1,21 @@
+/**/node_modules/
+
+letsencryptCertKeys
+
+backend/images
+backend/temp_dir
+node_modules
+
+.idea
+.env.prod
+
+#Include Only Important Configuration For Reverse-Proxy
+#letsencryptStrato/*
+#!letsencryptStrato/config/
+#letsencryptStrato/config/*
+#!letsencryptStrato/config/nginx/
+#letsencryptStrato/config/nginx/*
+#!letsencryptStrato/config/nginx/proxy-confs/
+#letsencryptStrato/config/nginx/proxy-confs/*
+#!letsencrypt/config/nginx/proxy-confs/*.conf
+/**/.angular

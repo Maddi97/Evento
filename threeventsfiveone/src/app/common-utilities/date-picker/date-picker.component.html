@@ -1,0 +1,14 @@
+<div class="date-picker">
+  <div class="scroll">
+    <vents-day-date class="events-day-date" *ngFor="let day of nextMonth" [date]="day.date" [isClicked]="day.isClicked"
+                    (click)="safeDate(day.date)"
+                    [ngClass]="{'clicked' : day.isClicked}">
+      >
+    </vents-day-date>
+    <div class="add-dates">
+      <div (click)="addDates()" class="add-text">
+        <img class="view-more-icon" src="assets/static-icons/view-more.png"/>
+      </div>
+    </div>
+  </div>
+</div>

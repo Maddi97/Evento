@@ -1,0 +1,26 @@
+p {
+  font-family: Lato;
+}
+
+.clock-container {
+  font-size: 35px;
+  /*line-height:25px;*/
+  color: black;
+  height: 100%;
+  font-weight: 500;
+}
+
+@media screen and (max-width: 500px) {
+  .clock-container {
+    font-size: 24px !important;
+  }
+}
+
+.time {
+  font-family: Optima !important;
+  width: 100% !important;
+}
+
+:host {
+  font-family: Orbitron;
+}

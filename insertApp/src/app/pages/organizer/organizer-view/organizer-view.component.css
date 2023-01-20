@@ -1,0 +1,67 @@
+.organizer-view-container {
+    display: flex;
+    justify-content: center;
+}
+
+.organizer-form {
+    display: flex;
+    flex-basis: 50%;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.organizer-page {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 2rem;
+    width: 90%;
+    align-items: start;
+}
+
+.organizer-image {
+    padding-right: 5%;
+    height: 100%;
+}
+
+.organizer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    flex-basis: 35%;
+    margin-left: 3rem;
+}
+
+.organizer-panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 2rem;
+    background-color: rgb(214 214 214);
+    margin-bottom: 0.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.organizer-name {
+    margin: 0.5rem;
+}
+
+.delete-button {
+    width: 20%;
+    height: 100%;
+    background-color: red;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: end;
+    font-size: 1.2rem;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.map-container {
+    display: flex;
+    justify-content: center;
+    margin: 5rem;
+}

@@ -1,0 +1,154 @@
+@media screen and (max-width: 800px) {
+  .event-tile {
+    height: 5rem !important;
+  }
+
+  .event-tile:hover {
+    height: 6rem !important;
+  }
+}
+
+.event-tile:hover {
+  height: 10rem;
+  margin-top: -1rem;
+  margin-bottom: 0rem;
+}
+
+.event-tile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  background-color: rgba(249, 251, 255);
+  border-radius: 23px;
+  height: 7.8rem;
+  box-shadow: 1px 1px 12px #8389a4;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.pic {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 4rem;
+  height: 4rem;
+  border-radius: 5px;
+  margin: 1rem 1rem;
+}
+
+.event-tile-information {
+  flex-direction: column;
+
+  height: 80%;
+
+  justify-content: center;
+  display: flex;
+  flex-basis: 33%;
+}
+
+.event-tile-information-name-date {
+  flex-direction: row;
+}
+
+/*medium screen size*/
+@media screen and (min-width: 440px) and (max-width: 600px) {
+  .event-name {
+    font-size: 1rem !important;
+  }
+
+  .event-organizer-name {
+    font-size: 0.9rem !important;
+  }
+
+  .event-distance {
+    font-size: 0.9rem !important;
+  }
+
+  .date {
+    font-size: 0.9rem !important;
+  }
+}
+
+/*small screen size like iphone*/
+@media screen and (max-width: 440px) {
+  .event-name {
+    font-size: .8rem !important;
+  }
+
+  .event-organizer-name {
+    font-size: 0.7rem !important;
+  }
+
+  .event-distance {
+    font-size: 0.7rem !important;
+  }
+
+  .date {
+    font-size: 0.7rem !important;
+  }
+
+}
+
+.event-name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1.5rem;
+}
+
+.event-organizer-name {
+  padding-bottom: 0.5rem
+}
+
+.event-distance {
+  color: grey;
+  font-style: italic;
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+
+  color: rgb(114, 114, 114);
+  padding: 0px 3px 0px 0px;
+  font-size: 1rem;
+  flex-basis: 33%;
+}
+
+.date-start {
+}
+
+.date-end {
+
+}
+
+
+.event-pic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 100%;
+  height: 100%;
+  flex-basis: 33%;
+}
+
+
+img {
+  max-height: 80%;
+  width: auto;
+  border-radius: 23px;
+  max-width: 90%;
+}
+
+
+.category {
+  background-color: rgb(255, 238, 0);
+  border-radius: 7px;
+  padding: 0px 3px 0px 3px;
+  width: fit-content;
+  font-size: .7rem;
+}

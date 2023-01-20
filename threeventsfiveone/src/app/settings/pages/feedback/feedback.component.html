@@ -1,0 +1,73 @@
+<div class="feedback-container">
+
+  <form class="form" [formGroup]="feedbackForm">
+    <span class="heading">
+      Gib uns Feedback oder stelle deine Frage und hilf uns dabei, uns zu verbessern.
+    </span>
+    <div class="name">
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput
+               #target
+               formControlName="name"
+               type="text">
+        <mat-error *ngIf="feedbackForm.get('name').hasError('required')">Name notwendig
+        </mat-error>
+        <mat-error
+          *ngIf="feedbackForm.get('name').hasError('minlength') && !feedbackForm.get('name').hasError('required')">
+          Name muss mindestens 3 Zeichen lang
+          sein
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="mail">
+      <mat-form-field appearance="fill">
+        <mat-label>E-Mail</mat-label>
+        <input matInput
+               #target
+               formControlName="mail"
+               type="text">
+        <mat-error *ngIf="feedbackForm.get('mail').hasError('required')">Email-Adresse notwendig
+        </mat-error>
+        <mat-error
+          *ngIf="feedbackForm.get('mail').hasError('email') && !feedbackForm.get('mail').hasError('required')">
+          Email-Adresse hat ein falsches Format!
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="reason">
+      <mat-form-field appearance="fill">
+        <mat-label>Anliegen</mat-label>
+        <input matInput
+               #target
+               formControlName="reason"
+               type="text">
+        <mat-error *ngIf="feedbackForm.get('reason').hasError('required')">Anliegen notwendig
+        </mat-error>
+        <mat-error
+          *ngIf="feedbackForm.get('reason').hasError('minlength') && !feedbackForm.get('name').hasError('required')">
+          Anliegen muss mindestens 3 Zeichen lang
+          sein
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="description">
+      <mat-form-field appearance="fill">
+        <mat-label>Kommentar</mat-label>
+        <textarea matInput
+                  #target
+                  formControlName="description"
+                  placeholder="Ich habe folgende Frage, Verbessrungsvorläge, ..."></textarea>
+        <mat-error *ngIf="feedbackForm.get('description').hasError('required')">Beschreibung notwendig
+        </mat-error>
+        <mat-error
+          *ngIf="feedbackForm.get('description').hasError('minlength') && !feedbackForm.get('description').hasError('required')">
+          Beschreibung muss mindestens 5 Zeichen lang
+          sein
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+  <button class="submit-event" type="button" (click)="submitEvent()">Feedback abschicken
+  </button>
+</div>

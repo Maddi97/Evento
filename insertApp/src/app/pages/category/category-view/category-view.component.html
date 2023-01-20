@@ -1,0 +1,97 @@
+<div class="category-view-container">
+
+    <div class="add-category-form">
+         <mat-form-field appearance="fill">
+                <mat-label *ngIf="!update">Add Category</mat-label>
+                <mat-label *ngIf="update">Update Category</mat-label>
+
+                <input matInput #target required="true" minlength="2" [formControl]="categoryName"
+                       (keydown.enter)="!update ? addNewCategory() :  updateCategory(); target.value = ''">
+                <mat-error *ngIf="categoryName.invalid">Category name minimum length is 2</mat-error>
+            </mat-form-field>
+            <img *ngIf="update" class="category-icon" [src]="updateCategoryObject.iconTemporaryURL">
+
+            <span class='col'>Select category icon: <input type='file' #iconUpload (input)=iconChosen($event)></span>
+            <span class='col'>Select category stock foto: <input type='file' #stockFotoUpload
+                                                                 (input)=stockImageChosen($event)></span>
+
+            <button *ngIf="!update" class='btn btn-warning' (click)="addNewCategory()">Add Category</button>
+            <button class="update-category-button"
+                    *ngIf="update"
+                    (click)="updateCategory()">Update Category
+            </button>
+    </div>
+
+    <div class="category-panel-collection" *ngFor="let category of categories" [categories]>
+        <mat-accordion>
+            <div class="category-panel">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{category.name}}
+                            <img class="category-icon" [src]="category.iconTemporaryURL">
+                            <img class="category-icon" [src]="category.stockImageTemporaryURL">
+                        </mat-panel-title>
+                        <div class="category-edit-button"
+                                (click)="$event.stopPropagation(); editCategoryClicked(category)"
+                        >
+                            Edit
+                        </div>
+                        <div class="category-delete-button"
+                                (click)="deleteCategory(category)"
+                             >
+                            Delete
+                        </div>
+                    </mat-expansion-panel-header>
+
+                    <div class="subcategory-container">
+                        <mat-card class="subcategory-form">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Add Subcategory</mat-label>
+                                <input matInput #target required="true" [formControl]="subcategoryName"
+                                       (keydown.enter)="!updateSub ? addNewSubcategory(category) : updateSubcategory(category); target.value = '' ">
+                                <mat-error *ngIf="subcategoryName.invalid">Subcategory name minimum length is 2
+                                </mat-error>
+                            </mat-form-field>
+                            <span class='col'>Select category icon: <input type='file' #iconUploadSubcat
+                                                                           (input)=iconChosen($event)></span>
+                            <span class='col'>Select category stock foto: <input type='file' #stockFotoUploadSubcat
+                                                                                 (input)=stockImageChosen($event)></span>
+                            <button *ngIf="!updateSub" class='btn btn-warning' (click)="addNewSubcategory(category)">Add
+                                Subcategory
+                            </button>
+                            <button *ngIf="updateSub" (click)="updateSubcategory(category)">Update Subcategory</button>
+
+                        </mat-card>
+                    </div>
+
+                    <div class="subcategory-panel-collection" *ngFor="let sub of category.subcategories ">
+                            <div class="subcategory-panel">
+                                <div
+                                     (click)="this.clickSubcategory(sub._id)">
+                                    {{sub.name}}
+                                    <img class="category-icon" [src]="sub.iconTemporaryURL">
+                                    <img class="category-icon"
+                                         [src]="sub.stockImageTemporaryURL">
+
+                                </div>
+                                <button class="category-edit-button"
+                                        (click)="$event.stopPropagation(); editSubcategoryClicked(category, sub)"
+
+                                >Edit
+                                </button>
+                                <div class="category-delete-button"
+                                        (click)="deleteSubcategory(category, sub)"
+                                     >
+                                    Delete
+                                </div>
+                            </div>
+                    </div>
+                </mat-expansion-panel>
+            </div>
+
+        </mat-accordion>
+    </div>
+    <div>
+    </div>
+</div>

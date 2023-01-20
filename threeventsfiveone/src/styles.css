@@ -1,4 +1,45 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~leaflet/dist/leaflet.css';
+@import 'assets/fonts/fonts.css';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html {
+
+}
+
+html, body {
+  height: 100%;
+}
+
+
+body {
+  margin-left: 0;
+  margin-right: 0;
+  padding-top: constant(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-top);
+  padding-top: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+/*cookie consent banner to top*/
+.cc-banner.cc-bottom {
+  bottom: unset !important;
+  top: 0 !important;
+}
+
+.cc-bottom {
+  bottom: unset !important;
+}
+
+
+.green-snackbar {
+  color: green;
+  background-color: greenyellow;
+  border-color: green;
+}
+
+.red-snackbar {
+  color: #660808;
+  background-color: #fc4545;
+  border-color: #660808;
+}

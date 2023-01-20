@@ -1,0 +1,19 @@
+<div class="app-container">
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <ul class="navbar-nav mr-auto" routerLinkActive="active">
+        </ul>
+        <div class="navbar-nav ml-auto">
+            <div class="nav-item" *ngIf="!isLoggedIn">
+                <a href="/login" class="nav-link" routerLink="login">Login</a>
+            </div>
+            <div class="nav-item" *ngIf="isLoggedIn">
+                <a href="#" class="nav-link" (click)="logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="border-box">
+        <app-selection-view></app-selection-view>
+        <router-outlet></router-outlet>
+
+    </div>
+</div>

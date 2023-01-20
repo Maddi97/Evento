@@ -1,0 +1,124 @@
+.feedback-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(249, 251, 255);
+  border-radius: 23px;
+  box-shadow: 1px 1px 12px #8389a4;
+  cursor: pointer;
+  margin-bottom: 1rem;
+
+
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+
+  margin-bottom: 1rem;
+  width: 90%;
+}
+
+.heading {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+  line-height: 1.5rem;
+}
+
+.form > div {
+  display: flex;
+  justify-content: center;
+}
+
+div {
+  width: 100%;
+}
+
+div > mat-form-field {
+  width: 70%;
+}
+
+@media screen and (max-width: 600px) {
+  div > mat-form-field {
+    width: 95%;
+  }
+}
+
+.submit-event {
+  width: 220px;
+  height: 50px;
+  border: none;
+  outline: none;
+  color: #fff;
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.submit-event:before {
+  content: '';
+  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing 20s linear infinite;
+  opacity: 0;
+  transition: opacity .3s ease-in-out;
+  border-radius: 10px;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .submit-event:before {
+    animation: 0 !important;
+    background: white !important;
+
+  }
+}
+
+.submit-event:active {
+  color: #000
+}
+
+.submit-event:active:after {
+  background: transparent;
+}
+
+.submit-event:hover:before {
+  opacity: 1;
+}
+
+.submit-event:after {
+  z-index: -1;
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+
+@keyframes glowing {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}

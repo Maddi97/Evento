@@ -1,1 +1,105 @@
-<p>events works!</p>
+<div class="event-page">
+  <div class="filter-container">
+    <vents-date-picker class="date-picker" (clickedDate)="searchForDay($event)"></vents-date-picker>
+
+    <!--    <span class="category-label">Kategorien</span>-->
+    <img class="category-headline" src="assets/design-elements/Kategorien_design.png">
+    <div class="main-category-container" id="main-category-container">
+      <div
+        *ngIf="getScreenWidth>700"
+        [ngStyle]="{ 'color': scrollLeftMax ? 'lightgrey' : 'black', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
+        class="icon icon-left" (click)="scrollLeft()">
+        <mat-icon>arrow_back_ios_new</mat-icon>
+      </div>
+      <span class="category" [ngClass]="isElementPicked('hot')" (click)="addCategoryToFilter('hot')">
+                <img src="assets/static-icons/icons8-flame-60.png"/>
+              Hot
+          </span>
+
+      <div *ngFor="let category of categoryList" class="category-list">
+          <span class="category" id="{{category.name}}" [ngClass]="isElementPicked(category)"
+                (click)="addCategoryToFilter(category)">
+          <img [src]="category.iconTemporaryURL"/>
+            {{ category.name }}
+          </span>
+        <div class="arrow-and-subcategory" *ngIf="category?.subcategories?.length > 0
+                                                 && isElementPicked(category) == 'category-picked'">
+          <mat-icon>keyboard_arrow_down</mat-icon>
+          <div class="subcategory-container">
+            <div *ngFor="let subcategory of category.subcategories">
+                <span class="subcategory" [ngClass]="isElementPicked(subcategory)"
+                      (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="getScreenWidth>700"
+        [ngStyle]="{ 'color': scrollRightMax ? 'lightgrey' : 'black', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
+        class="icon icon-right" (click)="scrollRight()">
+        <mat-icon>arrow_forward_ios</mat-icon>
+      </div>
+    </div>
+  </div>
+  <div class="spinner-container">
+    <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
+  </div>
+  <!--  <div class="distance-filter">-->
+  <!--    <span class="distance-label">Entfernung (in Km):</span>-->
+  <!--    <mat-slider-->
+  <!--      class="slider"-->
+  <!--      thumbLabel-->
+  <!--      min="1"-->
+  <!--      max="100"-->
+  <!--      step="1"-->
+  <!--      style="z-index: 0"-->
+  <!--      [(ngModel)]="filteredDistance"-->
+  <!--      (change)="searchForDistance($event)">-->
+  <!--    </mat-slider>-->
+  <!--  </div>-->
+
+  <div class="event-map-container" *ngIf="getScreenWidth>1000">
+
+    <div class="event-container">
+
+      <div class="event-tile-list" *ngFor="let event of filteredList">
+        <vents-event-tile [routerLink]="['/full-event', event._id]" [event]="event"
+                          [distance]="get_distance_to_current_position(event)"
+                          (mouseenter)="hover(event)" (mouseleave)="hover(null)"></vents-event-tile>
+      </div>
+      <div class="nothing-found" *ngIf="filteredList.length == 0">
+        <mat-icon>block</mat-icon>
+        Sorry für das angegebene Datum haben wir keine Events in deinem Umkreis gefunden!.
+      </div>
+    </div>
+
+    <div class="map-container">
+      <map-view [markerData]="filteredList" [hoveredData]="hoveredEvent"></map-view>
+    </div>
+  </div>
+  <div class="event-map-container" *ngIf="getScreenWidth<1000">
+    <div class="event-container" *ngIf="!mapView">
+      <div class="switchViewButton" (click)="changeToMapView()">
+        <p> Zur Karte </p>
+        <mat-icon class="change-view-icon">map</mat-icon>
+      </div>
+      <div class="event-tile-list" *ngFor="let event of filteredList">
+        <vents-event-tile [routerLink]="['/full-event', event._id]" [event]="event"
+                          [distance]="get_distance_to_current_position(event)"
+                          (mouseenter)="hover(event)" (mouseleave)="hover(null)"></vents-event-tile>
+      </div>
+      <div class="nothing-found" *ngIf="filteredList.length == 0">
+        <mat-icon>block</mat-icon>
+        Sorry für das angegebene Datum haben wir keine Events in deinem Umkreis gefunden!.
+      </div>
+    </div>
+
+    <div class="map-container" *ngIf="mapView">
+      <div class="switchViewButton" (click)="changeToMapView()">
+        <p> Zu den Events </p>
+        <mat-icon class="change-view-icon" (click)="changeToMapView()">event</mat-icon>
+      </div>
+      <map-view [markerData]="filteredList" [hoveredData]="hoveredEvent"></map-view>
+    </div>
+  </div>
+</div>

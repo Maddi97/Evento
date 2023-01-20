@@ -1,1 +1,66 @@
-<p>settings works!</p>
+<div class="settings-container">
+  <img class="settings-headline" src="assets/design-elements/Settings_design.png">
+  <div class="settings">
+    <div class="container">
+      <div class="tile" (click)="clickPanel(INSERT)">
+        <div class="tile-name-container">
+        <span>
+            Event eintragen
+        </span>
+        </div>
+        <mat-icon class="material-icons small-icon">
+          expand_more
+        </mat-icon>
+      </div>
+      <div class="insert-event-panel" *ngIf="showInsert">
+        <vents-insert-event></vents-insert-event>
+      </div>
+    </div>
+    <div class="container">
+      <div class="tile" (click)="clickPanel(FEEDBACK)">
+        <div class="tile-name-container">
+        <span>
+            Feedback & Kontakt
+        </span>
+        </div>
+        <mat-icon class="material-icons small-icon">
+          expand_more
+        </mat-icon>
+      </div>
+      <div class="feedback-panel" *ngIf="showFeedback">
+        <vents-feedback></vents-feedback>
+      </div>
+    </div>
+    <div class="container">
+      <div class="tile" (click)="clickPanel(IMPRESSUM)">
+        <div class="tile-name-container">
+        <span>
+            Impressum
+        </span>
+        </div>
+        <mat-icon class="material-icons small-icon">
+          expand_more
+        </mat-icon>
+      </div>
+      <div class="impressum-panel" *ngIf="showImpressum">
+        <vents-impressum></vents-impressum>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="tile" (click)="clickPanel(DATENSCHUTZ)">
+        <div class="tile-name-container">
+        <span>
+            Datenschutz
+        </span>
+        </div>
+        <mat-icon class="material-icons small-icon">
+          expand_more
+        </mat-icon>
+      </div>
+      <div class="datenschutz-panel" *ngIf="showDatenschutz">
+        <vents-datenschutz></vents-datenschutz>
+      </div>
+    </div>
+  </div>
+</div>
