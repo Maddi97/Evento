@@ -79,7 +79,7 @@
                 <mat-label>Description</mat-label>
                 <textarea matInput #target required formControlName="description" placeholder="Beschreibung"
                           (keydown.enter)="updateOrganizerId !== '' ? emitUpdate(organizerForm) : emitAddOrganizer(organizerForm); target.value = ''"
-                ></textarea>
+                          cdkTextareaAutosize cdkAutosizeMinRows="6"></textarea>
                 <mat-error *ngIf="organizerForm.get('description').hasError('required')">Description is required
                 </mat-error>
                 <mat-error

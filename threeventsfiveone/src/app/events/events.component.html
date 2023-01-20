@@ -5,7 +5,11 @@
     <!--    <span class="category-label">Kategorien</span>-->
     <img class="category-headline" src="assets/design-elements/Kategorien_design.png">
     <div class="main-category-container" id="main-category-container">
-
+      <div
+        [ngStyle]="{ 'color': scrollLeftMax ? 'lightgrey' : 'black', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
+        class="icon icon-left" (click)="scrollLeft()">
+        <mat-icon>arrow_back_ios_new</mat-icon>
+      </div>
       <span class="category" [ngClass]="isElementPicked('hot')" (click)="addCategoryToFilter('hot')">
                 <img src="assets/static-icons/icons8-flame-60.png"/>
               Hot
@@ -27,6 +31,11 @@
             </div>
           </div>
         </div>
+      </div>
+      <div
+        [ngStyle]="{ 'color': scrollRightMax ? 'lightgrey' : 'black', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
+        class="icon icon-right" (click)="scrollRight()">
+        <mat-icon>arrow_forward_ios</mat-icon>
       </div>
     </div>
   </div>

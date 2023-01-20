@@ -37,7 +37,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   // filteredSubcategories
   filteredSubcategories = [];
-
+  scrollLeftMax: Boolean;
+  scrollRightMax: Boolean;
   // clicked date
   filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({
     hour: 0,
@@ -82,6 +83,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
+    document.getElementById('main-category-container').scrollLeft = 0;
 
     this.filteredCategory = 'hot'
     this.events$ = this.eventService.events.pipe(
@@ -270,6 +272,29 @@ export class EventsComponent implements OnInit, OnDestroy {
   @HostListener('window:resize', ['$event'])
   getScreenSize(event?) {
     this.getScreenWidth = window.innerWidth;
+    this.setScrollMaxBool()
+  }
+
+  scrollRight() {
+    const element = document.getElementById('main-category-container')
+    element.scrollLeft += 80;
+    this.setScrollMaxBool()
+    // if max scrolled true then true
+  }
+
+  scrollLeft() {
+    const element = document.getElementById('main-category-container')
+    element.scrollLeft -= 80;
+    this.setScrollMaxBool()
+  }
+
+  @HostListener('window:mouseover', ['$event'])
+  setScrollMaxBool() {
+    const element = document.getElementById('main-category-container')
+    this.scrollLeftMax = (element.scrollLeft === 0)
+    this.scrollRightMax = (element.scrollLeft === element.scrollWidth - element.clientWidth);
+
+
   }
 
 }

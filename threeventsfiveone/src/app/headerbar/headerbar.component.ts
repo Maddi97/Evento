@@ -18,6 +18,7 @@ export class HeaderbarComponent implements OnInit {
   }
 
   navBack() {
+    console.log(this.location)
     this.location.back();
   }
 

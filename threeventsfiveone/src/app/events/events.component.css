@@ -151,6 +151,22 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   max-width: 80%;
+  align-items: center;
+}
+
+.icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: unset !important;
+}
+
+.icon-left {
+  left: 5%;
+}
+
+.icon-right {
+  right: 5%;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
