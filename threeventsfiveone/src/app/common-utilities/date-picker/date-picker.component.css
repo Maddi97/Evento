@@ -20,6 +20,21 @@
   scrollbar-width: none; /* Firefox */
 }
 
+.icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: unset !important;
+}
+
+.icon-left {
+  left: 5%;
+}
+
+.icon-right {
+  right: 5%;
+}
+
 
 .add-dates {
   background-color: white;

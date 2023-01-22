@@ -59,6 +59,14 @@ export class EventTileComponent implements OnInit, OnChanges {
           this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
         });
       }
+    } else if (this.event.category.subcategories[0]?.stockImagePath !== undefined) {
+      if (this.event.category.subcategories[0]?.stockImageTemporaryURL === undefined) {
+        this.fileService.downloadFile(this.event.category.subcategories[0]?.stockImagePath).subscribe(imageData => {
+          // create temporary Url for the downloaded image and bypass security
+          const unsafeImg = URL.createObjectURL(imageData);
+          this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+        });
+      }
     } else if (cat.stockImagePath !== undefined) {
       if (cat.stockImageTemporaryURL === undefined) {
         this.fileService.downloadFile(cat.stockImagePath).subscribe(imageData => {

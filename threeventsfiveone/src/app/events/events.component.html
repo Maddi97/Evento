@@ -7,7 +7,7 @@
     <div class="main-category-container" id="main-category-container">
       <div
         *ngIf="getScreenWidth>700"
-        [ngStyle]="{ 'color': scrollLeftMax ? 'lightgrey' : 'black', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
+        [ngStyle]="{ 'color': scrollLeftMax ? 'lightgrey' : 'black', 'cursor': scrollLeftMax ? 'unset' : 'pointer' }"
         class="icon icon-left" (click)="scrollLeft()">
         <mat-icon>arrow_back_ios_new</mat-icon>
       </div>

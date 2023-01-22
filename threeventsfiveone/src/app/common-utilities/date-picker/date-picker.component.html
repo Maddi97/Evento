@@ -1,5 +1,11 @@
 <div class="date-picker">
-  <div class="scroll">
+  <div class="scroll" id="scroll-date-picker">
+    <div
+      *ngIf="getScreenWidth>700"
+      [ngStyle]="{ 'color': scrollLeftMax ? 'lightgrey' : 'black', 'cursor': scrollLeftMax ? 'unset' : 'pointer' }"
+      class="icon icon-left" (click)="scrollLeft()">
+      <mat-icon>arrow_back_ios_new</mat-icon>
+    </div>
     <vents-day-date class="events-day-date" *ngFor="let day of nextMonth" [date]="day.date" [isClicked]="day.isClicked"
                     (click)="safeDate(day.date)"
                     [ngClass]="{'clicked' : day.isClicked}">
@@ -9,6 +15,12 @@
       <div (click)="addDates()" class="add-text">
         <img class="view-more-icon" src="assets/static-icons/view-more.png"/>
       </div>
+    </div>
+    <div
+      *ngIf="getScreenWidth>700"
+      [ngStyle]="{ 'color': scrollRightMax ? 'lightgrey' : 'black', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
+      class="icon icon-right" (click)="scrollRight()">
+      <mat-icon>arrow_forward_ios</mat-icon>
     </div>
   </div>
 </div>

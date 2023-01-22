@@ -1,5 +1,5 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, HostListener } from '@angular/core';
-import { MatCalendar } from '@angular/material/datepicker';
+import {Component, OnInit, Output, EventEmitter, ViewChild, HostListener} from '@angular/core';
+import {MatCalendar} from '@angular/material/datepicker';
 import * as moment from 'moment';
 
 @Component({
@@ -20,6 +20,8 @@ export class DatePickerComponent implements OnInit {
   public displayNumberOfDates = 5;
   public firstDate = 0;
 
+  scrollLeftMax: Boolean;
+  scrollRightMax: Boolean;
 
   constructor() {
   }
@@ -29,8 +31,7 @@ export class DatePickerComponent implements OnInit {
 
     if (this.getScreenWidth > 700) {
       this.numberOfDates = Number(this.getScreenWidth / 100)
-    }
-    else {
+    } else {
       this.numberOfDates = 7;
     }
 
@@ -41,8 +42,7 @@ export class DatePickerComponent implements OnInit {
     this.nextMonth.map(m => {
       if (m.date === day) {
         m.isClicked = true;
-      }
-      else {
+      } else {
         m.isClicked = false;
       }
     });
@@ -61,11 +61,11 @@ export class DatePickerComponent implements OnInit {
       this.nextMonth[i].date = day;
       if (i === this.firstDate) {
         this.safeDate(this.nextMonth[i].date);
-      }
-      else {
+      } else {
         this.nextMonth[i].isClicked = false;
       }
     }
+    this.setScrollMaxBool()
   }
 
   @HostListener('scroll') onScroll(e: Event): void {
@@ -88,6 +88,28 @@ export class DatePickerComponent implements OnInit {
     date.set({hour: 0, minute: 0, second: 0, millisecond: 0});
     // date.toISOString()
     return moment(date);
+  }
+
+  scrollRight() {
+    const element = document.getElementById('scroll-date-picker')
+    element.scrollLeft += 80;
+    this.setScrollMaxBool()
+    // if max scrolled true then true
+  }
+
+  scrollLeft() {
+    const element = document.getElementById('scroll-date-picker')
+    element.scrollLeft -= 80;
+    this.setScrollMaxBool()
+  }
+
+  @HostListener('window:mouseover', ['$event'])
+  setScrollMaxBool() {
+    const element = document.getElementById('scroll-date-picker')
+    this.scrollLeftMax = (element.scrollLeft === 0)
+    this.scrollRightMax = (element.scrollLeft === element.scrollWidth - element.clientWidth);
+
+
   }
 
 }
