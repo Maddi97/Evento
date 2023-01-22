@@ -293,8 +293,6 @@ export class EventsComponent implements OnInit, OnDestroy {
     const element = document.getElementById('main-category-container')
     this.scrollLeftMax = (element.scrollLeft === 0)
     this.scrollRightMax = (element.scrollLeft === element.scrollWidth - element.clientWidth);
-
-
   }
 
 }
