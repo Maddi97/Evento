@@ -15,6 +15,12 @@ To start the tech stack with docker run the following command:
 docker-compose --env-file .env.prod -f docker-compose-deploy-dev.yml up -d --build
 ```
 
+### production:
+
+```shell
+docker-compose -f  docker-compose-prod-cd.yml up -d
+```
+
 If the containers have already been built one can just run:
 
 ```shell
