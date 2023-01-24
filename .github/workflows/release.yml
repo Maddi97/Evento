@@ -65,7 +65,7 @@ jobs:
   #          tags: ${{secrets.dockerhub_user}}/3vents51_backend:latest
 
   build_frontend:
-    needs: analyze
+    #needs: analyze
     name: Build And Push Events
     runs-on: ubuntu-latest
     steps:
@@ -124,7 +124,7 @@ jobs:
 
 
   deploy:
-    needs: [ build_insert-app ]
+    needs: [ build_frontend, build_insert-app ]
     name: Deploy
     runs-on: strato
     steps:

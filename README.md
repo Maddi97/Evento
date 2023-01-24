@@ -89,4 +89,13 @@ aktualisieren
 ## TechStack
 
 * node 16.13.2
-* angular 13.1.3 
+* angular 13.1.3
+
+## Backup
+
+Images in case images get lost (because backend recreate i.e.)
+by backup script images are restored in /home/event/backup/mongodb_back/IMAGE_BACKUP copy /images into backend docker
+container (docker cp)
+
+Right now backend and mongo db are never pushed or recreated
+
