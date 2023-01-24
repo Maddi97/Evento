@@ -33,65 +33,65 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
 
+    #
+    #  build_frontend:
+    #    needs: analyze
+    #    name: Build And Push Events
+    #    runs-on: ubuntu-latest
+    #    steps:
+    #      - name: Checkout Repository
+    #        uses: actions/checkout@v2
+    #
+    #      - name: Set up QEMU
+    #        uses: docker/setup-qemu-action@v1
+    #
+    #      - name: Set up Docker Buildx
+    #        uses: docker/setup-buildx-action@v1
+    #
+    #      - name: Login to DockerHub
+    #        uses: docker/login-action@v1
+    #        with:
+    #          username: ${{ secrets.dockerhub_user }}
+    #          password: ${{ secrets.dockerhub_password }}
+    #
+    #      - name: Build Frontend Docker Containers
+    #        uses: docker/build-push-action@v2
+    #        with:
+    #          platforms: linux/x86_64
+    #          context: https://github.com/Maddi97/3vents51.git#master:threeventsfiveone
+    #          file: ./prod.Dockerfile
+    #          push: true
+    #          tags: ${{secrets.dockerhub_user}}/3vents51_threeventsfiveone:latest
 
-  build_frontend:
-    needs: analyze
-    name: Build And Push Events
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+    build_backend:
+      needs: analyze
+      name: Build And Push Backend
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        - name: Set up QEMU
+          uses: docker/setup-qemu-action@v1
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.dockerhub_user }}
-          password: ${{ secrets.dockerhub_password }}
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v1
 
-      - name: Build Frontend Docker Containers
-        uses: docker/build-push-action@v2
-        with:
-          platforms: linux/x86_64
-          context: https://github.com/Maddi97/3vents51.git#master:threeventsfiveone
-          file: ./prod.Dockerfile
-          push: true
-          tags: ${{secrets.dockerhub_user}}/3vents51_threeventsfiveone:latest
+        - name: Login to DockerHub
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.dockerhub_user }}
+            password: ${{ secrets.dockerhub_password }}
 
-  #
-  #  build_backend:
-  #    needs: analyze
-  #    name: Build And Push Backend
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - name: Checkout Repository
-  #        uses: actions/checkout@v2
-  #
-  #      - name: Set up QEMU
-  #        uses: docker/setup-qemu-action@v1
-  #
-  #      - name: Set up Docker Buildx
-  #        uses: docker/setup-buildx-action@v1
-  #
-  #      - name: Login to DockerHub
-  #        uses: docker/login-action@v1
-  #        with:
-  #          username: ${{ secrets.dockerhub_user }}
-  #          password: ${{ secrets.dockerhub_password }}
-  #
-  #      - name: Build Backend Docker Containers
-  #        uses: docker/build-push-action@v2
-  #        with:
-  #          platforms: linux/x86_64
-  #          context: https://github.com/Maddi97/3vents51.git#master:backend
-  #          file: ./prod.Dockerfile
-  #          push: true
-  #          tags: ${{secrets.dockerhub_user}}/3vents51_backend:latest
+        - name: Build Backend Docker Containers
+          uses: docker/build-push-action@v2
+          with:
+            platforms: linux/x86_64
+            context: https://github.com/Maddi97/3vents51.git#master:backend
+            file: ./prod.Dockerfile
+            push: true
+            tags: ${{secrets.dockerhub_user}}/3vents51_backend:latest
 
   build_insert-app:
     needs: analyze
@@ -137,8 +137,8 @@ jobs:
           username: ${{ secrets.dockerhub_user }}
           password: ${{ secrets.dockerhub_password }}
 
-      #      - name: Pull Backend Docker Container
-      #        run: docker pull ${{secrets.dockerhub_user}}/3vents51_backend:latest
+            - name: Pull Backend Docker Container
+              run: docker pull ${{secrets.dockerhub_user}}/3vents51_backend:latest
 
       - name: Pull Frontend  Docker Containers
         run: docker pull ${{secrets.dockerhub_user}}/3vents51_threeventsfiveone:latest
