@@ -15,7 +15,7 @@ TODAY=`date +"%d%b%Y"`
 ######################################################################
 ######################################################################
 
-DB_BACKUP_PATH='/home'
+DB_BACKUP_PATH='/home/evento/backup/mongodb_backup'
 MONGO_HOST='0.0.0.0'
 MONGO_PORT='27017'
 
@@ -52,14 +52,14 @@ fi
 if [ ${DATABASE_NAMES} = "ALL" ]; then
  echo "You have choose to backup all databases"
 docker exec -i mongodb mongodump --host ${MONGO_HOST} --port ${MONGO_PORT} ${AUTH_PARAM} --out ${DB_BACKUP_PATH}/${TODAY}/
-docker cp mongodb:/${DB_BACKUP_PATH}/${TODAY}/ ./mongodb_backup/${TODAY}/
+docker cp mongodb:/${DB_BACKUP_PATH}/${TODAY}/ ${DB_BACKUP_PATH}/${TODAY}/
 
 else
  echo "Running backup for selected databases"
  for DB_NAME in ${DATABASE_NAMES}
  do
  docker exec -i mongodb mongodump --host ${MONGO_HOST} --port ${MONGO_PORT} --db ${DB_NAME} ${AUTH_PARAM} --out ${DB_BACKUP_PATH}/${TODAY}/
- docker cp mongodb:/${DB_BACKUP_PATH}/${TODAY}/ ./mongodb_backup/${TODAY}/
+ docker cp mongodb:/${DB_BACKUP_PATH}/${TODAY}/ ${DB_BACKUP_PATH}/${TODAY}/
  done
 fi
 
