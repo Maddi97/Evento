@@ -31,7 +31,6 @@ services:
     volumes:
       #   - ./backend:/app
       - ./images/:/app/images
-      - ./temp_dir/:/app/temp_dir/
       - /app/node_modules
   #    depends_on:
   #      - letsencrypt
