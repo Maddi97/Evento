@@ -65,7 +65,7 @@ jobs:
 
 
   build_backend:
-    needs: analyze
+    #    needs: analyze
     name: Build And Push Backend
     runs-on: ubuntu-latest
     steps:
@@ -94,7 +94,7 @@ jobs:
           tags: ${{secrets.dockerhub_user}}/3vents51_backend:latest
 
   build_insert-app:
-    needs: analyze
+    # needs: analyze
     name: Build And Push Insert
     runs-on: ubuntu-latest
     steps:
