@@ -57,6 +57,7 @@ export class FullEventComponent implements OnInit {
   }
 
   downloadImage() {
+    console.log(this.event)
     const cat = this.event?.category;
     if (this.event?.eventImagePath !== undefined) {
       if (this.event?.eventImageTemporaryURL === undefined) {
@@ -69,6 +70,14 @@ export class FullEventComponent implements OnInit {
     } else if (this.organizer.organizerImagePath !== undefined) {
       if (this.organizer.organizerImageTemporaryURL === undefined) {
         this.fileService.downloadFile(this.organizer.organizerImagePath).subscribe(imageData => {
+          // create temporary Url for the downloaded image and bypass security
+          const unsafeImg = URL.createObjectURL(imageData);
+          this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+        });
+      }
+    } else if (this.event.category.subcategories[0]?.stockImagePath !== undefined) {
+      if (this.event.category.subcategories[0]?.stockImageTemporaryURL === undefined) {
+        this.fileService.downloadFile(this.event.category.subcategories[0]?.stockImagePath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
           const unsafeImg = URL.createObjectURL(imageData);
           this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);

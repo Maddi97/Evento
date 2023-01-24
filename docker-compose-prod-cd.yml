@@ -29,16 +29,15 @@ services:
     ports:
       - "10002:3000"
     volumes:
-      #   - ./backend:/app
-      - ./images/:/app/images
-      - ./temp_dir/:/app/temp_dir/
+      #         - ./backend:/app
+      - /images/:/app/images
       - /app/node_modules
-  #    depends_on:
-  #      - letsencrypt
+  #  #    depends_on:
+  #  #      - letsencrypt
 
-  mongodb:
-    image: mongo
-    container_name: mongodb
+#  mongodb:
+#    image: mongo
+#    container_name: mongodb
 #    depends_on:
 #      - letsencrypt
 

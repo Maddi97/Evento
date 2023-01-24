@@ -21,6 +21,16 @@ docker-compose --env-file .env.prod -f docker-compose-deploy-dev.yml up -d --bui
 docker-compose -f  docker-compose-prod-cd.yml up -d
 ```
 
+```shell
+ docker-compose -f docker-compose-prod-cd.yml up  -d --force-recreate --no-deps --build mongodb
+
+```
+
+```shell
+ docker-compose -f docker-compose-prod-cd.yml up  -d --force-recreate --no-deps --build threeventsfiveone
+
+```
+
 If the containers have already been built one can just run:
 
 ```shell
@@ -89,4 +99,13 @@ aktualisieren
 ## TechStack
 
 * node 16.13.2
-* angular 13.1.3 
+* angular 13.1.3
+
+## Backup
+
+Images in case images get lost (because backend recreate i.e.)
+by backup script images are restored in /home/event/backup/mongodb_back/IMAGE_BACKUP copy /images into backend docker
+container (docker cp)
+
+Right now backend and mongo db are never pushed or recreated
+
