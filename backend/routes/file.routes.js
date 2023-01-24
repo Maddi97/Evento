@@ -126,7 +126,7 @@ router.post('/uploadEventImage', upload.array('files'), function (req, res, next
 
 
         //move icon from temp dir to destination
-        fs.rename(
+        fs.copyFile(
             eventImage.path,
             destinationEventImage + '/' + eventImage.filename,
             function (err) {
@@ -150,7 +150,7 @@ router.post('/uploadOrganizerImage', upload.array('files'), function (req, res, 
 
 
         //move icon from temp dir to destination
-        fs.rename(
+        fs.copyFile(
             organizerImage.path,
             destinationOrganizerImage + '/' + organizerImage.filename,
             function (err) {

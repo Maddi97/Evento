@@ -30,7 +30,7 @@ services:
       - "10002:3000"
     volumes:
       #   - ./backend:/app
-      - ./images/:/app/images
+      #- ./images/:/app/images
       - /app/node_modules
   #    depends_on:
   #      - letsencrypt
