@@ -23,15 +23,15 @@ services:
     #    depends_on:
     #      - letsencrypt
 
-  #  backend:
-  #    image: 3vents51/3vents51_backend:latest
-  #    container_name: backend
-  #    ports:
-  #      - "10002:3000"
-  #    volumes:
-  #      #   - ./backend:/app
-  #      #- ./images/:/app/images
-  #      - /app/node_modules
+  backend:
+    image: 3vents51/3vents51_backend:latest
+    container_name: backend
+    ports:
+      - "10002:3000"
+    volumes:
+      #         - ./backend:/app
+      - /images/:/app/images
+      - /app/node_modules
   #  #    depends_on:
   #  #      - letsencrypt
 
