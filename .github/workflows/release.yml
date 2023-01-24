@@ -2,10 +2,10 @@ name: Release
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ master ]
   workflow_dispatch:
 
-  jobs:
+jobs:
   #  analyze:
   #    name: Analyze
   #    runs-on: ubuntu-latest
