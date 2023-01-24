@@ -40,7 +40,6 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
     }
 
     destinationStockImage = req.body.stockImagePath
-    console.log(destinationIcon, destinationStockImage)
     let stockImage = undefined
     //case both are updated
     if (destinationStockImage !== undefined && destinationIcon !== undefined) {
@@ -54,8 +53,8 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
     if (icon !== undefined && stockImage === undefined) {
         fs.mkdirSync(destinationIcon, {recursive: true});
         //move icon from temp dir to destination
-        fs.rename(
-            icon.path,
+
+        fs.copyFile(icon.path,
             destinationIcon + '/' + icon.filename,
             function (err) {
                 if (err) {
@@ -63,9 +62,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
                 }
                 icon.path = destinationIcon + "/" + icon.filename
                 res.json({'icon': icon, 'stockImage': stockImage});
-
-            }
-        );
+            });
     }
 
     if (stockImage !== undefined && icon === undefined) {
@@ -73,7 +70,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
 
 
         //move icon from temp dir to destination
-        fs.rename(
+        fs.copyFile(
             stockImage.path,
             destinationStockImage + '/' + stockImage.filename,
             function (err) {
@@ -89,7 +86,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
         //check if dest path exists otherwise create
         fs.mkdirSync(destinationIcon, {recursive: true});
         //move icon from temp dir to destination
-        fs.rename(
+        fs.copyFile(
             icon.path,
             destinationIcon + '/' + icon.filename,
             function (err) {
@@ -104,7 +101,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
 
 
         //move icon from temp dir to destination
-        fs.rename(
+        fs.copyFile(
             stockImage.path,
             destinationStockImage + '/' + stockImage.filename,
             function (err) {
