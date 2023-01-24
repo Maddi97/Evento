@@ -57,6 +57,7 @@ export class FullEventComponent implements OnInit {
   }
 
   downloadImage() {
+    console.log(this.event)
     const cat = this.event?.category;
     if (this.event?.eventImagePath !== undefined) {
       if (this.event?.eventImageTemporaryURL === undefined) {

@@ -21,6 +21,16 @@ docker-compose --env-file .env.prod -f docker-compose-deploy-dev.yml up -d --bui
 docker-compose -f  docker-compose-prod-cd.yml up -d
 ```
 
+```shell
+ docker-compose -f docker-compose-prod-cd.yml up  -d --force-recreate --no-deps --build mongodb
+
+```
+
+```shell
+ docker-compose -f docker-compose-prod-cd.yml up  -d --force-recreate --no-deps --build threeventsfiveone
+
+```
+
 If the containers have already been built one can just run:
 
 ```shell
