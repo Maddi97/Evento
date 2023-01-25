@@ -59,7 +59,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           platforms: linux/x86_64
-          context: https://github.com/Maddi97/3vents51.git#develop:backend
+          context: https://github.com/Maddi97/Evento.git#develop:backend
           file: ./prod.Dockerfile
           push: true
           tags: ${{secrets.dockerhub_user}}/evento_backend:latest
@@ -88,7 +88,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           platforms: linux/x86_64
-          context: https://github.com/Maddi97/3vents51.git#develop:evento_frontend
+          context: https://github.com/Maddi97/Evento.git#develop:evento_frontend
           file: ./prod.Dockerfile
           push: true
           tags: ${{secrets.dockerhub_user}}/evento_frontend:latest
@@ -117,7 +117,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           platforms: linux/x86_64
-          context: https://github.com/Maddi97/3vents51.git#develop:evento_insert
+          context: https://github.com/Maddi97/Evento.git#develop:evento_insert
           file: ./prod.Dockerfile
           push: true
           tags: ${{secrets.dockerhub_user}}/evento_insert-app:latest
