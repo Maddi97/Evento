@@ -59,16 +59,23 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
             function (err) {
                 if (err) {
                     return console.error(err);
+                } else {
+                    fs.rm(icon.path,
+                        function (err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                            icon.path = destinationIcon + "/" + icon.filename
+                            res.json({'icon': icon, 'stockImage': stockImage});
+                        }
+                    )
                 }
-                icon.path = destinationIcon + "/" + icon.filename
-                res.json({'icon': icon, 'stockImage': stockImage});
+
             });
     }
 
     if (stockImage !== undefined && icon === undefined) {
         fs.mkdirSync(destinationStockImage, {recursive: true});
-
-
         //move icon from temp dir to destination
         fs.copyFile(
             stockImage.path,
@@ -76,9 +83,18 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
             function (err) {
                 if (err) {
                     return console.error(err);
+                } else {
+                    fs.rm(stockImage.path,
+                        function (err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                            stockImage.path = destinationStockImage + "/" + stockImage.filename
+                            res.json({'icon': icon, 'stockImage': stockImage});
+                        }
+                    )
                 }
-                stockImage.path = destinationStockImage + "/" + stockImage.filename
-                res.json({'icon': icon, 'stockImage': stockImage});
+
             }
         );
     }
@@ -92,13 +108,20 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
             function (err) {
                 if (err) {
                     return console.error(err);
+                } else {
+                    fs.rm(icon.path,
+                        function (err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                            icon.path = destinationIcon + "/" + icon.filename
+                        }
+                    )
                 }
-                icon.path = destinationIcon + "/" + icon.filename
             }
         );
 
         fs.mkdirSync(destinationStockImage, {recursive: true});
-
 
         //move icon from temp dir to destination
         fs.copyFile(
@@ -107,9 +130,18 @@ router.post('/uploadCategoryFiles', upload.array('files'), function (req, res, n
             function (err) {
                 if (err) {
                     return console.error(err);
+                } else {
+                    fs.rm(stockImage.path,
+                        function (err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                            stockImage.path = destinationStockImage + "/" + stockImage.filename
+                            res.json({'icon': icon, 'stockImage': stockImage});
+                        }
+                    )
                 }
-                stockImage.path = destinationStockImage + "/" + stockImage.filename
-                res.json({'icon': icon, 'stockImage': stockImage});
+
             }
         );
     }
@@ -124,7 +156,6 @@ router.post('/uploadEventImage', upload.array('files'), function (req, res, next
 
         fs.mkdirSync(destinationEventImage, {recursive: true});
 
-
         //move icon from temp dir to destination
         fs.copyFile(
             eventImage.path,
@@ -132,9 +163,18 @@ router.post('/uploadEventImage', upload.array('files'), function (req, res, next
             function (err) {
                 if (err) {
                     return console.error(err);
+                } else {
+                    fs.rm(eventImage.path,
+                        function (err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                            eventImage.path = destinationEventImage + "/" + eventImage.filename
+                            res.json({'eventImage': eventImage});
+                        }
+                    )
                 }
-                eventImage.path = destinationEventImage + "/" + eventImage.filename
-                res.json({'eventImage': eventImage});
+
             }
         );
     }
@@ -156,9 +196,17 @@ router.post('/uploadOrganizerImage', upload.array('files'), function (req, res, 
             function (err) {
                 if (err) {
                     return console.error(err);
+                } else {
+                    fs.rm(organizerImage.path,
+                        function (err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                            organizerImage.path = destinationOrganizerImage + "/" + organizerImage.filename
+                            res.json({'organizerImage': organizerImage});
+                        }
+                    )
                 }
-                organizerImage.path = destinationOrganizerImage + "/" + organizerImage.filename
-                res.json({'organizerImage': organizerImage});
             }
         );
     }
