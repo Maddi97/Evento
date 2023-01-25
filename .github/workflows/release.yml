@@ -146,6 +146,11 @@ jobs:
       - name: Pull Insert-App Docker Container
         run: docker pull ${{secrets.dockerhub_user}}/evento_insert:latest
 
+      - name: Create Environment File
+        env:
+          duckdns_token: ${{ secrets.PI }}
+        run: touch .env.prod && echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
+
       - name: Start Docker Containers
         uses: nick-fields/retry@v2
         with:
