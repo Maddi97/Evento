@@ -153,3 +153,5 @@ jobs:
 
       - name: Start Docker Containers
         run: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
+        max_attempts: 10
+        retry_on: error
