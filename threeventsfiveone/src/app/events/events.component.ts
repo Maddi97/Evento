@@ -7,7 +7,7 @@ import {PositionService} from '../common-utilities/map-view/position.service';
 import {NominatimGeoService} from '../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ActivatedRoute} from '@angular/router';
-import {map, mergeMap, take} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
 
 import * as moment from 'moment';
 import * as log from 'loglevel';
@@ -59,6 +59,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   distanceChanged = true;
   currentPosition;
+  limit = 3;
+  offset = 3;
 
   // List of all Categories
   categoryList: Category[] = [];
@@ -87,7 +89,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     this.filteredCategory = 'hot'
     this.events$ = this.eventService.events.pipe(
-      map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)),
+      map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)
+      ),
     )
 
     // filter events by distance
@@ -155,7 +158,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     // Request backend for date, category and subcategory filter
     // filter object
     this.currentPosition = this.positionService.getCurrentPosition();
-    let fil = {date: this.filteredDate, cat: [], subcat: []};
+    let fil = {date: this.filteredDate, cat: [], subcat: [], limit: this.limit, currentPosition: this.currentPosition};
 
     if (this.filteredCategory == null) {
       fil.cat = this.categoryList;
@@ -178,7 +181,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     }
     this.spinner.hide();
 
-    fil = {date: this.filteredDate, cat: [], subcat: []};
+    fil = {date: this.filteredDate, cat: [], subcat: [], limit: this.limit, currentPosition: this.currentPosition};
 
   }
 
@@ -190,6 +193,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   searchForDay(filter: DateClicked) {
+    this.limit = this.offset;
     this.filteredDate = filter.date;
     this.applyFilters();
 
@@ -203,7 +207,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   // add or remove clicked category to list of filter
   addCategoryToFilter(cat: any) {
-
+    // reset limit
+    this.limit = this.offset
     // scroll.scrollLeft = scroll.scrollWidth / 3
 
     if (this.filteredCategory === cat) {
@@ -220,6 +225,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   addSubcategoryToFilter(subcat: Subcategory) {
+    this.limit = this.offset
     if (!this.filteredSubcategories.includes(subcat)) {
       this.filteredSubcategories.push(subcat);
     } else {
@@ -294,18 +300,11 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.scrollRightMax = (element.scrollLeft === element.scrollWidth - element.clientWidth);
   }
 
-  @HostListener('window:scroll', [])
-  onScroll(): void {
-    const element = document.getElementsByClassName('event-container');
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-      // Load Your Data Here
-      console.log(window)
-    }
-    console.log(element)
-    console.log('W', window);
+  loadMoreEvents() {
+    this.limit += this.offset;
+    this.applyFilters();
   }
 }
-
 
 class DateClicked {
   date: moment.Moment;

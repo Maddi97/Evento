@@ -47,7 +47,9 @@ router.post('/eventOnDate', (req, res) => {
 router.post('/eventOnDateCatAndSubcat', (req, res) => {
     let date = new Date(req.body.fil.date)
     let categories = req.body.fil.cat
-    let permanent = true
+    let limit = req.body.fil.limit
+    let userPosition = req.body.fil.currentPosition
+
     //get ids bc we filter by id
     let catIds = []
     categories.forEach(cat => catIds.push(cat._id))
@@ -83,22 +85,28 @@ router.post('/eventOnDateCatAndSubcat', (req, res) => {
 
             ]
         }
-    )
-        .then((events) => {
-            // events contains all events filtered by date and category, based on this here we filter on the subcategory
-            events = events.filter(event => {
-                if (subcategories.length > 0) {
-                    r = false
-                    event.category.subcategories.forEach(sub => {
-                        if (subcatIds.includes(sub._id)) {
-                            r = true
-                        }
-                    })
-                    return r
-                } else return true
-            })
-            res.send(events);
+    ).then((events) => {
+        // events contains all events filtered by date and category, based on this here we filter on the subcategory
+        events = events.filter(event => {
+            if (subcategories.length > 0) {
+                r = false
+                event.category.subcategories.forEach(sub => {
+                    if (subcatIds.includes(sub._id)) {
+                        r = true
+                    }
+                })
+                return r
+            } else return true
         })
+
+        //sort events by distance
+        events = events.sort((ev1, ev2) =>
+            get_distance([ev1.geoData.lat, ev1.geoData.lon], userPosition) - get_distance([ev2.geoData.lat, ev2.geoData.lon], userPosition)
+        );
+        // Return events from offset to limit to not load all at once
+
+        res.send(events.slice(0, limit));
+    })
         .catch((error) => console.log(error))
 });
 
@@ -167,5 +175,31 @@ router.delete('/organizer/:organizerId/events/:eventId', auth, (req, res) => {
         .then((event) => res.send(event))
         .catch((error) => console.log(error))
 });
+
+// Todo refactor to other location
+function get_distance(startPosition, endPosition) {
+    const lat1 = startPosition[0];
+    const lon1 = startPosition[1];
+
+    const lat2 = endPosition[0];
+    const lon2 = endPosition[1];
+
+    if ((lat1 === lat2) && (lon1 === lon2)) {
+        return 0;
+    } else {
+        const radlat1 = Math.PI * lat1 / 180;
+        const radlat2 = Math.PI * lat2 / 180;
+        const theta = lon1 - lon2;
+        const radtheta = Math.PI * theta / 180;
+        let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        if (dist > 1) {
+            dist = 1;
+        }
+        dist = Math.acos(dist);
+        dist = dist * 180 / Math.PI;
+        dist = dist * 60 * 1.1515 * 1.609344;
+        return dist;
+    }
+}
 
 module.exports = router;

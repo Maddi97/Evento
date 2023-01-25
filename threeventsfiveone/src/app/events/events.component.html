@@ -71,6 +71,10 @@
         <mat-icon>block</mat-icon>
         Sorry für das angegebene Datum haben wir keine Events in deinem Umkreis gefunden!.
       </div>
+      <div *ngIf="filteredList.length >= limit" class="load-more-events-button" (click)="loadMoreEvents()">
+        <mat-icon>autorenew</mat-icon>
+        <p>Lade mehr ...</p>
+      </div>
     </div>
 
     <div class="map-container">
@@ -91,6 +95,10 @@
       <div class="nothing-found" *ngIf="filteredList.length == 0">
         <mat-icon>block</mat-icon>
         Sorry für das angegebene Datum haben wir keine Events in deinem Umkreis gefunden!.
+      </div>
+      <div *ngIf="filteredList.length >= limit" class="load-more-events-button" (click)="loadMoreEvents()">
+        <mat-icon>autorenew</mat-icon>
+        <p>Lade mehr ...</p>
       </div>
     </div>
 
