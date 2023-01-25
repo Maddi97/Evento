@@ -153,8 +153,10 @@ jobs:
 
       - name: Start Docker Containers
         run: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
+
+      - name: Use the reusable workflow
         uses: nick-fields/retry@v2
-          with:
+        with:
           max_attempts: 10
           retry_on: error
           timeout_seconds: 5
