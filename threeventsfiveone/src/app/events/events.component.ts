@@ -59,7 +59,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   distanceChanged = true;
   currentPosition;
-  limit = 3;
+  actualLoadEventLimit = 3;
+  startLoadEventLimit = 3;
   offset = 3;
 
   // List of all Categories
@@ -158,7 +159,13 @@ export class EventsComponent implements OnInit, OnDestroy {
     // Request backend for date, category and subcategory filter
     // filter object
     this.currentPosition = this.positionService.getCurrentPosition();
-    let fil = {date: this.filteredDate, cat: [], subcat: [], limit: this.limit, currentPosition: this.currentPosition};
+    let fil = {
+      date: this.filteredDate,
+      cat: [],
+      subcat: [],
+      limit: this.actualLoadEventLimit,
+      currentPosition: this.currentPosition
+    };
 
     if (this.filteredCategory == null) {
       fil.cat = this.categoryList;
@@ -181,7 +188,13 @@ export class EventsComponent implements OnInit, OnDestroy {
     }
     this.spinner.hide();
 
-    fil = {date: this.filteredDate, cat: [], subcat: [], limit: this.limit, currentPosition: this.currentPosition};
+    fil = {
+      date: this.filteredDate,
+      cat: [],
+      subcat: [],
+      limit: this.actualLoadEventLimit,
+      currentPosition: this.currentPosition
+    };
 
   }
 
@@ -193,7 +206,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   searchForDay(filter: DateClicked) {
-    this.limit = this.offset;
+    this.actualLoadEventLimit = this.startLoadEventLimit;
     this.filteredDate = filter.date;
     this.applyFilters();
 
@@ -208,7 +221,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   // add or remove clicked category to list of filter
   addCategoryToFilter(cat: any) {
     // reset limit
-    this.limit = this.offset
+    this.actualLoadEventLimit = this.startLoadEventLimit
     // scroll.scrollLeft = scroll.scrollWidth / 3
 
     if (this.filteredCategory === cat) {
@@ -225,7 +238,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   addSubcategoryToFilter(subcat: Subcategory) {
-    this.limit = this.offset
+    this.actualLoadEventLimit = this.startLoadEventLimit
     if (!this.filteredSubcategories.includes(subcat)) {
       this.filteredSubcategories.push(subcat);
     } else {
@@ -301,7 +314,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   loadMoreEvents() {
-    this.limit += this.offset;
+    this.actualLoadEventLimit += this.offset;
     this.applyFilters();
   }
 }
