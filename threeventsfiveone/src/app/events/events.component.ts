@@ -7,7 +7,7 @@ import {PositionService} from '../common-utilities/map-view/position.service';
 import {NominatimGeoService} from '../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ActivatedRoute} from '@angular/router';
-import {map, mergeMap} from 'rxjs/operators';
+import {map, mergeMap, take} from 'rxjs/operators';
 
 import * as moment from 'moment';
 import * as log from 'loglevel';
@@ -87,8 +87,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     this.filteredCategory = 'hot'
     this.events$ = this.eventService.events.pipe(
-      map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)
-      ),
+      map(evs => evs.filter(ev => this.get_distance_to_current_position(ev) < this.filteredDistance)),
     )
 
     // filter events by distance
@@ -295,7 +294,18 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.scrollRightMax = (element.scrollLeft === element.scrollWidth - element.clientWidth);
   }
 
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    const element = document.getElementsByClassName('event-container');
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+      // Load Your Data Here
+      console.log(window)
+    }
+    console.log(element)
+    console.log('W', window);
+  }
 }
+
 
 class DateClicked {
   date: moment.Moment;

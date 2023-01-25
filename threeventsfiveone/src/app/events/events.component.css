@@ -183,6 +183,7 @@
 
 .event-container {
   margin-top: 2rem;
+  height: 50vh;
   width: 50%;
   overflow-x: scroll;
 

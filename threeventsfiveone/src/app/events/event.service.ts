@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError as observableThrowError } from 'rxjs';
-import { Event } from '../models/event';
-import { WebService } from '../web.service';
-import { filter, map, catchError, share, switchMap } from 'rxjs/operators';
-import { HttpRequest } from '@angular/common/http';
-import { Organizer } from '../models/organizer';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, throwError as observableThrowError} from 'rxjs';
+import {Event} from '../models/event';
+import {WebService} from '../web.service';
+import {filter, map, catchError, share, switchMap, take} from 'rxjs/operators';
+import {HttpRequest} from '@angular/common/http';
+import {Organizer} from '../models/organizer';
 import * as moment from 'moment';
 
 
