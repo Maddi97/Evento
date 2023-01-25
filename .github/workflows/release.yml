@@ -151,12 +151,14 @@ jobs:
           duckdns_token: ${{ secrets.PI }}
         run: touch .env.prod && echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
 
-      - name: Start Docker Containers
-        run: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
+      #      - name: Start Docker Containers
+      #        run: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
 
-      - name: Use the reusable workflow
+      - name: Start Docker Containers
         uses: nick-fields/retry@v2
         with:
           max_attempts: 10
           retry_on: error
           timeout_seconds: 5
+          run: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
+
