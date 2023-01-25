@@ -120,7 +120,7 @@ jobs:
           context: https://github.com/Maddi97/Evento.git#develop:evento_insert
           file: ./prod.Dockerfile
           push: true
-          tags: ${{secrets.dockerhub_user}}/evento_insert-app:latest
+          tags: ${{secrets.dockerhub_user}}/evento_insert:latest
 
 
   deploy:
@@ -145,14 +145,6 @@ jobs:
 
       - name: Pull Insert-App Docker Container
         run: docker pull ${{secrets.dockerhub_user}}/evento_insert:latest
-
-      - name: Create Environment File
-        env:
-          duckdns_token: ${{ secrets.PI }}
-        run: touch .env.prod && echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
-
-      #      - name: Start Docker Containers
-      #        run: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
 
       - name: Start Docker Containers
         uses: nick-fields/retry@v2
