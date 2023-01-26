@@ -195,11 +195,13 @@ function get_distance(startPosition, endPosition) {
         if (dist > 1) {
             dist = 1;
         }
+
         dist = Math.acos(dist);
         dist = dist * 180 / Math.PI;
         dist = dist * 60 * 1.1515 * 1.609344;
         return dist;
     }
 }
+
 
 module.exports = router;
