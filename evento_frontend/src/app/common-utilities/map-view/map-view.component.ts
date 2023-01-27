@@ -174,6 +174,8 @@ export class MapViewComponent implements OnInit, OnChanges {
               `<div>${marker.name} </div>`
               +
               `<div class="popup-org-name"> ${marker.organizerName} </div>`
+              +
+              `<a href="full-event/${marker._id}">Link test!</a>`
             )
           // mark.on('click', () => {
           //   // console.log(mark)
