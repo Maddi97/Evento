@@ -24,7 +24,6 @@ export class EventPictureComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("Hallo", this.event)
     this.category = this.event?.category;
     this.organizerService.getOrganizerById(this.event?._organizerId).subscribe(
       organizer => {

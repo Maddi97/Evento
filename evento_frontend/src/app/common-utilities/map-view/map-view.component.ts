@@ -175,7 +175,7 @@ export class MapViewComponent implements OnInit, OnChanges {
               +
               `<div class="popup-org-name"> ${marker.organizerName} </div>`
               +
-              `<a href="full-event/${marker._id}">Link test!</a>`
+              `<a href="full-event/${marker._id}"> Zum Event! </a>`
               +
               `<app-event-picture *ngIf="event"  [event]="${marker}"></app-event-picture>`
             )

@@ -9,9 +9,9 @@
 }
 
 .event-tile:hover {
-  height: 10rem;
-  margin-top: -1rem;
-  margin-bottom: 0rem;
+  height: 9rem;
+  /*margin-top: -1rem;*/
+  /*margin-bottom: 0rem;*/
 }
 
 .event-tile {
@@ -20,7 +20,7 @@
   align-items: center;
 
   background-color: rgba(249, 251, 255);
-  border-radius: 23px;
+  border-radius: 10px;
   height: 7.8rem;
   box-shadow: 1px 1px 12px #8389a4;
   margin-bottom: 1rem;
@@ -133,7 +133,6 @@
   justify-content: center;
   max-height: 100%;
   height: 100%;
-  flex-basis: 33%;
 }
 
 .category {
@@ -145,5 +144,6 @@
 }
 
 app-event-picture {
-  height: 90%
+  height: 100%;
+  margin-right: 10px;
 }
