@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'vents-datenschutz',
+  selector: 'app-datenschutz',
   templateUrl: './datenschutz.component.html',
   styleUrls: ['./datenschutz.component.css']
 })
 export class DatenschutzComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

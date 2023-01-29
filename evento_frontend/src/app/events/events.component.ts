@@ -17,7 +17,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 
 
 @Component({
-  selector: 'vents-events',
+  selector: 'app-events',
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.css']
 })

@@ -4,7 +4,7 @@ import {CategoriesService} from './categories.service';
 import {map} from 'rxjs/operators';
 
 @Component({
-  selector: 'vents-categories',
+  selector: 'app-categories',
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.css']
 })

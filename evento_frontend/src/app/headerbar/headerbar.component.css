@@ -56,12 +56,12 @@
 }
 
 
-vents-digital-clock {
+app-digital-clock {
   font-size: 2rem;
 }
 
 @media screen and (max-width: 410px) {
-  vents-digital-clock {
+  app-digital-clock {
     font-size: 1.3rem;
   }
 }

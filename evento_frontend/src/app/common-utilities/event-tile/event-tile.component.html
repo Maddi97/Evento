@@ -1,7 +1,6 @@
-<div class="event-tile">
+<div class="event-tile" *ngIf="event">
   <div class="event-pic">
-    <img [src]="ImageURL">
-    <img *ngIf="ImageURL===undefined" [src]="IconURL">
+    <app-event-picture [event]="event"></app-event-picture>
   </div>
   <div class="event-tile-information">
     <div class="event-tile-information-name-date">

@@ -4,7 +4,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {FileService} from '../../file.service';
 
 @Component({
-  selector: 'vents-category-tile',
+  selector: 'app-category-tile',
   templateUrl: './category-tile.component.html',
   styleUrls: ['./category-tile.component.css']
 })
@@ -13,7 +13,7 @@ export class CategoryTileComponent implements OnInit {
   @Input() category: Category;
 
   showSubcategories = false;
-  
+
   constructor(private fileService: FileService,
               private sanitizer: DomSanitizer,) {
 

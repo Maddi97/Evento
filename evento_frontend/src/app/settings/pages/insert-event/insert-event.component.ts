@@ -5,7 +5,7 @@ import {WebService} from "../../../web.service";
 
 
 @Component({
-  selector: 'vents-insert-event',
+  selector: 'app-insert-event',
   templateUrl: './insert-event.component.html',
   styleUrls: ['./insert-event.component.css']
 })

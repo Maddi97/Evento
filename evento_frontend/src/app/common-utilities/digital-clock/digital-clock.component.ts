@@ -4,7 +4,7 @@ import * as moment from 'moment';
 
 
 @Component({
-  selector: 'vents-digital-clock',
+  selector: 'app-digital-clock',
   templateUrl: './digital-clock.component.html',
   styleUrls: ['./digital-clock.component.css']
 })

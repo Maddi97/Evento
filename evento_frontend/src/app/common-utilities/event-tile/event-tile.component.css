@@ -136,19 +136,14 @@
   flex-basis: 33%;
 }
 
-
-img {
-  max-height: 80%;
-  width: auto;
-  border-radius: 23px;
-  max-width: 90%;
-}
-
-
 .category {
   background-color: rgb(255, 238, 0);
   border-radius: 7px;
   padding: 0px 3px 0px 3px;
   width: fit-content;
   font-size: .7rem;
+}
+
+app-event-picture {
+  height: 90%
 }

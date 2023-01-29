@@ -3,7 +3,7 @@ import {MatCalendar} from '@angular/material/datepicker';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'vents-date-picker',
+  selector: 'app-date-picker',
   templateUrl: './date-picker.component.html',
   styleUrls: ['./date-picker.component.css']
 })

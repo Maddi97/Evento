@@ -1,12 +1,11 @@
 <div class="full-event-page">
-  <div class="event-tile">
+  <div class="event-tile" *ngIf="event">
 
     <div class="column-container-1">
       <div class="event-pic">
-        <img class='pic' [src]="ImageURL">
-        <img class='pic' *ngIf="ImageURL===undefined" [src]="IconURL">
+        <app-event-picture [event]="event"></app-event-picture>
       </div>
-      <vents-social-media-share class="social-media-buttons"></vents-social-media-share>
+      <app-social-media-share class="social-media-buttons"></app-social-media-share>
     </div>
 
     <div class="column-container-2">

@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'vents-day-date',
+  selector: 'app-day-date',
   templateUrl: './day-date.component.html',
   styleUrls: ['./day-date.component.css']
 })
@@ -22,7 +22,8 @@ export class DayDateComponent implements OnInit {
     'Sa'
   ];
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
@@ -32,7 +33,7 @@ export class DayDateComponent implements OnInit {
   }
 
   dateToString(): string {
-    return  this.date.format('DD.MM');
+    return this.date.format('DD.MM');
   }
 
 }

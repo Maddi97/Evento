@@ -16,6 +16,7 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {DigitalClockComponent} from './digital-clock/digital-clock.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import { EventPictureComponent } from './event-picture/event-picture.component';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
     MapViewComponent,
     SocialMediaShareComponent,
     DigitalClockComponent,
+    EventPictureComponent,
 
   ],
   imports: [

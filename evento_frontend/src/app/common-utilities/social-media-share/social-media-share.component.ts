@@ -7,7 +7,7 @@ import {faWhatsapp, faTelegram} from '@fortawesome/free-brands-svg-icons';
 
 
 @Component({
-  selector: 'vents-social-media-share',
+  selector: 'app-social-media-share',
   templateUrl: './social-media-share.component.html',
   styleUrls: ['./social-media-share.component.css']
 })

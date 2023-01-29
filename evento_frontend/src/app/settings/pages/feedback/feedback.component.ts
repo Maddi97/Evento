@@ -5,7 +5,7 @@ import {HttpRequest} from '@angular/common/http';
 import {WebService} from "../../../web.service";
 
 @Component({
-  selector: 'vents-feedback',
+  selector: 'app-feedback',
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.css']
 })

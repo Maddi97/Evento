@@ -3,12 +3,12 @@ import {Router} from "@angular/router"
 
 
 @Component({
-  selector: 'vents-root',
+  selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'threeventsfiveone';
+  title = 'Evento Leipzig';
   private cookieMessage = 'Diese Website verwendet nur essenzielle Cookies. Erfahrunge mehr über die verwendeten Cookies in unsererem Datenschutzbereich' +
     ''
   private cookieDismiss = 'Verstanden!'

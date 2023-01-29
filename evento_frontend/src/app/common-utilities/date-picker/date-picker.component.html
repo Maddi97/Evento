@@ -6,11 +6,11 @@
       class="icon icon-left" (click)="scrollLeft()">
       <mat-icon>arrow_back_ios_new</mat-icon>
     </div>
-    <vents-day-date class="events-day-date" *ngFor="let day of nextMonth" [date]="day.date" [isClicked]="day.isClicked"
-                    (click)="safeDate(day.date)"
-                    [ngClass]="{'clicked' : day.isClicked}">
+    <app-day-date class="events-day-date" *ngFor="let day of nextMonth" [date]="day.date" [isClicked]="day.isClicked"
+                  (click)="safeDate(day.date)"
+                  [ngClass]="{'clicked' : day.isClicked}">
       >
-    </vents-day-date>
+    </app-day-date>
     <div class="add-dates">
       <div (click)="addDates()" class="add-text">
         <img class="view-more-icon" src="assets/static-icons/view-more.png"/>

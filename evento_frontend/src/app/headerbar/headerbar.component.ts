@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 
 @Component({
-  selector: 'vents-headerbar',
+  selector: 'app-headerbar',
   templateUrl: './headerbar.component.html',
   styleUrls: ['./headerbar.component.css']
 })
