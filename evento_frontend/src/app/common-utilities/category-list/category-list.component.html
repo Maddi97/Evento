@@ -1,0 +1,35 @@
+<div
+  *ngIf="getScreenWidth>700"
+  [ngStyle]="{ 'color': scrollLeftMax ? 'lightgrey' : 'black', 'cursor': scrollLeftMax ? 'unset' : 'pointer' }"
+  class="icon icon-left" (click)="scrollLeft()">
+  <mat-icon>arrow_back_ios_new</mat-icon>
+</div>
+
+<span class="category" [ngClass]="isElementPicked('hot')" (click)="addCategoryToFilter('hot')">
+                <img src="assets/static-icons/icons8-flame-60.png"/>
+              Hot
+          </span>
+
+<div *ngFor="let category of categoryList" class="category-list">
+          <span class="category" id="{{category.name}}" [ngClass]="isElementPicked(category)"
+                (click)="addCategoryToFilter(category)">
+          <img [src]="category.iconTemporaryURL"/>
+            {{ category.name }}
+          </span>
+  <div class="arrow-and-subcategory" *ngIf="category?.subcategories?.length > 0
+                                                 && isElementPicked(category) == 'category-picked'">
+    <mat-icon>keyboard_arrow_down</mat-icon>
+    <div class="subcategory-container">
+      <div *ngFor="let subcategory of category.subcategories">
+                <span class="subcategory" [ngClass]="isElementPicked(subcategory)"
+                      (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  *ngIf="getScreenWidth>700"
+  [ngStyle]="{ 'color': scrollRightMax ? 'lightgrey' : 'black', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
+  class="icon icon-right" (click)="scrollRight()">
+  <mat-icon>arrow_forward_ios</mat-icon>
+</div>

@@ -1,13 +1,24 @@
-import {Component, OnInit, Output, EventEmitter, ViewChild, HostListener} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+  HostListener,
+  ElementRef,
+  AfterViewInit
+} from '@angular/core';
 import {MatCalendar} from '@angular/material/datepicker';
 import * as moment from 'moment';
+import {ActivatedRoute, Router} from "@angular/router";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-date-picker',
   templateUrl: './date-picker.component.html',
   styleUrls: ['./date-picker.component.css']
 })
-export class DatePickerComponent implements OnInit {
+export class DatePickerComponent implements OnInit, AfterViewInit {
 
   @Output() clickedDate = new EventEmitter<DateClicked>();
 
@@ -19,11 +30,14 @@ export class DatePickerComponent implements OnInit {
   public numberOfDates = 10;
   public displayNumberOfDates = 5;
   public firstDate = 0;
-
+  startDate = new Date();
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
 
-  constructor() {
+  constructor(
+    private _activatedRoute: ActivatedRoute,
+    private router: Router
+  ) {
   }
 
   ngOnInit(): void {
@@ -34,8 +48,18 @@ export class DatePickerComponent implements OnInit {
     } else {
       this.numberOfDates = 7;
     }
+    this._activatedRoute.queryParams.pipe(
+      map(params => {
+        const date = params.date;
+        if (date !== undefined) {
+          this.startDate = new Date(date);
+        }
+        this.createDateList();
+      })).subscribe()
+  }
 
-    this.createDateList();
+  ngAfterViewInit() {
+    this.scrollToClicked()
   }
 
   safeDate(day: moment.Moment) {
@@ -48,18 +72,26 @@ export class DatePickerComponent implements OnInit {
     });
     const emitDate = this.nextMonth.find(m => m.date === day);
     this.clickedDate.emit(emitDate);
+    this.setRouteParameter({date: emitDate.date.clone().format('YYYY-MM-DD')})
   }
 
   createDateList() {
 
     const thisDay = moment(this.nextMonth[this.firstDate - 1] ?
       this.transformDateFormat(new Date()) : this.transformDateFormat(new Date()));
+
+    let differencesParamDateTodayDays = moment(this.startDate).diff(thisDay, 'days')
+    if (differencesParamDateTodayDays < 0) {
+      differencesParamDateTodayDays = 0
+    }
+    if (differencesParamDateTodayDays > this.numberOfDates) this.numberOfDates = differencesParamDateTodayDays + this.numberOfDates;
+
     for (let i = this.firstDate; i < this.numberOfDates; i++) {
       const day = thisDay.clone().add(i, 'days');
 
       this.nextMonth[i] = new DateClicked();
       this.nextMonth[i].date = day;
-      if (i === this.firstDate) {
+      if (i === differencesParamDateTodayDays) {
         this.safeDate(this.nextMonth[i].date);
       } else {
         this.nextMonth[i].isClicked = false;
@@ -70,6 +102,11 @@ export class DatePickerComponent implements OnInit {
 
   @HostListener('scroll') onScroll(e: Event): void {
     this.getYPosition(e);
+  }
+
+  scrollToClicked() {
+
+    document.getElementsByClassName('day-date-clicked')[0].scrollIntoView({behavior: 'smooth'})
   }
 
   getYPosition(e: Event): void {
@@ -109,7 +146,13 @@ export class DatePickerComponent implements OnInit {
     this.scrollLeftMax = (element.scrollLeft === 0)
     this.scrollRightMax = (element.scrollLeft === element.scrollWidth - element.clientWidth);
 
+  }
 
+  setRouteParameter(params) {
+    this.router.navigate([], {
+      queryParams: params,
+      relativeTo: this._activatedRoute
+    });
   }
 
 }

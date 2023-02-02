@@ -16,7 +16,10 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {DigitalClockComponent} from './digital-clock/digital-clock.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
-import { EventPictureComponent } from './event-picture/event-picture.component';
+import {EventPictureComponent} from './event-picture/event-picture.component';
+import {EventTileListComponent} from './event-tile-list/event-tile-list.component';
+import {RouterModule} from '@angular/router';
+import {CategoryListComponent} from './category-list/category-list.component';
 
 
 @NgModule({
@@ -29,6 +32,8 @@ import { EventPictureComponent } from './event-picture/event-picture.component';
     SocialMediaShareComponent,
     DigitalClockComponent,
     EventPictureComponent,
+    EventTileListComponent,
+    CategoryListComponent,
 
   ],
   imports: [
@@ -42,13 +47,16 @@ import { EventPictureComponent } from './event-picture/event-picture.component';
     ClipboardModule,
     MatSnackBarModule,
     FontAwesomeModule,
+    RouterModule
   ],
   exports: [
     EventTileComponent,
     FullEventComponent,
     DatePickerComponent,
     MapViewComponent,
-    DigitalClockComponent
+    DigitalClockComponent,
+    EventTileListComponent,
+    CategoryListComponent
   ]
 })
 export class CommonUtilitiesModule {

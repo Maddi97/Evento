@@ -15,7 +15,7 @@ export class CategoryTileComponent implements OnInit {
   showSubcategories = false;
 
   constructor(private fileService: FileService,
-              private sanitizer: DomSanitizer,) {
+              private sanitizer: DomSanitizer) {
 
   }
 
