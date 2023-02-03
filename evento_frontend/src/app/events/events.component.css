@@ -1,9 +1,6 @@
 .event-page {
   width: 100%;
   justify-content: center;
-  padding-bottom: 5rem;
-
-
 }
 
 .filter-container {
@@ -14,25 +11,28 @@
 
 .category-headline {
   height: 100%;
-  width: 15rem;
+  width: 10rem;
   padding-right: 0rem !important;
   min-width: 1rem;
-  margin-top: -1.5rem;
-  margin-bottom: -1.5rem;
 }
 
 .main-category-container {
   display: flex;
   flex-direction: row;
-  margin: 2.5rem;
-  margin-bottom: 0px;
+  justify-content: center;
   overflow-y: scroll;
   overflow-x: unset;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-  max-width: 80%;
+  max-width: 90%;
+  width: 90%;
 }
 
+.category-list .ng-star-inserted {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .main-category-container::-webkit-scrollbar {
@@ -42,16 +42,14 @@
 .event-map-container {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  margin-bottom: calc(5em + constant(safe-area-inset-bottom)) !important;
-  margin-bottom: calc(5em + env(safe-area-inset-bottom)) !important;
+  max-width: 90%;
+  width: 90%;
 }
 
 .event-container {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   height: 50vh;
-  width: 50%;
+  width: 55%;
   overflow-x: scroll;
 
   display: flex;
@@ -81,15 +79,17 @@
 
 
 .map-container {
-  width: 40%;
+  width: 45%;
   height: auto;
-  margin-top: 2rem;
   padding-top: 1rem;
 
 }
 
+app-event-tile-list {
+  width: 90%;
+}
+
 .date-picker {
-  margin: 1.5rem;
   max-width: 80%;
 }
 

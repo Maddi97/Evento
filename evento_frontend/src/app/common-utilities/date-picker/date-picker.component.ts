@@ -54,8 +54,9 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
         if (date !== undefined) {
           this.startDate = new Date(date);
         }
-        this.createDateList();
       })).subscribe()
+    this.createDateList();
+
   }
 
   ngAfterViewInit() {
@@ -151,7 +152,8 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
   setRouteParameter(params) {
     this.router.navigate([], {
       queryParams: params,
-      relativeTo: this._activatedRoute
+      relativeTo: this._activatedRoute,
+      queryParamsHandling: 'merge'
     });
   }
 

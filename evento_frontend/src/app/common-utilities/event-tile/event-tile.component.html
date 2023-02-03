@@ -1,7 +1,5 @@
-<div class="event-tile" *ngIf="event">
-  <div class="event-pic">
-    <app-event-picture [event]="event"></app-event-picture>
-  </div>
+<mat-card class="event-tile" *ngIf="event">
+  <app-event-picture [event]="event"></app-event-picture>
   <div class="event-tile-information">
     <div class="event-tile-information-name-date">
       <div class="event-name">
@@ -33,4 +31,4 @@
       Ende: {{ event.times.end }} Uhr
     </div>
   </div>
-</div>
+</mat-card>

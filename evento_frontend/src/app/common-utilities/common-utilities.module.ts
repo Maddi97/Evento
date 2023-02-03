@@ -9,6 +9,7 @@ import {DayDateComponent} from './date-picker/day-date/day-date.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
+import {MatCardModule} from '@angular/material/card';
 import {FormsModule} from '@angular/forms';
 import {SocialMediaShareComponent} from './social-media-share/social-media-share.component';
 import {MatIconModule} from '@angular/material/icon';
@@ -47,7 +48,8 @@ import {CategoryListComponent} from './category-list/category-list.component';
     ClipboardModule,
     MatSnackBarModule,
     FontAwesomeModule,
-    RouterModule
+    RouterModule,
+    MatCardModule
   ],
   exports: [
     EventTileComponent,

@@ -65,6 +65,7 @@ export class CategoryListComponent implements OnInit {
 
     const params$ = this._activatedRoute.queryParams.pipe(
       map(params => {
+        console.log('test')
         const category = params.category;
         if (category !== undefined) {
           this.categoryList.forEach(c => {
@@ -156,7 +157,8 @@ export class CategoryListComponent implements OnInit {
   setRouteParameter(params) {
     this.router.navigate([], {
       queryParams: params,
-      relativeTo: this._activatedRoute
+      relativeTo: this._activatedRoute,
+      queryParamsHandling: 'merge'
     });
   }
 
