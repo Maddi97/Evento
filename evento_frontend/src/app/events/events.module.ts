@@ -1,14 +1,18 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { EventsComponent } from './events.component';
-import { CommonUtilitiesModule } from '../common-utilities/common-utilities.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { AppRoutingModule } from '../app-routing.module';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSliderModule } from '@angular/material/slider';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import { NgxSpinnerModule } from 'ngx-spinner';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {EventsComponent} from './events.component';
+import {CommonUtilitiesModule} from '../common-utilities/common-utilities.module';
+import {AppRoutingModule} from '../app-routing.module';
+import {MatIconModule} from '@angular/material/icon';
+import {MatSliderModule} from '@angular/material/slider';
+import {HttpClientModule} from '@angular/common/http';
+import {FormsModule} from '@angular/forms';
+import {NgxSpinnerModule} from 'ngx-spinner';
+import {RouterModule, Routes} from '@angular/router';
+
+const routes: Routes = [
+  {path: '', component: EventsComponent}
+];
 
 
 @NgModule({
@@ -20,10 +24,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     AppRoutingModule,
     CommonModule,
     CommonUtilitiesModule,
-    /**
-     * Flex
-     */
-    FlexLayoutModule,
+    RouterModule.forChild(routes),
 
     /**
      * Material Imports

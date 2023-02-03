@@ -8,7 +8,6 @@ import {HeaderbarComponent} from './headerbar/headerbar.component';
 import {EventsModule} from './events/events.module';
 import {CategoriesModule} from './categories/categories.module';
 import {SettingsModule} from './settings/settings.module';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatIconModule} from '@angular/material/icon';
 
 import {MatDialogModule} from '@angular/material/dialog';
@@ -28,7 +27,6 @@ import {LocationStrategy, PathLocationStrategy} from '@angular/common';
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
-    FlexLayoutModule,
     NgxSpinnerModule,
     /*
     Angular Material

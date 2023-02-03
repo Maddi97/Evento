@@ -5,6 +5,15 @@
   To learn more about this file see: https://angular.io/config/solution-tsconfig.
 */
 {
+  "compilerOptions": {
+    // ... other options
+    "baseUrl": ".",
+    "paths": {
+      "@angular-devkit/build-webpack:browser": [
+        "node_modules/@angular-devkit/build-webpack/browser.js"
+      ]
+    }
+  },
   "files": [],
   "references": [
     {
