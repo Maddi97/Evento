@@ -3,17 +3,17 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "threeventsfiveone": {
+    "evento_frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
       "sourceRoot": "src",
-      "prefix": "vents",
+      "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-webpack:browser",
           "options": {
-            "outputPath": "dist/threeventsfiveone",
+            "outputPath": "dist/evento_frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -43,7 +43,7 @@
               ],
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -66,18 +66,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "threeventsfiveone:build"
+            "browserTarget": "evento_frontend:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "threeventsfiveone:build:production"
+              "browserTarget": "evento_frontend:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "threeventsfiveone:build"
+            "browserTarget": "evento_frontend:build"
           }
         },
         "test": {
@@ -113,11 +113,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "threeventsfiveone:serve"
+            "devServerTarget": "evento_frontend:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "threeventsfiveone:serve:production"
+              "devServerTarget": "evento_frontend:serve:production"
             }
           }
         },
@@ -128,5 +128,5 @@
       }
     }
   },
-  "defaultProject": "threeventsfiveone"
+  "defaultProject": "evento_frontend"
 }
