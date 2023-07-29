@@ -1,67 +1,84 @@
-@media screen and (max-width: 800px) {
-  .event-tile {
-    height: 5rem !important;
-  }
-
-  .event-tile:hover {
-    height: 6rem !important;
-  }
-}
-
-.event-tile:hover {
-  height: 9rem;
-  /*margin-top: -1rem;*/
-  /*margin-bottom: 0rem;*/
-}
-
 .event-tile {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-
   background-color: rgba(249, 251, 255);
   margin-bottom: 1rem;
   cursor: pointer;
-  height: 6rem;
+  transition: all 0.3s ease-in-out;
+  border-radius: 5px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  max-height: 8rem;
+}
+
+.event-tile:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0px 10px gray;
+}
+
+@media screen and (max-width: 800px) {
+  .event-tile:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px gray;
+  }
+}
+
+.event-tile-information {
+  display: flex;
+  padding-left: 1rem;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.event-tile-picture {
+  width: 20%;
+  object-fit: cover;
 }
 
 .pic {
   display: flex;
   justify-content: center;
   align-items: center;
-
-  width: 4rem;
-  height: 4rem;
-  border-radius: 2px;
   margin: 1rem 1rem;
+  overflow: hidden;
 }
 
-.event-tile-information {
-  flex-direction: column;
+.event-name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1rem;
+}
 
-  height: 80%;
+.mat-card-title {
+  font-weight: 400 !important;
+}
 
-  justify-content: center;
+.date {
+  width: 20%;
   display: flex;
-  flex-basis: 33%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  font-size: 0.9rem;
 }
 
-.event-tile-information-name-date {
-  flex-direction: row;
+.date-start {
+}
+
+.date-end {
+}
+
+.category {
+  background-color: rgb(255, 238, 0);
+  border-radius: 7px;
+  padding: 0px 3px 0px 3px;
+  width: fit-content;
+  font-size: .7rem;
 }
 
 /*medium screen size*/
 @media screen and (min-width: 440px) and (max-width: 600px) {
   .event-name {
     font-size: 1rem !important;
-  }
-
-  .event-organizer-name {
-    font-size: 0.9rem !important;
-  }
-
-  .event-distance {
-    font-size: 0.9rem !important;
   }
 
   .date {
@@ -75,70 +92,16 @@
     font-size: .8rem !important;
   }
 
-  .event-organizer-name {
-    font-size: 0.7rem !important;
-  }
-
-  .event-distance {
-    font-size: 0.7rem !important;
-  }
-
   .date {
     font-size: 0.7rem !important;
   }
-
 }
 
-.event-name {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  font-size: 1.5rem;
+mat-card {
+  padding: 6px !important;
 }
 
-.event-organizer-name {
-  padding-bottom: 0.5rem
-}
-
-.event-distance {
-  color: grey;
-  font-style: italic;
-}
-
-.date {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-
-  color: rgb(114, 114, 114);
-  padding: 0px 3px 0px 0px;
-  font-size: 1rem;
-  flex-basis: 33%;
-}
-
-.date-start {
-}
-
-.date-end {
-
-}
-
-
-.category {
-  background-color: rgb(255, 238, 0);
-  border-radius: 7px;
-  padding: 0px 3px 0px 3px;
-  width: fit-content;
-  font-size: .7rem;
-}
-
-app-event-picture {
-  height: 100%;
-  margin-right: 10px;
-}
-
-
-app-event-picture > .event-pic {
+/*passing down max-width to child component with ng deep */
+::ng-deep app-event-picture .event-pic img {
   border-radius: 3px;
 }

@@ -1,6 +1,6 @@
 app-headerbar {
   display: flex;
-  height: 3rem;
+  height: 4rem;
 }
 
 .bg-image-1 {
@@ -18,6 +18,9 @@ app-headerbar {
 }
 
 @media screen and (max-width: 800px) {
+  app-headerbar {
+      height: 3rem;
+    }
   .bg-image-1 {
     z-index: -1;
     height: 20rem;

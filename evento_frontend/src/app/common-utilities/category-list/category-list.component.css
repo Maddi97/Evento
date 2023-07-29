@@ -43,6 +43,7 @@
   align-items: center;
   position: relative;
   max-width: 0rem;
+  margin-top: -10px;
 }
 
 .subcategory-container {

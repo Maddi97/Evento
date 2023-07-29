@@ -1,17 +1,18 @@
 <mat-card class="event-tile" *ngIf="event">
-  <app-event-picture [event]="event"></app-event-picture>
+  <app-event-picture class="event-tile-picture" [event]="event"></app-event-picture>
   <div class="event-tile-information">
     <div class="event-tile-information-name-date">
-      <div class="event-name">
+      <mat-card-title class="event-name">
         {{ event?.name }}
-      </div>
+      </mat-card-title>
 
-      <div class="event-organizer-name">
+      <mat-card-subtitle class="event-organizer-name">
         {{event.organizerName}}
-      </div>
-      <div class="event-distance">
-        Entfernung: {{distance}} km
-      </div>
+        <div class="event-distance">
+          Entfernung: {{distance}}km
+        </div>
+      </mat-card-subtitle>
+
       <!--      <div class="category">-->
       <!--        {{ event?.category?.name }}-->
       <!--      </div>-->

@@ -59,6 +59,11 @@
   margin: 2vw;
 }
 
+/*passing down max-width to child component with ng deep */
+::ng-deep app-event-picture .event-pic img {
+  max-width: 100%;
+}
+
 .social-media-buttons {
   display: flex;
   align-items: center;
