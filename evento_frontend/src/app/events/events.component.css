@@ -14,18 +14,17 @@
   width: 10rem;
   padding-right: 0rem !important;
   min-width: 1rem;
+  margin-top: -15px;
 }
 
 .main-category-container {
   display: flex;
   flex-direction: row;
-  justify-content: center;
   overflow-y: scroll;
   overflow-x: unset;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-  max-width: 90%;
-  width: 90%;
+  max-width: 80%;
 }
 
 .category-list .ng-star-inserted {
@@ -42,6 +41,7 @@
 .event-map-container {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   max-width: 90%;
   width: 90%;
 }
@@ -68,6 +68,7 @@
     flex-direction: column !important;
     width: 90% !important;
     padding-top: 0 !important;
+    margin-top: 2.5rem; 
 
   }
 
@@ -79,7 +80,7 @@
 
 
 .map-container {
-  width: 45%;
+  width: 40%;
   height: auto;
   padding-top: 1rem;
 
@@ -88,6 +89,7 @@
 app-event-tile-list {
   width: 90%;
 }
+
 
 .date-picker {
   max-width: 80%;

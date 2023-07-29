@@ -65,7 +65,6 @@ export class CategoryListComponent implements OnInit {
 
     const params$ = this._activatedRoute.queryParams.pipe(
       map(params => {
-        console.log('test')
         const category = params.category;
         if (category !== undefined) {
           this.categoryList.forEach(c => {
