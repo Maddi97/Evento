@@ -1,23 +1,28 @@
 
 .category {
-  border-radius: 13px;
   margin: 1rem;
-  padding: 3px 5px 3px 5px;
   width: fit-content;
   font-size: 1.2rem;
   cursor: pointer;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  font-color: black;
-  border: 2px solid #c1c1c1;
-  min-width: 15rem;
-  max-width: 15rem;
+  height: 4rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0.5rem;
 }
 
 
 @media screen and (max-width: 800px) {
   .category {
     min-width: unset;
+    margin: 0.5rem !important;;
+    height: 3rem !important;
+    font-size: 0.9rem !important;
+    margin-top: 0.8rem !important;
+    padding-left: 0.7rem !important;
+    padding-right: 0.7rem !important;
+  }
+  img {
+    width: 1.2rem !important;
   }
 }
 
@@ -70,25 +75,20 @@
 }
 
 .category-non-picked {
-  background-color: white;
-  box-shadow: 0 0 30px 5px #ddddddc4 inset;
-  border: 2px solid #ffffff;
-  height: 2rem;
+
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-left: 1rem;
 }
 
 .category-picked {
-  height: 2rem;
-  background-color: #e8ebe8;
-  border: 1px solid #373434;
-  color: #373434;
+
+  border-bottom: 2px solid #000000;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-left: 1rem;
 }
 
 
@@ -97,23 +97,24 @@
 }
 
 img {
-  height: 100%;
-  padding-right: 1rem;
-  min-width: 1rem;
-}
-
-.icon {
-  font-size: 3rem;
-  height: 3rem;
-  width: 3rem;
-  cursor: pointer;
+  height: auto;
+  width: 1.5rem;
+  padding-bottom: 10px;
 }
 
 .icon {
   position: absolute;
-  display: flex;
-  align-items: center;
   width: unset !important;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  display: flex;
+  cursor: pointer;
+  color: grey;
+  border: 1px solid grey;
+  border-radius: 100px;
+  background: white;
+  box-shadow: rgb(0 0 0 / 21%) 0px 5px 12px;
+
 }
 
 .icon-left {

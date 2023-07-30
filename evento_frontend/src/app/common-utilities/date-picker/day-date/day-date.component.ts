@@ -35,5 +35,11 @@ export class DayDateComponent implements OnInit {
   dateToString(): string {
     return this.date.format('DD.MM');
   }
-
+  isDateClicked() {
+      if (this.isClicked) {
+        return 'day-date-clicked';
+      } else {
+        return 'day-date';
+      }
+    }
 }
