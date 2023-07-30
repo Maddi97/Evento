@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  threeventsfiveone:
+  evento_frontend:
     image: ${{ secrets.dockerhub_user }}/evento_frontend:latest
     container_name: evento_app
     ports:
@@ -12,7 +12,7 @@ services:
   #    depends_on:
   #      - letsencrypt
 
-  insert-app:
+  evento_insert:
     image: ${{ secrets.dockerhub_user }}/evento_insert:latest
     container_name: insert_app
     ports:
