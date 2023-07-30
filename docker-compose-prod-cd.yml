@@ -2,7 +2,7 @@ version: "3"
 
 services:
   threeventsfiveone:
-    image: 3vents51/3vents51_threeventsfiveone:latest
+    image: eventodockerhub/evento_frontend:latest
     container_name: evento_app
     ports:
       - "10000:80"
