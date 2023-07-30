@@ -1,7 +1,7 @@
 <div class="header">
-  <mat-icon class="arrow-back" (click)="navBack()">
+  <!-- <mat-icon class="arrow-back" (click)="navBack()">
     arrow_back
-  </mat-icon>
+  </mat-icon> -->
 
   <!--  <div class = 'search=field' fxLayoutAlign="end center">-->
   <!--  <mat-icon class="search">-->
@@ -14,11 +14,19 @@
   <!--         class="m-list-search__form-input"-->
   <!--         value="" placeholder="Search...">-->
   <!--  </div>-->
+
   <div class="logo-container" routerLink="/">
     <img class="logo" src="assets/branding/logo_name.png" alt="logo name">
   </div>
 
-  <div class="clock-container">
-    <app-digital-clock></app-digital-clock>
+  <app-date-picker class="date-picker" (clickedDate)="searchForDay($event)"></app-date-picker>
+
+  <div class="button-container">
+    <button>Button</button>
   </div>
+
+
+  <!-- <div class="clock-container">
+    <app-digital-clock></app-digital-clock>
+  </div> -->
 </div>

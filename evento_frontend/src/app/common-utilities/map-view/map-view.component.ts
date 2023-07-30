@@ -12,7 +12,7 @@ import {Geolocation} from '@capacitor/geolocation';
 export class MapViewComponent implements OnInit, OnChanges {
   @Input() markerData = [];
   @Input() hoveredData = null;
-  @Input() zoomInput = 11;
+  @Input() zoomInput = 12;
   @Input() centerInput = null;
 
   private map;

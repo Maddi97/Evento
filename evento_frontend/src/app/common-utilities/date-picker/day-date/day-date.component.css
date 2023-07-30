@@ -1,7 +1,8 @@
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 800px) {
   .day-date {
-    width: 3.5rem !important;
-    height: 3.5rem !important;
+    width: 3rem !important;
+    height: 3rem !important;
+    margin: 5px !important;
   }
 }
 
@@ -9,8 +10,8 @@
   display: flex;
   flex-direction: column;
 
-  height: 5rem;
-  width: 5rem;
+  height: 3.5rem;
+  width: 3.5rem;
   /*background-color: #ecececc7;*/
   background-color: white;
   margin: 10px;
@@ -28,28 +29,27 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.3rem;
-  height: 2.2rem;
+  font-size: 1rem;
+  height: 1.9rem;
 }
 
 .date {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.8rem;
-  height: 1.0rem;
+  font-size: 0.7rem;
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 800px) {
   .day-date-clicked {
-    width: 5.2rem !important;
-    height: 5.2rem !important;
+    width: 4rem !important;
+    height: 4rem !important;
   }
 }
 
 .day-date-clicked {
-  height: 6.5rem;
-  width: 6.5rem;
+  height: 5rem;
+  width: 5rem;
   border-radius: 10px;
   margin: 10px;
   box-shadow: 0 0 37px -14px #1374c7;
@@ -58,13 +58,11 @@
 }
 
 .day-date-clicked .day {
-  font-size: 2.0rem;
-  margin: 0.3rem;
+  font-size: 1.5rem;
 }
 
 .day-date-clicked .date {
-  font-size: 1.0rem;
-  margin: 0.3rem;
+  font-size: 0.8rem;
 }
 
 .date-container {

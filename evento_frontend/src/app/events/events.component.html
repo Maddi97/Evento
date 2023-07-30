@@ -1,9 +1,8 @@
 <div class="event-page">
   <div class="filter-container">
-    <app-date-picker class="date-picker" (clickedDate)="searchForDay($event)"></app-date-picker>
 
     <!--    <span class="category-label">Kategorien</span>-->
-    <img class="category-headline" src="assets/design-elements/Kategorien_design.png">
+    <!-- <img class="category-headline" src="assets/design-elements/Kategorien_design.png"> -->
     <app-category-list class="main-category-container" id="main-category-container"
                        (categoryOutputEmitter)="this.filteredCategory = $event"
                        (subCategoryOutputEmitter)="this.filteredSubcategories = $event"></app-category-list>
