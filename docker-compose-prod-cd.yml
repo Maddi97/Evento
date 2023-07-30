@@ -2,7 +2,7 @@ version: "3"
 
 services:
   evento_frontend:
-    image: ${{ secrets.dockerhub_user }}/evento_frontend:latest
+    image: eventodockerhub/evento_frontend:latest
     container_name: evento_app
     ports:
       - "10000:80"
@@ -13,7 +13,7 @@ services:
   #      - letsencrypt
 
   evento_insert:
-    image: ${{ secrets.dockerhub_user }}/evento_insert:latest
+    image: eventodockerhub/evento_insert:latest
     container_name: insert_app
     ports:
       - "10001:80"
@@ -24,7 +24,7 @@ services:
     #      - letsencrypt
 
   backend:
-    image: ${{ secrets.dockerhub_user }}/evento_backend:latest
+    image: eventodockerhub/evento_backend:latest
     container_name: backend
     ports:
       - "10002:3000"
