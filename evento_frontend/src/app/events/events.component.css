@@ -24,8 +24,12 @@
   overflow-x: unset;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-  max-width: 80%;
-}
+  max-width: 100%;
+  scroll-behavior: smooth;
+    /* Add smooth scroll behavior */
+  transition: transform 3s linear;
+    /* Adjust the duration (3s) for slower or faster scrolling */
+      margin-top: 0.5rem;}
 
 .category-list .ng-star-inserted {
   display: flex;

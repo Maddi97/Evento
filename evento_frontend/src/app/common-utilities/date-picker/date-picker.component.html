@@ -7,7 +7,7 @@
       <mat-icon>arrow_back_ios_new</mat-icon>
     </div>
     <app-day-date class="events-day-date" *ngFor="let day of nextMonth" [date]="day.date" [isClicked]="day.isClicked"
-                  (click)="safeDate(day.date)"
+                  (click)="safeDate(day.date); scrollToClicked();"
                   [ngClass]="{'clicked' : day.isClicked}">
       >
     </app-day-date>
@@ -19,7 +19,8 @@
     <div
       *ngIf="getScreenWidth>700"
       [ngStyle]="{ 'color': scrollRightMax ? 'lightgrey' : 'black', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
-      class="icon icon-right" (click)="scrollRight()">
+      class="icon icon-right" (click)="scrollRight(); setScrollMaxBool()
+">
       <mat-icon>arrow_forward_ios</mat-icon>
     </div>
   </div>

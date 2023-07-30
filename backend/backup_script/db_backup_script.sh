@@ -36,7 +36,7 @@ DATABASE_NAMES='db_evento'
 #DATABASE_NAMES='mydb db2 newdb'
 
 ## Number of days to keep local backup copy
-BACKUP_RETAIN_DAYS=15
+BACKUP_RETAIN_DAYS=150
 
 ######################################################################
 ######################################################################

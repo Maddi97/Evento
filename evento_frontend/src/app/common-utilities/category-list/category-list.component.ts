@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
 import {Category, Subcategory} from '../../models/category';
 import {map, mergeMap} from 'rxjs/operators';
 import {CategoriesService} from '../../categories/categories.service';
@@ -11,7 +11,7 @@ import {DomSanitizer} from '@angular/platform-browser';
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.css']
 })
-export class CategoryListComponent implements OnInit {
+export class CategoryListComponent implements OnInit, AfterViewInit {
   // List of all Categories
   categoryList: Category[] = [];
 
@@ -43,12 +43,14 @@ export class CategoryListComponent implements OnInit {
     // this.events$.unsubscribe()
     this.empty_filters()
   }
-
+  ngAfterViewInit() {
+    this.scrollToClicked()
+  }
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
     document.getElementById('main-category-container').scrollLeft = 0;
-
+    this.setScrollMaxBool()
     this.filteredCategory = 'hot'
 
     const categories$ = this.categoriesService.categories.pipe(
@@ -65,6 +67,7 @@ export class CategoryListComponent implements OnInit {
 
     const params$ = this._activatedRoute.queryParams.pipe(
       map(params => {
+        console.log(params)
         const category = params.category;
         if (category !== undefined) {
           this.categoryList.forEach(c => {
@@ -178,29 +181,43 @@ export class CategoryListComponent implements OnInit {
   }
 
   @HostListener('window:resize', ['$event'])
-  getScreenSize(event ?) {
+  getScreenSize(event) {
     this.getScreenWidth = window.innerWidth;
     this.setScrollMaxBool()
   }
+  scrollToClicked() {
+
+  const element: HTMLElement = document.getElementById('category-picked')
+  if(!element) return;
+  element.scrollTo(window.innerWidth/2, 0)
+  const container = document.getElementById('main-category-container')
+  container.scrollTo(window.innerWidth/2, 0)
+}
 
   scrollRight() {
     const element = document.getElementById('main-category-container')
-    element.scrollLeft += 80;
-    this.setScrollMaxBool()
+    element.scrollLeft += 160;
+    this.setScrollMaxBool();
     // if max scrolled true then true
   }
 
   scrollLeft() {
     const element = document.getElementById('main-category-container')
-    element.scrollLeft -= 80;
-    this.setScrollMaxBool()
+    element.scrollLeft -= 160;
+
+    this.setScrollMaxBool();
+
   }
 
   @HostListener('window:mouseover', ['$event'])
   setScrollMaxBool() {
+    setTimeout(() => {
     const element = document.getElementById('main-category-container')
+    if(!element) {return;}
     this.scrollLeftMax = (element.scrollLeft === 0)
     this.scrollRightMax = (element.scrollLeft === element.scrollWidth - element.clientWidth);
+    }, 300);
+
   }
 
 }

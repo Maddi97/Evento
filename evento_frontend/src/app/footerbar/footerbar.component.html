@@ -1,11 +1,11 @@
 <div class="footer" *ngIf="windowWidth<800">
-  <mat-icon class="icon" routerLink="/">
+  <mat-icon class="icon" routerLink="/" [queryParams]="queryParams" [queryParamsHandling]="'merge'">
     calendar_today
   </mat-icon>
-  <mat-icon class="icon" routerLink="/categories">
+  <mat-icon class="icon" [routerLink]="['/categories']" [queryParams]="queryParams" [queryParamsHandling]="'merge'">
     format_list_bulleted
   </mat-icon>
-  <mat-icon class="icon" routerLink="/settings">
+  <mat-icon class="icon" routerLink="settings" [queryParams]="queryParams" [queryParamsHandling]="'merge'">
     settings
   </mat-icon>
 </div>

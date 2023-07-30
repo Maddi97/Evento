@@ -40,7 +40,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.getScreenWidth = window.innerWidth;
 
     if (this.getScreenWidth > 700) {
@@ -48,14 +48,17 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     } else {
       this.numberOfDates = 7;
     }
+    this._activatedRoute.params.subscribe(p => console.log(p))
     this._activatedRoute.queryParams.pipe(
       map(params => {
+        console.log(params)
         const date = params.date;
         if (date !== undefined) {
           this.startDate = new Date(date);
         }
       })).subscribe()
-    this.createDateList();
+    await this.createDateList();
+    this.setScrollMaxBool();
 
   }
 
@@ -76,7 +79,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     this.setRouteParameter({date: emitDate.date.clone().format('YYYY-MM-DD')})
   }
 
-  createDateList() {
+  async createDateList() {
 
     const thisDay = moment(this.nextMonth[this.firstDate - 1] ?
       this.transformDateFormat(new Date()) : this.transformDateFormat(new Date()));
@@ -98,7 +101,6 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
         this.nextMonth[i].isClicked = false;
       }
     }
-    this.setScrollMaxBool()
   }
 
   @HostListener('scroll') onScroll(e: Event): void {
@@ -107,8 +109,13 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
 
   scrollToClicked() {
 
-    document.getElementsByClassName('day-date-clicked')[0].scrollIntoView({behavior: 'smooth'})
+    const element: HTMLElement = document.getElementById('day-date-clicked')
+    if(!element) return;
+    element.scrollTo(window.innerWidth/2, 0)
+    const container = document.getElementById('scroll-date-picker')
+    container.scrollTo(window.innerWidth/2, 0)
   }
+
 
   getYPosition(e: Event): void {
     console.log(e)
@@ -128,28 +135,34 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     return moment(date);
   }
 
-  scrollRight() {
+  async scrollRight() {
     const element = document.getElementById('scroll-date-picker')
-    element.scrollLeft += 80;
-    this.setScrollMaxBool()
+    element.scrollLeft += 160;
+     setTimeout(() => {
+    this.setScrollMaxBool();
+  }, 300);
     // if max scrolled true then true
   }
 
-  scrollLeft() {
+  async scrollLeft() {
     const element = document.getElementById('scroll-date-picker')
-    element.scrollLeft -= 80;
-    this.setScrollMaxBool()
+    element.scrollLeft -= 160;
+    setTimeout(() => {
+    this.setScrollMaxBool();
+  }, 300);
   }
 
   @HostListener('window:mouseover', ['$event'])
   setScrollMaxBool() {
     const element = document.getElementById('scroll-date-picker')
+
     this.scrollLeftMax = (element.scrollLeft === 0)
     this.scrollRightMax = (element.scrollLeft === element.scrollWidth - element.clientWidth);
 
   }
 
   setRouteParameter(params) {
+    console.log(this.router.routerState)
     this.router.navigate([], {
       queryParams: params,
       relativeTo: this._activatedRoute,
