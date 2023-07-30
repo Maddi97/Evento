@@ -36,7 +36,7 @@
   right: -7%;
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 800px) {
   .icon-left {
     display: none;
   }

@@ -27,6 +27,7 @@
   justify-content: center;
   margin: 5px;
   width: 10%;
+  min-width: 10%;
 }
 
 .date-picker {
@@ -54,11 +55,11 @@
       display: flex;
       justify-content: center;
       margin: 5px;
-      width: 15%;
+      width: 20%;
     }
     .date-picker {
 
-      width: 70%;
+      width: 80%;
     }
     .button-container {
       display: none;
