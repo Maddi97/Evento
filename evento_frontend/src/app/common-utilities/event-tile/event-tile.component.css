@@ -44,6 +44,11 @@
   object-fit: cover;
   min-width: 100%;
   height:auto;
+  /* border style */
+  display: inline-block;
+  border: 1px solid white;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .pic {
@@ -112,7 +117,3 @@ mat-card {
   padding: 6px !important;
 }
 
-/*passing down max-width to child component with ng deep */
-::ng-deep app-event-picture .event-pic img {
-  border-radius: 10px;
-}
