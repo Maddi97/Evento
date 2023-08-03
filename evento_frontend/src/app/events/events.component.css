@@ -29,7 +29,8 @@
     /* Add smooth scroll behavior */
   transition: transform 3s linear;
     /* Adjust the duration (3s) for slower or faster scrolling */
-      margin-top: 0.5rem;}
+      margin-top: 6.5rem;
+    }
 
 .category-list .ng-star-inserted {
   display: flex;
@@ -51,8 +52,7 @@
 }
 
 .event-container {
-  margin-top: 2.5rem;
-  height: 50vh;
+  margin-top: 0.5rem;
   width: 55%;
   overflow-x: scroll;
 
@@ -60,9 +60,13 @@
   flex-direction: column;
   align-items: center;
   padding-top: 1rem;
+  margin-bottom: 64px;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 800px) {
+  .main-category-container {
+    margin-top: 5.5rem !important;
+  }
   .event-map-container {
     min-height: 25rem;
   }
@@ -111,23 +115,35 @@ app-event-tile-list {
 
 .switchViewButton {
   display: flex;
+  position: fixed;
   cursor: pointer;
   border-radius: 20px;
-  border: 1px solid;
-  padding: 10px;
-  padding-right: 40px;
+  padding-right: 20px;
   padding-left: 20px;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   width: fit-content;
   align-self: center;
-  background-color: white;
+  background-color:black;
+  color: white;
+  bottom: 60px;
+  white-space: nowrap;
+  z-index:10;
+}
+
+.switchViewButton > * {
+  padding: 0.3rem
 }
 
 .switchViewButton > p {
-  margin-top: 13px;
-}
+      display: flex;
+      justify-content: center;
+      align-self: center;
+      margin-bottom: 0;}
 
 .change-view-icon {
-  font-size: 3rem;
-}
+    height: 100%;
+      display: flex;
+      align-self: center;
+      justify-content: flex-end;
+      width: 100%;}
 
