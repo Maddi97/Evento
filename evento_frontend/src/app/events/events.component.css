@@ -29,7 +29,7 @@
     /* Add smooth scroll behavior */
   transition: transform 3s linear;
     /* Adjust the duration (3s) for slower or faster scrolling */
-      margin-top: 6.5rem;
+      margin-top: 0.5rem;
     }
 
 .category-list .ng-star-inserted {
@@ -47,8 +47,6 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  max-width: 90%;
-  width: 90%;
 }
 
 .event-container {
@@ -65,18 +63,19 @@
 
 @media screen and (max-width: 800px) {
   .main-category-container {
-    margin-top: 5.5rem !important;
+    margin-top: 0.5rem !important;
   }
   .event-map-container {
+    max-width: 100%;
     min-height: 25rem;
   }
 
   .map-container {
     display: flex !important;
     flex-direction: column !important;
-    width: 90% !important;
+    width: 100% !important;
     padding-top: 0 !important;
-    margin-top: 2.5rem; 
+    margin-top: 1.5rem; 
 
   }
 

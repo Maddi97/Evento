@@ -1,12 +1,10 @@
 .event-tile {
   display: flex;
-  background-color: rgba(249, 251, 255);
+  flex-direction: column;
   margin-bottom: 1rem;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  border-radius: 5px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  max-height: 8rem;
+  box-shadow: none !important;
 }
 
 .event-tile:hover {
@@ -23,14 +21,29 @@
 
 .event-tile-information {
   display: flex;
-  padding-left: 1rem;
+  margin-top: 0.5rem;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.event-tile-information-name-date {
+  display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.event-organizer-name {
+  display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
 }
 
 .event-tile-picture {
-  width: 20%;
   object-fit: cover;
+  min-width: 100%;
+  height:auto;
 }
 
 .pic {
@@ -45,7 +58,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  font-size: 1rem;
+  font-size: 1.3rem;
+  max-width: 70vw;
 }
 
 .mat-card-title {
@@ -53,12 +67,11 @@
 }
 
 .date {
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-  font-size: 0.9rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: flex-end;
+    font-size: 0.9rem;
 }
 
 .date-start {
@@ -78,7 +91,7 @@
 /*medium screen size*/
 @media screen and (min-width: 440px) and (max-width: 600px) {
   .event-name {
-    font-size: 1rem !important;
+    font-size: 1.3rem !important;
   }
 
   .date {
@@ -89,11 +102,9 @@
 /*small screen size like iphone*/
 @media screen and (max-width: 440px) {
   .event-name {
-    font-size: .8rem !important;
-  }
+    font-size: 1.3rem !important;  }
 
   .date {
-    font-size: 0.7rem !important;
   }
 }
 
@@ -103,5 +114,5 @@ mat-card {
 
 /*passing down max-width to child component with ng deep */
 ::ng-deep app-event-picture .event-pic img {
-  border-radius: 3px;
+  border-radius: 10px;
 }
