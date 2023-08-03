@@ -64,7 +64,7 @@ export class CategoryListComponent implements OnInit, AfterViewInit {
       })
     )
 
-
+      this._activatedRoute.queryParams.subscribe(p => console.log(p))
     const params$ = this._activatedRoute.queryParams.pipe(
       map(params => {
         console.log(params)
@@ -107,7 +107,6 @@ export class CategoryListComponent implements OnInit, AfterViewInit {
   // add or remove clicked category to list of filter
   addCategoryToFilter(cat: any) {
     // scroll.scrollLeft = scroll.scrollWidth / 3
-
     if (this.filteredCategory === cat) {
       return;
     } else {
@@ -186,12 +185,9 @@ export class CategoryListComponent implements OnInit, AfterViewInit {
     this.setScrollMaxBool()
   }
   scrollToClicked() {
-
   const element: HTMLElement = document.getElementById('category-picked')
   if(!element) return;
-  element.scrollTo(window.innerWidth/2, 0)
-  const container = document.getElementById('main-category-container')
-  container.scrollTo(window.innerWidth/2, 0)
+  element.scrollIntoView({ block: 'center'})
 }
 
   scrollRight() {

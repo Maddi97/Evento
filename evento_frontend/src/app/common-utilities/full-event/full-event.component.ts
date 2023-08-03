@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, Inject} from '@angular/core';
 import {Event} from '../../models/event';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {EventService} from 'src/app/events/event.service';
 import {FileService} from '../../file.service';
 import {DomSanitizer} from '@angular/platform-browser';
@@ -28,7 +28,7 @@ export class FullEventComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
-    private fileService: FileService,
+    private router: Router,
     private sanitizer: DomSanitizer,
     private organizerService: OrganizerService,
   ) {
@@ -45,8 +45,16 @@ export class FullEventComponent implements OnInit {
       map(organizerResponse => organizerResponse[0]),
     ).subscribe((organizer) => {
       this.organizer = organizer
+      this.clearQueryParams()
     });
 
+  }
+  clearQueryParams() {
+ this.router.navigate([], {
+      queryParams: {},
+      relativeTo: this.route,
+      queryParamsHandling: 'merge'
+    });
   }
 
 }
