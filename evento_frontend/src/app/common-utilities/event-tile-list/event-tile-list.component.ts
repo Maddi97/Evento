@@ -20,8 +20,8 @@ export class EventTileListComponent implements OnInit, OnChanges {
 
   private events$;
   eventList;
-  actualLoadEventLimit = 3;
-  startLoadEventLimit = 3;
+  actualLoadEventLimit = 8;
+  startLoadEventLimit = 8;
   offset = 3;
 
   hoveredEvent: Event = null;
