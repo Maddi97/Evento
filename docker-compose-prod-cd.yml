@@ -1,8 +1,8 @@
 version: "3"
 
 services:
-  threeventsfiveone:
-    image: 3vents51/3vents51_threeventsfiveone:latest
+  evento_frontend:
+    image: eventodockerhub/evento_frontend:latest
     container_name: evento_app
     ports:
       - "10000:80"
@@ -12,8 +12,8 @@ services:
   #    depends_on:
   #      - letsencrypt
 
-  insert-app:
-    image: 3vents51/3vents51_insert-app:latest
+  evento_insert:
+    image: eventodockerhub/evento_insert:latest
     container_name: insert_app
     ports:
       - "10001:80"
@@ -24,7 +24,7 @@ services:
     #      - letsencrypt
 
   backend:
-    image: 3vents51/3vents51_backend:latest
+    image: eventodockerhub/evento_backend:latest
     container_name: backend
     ports:
       - "10002:3000"
