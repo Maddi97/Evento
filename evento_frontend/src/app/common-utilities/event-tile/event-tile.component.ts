@@ -2,7 +2,7 @@ import {Component, OnInit, Input, OnChanges} from '@angular/core';
 import {Event} from '../../models/event';
 import {FileService} from '../../file.service';
 import {OrganizerService} from '../../organizer.service';
-
+import {openingTimesFormatter} from '../logic/opening-times-format-helpers'
 
 @Component({
   selector: 'app-event-tile',
@@ -18,8 +18,8 @@ export class EventTileComponent implements OnInit, OnChanges {
   ImageURL = null;
   organizer = null;
 
+  public openingTimesFormatter = openingTimesFormatter;
   constructor(
-    private fileService: FileService,
     private organizerService: OrganizerService,
   ) {
   }

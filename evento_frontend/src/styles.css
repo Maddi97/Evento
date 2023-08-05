@@ -12,8 +12,7 @@ html, body {
 
 
 body {
-  margin-left: 0;
-  margin-right: 0;
+  margin:0;
   padding-top: constant(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-top);
   padding-top: constant(safe-area-inset-bottom);

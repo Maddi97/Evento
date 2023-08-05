@@ -16,7 +16,7 @@
 
       <div class="event-container">
 
-        <app-event-tile-list [filteredDate]="filteredDate" [categories]="[filteredCategory]"
+        <app-event-tile-list [categories]="[filteredCategory]"
                              [subcategories]="filteredSubcategories"
                              (eventListEmitter)="eventList = $event"
                              (hoverEventEmitter)="hoveredEvent = $event"
@@ -35,7 +35,7 @@
         </div>
         <div class="event-container">
 
-          <app-event-tile-list [filteredDate]="filteredDate" [categories]="[filteredCategory]"
+          <app-event-tile-list [categories]="[filteredCategory]"
                                [subcategories]="filteredSubcategories"
                                (eventListEmitter)="eventList = $event"
                                (hoverEventEmitter)="hoveredEvent = $event"

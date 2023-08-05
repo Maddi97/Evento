@@ -19,17 +19,6 @@
     </div>
   </div>
   <div class="date">
-    <!--    <div class="date-start">-->
-    <!--      {{ event?.date?.start | date }}-->
-    <!--    </div>-->
-    <!--    <div class="date-end">-->
-    <!--      {{ event?.date?.end | date }}-->
-    <!--    </div>-->
-    <div class="date-start">
-      Start: {{ event.times.start }} Uhr
-    </div>
-    <div class="date-end">
-      Ende: {{ event.times.end }} Uhr
-    </div>
+    {{openingTimesFormatter(event)}}
   </div>
 </mat-card>

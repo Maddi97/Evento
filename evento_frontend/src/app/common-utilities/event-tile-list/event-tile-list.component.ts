@@ -4,6 +4,9 @@ import {EventService} from '../../events/event.service';
 import {PositionService} from '../map-view/position.service';
 import {NominatimGeoService} from '../../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import { map } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-event-tile-list',
@@ -11,7 +14,6 @@ import {NgxSpinnerService} from 'ngx-spinner';
   styleUrls: ['./event-tile-list.component.css']
 })
 export class EventTileListComponent implements OnInit, OnChanges {
-  @Input() filteredDate;
   @Input() categories;
   @Input() subcategories;
 
@@ -27,12 +29,14 @@ export class EventTileListComponent implements OnInit, OnChanges {
   hoveredEvent: Event = null;
 
   currentPosition;
-
+  filteredDate :moment.Moment;
   constructor(
     private eventService: EventService,
     private positionService: PositionService,
     private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
+        private _activatedRoute: ActivatedRoute,
+
   ) {
   }
 
@@ -43,6 +47,17 @@ export class EventTileListComponent implements OnInit, OnChanges {
         this.eventListEmitter.emit(this.eventList);
       }
     )
+    const params$ = this._activatedRoute.queryParams.pipe(
+      map(params => {
+        this.filteredDate  = moment(new Date(params.date)).utcOffset(0, false).set({
+    hour: 0,
+    minute: 0,
+    second: 0,
+    millisecond: 0
+  })
+      }))
+    
+    params$.subscribe()
   }
 
   ngOnChanges(): void {

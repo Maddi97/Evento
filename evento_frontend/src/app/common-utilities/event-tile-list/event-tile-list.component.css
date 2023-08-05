@@ -12,6 +12,8 @@
 .nothing-found > mat-icon {
   font-size: 3rem;
   margin: 2rem;
+  padding-right: 50px;
+      
 }
 
 .load-more-events-button {

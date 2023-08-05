@@ -5,7 +5,7 @@
 </div>
 <div class="nothing-found" *ngIf="eventList.length < 1">
   <mat-icon>block</mat-icon>
-  Sorry für das angegebene Datum haben wir keine Events gefunden!.
+  Sorry! für das angegebene Datum haben wir keine Events gefunden!.
 </div>
 <div *ngIf="eventList.length >= actualLoadEventLimit" class="load-more-events-button"
      (click)="loadMoreEvents()">

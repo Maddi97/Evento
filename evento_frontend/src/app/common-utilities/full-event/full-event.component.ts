@@ -8,7 +8,7 @@ import {map} from 'rxjs';
 import {Organizer} from '../../models/organizer';
 import {OrganizerService} from '../../organizer.service';
 import {switchMap} from "rxjs/operators";
-
+import {openingTimesFormatter, dateTimesFormater} from '../logic/opening-times-format-helpers'
 
 @Component({
   selector: 'app-full-event',
@@ -25,6 +25,8 @@ export class FullEventComponent implements OnInit {
   IconURL = null;
   ImageURL = null;
 
+  public openingTimesFormatter = openingTimesFormatter;
+  public dateTimesFormater = dateTimesFormater;
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,

@@ -1,85 +1,79 @@
 <div class="full-event-page">
   <div class="event-tile" *ngIf="event">
 
-    <div class="column-container-1">
+    <div class="column-container-1 column">
+    
       <div class="event-pic">
         <app-event-picture [event]="event"></app-event-picture>
+      </div>
+      <div class="event-name">
+        <span>
+          {{event?.name}}
+        </span>
+      </div>
+
+      <div class="event-link" *ngIf="event?.link.length>0">
+        <a href="{{event.link}}">Link zur Veranstaltung</a>
       </div>
       <app-social-media-share class="social-media-buttons"></app-social-media-share>
     </div>
 
-    <div class="column-container-2">
-      <div class="event-name">
-                <span>
-                    {{event?.name}}
-                </span>
-      </div>
-      <div class="event-link" *ngIf="event?.link.length>0">
-        <a href="{{event.link}}">Link zur Veranstaltung</a>
-      </div>
-      <div class="category-container">
-        <div class="category">
+    <div class="column-container-2 column">
+
+      <div class="information-container">
+        <div class="tag">
+          Kategorie
+        </div>
+        <div class="name">
           {{ event?.category.name}}
         </div>
-        <div *ngIf="event?.category?.subcategories?.length > 0"> ></div>
-        <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
-          {{ subcategory?.name }}
+        <div *ngIf="false">
+          <div *ngIf="event?.category?.subcategories?.length > 0"> ></div>
+          <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
+            {{ subcategory?.name }}
+          </div>
         </div>
       </div>
-      <div class="organizer-name">
-                <span>
-                    Veranstalter: {{organizer?.name}}
-                </span>
+
+      <div class="information-container organizer">
+        <div class="tag">Veranstalter</div>
+        <div class="name">{{organizer?.name}}</div>
       </div>
-      <div class="price" *ngIf="event?.price">
-        <span>Preis: {{event?.price}} Euro</span>
+
+
+
+      <div class="information-container times">
+        <div class="tag">Öffnungszeiten</div>
+        <div class="name">{{openingTimesFormatter(event)}}</div>
       </div>
-      <div class="opening-times">
-        <span> Geöffnet: {{event.times.start}} Uhr - {{event.times.end}} Uhr</span>
+
+      <div class="information-container dates" *ngIf="!event.permanent">
+        <div class="tag">Datum</div>
+        <div class="name">{{dateTimesFormater(event)}}</div>
       </div>
-      <div class="description">
-        Description
-        <p>
-          {{event?.description}}
-        </p>
+
+      <div class="information-container preis" *ngIf="event?.price">
+        <div class="tag">Preis</div>
+        <div class="name">{{event?.price?.name}} Euro</div>
       </div>
     </div>
 
-    <div class="column-container-3">
-      <div class="event-tile-information">
-        <div class="address">
-          <div>
-            Addresse:
-            <br/>
-            {{event?.address?.street}} {{event?.address?.streetNumber}}
-            <br/>
-            {{event?.address?.plz}} {{event?.address?.city}}
-
+      <div class="column-container-3 column">
+        <div class="information-container-description">
+        <div class="description-tag">
+          Description
+          <div class="description">
+            {{event?.description}}
           </div>
-        </div>
-        <div class="date" *ngIf="!event.permanent">
-          <div *ngIf="event.date.start !== event.date.end">
-            Termin:
-            <div class="date-start">
-              von: {{ event?.date?.start | date }}
-            </div>
-            <div class="date-end">
-              bis: {{ event?.date?.end | date }}
-            </div>
-          </div>
-          <div *ngIf="event.date.start === event.date.end">
-            <div class="date-start">
-              Termin: {{ event?.date?.start | date }}
-            </div>
-          </div>
-        </div>
-        <div class="date" *ngIf="event.permanent">
-          Termin:
-          <div>
-            Immer geöffnet
           </div>
         </div>
       </div>
+
+    <div class="column-container-4">
+        <div class="address">
+          {{event?.address?.street}} {{event?.address?.streetNumber}}, {{event?.address?.plz}} {{event?.address?.city}}
+          </div>
+
       <div class="map-container">
 
         <map-view [markerData]="[event]" [zoomInput]="14"
