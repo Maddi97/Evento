@@ -41,6 +41,12 @@ export class EventsComponent implements OnInit {
     this.getScreenWidth = window.innerWidth;
   }
 
+
+  searchForDay(filter: DateClicked) {
+    this.filteredDate = filter.date;
+  }
+
+
   changeToMapView() {
     this.mapView ? this.mapView = false : this.mapView = true;
   }
@@ -73,3 +79,7 @@ export class EventsComponent implements OnInit {
   }
 }
 
+class DateClicked {
+  date: moment.Moment;
+  isClicked: boolean;
+}
