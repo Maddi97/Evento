@@ -42,3 +42,10 @@ body {
   background-color: #fc4545;
   border-color: #660808;
 }
+
+@media screen and (min-width: 1000px) {
+  app-full-event {
+    display: flex;
+    justify-content: center;
+  }
+}
