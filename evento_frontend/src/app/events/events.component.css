@@ -47,11 +47,28 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+  max-width: 100%;
 }
 
+@media screen and (min-width: 1000px) {
+  .event-map-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: start;
+      max-width: 100%;
+    }
+  .event-container{
+    margin: 0 25px 0 10px !important; 
+    margin-top: 3rem !important;
+    padding-top: 0 !important;
+  }
+  app-event-tile-list {
+    height: 60vh;
+  }
+}
 .event-container {
   margin-top: 0.5rem;
-  width: 55%;
+  width: 40%;
   overflow-x: scroll;
 
   display: flex;
@@ -66,7 +83,6 @@
     margin-top: 0.5rem !important;
   }
   .event-map-container {
-    max-width: 100%;
     min-height: 25rem;
   }
 

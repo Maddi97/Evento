@@ -2,7 +2,6 @@ import {Component, OnInit, Input, Inject} from '@angular/core';
 import {Event} from '../../models/event';
 import {ActivatedRoute, Router} from '@angular/router';
 import {EventService} from 'src/app/events/event.service';
-import {FileService} from '../../file.service';
 import {DomSanitizer} from '@angular/platform-browser';
 import {map} from 'rxjs';
 import {Organizer} from '../../models/organizer';

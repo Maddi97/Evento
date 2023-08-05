@@ -3,6 +3,7 @@ import {Event} from '../../models/event';
 import {FileService} from '../../file.service';
 import {OrganizerService} from '../../organizer.service';
 import {openingTimesFormatter} from '../logic/opening-times-format-helpers'
+import {isScreenMinWidth} from '../logic/screen-size-helpers'
 
 @Component({
   selector: 'app-event-tile',
@@ -19,6 +20,8 @@ export class EventTileComponent implements OnInit, OnChanges {
   organizer = null;
 
   public openingTimesFormatter = openingTimesFormatter;
+  public isScreenMinWidth = isScreenMinWidth;
+  
   constructor(
     private organizerService: OrganizerService,
   ) {
