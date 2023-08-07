@@ -21,6 +21,10 @@ import {EventPictureComponent} from './event-picture/event-picture.component';
 import {EventTileListComponent} from './event-tile-list/event-tile-list.component';
 import {RouterModule} from '@angular/router';
 import {CategoryListComponent} from './category-list/category-list.component';
+import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.component';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
+
 
 
 @NgModule({
@@ -35,6 +39,7 @@ import {CategoryListComponent} from './category-list/category-list.component';
     EventPictureComponent,
     EventTileListComponent,
     CategoryListComponent,
+    HamburgerMenuComponent,
 
   ],
   imports: [
@@ -49,7 +54,9 @@ import {CategoryListComponent} from './category-list/category-list.component';
     MatSnackBarModule,
     FontAwesomeModule,
     RouterModule,
-    MatCardModule
+    MatCardModule,
+    MatMenuModule,
+    MatButtonModule
   ],
   exports: [
     EventTileComponent,
@@ -58,7 +65,8 @@ import {CategoryListComponent} from './category-list/category-list.component';
     MapViewComponent,
     DigitalClockComponent,
     EventTileListComponent,
-    CategoryListComponent
+    CategoryListComponent,
+    HamburgerMenuComponent
   ]
 })
 export class CommonUtilitiesModule {

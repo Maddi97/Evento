@@ -15,4 +15,4 @@ RUN npm install --legacy-peer-deps
 
 COPY . /app
 
-CMD ng serve --host 0.0.0.0 --configuration=development
+CMD ng serve --host 0.0.0.0 --configuration=dev

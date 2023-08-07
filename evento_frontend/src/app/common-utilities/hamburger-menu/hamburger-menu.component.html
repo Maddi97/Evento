@@ -1,0 +1,18 @@
+<button class="menu-button" mat-button [matMenuTriggerFor]="menu">Menu</button>
+<mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/" [queryParams]="queryParams" [queryParamsHandling]="'merge'">
+        <mat-icon class="icon">
+         calendar_today
+        </mat-icon>
+        Events
+    </button>
+    <button mat-menu-item [routerLink]="['/categories']" [queryParams]="queryParams" [queryParamsHandling]="'merge'"><mat-icon class="icon">
+        format_list_bulleted
+    </mat-icon>Kategorien</button>
+        <button mat-menu-item routerLink="settings" [queryParams]="queryParams" [queryParamsHandling]="'merge'">
+            <mat-icon class="icon">
+            settings
+        </mat-icon>
+        Settings & Impressum
+    </button>
+</mat-menu> 

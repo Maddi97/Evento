@@ -6,12 +6,13 @@ import {
   ViewChild,
   HostListener,
   ElementRef,
-  AfterViewInit
+  AfterViewInit,
+  AfterViewChecked
 } from '@angular/core';
 import {MatCalendar} from '@angular/material/datepicker';
 import * as moment from 'moment';
 import {ActivatedRoute, Router} from "@angular/router";
-import {debounceTime, map, mergeMap} from "rxjs/operators";
+import {debounceTime, map, mergeMap, skip} from "rxjs/operators";
 
 @Component({
   selector: 'app-date-picker',
@@ -58,14 +59,17 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
       }))
     
     params$.pipe(
-      debounceTime(1),
-      mergeMap(() => this.createDateList())).subscribe()
+      debounceTime(.1),
+      mergeMap(() => this.createDateList()),
+      debounceTime(600),
+      ).subscribe(() =>   this.scrollToClicked())
     this.setScrollMaxBool();
+
 
   }
 
   ngAfterViewInit() {
-    this.scrollToClicked()
+        this.scrollToClicked();
   }
 
   safeDate(day: moment.Moment) {
@@ -103,6 +107,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
         this.nextMonth[i].isClicked = false;
       }
     }
+
   }
 
   @HostListener('scroll') onScroll(e: Event): void {
@@ -113,8 +118,20 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
 
     const element: HTMLElement = document.getElementById('day-date-clicked')
     if(!element) return;
-    element.scrollIntoView({ block: 'center'})
+  const container: HTMLElement = document.querySelector('.scroll');
 
+  if (!container) return;
+
+  const containerWidth = container.clientWidth;
+  const scrollWidth = container.scrollWidth;
+
+  const elementLeftOffset = element.getBoundingClientRect().left;
+  // Calculate the scroll position to center the element
+  const scrollPosition = elementLeftOffset - (scrollWidth - containerWidth) / 2;
+
+  // Apply the calculated scroll position
+  //container.scrollLeft = scrollPosition;
+  element.scrollIntoView({inline: 'center'})
   }
 
 

@@ -23,6 +23,7 @@ export class HeaderbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
   }
 
   navBack() {
