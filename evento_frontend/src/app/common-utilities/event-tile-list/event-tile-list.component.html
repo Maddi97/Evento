@@ -1,11 +1,17 @@
+<div class="spinner-container">
+  <ngx-spinner type="ball-spin-clockwise-fade">
+    <p style="color: white">Filtering ...</p>
+  </ngx-spinner>
+</div>
+
 <div class="event-tile-list" *ngFor="let event of eventList">
-  <app-event-tile [routerLink]="['/full-event', event._id]" [event]="event"
+  <app-event-tile [routerLink]="['/full-event', event._id]" [event]="event" [queryParamsHandling]="'merge'"
                   [distance]="get_distance_to_current_position(event)"
                   (mouseenter)="hover(event)" (mouseleave)="hover(null)"></app-event-tile>
 </div>
 <div class="nothing-found" *ngIf="eventList.length < 1">
   <mat-icon>block</mat-icon>
-  Sorry! für das angegebene Datum haben wir keine Events gefunden!.
+  Sorry! für das angegebene Datum haben wir keine Events gefunden.
 </div>
 <div *ngIf="eventList.length >= actualLoadEventLimit" class="load-more-events-button"
      (click)="loadMoreEvents()">

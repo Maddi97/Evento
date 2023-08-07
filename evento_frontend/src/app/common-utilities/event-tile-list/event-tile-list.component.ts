@@ -4,7 +4,7 @@ import {EventService} from '../../events/event.service';
 import {PositionService} from '../map-view/position.service';
 import {NominatimGeoService} from '../../nominatim-geo.service';
 import {NgxSpinnerService} from 'ngx-spinner';
-import { map } from 'rxjs';
+import { debounceTime, map, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 
@@ -41,11 +41,14 @@ export class EventTileListComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.spinner.show()
     this.events$ = this.eventService.events.subscribe(
       events => {
         this.eventList = events;
         this.eventListEmitter.emit(this.eventList);
+         this.spinner.hide()
       }
+     
     )
     const params$ = this._activatedRoute.queryParams.pipe(
       map(params => {
@@ -57,8 +60,8 @@ export class EventTileListComponent implements OnInit, OnChanges {
   })
       }))
     
-    params$.subscribe(() => this.applyFilters()
-)
+    params$.pipe(debounceTime(1)).subscribe(() => this.applyFilters())
+ 
   }
 
   ngOnChanges(): void {

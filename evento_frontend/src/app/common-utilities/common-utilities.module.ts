@@ -24,6 +24,7 @@ import {CategoryListComponent} from './category-list/category-list.component';
 import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 
@@ -56,7 +57,8 @@ import {MatButtonModule} from '@angular/material/button';
     RouterModule,
     MatCardModule,
     MatMenuModule,
-    MatButtonModule
+    MatButtonModule,
+    NgxSpinnerModule,
   ],
   exports: [
     EventTileComponent,

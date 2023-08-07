@@ -59,7 +59,7 @@
   overflow-y: scroll;
     scroll-behavior: smooth;
       /* Add smooth scroll behavior */
-      transition: transform 1s linear;
+      transition: transform 1s linear; 
 }
 
 .subcategory-container::-webkit-scrollbar {

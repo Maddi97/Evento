@@ -2,7 +2,7 @@ import {Component, OnInit, Input, OnChanges} from '@angular/core';
 import {Event} from '../../models/event';
 import {FileService} from '../../file.service';
 import {OrganizerService} from '../../organizer.service';
-import {openingTimesFormatter} from '../logic/opening-times-format-helpers'
+import {openingTimesFormatter, dateTimesFormater} from '../logic/opening-times-format-helpers'
 import {isScreenMinWidth} from '../logic/screen-size-helpers'
 
 @Component({
@@ -20,6 +20,7 @@ export class EventTileComponent implements OnInit, OnChanges {
   organizer = null;
 
   public openingTimesFormatter = openingTimesFormatter;
+  public dateTimesFormater = dateTimesFormater;
   public isScreenMinWidth = isScreenMinWidth;
   
   constructor(

@@ -11,6 +11,7 @@
   scroll-behavior: smooth;
       /* Add smooth scroll behavior */
   transition: transform 1s linear;
+  padding-top: 10px;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -84,7 +85,7 @@
   .view-more-icon:hover {
       cursor: pointer;
       background-color: rgb(65 180 233 / 81%);
-    }
+    }    
 }
 
 .events-day-date {
@@ -95,6 +96,7 @@
   -webkit-transition: all 0.25s;
   -moz-transition: top ease 0.3s;
   z-index: 1;
+  cursor: pointer;
 }
 
 /*no animation on mobile devices*/

@@ -6,7 +6,7 @@ import {Event} from '../../models/event';
 export function openingTimesFormatter(event: Event): string {
         if(event.times.start === event.times.end)
            {  
-            return 'immer offen'
+            return 'ganztägig geöffnet'
             }
         else {
             return `${event.times.start} Uhr - ${event.times.end} Uhr`
@@ -15,7 +15,7 @@ export function openingTimesFormatter(event: Event): string {
 
 export function dateTimesFormater(event: Event): string {
     if(event.permanent)
-        return ''
+        return 'jeden Tag offen'
     else {
     const start = new Date(event.date.start);
     const end = new Date(event.date.end);
