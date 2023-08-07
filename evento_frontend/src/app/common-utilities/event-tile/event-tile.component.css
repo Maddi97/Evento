@@ -63,9 +63,9 @@
 }
 .event-tile-information-name-date {
   display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: start;
+  justify-content: center;
+  flex-direction: column;
+  align-items: start;
 }
 
 .event-organizer-name {
@@ -95,7 +95,7 @@
 
 .date {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: start;
     align-items: start;
     font-size: 0.8rem;

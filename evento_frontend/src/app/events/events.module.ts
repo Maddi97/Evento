@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { NgxSpinnerModule } from 'ngx-spinner';
+
 
 
 @NgModule({
@@ -34,7 +34,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 
     HttpClientModule,
     FormsModule,
-    NgxSpinnerModule,
+
   ]
 })
 export class EventsModule {

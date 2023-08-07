@@ -1,6 +1,7 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {Event} from '../models/event';
 import * as moment from 'moment';
+import { take, timer } from 'rxjs';
 
 @Component({
   selector: 'app-events',
@@ -39,6 +40,9 @@ export class EventsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
+    timer(1 * 1).pipe(
+    take(1)
+).subscribe(() => window.scrollTo(0,0));
   }
 
 

@@ -7,15 +7,9 @@
                        (categoryOutputEmitter)="this.filteredCategory = $event"
                        (subCategoryOutputEmitter)="this.filteredSubcategories = $event"></app-category-list>
 
-    <div class="spinner-container">
-      <ngx-spinner type="ball-spin-clockwise-fade"><p style="color: white">Filtering ...</p></ngx-spinner>
-    </div>
-
-
     <div class="event-map-container" *ngIf="getScreenWidth>1000">
 
       <div class="event-container">
-
         <app-event-tile-list [categories]="[filteredCategory]"
                              [subcategories]="filteredSubcategories"
                              (eventListEmitter)="eventList = $event"

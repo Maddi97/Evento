@@ -1,6 +1,6 @@
 import {AfterContentInit, AfterViewInit, Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
 import {Category, Subcategory} from '../../models/category';
-import {debounceTime, map, mergeMap} from 'rxjs/operators';
+import {debounceTime, map, mergeMap, take} from 'rxjs/operators';
 import {CategoriesService} from '../../categories/categories.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FileService} from '../../file.service';
@@ -89,6 +89,7 @@ export class CategoryListComponent implements OnInit {
       .pipe(
         mergeMap(() => params$),
         debounceTime(.1),
+        take(2)
       )
       .subscribe(() => {
         this.downloadCategoryIcon()

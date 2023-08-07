@@ -12,7 +12,7 @@ import {
 import {MatCalendar} from '@angular/material/datepicker';
 import * as moment from 'moment';
 import {ActivatedRoute, Router} from "@angular/router";
-import {debounceTime, map, mergeMap, skip} from "rxjs/operators";
+import {debounceTime, map, mergeMap, skip, take} from "rxjs/operators";
 
 @Component({
   selector: 'app-date-picker',
@@ -51,7 +51,6 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     }
    const params$ = this._activatedRoute.queryParams.pipe(
       map(params => {
-        console.log(params)
         const date = params.date;
         if (date !== undefined) {
           this.startDate = new Date(date);
@@ -62,7 +61,8 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
       debounceTime(.1),
       mergeMap(() => this.createDateList()),
       debounceTime(600),
-      ).subscribe(() =>   this.scrollToClicked())
+      take(1)
+      ).subscribe(() =>  this.scrollToClicked())
     this.setScrollMaxBool();
 
 

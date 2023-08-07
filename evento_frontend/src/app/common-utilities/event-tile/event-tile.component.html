@@ -13,7 +13,8 @@
         </div>
       </mat-card-subtitle>
       <div class="date" *ngIf="isScreenMinWidth(1000)">
-          {{openingTimesFormatter(event)}}
+          <p>{{openingTimesFormatter(event)}}</p>
+          <p>{{dateTimesFormater(event)}}</p>
       </div>
 
       <!--      <div class="category">-->
@@ -22,6 +23,7 @@
     </div>
   </div>
   <div class="date" *ngIf="!isScreenMinWidth(1000)">
-    {{openingTimesFormatter(event)}}
+    <div>{{openingTimesFormatter(event)}}</div>
+    <div>{{dateTimesFormater(event)}}</div>
   </div>
 </mat-card>
