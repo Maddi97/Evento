@@ -1,6 +1,6 @@
 import {AfterContentInit, AfterViewInit, Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
 import {Category, Subcategory} from '../../models/category';
-import {map, mergeMap} from 'rxjs/operators';
+import {debounceTime, map, mergeMap} from 'rxjs/operators';
 import {CategoriesService} from '../../categories/categories.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FileService} from '../../file.service';
@@ -11,7 +11,7 @@ import {DomSanitizer} from '@angular/platform-browser';
   templateUrl: './category-list.component.html',
   styleUrls: ['./category-list.component.css']
 })
-export class CategoryListComponent implements OnInit, AfterViewInit {
+export class CategoryListComponent implements OnInit {
   // List of all Categories
   categoryList: Category[] = [];
 
@@ -43,13 +43,10 @@ export class CategoryListComponent implements OnInit, AfterViewInit {
     // this.events$.unsubscribe()
     this.empty_filters()
   }
-  ngAfterViewInit() {
-    this.scrollToClicked()
-  }
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
-    document.getElementById('main-category-container').scrollLeft = 0;
+    //document.getElementById('main-category-container').scrollLeft = 0;
     this.setScrollMaxBool()
     this.filteredCategory = 'hot'
 
@@ -64,7 +61,6 @@ export class CategoryListComponent implements OnInit, AfterViewInit {
       })
     )
 
-      this._activatedRoute.queryParams.subscribe(p => console.log(p))
     const params$ = this._activatedRoute.queryParams.pipe(
       map(params => {
         console.log(params)
@@ -91,10 +87,12 @@ export class CategoryListComponent implements OnInit, AfterViewInit {
 
     categories$
       .pipe(
-        mergeMap(() => params$)
+        mergeMap(() => params$),
+        debounceTime(.1),
       )
       .subscribe(() => {
         this.downloadCategoryIcon()
+        this.scrollToClicked()
       })
     // this.applyFilters()
     // request categories
@@ -186,8 +184,9 @@ export class CategoryListComponent implements OnInit, AfterViewInit {
   }
   scrollToClicked() {
   const element: HTMLElement = document.getElementById('category-picked')
+  console.log(element)
   if(!element) return;
-  element.scrollIntoView({ block: 'center'})
+  element.scrollIntoView({ inline: "center"})
 }
 
   scrollRight() {

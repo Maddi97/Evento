@@ -12,13 +12,16 @@
           Entfernung: {{distance}}km
         </div>
       </mat-card-subtitle>
+      <div class="date" *ngIf="isScreenMinWidth(1000)">
+          {{openingTimesFormatter(event)}}
+      </div>
 
       <!--      <div class="category">-->
       <!--        {{ event?.category?.name }}-->
       <!--      </div>-->
     </div>
   </div>
-  <div class="date">
+  <div class="date" *ngIf="!isScreenMinWidth(1000)">
     {{openingTimesFormatter(event)}}
   </div>
 </mat-card>

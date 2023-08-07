@@ -1,0 +1,8 @@
+button:focus {
+    outline: unset;
+}
+
+.menu-button {
+    box-shadow: 0 0px 12px -5px #6c757d;
+    border-radius: 7px;
+} 

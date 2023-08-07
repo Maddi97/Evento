@@ -16,6 +16,14 @@
   padding-top: 60vh;
   width: 95vw;
   border-radius: 10px;
+  height: 100%;
+}
+
+@media screen and (min-width: 1000px) {
+#map {
+    width: 55vw;
+
+  }
 }
 
 .input-line {

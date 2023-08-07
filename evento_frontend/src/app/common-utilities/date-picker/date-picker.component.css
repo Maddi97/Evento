@@ -10,7 +10,7 @@
   align-items: center;
   scroll-behavior: smooth;
       /* Add smooth scroll behavior */
-  transition: transform 3s linear;
+  transition: transform 1s linear;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

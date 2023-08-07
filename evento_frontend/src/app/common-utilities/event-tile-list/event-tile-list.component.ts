@@ -57,7 +57,8 @@ export class EventTileListComponent implements OnInit, OnChanges {
   })
       }))
     
-    params$.subscribe()
+    params$.subscribe(() => this.applyFilters()
+)
   }
 
   ngOnChanges(): void {

@@ -36,7 +36,7 @@
   width: 50%;
 }
 
-.button-container {
+.menu-container {
   display: flex;
   justify-content: center;
   margin: 5px;
@@ -58,7 +58,9 @@
       display: flex;
       justify-content: center;
       margin: 5px;
-      width: 20%
+      width: 20%;
+      min-width: 15%;
+      margin-left: 25px;
     }
     .date-picker {
 
@@ -66,5 +68,8 @@
     }
     .button-container {
       display: none;
+    }
+    app-hamburger-menu {
+      display:none
     }
 }
