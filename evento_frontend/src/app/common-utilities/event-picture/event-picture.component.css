@@ -4,7 +4,27 @@
 }
 
 img {
-  max-height: 100%;
-  max-width: 100%;
-  min-width: 100%;
+  border: 1px solid #80808039;
+  border-radius: 10px;
+  height: 60%;
+  width: 300px;
+
+}
+
+@media screen and (min-width: 400px) {
+  img {
+    width: 350px;
+  }
+}
+@media screen and (min-width: 500px) {
+  img {
+    width: 450px;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  img {
+    width: 100%;
+    height: 100%
+  }
 }

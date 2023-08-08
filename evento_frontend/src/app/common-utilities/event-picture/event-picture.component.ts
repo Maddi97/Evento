@@ -2,6 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {FileService} from "../../file.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {OrganizerService} from "../../organizer.service";
+import {debounceTime} from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-event-picture',
@@ -40,7 +42,8 @@ export class EventPictureComponent implements OnInit {
         this.fileService.downloadFile(this.event.eventImagePath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
           const unsafeImg = URL.createObjectURL(imageData);
-          this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          //this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          this.ImageURL = unsafeImg
         });
       }
     } else if (this.organizer.organizerImagePath !== undefined) {
@@ -48,7 +51,8 @@ export class EventPictureComponent implements OnInit {
         this.fileService.downloadFile(this.organizer.organizerImagePath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
           const unsafeImg = URL.createObjectURL(imageData);
-          this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          //this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          this.ImageURL = unsafeImg
         });
       }
     } else if (this.event.category.subcategories[0]?.stockImagePath !== undefined) {
@@ -56,15 +60,17 @@ export class EventPictureComponent implements OnInit {
         this.fileService.downloadFile(this.event.category.subcategories[0]?.stockImagePath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
           const unsafeImg = URL.createObjectURL(imageData);
-          this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          //this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          this.ImageURL = unsafeImg
         });
       }
     } else if (this.category.stockImagePath !== undefined) {
       if (this.category.stockImageTemporaryURL === undefined) {
-        this.fileService.downloadFile(this.category.stockImagePath).subscribe(imageData => {
+        this.fileService.downloadFile(this.category.stockImagePath).pipe(debounceTime(20000)).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
           const unsafeImg = URL.createObjectURL(imageData);
-          this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          //this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          this.ImageURL = unsafeImg
         });
       }
     } else if (this.category.iconPath !== undefined) {
@@ -72,7 +78,8 @@ export class EventPictureComponent implements OnInit {
         this.fileService.downloadFile(this.category.iconPath).subscribe(imageData => {
           // create temporary Url for the downloaded image and bypass security
           const unsafeImg = URL.createObjectURL(imageData);
-          this.IconURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          //this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          this.ImageURL = unsafeImg
         });
       }
 
