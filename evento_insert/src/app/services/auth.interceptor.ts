@@ -12,6 +12,11 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        if (req.headers.get("skip")){
+            req = req.clone({
+                headers: req.headers.delete('skip')
+            });
+            return next.handle(req);}
         const token = this.token.getToken();
         if (token != null) {
             req = req.clone({headers: req.headers.set(TOKEN_HEADER_KEY, token)});
