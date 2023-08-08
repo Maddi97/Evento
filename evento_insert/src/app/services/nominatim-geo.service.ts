@@ -23,13 +23,13 @@ export class NominatimGeoService {
 
     get_geo_data(city, street, streetNumber) {
 
-        return this.http.get(this.ROOT_URL + street + '+' + streetNumber + '+,' + city + '&limit=2&format=json').pipe(
+        return this.http.get(this.ROOT_URL + street + '+' + streetNumber + '+,' + city + '&limit=2&format=json', {headers:{skip:"true"}}).pipe(
             take(1),
         )
     }
 
     get_geo_data_address(address) {
-        return this.http.get(this.ROOT_URL + address + this.URL_END).pipe(
+        return this.http.get(this.ROOT_URL + address + this.URL_END, {headers:{skip:"true"}}).pipe(
             take(1),
             map(geoData => {
                 if (Object.keys(geoData).length < 1) {
@@ -42,7 +42,7 @@ export class NominatimGeoService {
 
     get_address_from_coordinates(coord) {
         return this.http.get('https://nominatim.openstreetmap.org/reverse?lat='
-            + coord.lat + '&lon=' + coord.lon + '&limit=2&format=json').pipe(
+            + coord.lat + '&lon=' + coord.lon + '&limit=2&format=json', {headers:{skip:"true"}}).pipe(
             take(1),
             map(geoData => {
                 if (Object.keys(geoData).length < 1) {

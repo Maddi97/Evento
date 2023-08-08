@@ -25,7 +25,7 @@ import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.componen
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import { NgxSpinnerModule } from 'ngx-spinner';
-
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 
 @NgModule({
@@ -59,6 +59,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     MatMenuModule,
     MatButtonModule,
     NgxSpinnerModule,
+    LazyLoadImageModule
   ],
   exports: [
     EventTileComponent,

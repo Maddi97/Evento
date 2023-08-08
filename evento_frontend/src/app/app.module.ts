@@ -18,6 +18,7 @@ import {NgxSpinnerModule} from 'ngx-spinner';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LocationStrategy, PathLocationStrategy} from '@angular/common';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,6 +31,7 @@ import {LocationStrategy, PathLocationStrategy} from '@angular/common';
     AppRoutingModule,
     FlexLayoutModule,
     NgxSpinnerModule,
+
     /*
     Angular Material
     */
@@ -41,7 +43,8 @@ import {LocationStrategy, PathLocationStrategy} from '@angular/common';
     EventsModule,
     CategoriesModule,
     SettingsModule,
-    CommonUtilitiesModule,
+    CommonUtilitiesModule
+
   ],
   providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}],
   schemas: [],
