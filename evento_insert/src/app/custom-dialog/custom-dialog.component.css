@@ -1,0 +1,13 @@
+.event-dialog-container {
+    display: flex;
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 5px;
+    flex-direction: column;
+    line-height: 15px;
+    margin-top: 16px;
+}
+
+.current-event {
+    border: 2px solid #17d017 !important;
+}

@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {NominatimGeoService} from '../../nominatim-geo.service';
-import {map} from 'rxjs/operators';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {from, Observable} from "rxjs";
+import { Injectable } from '@angular/core';
+import { NominatimGeoService } from '../../nominatim-geo.service';
+import { map } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { from, Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,8 @@ export class PositionService {
 
   // New York Center
   // default_center_position = [40.7142700, -74.0059700]
+
+  disabledStr = "disabled"
 
   constructor(
     private geoService: NominatimGeoService,
@@ -44,6 +46,7 @@ export class PositionService {
   }
 
   watchLocation() {
+    if (sessionStorage.getItem('location') === this.disabledStr) { return new Observable() }
 
     return new Observable((observer) => {
       let watchId: number;
@@ -51,7 +54,7 @@ export class PositionService {
       // Simple geolocation API check provides values to publish
       if ('geolocation' in navigator) {
         watchId = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
-          const {latitude, longitude} = position.coords;
+          const { latitude, longitude } = position.coords;
           this.searchedCenter = [latitude, longitude];
           sessionStorage.setItem('location', JSON.stringify(this.searchedCenter))
 
@@ -68,13 +71,16 @@ export class PositionService {
   }
 
   getPositionByLocation() {
+    if (JSON.parse(sessionStorage.getItem('location')) === this.disabledStr) { return new Observable() }
+
     return new Observable((observer) => {
+
       let watchId: number;
 
       // Simple geolocation API check provides values to publish
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-          const {latitude, longitude} = position.coords;
+          const { latitude, longitude } = position.coords;
           this.searchedCenter = [latitude, longitude];
           sessionStorage.setItem('location', JSON.stringify(this.searchedCenter))
           observer.next(position);
@@ -82,6 +88,8 @@ export class PositionService {
           let message = 'Standort konnte nicht ermittelt werden';
           if (error.code === 1) {
             message = 'Deine Privatspähreeinstellungen verhinderen die Standortermittlung'
+            sessionStorage.setItem('location', JSON.stringify(this.disabledStr))
+
           }
           this.openErrorSnackBar(message)
           observer.error(message);
