@@ -210,3 +210,8 @@
 app-event-picture {
   width: 100%
 }
+
+app-event-picture ::ng-deep img {
+  width: 100%;
+  height: 100%
+}
