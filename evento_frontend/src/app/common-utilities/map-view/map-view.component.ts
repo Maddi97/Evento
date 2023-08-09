@@ -63,8 +63,9 @@ export class MapViewComponent implements OnInit, OnChanges {
     //   this.resetCenter();
     // })
     // this.updatePosition(this.positionService.getDefaultLocation());
-    if (sessionStorage.getItem('location') !== null) {
-      const locationFromSession = JSON.parse(sessionStorage.getItem('location'))
+    const locationFromSession = JSON.parse(sessionStorage.getItem('location'))
+    console.log(locationFromSession)
+    if (locationFromSession !== null && locationFromSession !== 'disabled') {
       this.currentPosition.lat = locationFromSession[0]
       this.currentPosition.lon = locationFromSession[1]
       this.setPositionMarker()
@@ -93,12 +94,14 @@ export class MapViewComponent implements OnInit, OnChanges {
     });
   }
 
-  async getCurrentPosition() {
+  async getCurrentPosition(request = true) {
     // const coordinates = await Geolocation.getCurrentPosition();
     //
     // console.log('Current position:', coordinates);
 
-
+    if (request) {
+      sessionStorage.removeItem('location')
+    }
     this.positionService.getPositionByLocation().subscribe((res) => {
       this.resetCenter();
     });
@@ -152,7 +155,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     if (this.currentPosition.lat === '0' && this.currentPosition.lon === '0') {
       return
     }
-
+    console.log(160, this.currentPosition)
     this.positionMarkerGroup.clearLayers();
     L.marker([this.currentPosition.lat, this.currentPosition.lon])
       .setIcon(new this.LeafIcon({iconUrl: this.locationIcon, iconRetinaUrl: this.locationIconRetina}))

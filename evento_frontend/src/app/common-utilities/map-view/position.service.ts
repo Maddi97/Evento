@@ -17,6 +17,8 @@ export class PositionService {
   // New York Center
   // default_center_position = [40.7142700, -74.0059700]
 
+  disabledStr = "disabled"
+
   constructor(
     private geoService: NominatimGeoService,
     private _snackbar: MatSnackBar,
@@ -44,10 +46,11 @@ export class PositionService {
   }
 
   watchLocation() {
+    if (sessionStorage.getItem('location') === this.disabledStr) {return new Observable()}
 
     return new Observable((observer) => {
       let watchId: number;
-
+      
       // Simple geolocation API check provides values to publish
       if ('geolocation' in navigator) {
         watchId = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
@@ -68,7 +71,10 @@ export class PositionService {
   }
 
   getPositionByLocation() {
+    if (sessionStorage.getItem('location') === this.disabledStr) {return new Observable()}
+
     return new Observable((observer) => {
+
       let watchId: number;
 
       // Simple geolocation API check provides values to publish
@@ -82,6 +88,8 @@ export class PositionService {
           let message = 'Standort konnte nicht ermittelt werden';
           if (error.code === 1) {
             message = 'Deine Privatspähreeinstellungen verhinderen die Standortermittlung'
+            sessionStorage.setItem('location', JSON.stringify(this.disabledStr))
+
           }
           this.openErrorSnackBar(message)
           observer.error(message);
