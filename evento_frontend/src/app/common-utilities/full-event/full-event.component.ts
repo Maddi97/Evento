@@ -51,11 +51,16 @@ export class FullEventComponent implements OnInit {
 
   }
   clearQueryParams() {
- this.router.navigate([], {
-      queryParams: {},
-      relativeTo: this.route,
-      queryParamsHandling: 'merge'
-    });
-  }
-
+    this.router.navigate([], {
+          queryParams: {},
+          relativeTo: this.route,
+          queryParamsHandling: 'merge'
+        });
+      }
+  addHttpProtocol(url: string): string {
+    if (!url.startsWith('https://') && !url.startsWith('http://')) {
+        return 'https://' + url;
+    }
+    return url;
+}
 }
