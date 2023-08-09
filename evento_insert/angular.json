@@ -58,8 +58,13 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "dev": {
+              "optimization": false,
+              "sourceMap": true
             }
           }
+
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -69,7 +74,10 @@
           "configurations": {
             "production": {
               "browserTarget": "insert-app:build:production"
-            }
+            },
+            "dev": {
+              "browserTarget": "insert-app:build:dev"
+              }
           }
         },
         "extract-i18n": {
