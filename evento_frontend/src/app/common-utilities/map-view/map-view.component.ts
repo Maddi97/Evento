@@ -1,8 +1,8 @@
-import {Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges} from '@angular/core';
+import { Component, OnChanges, OnInit, Input, OnDestroy, SimpleChanges } from '@angular/core';
 import * as L from 'leaflet';
-import {PositionService} from './position.service';
-import {Router} from '@angular/router';
-import {Geolocation} from '@capacitor/geolocation';
+import { PositionService } from './position.service';
+import { Router } from '@angular/router';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'map-view',
@@ -94,12 +94,12 @@ export class MapViewComponent implements OnInit, OnChanges {
     });
   }
 
-  async getCurrentPosition(request = true) {
+  async getCurrentPosition(request = false) {
     // const coordinates = await Geolocation.getCurrentPosition();
     //
     // console.log('Current position:', coordinates);
 
-    if (request) {
+    if (request && JSON.parse(sessionStorage.getItem('location')) === "disabled") {
       sessionStorage.removeItem('location')
     }
     this.positionService.getPositionByLocation().subscribe((res) => {
@@ -147,7 +147,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   private setHoverMarker(lat, lon): void {
     this.hoverMarkerGroup.clearLayers();
     L.marker([lat, lon])
-      .setIcon(new this.LeafIcon({iconUrl: this.hoverIcon, iconRetinaUrl: this.hoverIconRetina}))
+      .setIcon(new this.LeafIcon({ iconUrl: this.hoverIcon, iconRetinaUrl: this.hoverIconRetina }))
       .addTo(this.hoverMarkerGroup);
   }
 
@@ -158,7 +158,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     console.log(160, this.currentPosition)
     this.positionMarkerGroup.clearLayers();
     L.marker([this.currentPosition.lat, this.currentPosition.lon])
-      .setIcon(new this.LeafIcon({iconUrl: this.locationIcon, iconRetinaUrl: this.locationIconRetina}))
+      .setIcon(new this.LeafIcon({ iconUrl: this.locationIcon, iconRetinaUrl: this.locationIconRetina }))
       .addTo(this.positionMarkerGroup);
   }
 
@@ -171,7 +171,7 @@ export class MapViewComponent implements OnInit, OnChanges {
         if (typeof marker.geoData !== 'undefined') {
           //console.log('Marker: ', marker)
           mark = L.marker([marker.geoData.lat, marker.geoData.lon])
-          mark.setIcon(new this.LeafIcon({iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina}))
+          mark.setIcon(new this.LeafIcon({ iconUrl: this.defaultIcon, iconRetinaUrl: this.defaultIconRetina }))
             .addTo(this.markerGroup)
             .bindPopup(
               `<div>${marker.name} </div>`

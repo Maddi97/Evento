@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {NominatimGeoService} from '../../nominatim-geo.service';
-import {map} from 'rxjs/operators';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {from, Observable} from "rxjs";
+import { Injectable } from '@angular/core';
+import { NominatimGeoService } from '../../nominatim-geo.service';
+import { map } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { from, Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -46,15 +46,15 @@ export class PositionService {
   }
 
   watchLocation() {
-    if (sessionStorage.getItem('location') === this.disabledStr) {return new Observable()}
+    if (sessionStorage.getItem('location') === this.disabledStr) { return new Observable() }
 
     return new Observable((observer) => {
       let watchId: number;
-      
+
       // Simple geolocation API check provides values to publish
       if ('geolocation' in navigator) {
         watchId = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
-          const {latitude, longitude} = position.coords;
+          const { latitude, longitude } = position.coords;
           this.searchedCenter = [latitude, longitude];
           sessionStorage.setItem('location', JSON.stringify(this.searchedCenter))
 
@@ -71,7 +71,7 @@ export class PositionService {
   }
 
   getPositionByLocation() {
-    if (sessionStorage.getItem('location') === this.disabledStr) {return new Observable()}
+    if (JSON.parse(sessionStorage.getItem('location')) === this.disabledStr) { return new Observable() }
 
     return new Observable((observer) => {
 
@@ -80,7 +80,7 @@ export class PositionService {
       // Simple geolocation API check provides values to publish
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-          const {latitude, longitude} = position.coords;
+          const { latitude, longitude } = position.coords;
           this.searchedCenter = [latitude, longitude];
           sessionStorage.setItem('location', JSON.stringify(this.searchedCenter))
           observer.next(position);
