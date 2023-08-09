@@ -9,7 +9,7 @@
                    type="text">
 
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                <mat-option *ngFor="let organizer of organizersIn" [value]="organizer.name"
+                <mat-option *ngFor="let organizer of filteredOrganizers" [value]="organizer.name"
                             (click)="insertOrgInfo(organizer)">
                     {{organizer.name}}
                 </mat-option>

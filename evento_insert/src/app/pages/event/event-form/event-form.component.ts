@@ -52,7 +52,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     }
 
     organizerName = new FormControl('', [Validators.required]);
-
+    filteredOrganizers: Organizer[];
     image: any;
 
     constructor(
@@ -64,6 +64,8 @@ export class EventFormComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
+        this.filteredOrganizers=this.organizersIn
+        this.organizerName.valueChanges.subscribe(oNameStart => this.filterOrganizerByName(oNameStart))
     }
 
     ngOnChanges(): void {
@@ -244,6 +246,10 @@ export class EventFormComponent implements OnInit, OnChanges {
 
     checkDisabled() {
         return !(!this.eventForm.invalid && this.category !== undefined);
+    }
+    filterOrganizerByName(oNameStart){
+        this.filteredOrganizers = this.organizersIn.filter(organizer => organizer.name.startsWith(oNameStart));
+
     }
 
     openSnackBar(message, state) {
