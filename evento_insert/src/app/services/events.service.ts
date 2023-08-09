@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {WebService} from './web.service';
-import {Observable, throwError as observableThrowError, BehaviorSubject} from 'rxjs';
-import {HttpRequest} from '@angular/common/http';
-import {filter, map, catchError, share} from 'rxjs/operators';
-import {Event} from '../models/event';
-import {Category} from '../models/category';
+import { Injectable } from '@angular/core';
+import { WebService } from './web.service';
+import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
+import { HttpRequest } from '@angular/common/http';
+import { filter, map, catchError, share } from 'rxjs/operators';
+import { Event } from '../models/event';
+import { Category } from '../models/category';
 import * as moment from 'moment';
 
 
@@ -25,7 +25,7 @@ export class EventsService {
     }
 
     createEvent(event: Event): Observable<Event> {
-        const obs = this.webService.post('organizer/' + event._organizerId + '/events', {event}).pipe(
+        const obs = this.webService.post('organizer/' + event._organizerId + '/events', { event }).pipe(
             map((r: HttpRequest<any>) => r as unknown as Event),
             catchError((error: any) => {
                 console.error('an error occurred', error);
@@ -44,7 +44,7 @@ export class EventsService {
 
     updateEvent(organizerId: string, eventId: string, event: Event) {
 
-        const obs = this.webService.patch(`organizer/${organizerId}/events/${eventId}`, {event}).pipe(
+        const obs = this.webService.patch(`organizer/${organizerId}/events/${eventId}`, { event }).pipe(
             map((r: HttpRequest<any>) => r as unknown as Event),
             catchError((error: any) => {
                 console.error('an error occurred', error);
@@ -98,7 +98,7 @@ export class EventsService {
     }
 
     getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
-        const obs = this.webService.post('eventOnDateCatAndSubcat', {fil}).pipe(
+        const obs = this.webService.post('eventOnDateCatAndSubcat', { fil }).pipe(
             map((res: HttpRequest<any>) =>
                 res as unknown as Event[]),
             catchError((error: any) => {
@@ -113,8 +113,8 @@ export class EventsService {
     }
 
     getAllUpcomingEvents(): Observable<Event[]> {
-        const date = moment(new Date()).utcOffset(0, false).set({hour: 0, minute: 0, second: 0, millisecond: 0})
-        const obs = this.webService.post('upcomingEvents', {date}).pipe(
+        const date = moment(new Date()).utcOffset(0, false).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        const obs = this.webService.post('upcomingEvents', { date }).pipe(
             map((res: HttpRequest<any>) => res as unknown as Event[]),
             catchError((error: any) => {
                 console.error('an error occured', error);
@@ -128,7 +128,7 @@ export class EventsService {
     }
 
     getEventsOnCategory(category: Category): Observable<Event[]> {
-        const obs = this.webService.post('getEventsOnCategory', {category}).pipe(
+        const obs = this.webService.post('getEventsOnCategory', { category }).pipe(
             map((res: HttpRequest<any>) => res as unknown as Event[]),
             catchError((error: any) => {
                 console.error('an error occured', error);
@@ -142,7 +142,7 @@ export class EventsService {
     }
 
     getEventsOnDate(date: moment.Moment): Observable<Event[]> {
-        const obs = this.webService.post('eventOnDate', {date}).pipe(
+        const obs = this.webService.post('eventOnDate', { date }).pipe(
             map((res: HttpRequest<any>) => res as unknown as Event[]),
             catchError((error: any) => {
                 console.error('an error occured', error);
@@ -153,6 +153,16 @@ export class EventsService {
             this._events.next(response);
         })
         return obs;
+    }
+
+    checkIfEventsExistsInDB(event: Event): Observable<Event[]> {
+        return this.webService.post('checkIfEventExists', { event }).pipe(
+            map((res: any) => res as Event[]), // Adjust the type if needed
+            catchError((error: any) => {
+                console.error('An error occurred', error);
+                return observableThrowError(error.error.message || error);
+            })
+        );
     }
 
     deletEvent(organizerId: string, id) {

@@ -12,13 +12,13 @@ router.get('/events', (req, res) => {
 })
 
 router.get('/events/:eventId', (req, res) => {
-    Event.find({_id: req.params.eventId})
+    Event.find({ _id: req.params.eventId })
         .then((event) => res.send(event))
         .catch((error) => console.log(error))
 });
 
 router.get('/organizer/:organizerId/events', (req, res) => {
-    Event.find({_organizerId: req.params.organizerId})
+    Event.find({ _organizerId: req.params.organizerId })
         .then((events) => res.send(events))
         .catch((error) => console.log(error))
 });
@@ -30,10 +30,10 @@ router.post('/eventOnDate', (req, res) => {
         {
             $and: [
                 {
-                    'date.start': {$lte: date}  //-1 um den heutigen Tag mit zu finden
+                    'date.start': { $lte: date }  //-1 um den heutigen Tag mit zu finden
                 },
                 {
-                    'date.end': {$gte: date}
+                    'date.end': { $gte: date }
                 }
             ]
         }
@@ -68,20 +68,20 @@ router.post('/eventOnDateCatAndSubcat', (req, res) => {
                             $and:
                                 [
                                     {
-                                        'date.start': {$lte: date}  //-1 um den heutigen Tag mit zu finden
+                                        'date.start': { $lte: date }  //-1 um den heutigen Tag mit zu finden
                                     },
                                     {
-                                        'date.end': {$gte: date}
+                                        'date.end': { $gte: date }
                                     },
                                 ],
                         },
                         {
-                            permanent: {$eq: true}
+                            permanent: { $eq: true }
                         },
                     ]
                 },
 
-                {'category._id': {$in: catIds}},
+                { 'category._id': { $in: catIds } },
 
             ]
         }
@@ -117,15 +117,15 @@ router.post('/upcomingEvents', (req, res) => {
         {
             $or: [
                 {
-                    'date.start': {$gte: date}  //-1 um den heutigen Tag mit zu finden
+                    'date.start': { $gte: date }  //-1 um den heutigen Tag mit zu finden
                 },
                 {
                     $and: [
                         {
-                            'date.start': {$lte: date}  //-1 um den heutigen Tag mit zu finden
+                            'date.start': { $lte: date }  //-1 um den heutigen Tag mit zu finden
                         },
                         {
-                            'date.end': {$gte: date}
+                            'date.end': { $gte: date }
                         }
                     ]
                 }
@@ -137,10 +137,51 @@ router.post('/upcomingEvents', (req, res) => {
         .catch((error) => console.log(error))
 });
 
+router.post('/checkIfEventExists', (req, res) => {
+    const start = new Date(req.body.event.date.start).getTime()
+    const end = new Date(req.body.event.date.end).getTime()
+
+    const name = req.body.event.name
+    const organizerName = req.body.event.organizerName
+
+    const oneDayInMillis = 24 * 60 * 60 * 1000; // One day in milliseconds
+    const startMinus1 = new Date(start - oneDayInMillis);
+    const endMinus1 = new Date(end - oneDayInMillis);
+    const startPlus1 = new Date(start + oneDayInMillis);
+    const endPlus1 = new Date(end + oneDayInMillis);
+
+    Event.find(
+        {
+            name: { $regex: name, $options: 'i' },
+            organizerName: organizerName,
+            $or: [
+                {
+                    $and: [
+                        {
+                            'date.start': { $gte: startMinus1, $lte: startPlus1 }
+                        },
+                        {
+                            'date.end': { $gte: endMinus1, $lte: endPlus1 }
+                        }
+                    ],
+                },
+                {
+                    permanent: true
+                },
+                {
+                    permanent: !req.body.event.permanent
+                }
+            ]
+        }
+    )
+        .then((events) => { console.log(events); res.send(events) })
+        .catch((error) => console.log(error))
+});
+
 
 router.post('/getEventsOnCategory', (req, res) => {
     const id = String(req.body.category._id)
-    Event.find({"category._id": id})
+    Event.find({ "category._id": id })
         .then((events) => {
             res.send(events);
         })
@@ -156,22 +197,22 @@ router.post('/organizer/:organizerId/events', auth, (req, res) => {
 });
 
 router.get('/organizer/:organizerId/events/:eventId', (req, res) => {
-    Event.findOne({_organizerId: req.params.organizerId, _id: req.params.eventId})
+    Event.findOne({ _organizerId: req.params.organizerId, _id: req.params.eventId })
         .then((event) => res.send(event))
         .catch((error) => console.log(error))
 });
 
 router.patch('/organizer/:organizerId/events/:eventId', auth, (req, res) => {
     Event.findOneAndUpdate(
-        {_organizerId: req.params.organizerId, _id: req.params.eventId},
-        {$set: req.body.event}, {new: true}
+        { _organizerId: req.params.organizerId, _id: req.params.eventId },
+        { $set: req.body.event }, { new: true }
     )
         .then((event) => res.send(event))
         .catch((error) => console.log(error));
 });
 
 router.delete('/organizer/:organizerId/events/:eventId', auth, (req, res) => {
-    Event.findOneAndDelete({_organizerId: req.params.organizerId, _id: req.params.eventId})
+    Event.findOneAndDelete({ _organizerId: req.params.organizerId, _id: req.params.eventId })
         .then((event) => res.send(event))
         .catch((error) => console.log(error))
 });

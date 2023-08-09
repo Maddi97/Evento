@@ -1,18 +1,18 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {OrganizerService} from 'src/app/services/organizer.service';
-import {Address, Organizer} from 'src/app/models/organizer';
-import {catchError, map, share} from 'rxjs/operators';
-import {EventsService} from 'src/app/services/events.service';
-import {Event} from '../../../models/event';
-import {Category} from 'src/app/models/category';
-import {CategoryService} from 'src/app/services/category.service';
-import {NominatimGeoService} from '../../../services/nominatim-geo.service'
-import {Observable} from 'rxjs';
-import * as log from 'loglevel';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { DomSanitizer } from '@angular/platform-browser';
 import * as moment from 'moment';
-import {FileUploadService} from '../../../services/file-upload.service';
-import {DomSanitizer} from '@angular/platform-browser';
-import {MatSnackBar} from "@angular/material/snack-bar";
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CustomDialogComponent } from 'src/app/custom-dialog/custom-dialog.component';
+import { Category } from 'src/app/models/category';
+import { Organizer } from 'src/app/models/organizer';
+import { CategoryService } from 'src/app/services/category.service';
+import { EventsService } from 'src/app/services/events.service';
+import { OrganizerService } from 'src/app/services/organizer.service';
+import { Event } from '../../../models/event';
+import { FileUploadService } from '../../../services/file-upload.service';
 
 
 @Component({
@@ -46,6 +46,7 @@ export class EventViewComponent implements OnInit {
         private fileService: FileUploadService,
         private sanitizer: DomSanitizer,
         private _snackbar: MatSnackBar,
+        public dialog: MatDialog
     ) {
     }
 
@@ -73,9 +74,21 @@ export class EventViewComponent implements OnInit {
 
     }
 
+    addEventCheckDuplicate(event) {
+        this.eventService.checkIfEventsExistsInDB(event).subscribe(existingEvents => {
+            if (existingEvents.length > 0) {
+                this.openDialogIfDuplicate(existingEvents, event)
+            }
+            else {
+                this.addNewEvent(event)
+            }
+        })
+    }
+
     addNewEvent(event) {
         // set _id undefined otherwise error occurs
         event._id = undefined
+
         this.eventService.createEvent(event).pipe(
             map(createEventResponse => {
                 // upload image
@@ -120,18 +133,18 @@ export class EventViewComponent implements OnInit {
 
 
     loadOrganizerOnSubcategories(category
-                                     :
-                                     Category
+        :
+        Category
     ) {
         this.organizerService.filterOrganizerByEventsCategory(category)
         console.log(this.organizers)
     }
 
     loadEvents(organizerId
-                   :
-                   string, categoryId
-                   :
-                   string
+        :
+        string, categoryId
+            :
+            string
     ) {
 
         this.eventService.getAllUpcomingEvents().pipe(
@@ -144,15 +157,15 @@ export class EventViewComponent implements OnInit {
     }
 
     getHotEvents() {
-        const date = moment(new Date()).utcOffset(0, false).set({hour: 0, minute: 0, second: 0, millisecond: 0})
+        const date = moment(new Date()).utcOffset(0, false).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
         this.eventService.getEventsOnDate(date)
     }
 
     deleteEvent(organizerId
-                    :
-                    string, eventId
-                    :
-                    string
+        :
+        string, eventId
+            :
+            string
     ) {
         this.eventService.deletEvent(organizerId, eventId).subscribe()
 
@@ -193,8 +206,8 @@ export class EventViewComponent implements OnInit {
     }
 
     getColor(organizer
-                 :
-                 Organizer
+        :
+        Organizer
     ):
         string {
 
@@ -240,6 +253,18 @@ export class EventViewComponent implements OnInit {
             }
         })
     }
+    openDialogIfDuplicate(events: Event[], event) {
+        const dialogRef = this.dialog.open(CustomDialogComponent, { data: { currentEvent: event, events: events } });
 
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.addNewEvent(event)
+            }
+            else {
+                this.openSnackBar('Event not added ' + event.name, 'error')
+
+            }
+        });
+    }
 
 }

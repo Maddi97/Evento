@@ -248,7 +248,7 @@ export class EventFormComponent implements OnInit, OnChanges {
         return !(!this.eventForm.invalid && this.category !== undefined);
     }
     filterOrganizerByName(oNameStart){
-        this.filteredOrganizers = this.organizersIn.filter(organizer => organizer.name.startsWith(oNameStart));
+        this.filteredOrganizers = this.organizersIn.filter(organizer => organizer.name.toLowerCase().startsWith(oNameStart.toLowerCase()));
 
     }
 

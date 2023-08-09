@@ -1,0 +1,18 @@
+<div class="dialog-container">
+    <button mat-button mat-raised-button color="primary" class="add-event" (click)="closeDialog(true)"
+        cdkFocusInitial>Add event</button>
+    <button mat-button mat-raised-button color="accent" class="reject-event" (click)="closeDialog(false)"
+        cdkFocusInitial>Reject event</button>
+    <div class="event-dialog-container current-event">
+        <h4>Current Event:</h4>
+        <p>Name: {{data.currentEvent.name}}</p>
+        <p>Organizer: {{data.currentEvent.organizerName}}</p>
+        <p>Date: {{dateTimesFormater(data.currentEvent)}}</p>
+    </div>
+    <div class="event-list" *ngFor="let event of data.events">
+        <div class="event-dialog-container">
+            <p>Name: {{event.name}}</p>
+            <p>Organizer: {{event.organizerName}}</p>
+            <p>Date: {{dateTimesFormater(event)}}</p>
+        </div>
+    </div>
