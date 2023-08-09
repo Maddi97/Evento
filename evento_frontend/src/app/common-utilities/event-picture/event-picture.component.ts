@@ -29,14 +29,13 @@ export class EventPictureComponent implements OnInit {
     this.category = this.event?.category;
     this.organizerService.getOrganizerById(this.event?._organizerId).subscribe(
       organizer => {
-        this.organizer = organizer
+        this.organizer = organizer[0]
         this.downloadImage()
       }
     )
   }
 
   downloadImage() {
-
     if (this.event?.eventImagePath !== undefined) {
       if (this.event?.eventImageTemporaryURL === undefined) {
         this.fileService.downloadFile(this.event.eventImagePath).subscribe(imageData => {
