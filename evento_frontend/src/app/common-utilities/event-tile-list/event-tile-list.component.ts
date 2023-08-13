@@ -1,9 +1,9 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
-import {Event} from '../../models/event';
-import {EventService} from '../../events/event.service';
-import {PositionService} from '../map-view/position.service';
-import {NominatimGeoService} from '../../nominatim-geo.service';
-import {NgxSpinnerService} from 'ngx-spinner';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Event } from '../../models/event';
+import { EventService } from '../../events/event.service';
+import { PositionService } from '../map-view/position.service';
+import { NominatimGeoService } from '../../nominatim-geo.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { debounceTime, map, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
@@ -18,24 +18,26 @@ export class EventTileListComponent implements OnInit, OnChanges {
   @Input() subcategories;
 
   @Output() eventListEmitter = new EventEmitter<Event[]>();
-  @Output() hoverEventEmitter = new EventEmitter<Event>();
+  @Output() hoverEventEmitter = new EventEmitter<string>();
 
   private events$;
   eventList;
   actualLoadEventLimit = 8;
   startLoadEventLimit = 8;
   offset = 3;
+  emittedEventId = null;
 
-  hoveredEvent: Event = null;
+  hoveredEvent: string = null;
+  to: any;
 
   currentPosition;
-  filteredDate :moment.Moment;
+  filteredDate: moment.Moment;
   constructor(
     private eventService: EventService,
     private positionService: PositionService,
     private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
-        private _activatedRoute: ActivatedRoute,
+    private _activatedRoute: ActivatedRoute,
 
   ) {
   }
@@ -46,22 +48,22 @@ export class EventTileListComponent implements OnInit, OnChanges {
       events => {
         this.eventList = events;
         this.eventListEmitter.emit(this.eventList);
-         this.spinner.hide()
+        this.spinner.hide()
       }
-     
+
     )
     const params$ = this._activatedRoute.queryParams.pipe(
       map(params => {
-        this.filteredDate  = moment(new Date(params.date)).utcOffset(0, false).set({
-    hour: 0,
-    minute: 0,
-    second: 0,
-    millisecond: 0
-  })
+        this.filteredDate = moment(new Date(params.date)).utcOffset(0, false).set({
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0
+        })
       }))
-    
+
     params$.pipe(debounceTime(1)).subscribe(() => this.applyFilters())
- 
+
   }
 
   ngOnChanges(): void {
@@ -99,8 +101,12 @@ export class EventTileListComponent implements OnInit, OnChanges {
     // this.spinner.hide();
   }
 
-  hover(event: Event) {
-    this.hoverEventEmitter.emit(event)
+  hover(eventId: string) {
+    this.hoverEventEmitter.emit(eventId);
+  }
+
+  hoverLeave() {
+    this.hoverEventEmitter.emit(null);
   }
 
   loadMoreEvents() {

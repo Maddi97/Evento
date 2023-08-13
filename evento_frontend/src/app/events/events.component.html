@@ -4,21 +4,18 @@
     <!--    <span class="category-label">Kategorien</span>-->
     <!-- <img class="category-headline" src="assets/design-elements/Kategorien_design.png"> -->
     <app-category-list class="main-category-container" id="main-category-container"
-                       (categoryOutputEmitter)="this.filteredCategory = $event"
-                       (subCategoryOutputEmitter)="this.filteredSubcategories = $event"></app-category-list>
+      (categoryOutputEmitter)="this.filteredCategory = $event"
+      (subCategoryOutputEmitter)="this.filteredSubcategories = $event"></app-category-list>
 
     <div class="event-map-container" *ngIf="getScreenWidth>1000">
 
       <div class="event-container">
-        <app-event-tile-list [categories]="[filteredCategory]"
-                             [subcategories]="filteredSubcategories"
-                             (eventListEmitter)="eventList = $event"
-                             (hoverEventEmitter)="hoveredEvent = $event"
-        ></app-event-tile-list>
+        <app-event-tile-list [categories]="[filteredCategory]" [subcategories]="filteredSubcategories"
+          (eventListEmitter)="eventList = $event" (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
       </div>
 
       <div class="map-container">
-        <map-view [markerData]="eventList" [hoveredData]="hoveredEvent"></map-view>
+        <map-view [markerData]="eventList" [hoveredData]="getEventFromId()"></map-view>
       </div>
     </div>
     <div class="event-map-container" *ngIf="getScreenWidth<1000">
@@ -29,11 +26,8 @@
         </div>
         <div class="event-container">
 
-          <app-event-tile-list [categories]="[filteredCategory]"
-                               [subcategories]="filteredSubcategories"
-                               (eventListEmitter)="eventList = $event"
-                               (hoverEventEmitter)="hoveredEvent = $event"
-          ></app-event-tile-list>
+          <app-event-tile-list [categories]="[filteredCategory]" [subcategories]="filteredSubcategories"
+            (eventListEmitter)="eventList = $event" (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
         </div>
       </div>
 
@@ -42,7 +36,7 @@
           <p> Zu den Events </p>
           <mat-icon class="change-view-icon" (click)="changeToMapView()">event</mat-icon>
         </div>
-        <map-view [markerData]="eventList" [hoveredData]="hoveredEvent"></map-view>
+        <map-view [markerData]="eventList" [hoveredData]="getEventFromId()"></map-view>
       </div>
     </div>
   </div>
