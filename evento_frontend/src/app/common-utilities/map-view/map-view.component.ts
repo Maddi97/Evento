@@ -64,7 +64,6 @@ export class MapViewComponent implements OnInit, OnChanges {
     // })
     // this.updatePosition(this.positionService.getDefaultLocation());
     const locationFromSession = JSON.parse(sessionStorage.getItem('location'))
-    console.log(locationFromSession)
     if (locationFromSession !== null && locationFromSession !== 'disabled') {
       this.currentPosition.lat = locationFromSession[0]
       this.currentPosition.lon = locationFromSession[1]
@@ -107,21 +106,27 @@ export class MapViewComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     if (typeof this.map === 'undefined') {
       this.initMap();
     }
-    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    });
-    tiles.addTo(this.map);
+    if (changes.markerData) {
+      const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      });
+      tiles.addTo(this.map);
 
-    this.setPositionMarker();
-    this.setMarkers(this.markerData);
-
-    if (this.hoveredData !== null) {
-      this.setHoverMarker(this.hoveredData.geoData.lat, this.hoveredData.geoData.lon)
+      this.setPositionMarker();
+      this.setMarkers(this.markerData);
+    }
+    else if (changes.hoveredData) {
+      if (this.hoveredData === null) {
+        this.clearHoverMarker()
+      }
+      else {
+        this.setHoverMarker(this.hoveredData.geoData.lat, this.hoveredData.geoData.lon)
+      }
     }
   }
 
@@ -150,12 +155,14 @@ export class MapViewComponent implements OnInit, OnChanges {
       .setIcon(new this.LeafIcon({ iconUrl: this.hoverIcon, iconRetinaUrl: this.hoverIconRetina }))
       .addTo(this.hoverMarkerGroup);
   }
+  private clearHoverMarker(): void {
+    this.hoverMarkerGroup.clearLayers();
+  }
 
   private setPositionMarker(): void {
     if (this.currentPosition.lat === '0' && this.currentPosition.lon === '0') {
       return
     }
-    console.log(160, this.currentPosition)
     this.positionMarkerGroup.clearLayers();
     L.marker([this.currentPosition.lat, this.currentPosition.lon])
       .setIcon(new this.LeafIcon({ iconUrl: this.locationIcon, iconRetinaUrl: this.locationIconRetina }))

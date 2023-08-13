@@ -1,5 +1,5 @@
-import {Component, HostListener, OnInit} from '@angular/core';
-import {Event} from '../models/event';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Event } from '../models/event';
 import * as moment from 'moment';
 import { take, timer } from 'rxjs';
 
@@ -17,7 +17,7 @@ export class EventsComponent implements OnInit {
   eventList: Event[] = [];
   // Applied filtered Category IDs
 
-  hoveredEvent = null;
+  hoveredEventId = null;
   filteredCategory = 'hot';
   // filteredSubcategories
   filteredSubcategories = [];
@@ -30,7 +30,7 @@ export class EventsComponent implements OnInit {
     second: 0,
     millisecond: 0
   })
-  ;
+    ;
 
 
   public getScreenWidth: any;
@@ -41,8 +41,8 @@ export class EventsComponent implements OnInit {
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
     timer(1 * 1).pipe(
-    take(1)
-).subscribe(() => window.scrollTo(0,0));
+      take(1)
+    ).subscribe(() => window.scrollTo(0, 0));
   }
 
 
@@ -50,6 +50,10 @@ export class EventsComponent implements OnInit {
     this.filteredDate = filter.date;
   }
 
+  getEventFromId() {
+    const event = this.eventList.find(event => event._id === this.hoveredEventId);
+    return event || null;
+  }
 
   changeToMapView() {
     this.mapView ? this.mapView = false : this.mapView = true;

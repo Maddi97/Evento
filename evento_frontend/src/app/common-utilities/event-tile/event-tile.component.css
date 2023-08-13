@@ -35,11 +35,13 @@
   .event-tile {
     flex-direction: row;
   }
+
   .event-tile-picture {
     min-width: 40%;
     max-width: 40%;
 
   }
+
   .event-tile-information {
     display: flex;
     flex-direction: column;
@@ -47,9 +49,11 @@
     max-width: 60%;
     margin-left: 10px;
   }
-  .event-tile-information-name-date{
+
+  .event-tile-information-name-date {
     max-width: 100%;
   }
+
   .event-name {
     max-width: 100% !important;
   }
@@ -61,6 +65,7 @@
   align-items: start;
   width: 100%;
 }
+
 .event-tile-information-name-date {
   display: flex;
   justify-content: center;
@@ -69,12 +74,12 @@
 }
 
 .event-organizer-name {
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-    align-items: start;
-    margin: 0px;
-    margin-left: 2px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: start;
+  margin: 0px;
+  margin-left: 2px;
 }
 
 
@@ -94,20 +99,18 @@
 }
 
 .date {
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: start;
-    font-size: 0.8rem;
-    margin-left: 2px;
-    margin-top: 1px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  font-size: 0.8rem;
+  margin-left: 2px;
+  margin-top: 1px;
 }
 
-.date-start {
-}
+.date-start {}
 
-.date-end {
-}
+.date-end {}
 
 .category {
   background-color: rgb(255, 238, 0);
@@ -131,14 +134,14 @@
 /*small screen size like iphone*/
 @media screen and (max-width: 440px) {
   .event-name {
-    font-size: 1rem !important;  }
+    font-size: 1rem !important;
+  }
 
   .date {
-        font-size: .9rem !important;
+    font-size: .9rem !important;
   }
 }
 
 mat-card {
   padding: 6px !important;
 }
-
