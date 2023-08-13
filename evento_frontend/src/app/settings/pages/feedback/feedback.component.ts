@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
+import {UntypedFormBuilder, UntypedFormControl, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {HttpRequest} from '@angular/common/http';
 import {WebService} from "../../../web.service";
@@ -12,13 +12,13 @@ import {WebService} from "../../../web.service";
 export class FeedbackComponent implements OnInit {
 
   feedbackForm = this.fb.group({
-    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    mail: new FormControl('', [Validators.email, Validators.required]),
-    reason: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    description: new FormControl('', [Validators.required, Validators.minLength(5)]),
+    name: new UntypedFormControl('', [Validators.required, Validators.minLength(3)]),
+    mail: new UntypedFormControl('', [Validators.email, Validators.required]),
+    reason: new UntypedFormControl('', [Validators.required, Validators.minLength(3)]),
+    description: new UntypedFormControl('', [Validators.required, Validators.minLength(5)]),
   })
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
               private _snackbar: MatSnackBar,
               private webService: WebService,
   ) {
@@ -61,10 +61,10 @@ export class FeedbackComponent implements OnInit {
 
   resetFormGroup(): void {
     this.feedbackForm = this.fb.group({
-      name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-      mail: new FormControl('', [Validators.email, Validators.required]),
-      reason: new FormControl('', [Validators.required, Validators.minLength(3)]),
-      description: new FormControl('', [Validators.required, Validators.minLength(5)]),
+      name: new UntypedFormControl('', [Validators.required, Validators.minLength(3)]),
+      mail: new UntypedFormControl('', [Validators.email, Validators.required]),
+      reason: new UntypedFormControl('', [Validators.required, Validators.minLength(3)]),
+      description: new UntypedFormControl('', [Validators.required, Validators.minLength(5)]),
     })
   }
 
