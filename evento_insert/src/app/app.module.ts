@@ -33,7 +33,6 @@ import { authInterceptorProviders } from './services/auth.interceptor';
 
 import { OrganizerViewComponent } from './pages/organizer/organizer-view/organizer-view.component';
 
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CategorySelectComponent } from './pages/category/category-select/category-select.component';
@@ -78,7 +77,6 @@ import { CustomDialogComponent } from './custom-dialog/custom-dialog.component';
         MatSelectModule,
         MatChipsModule,
         MatRadioModule,
-        FlexLayoutModule,
         NgxMaterialTimepickerModule,
         MatDatepickerModule,
         MatNativeDateModule,

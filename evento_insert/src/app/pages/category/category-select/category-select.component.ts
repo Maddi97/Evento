@@ -1,9 +1,9 @@
-import {Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {CategoryService} from 'src/app/services/category.service';
-import {FormControl} from '@angular/forms';
-import {Category} from 'src/app/models/category';
-import {Observable} from 'rxjs';
-import {startWith, map} from 'rxjs/operators';
+import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { CategoryService } from 'src/app/services/category.service';
+import { FormControl } from '@angular/forms';
+import { Category } from 'src/app/models/category';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-category-select',
@@ -43,7 +43,7 @@ export class CategorySelectComponent implements OnInit, OnChanges {
         this.selectedSubcategories.setValue(changes.loadedCategory.currentValue?.subcategories)
     }
 
-    private _filter(value: Category): string[] {
+    private _filter(value): string[] {
         const filterValue = value.name.toLowerCase();
         return this.categories.map(cat => cat.name).filter(cat => cat.toLowerCase().includes(filterValue));
     }

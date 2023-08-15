@@ -126,7 +126,6 @@
       }
     }
   },
-  "defaultProject": "insert-app",
   "cli": {
     "analytics": false
   }
