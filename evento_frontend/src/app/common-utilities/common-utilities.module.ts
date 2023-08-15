@@ -8,13 +8,13 @@ import {DatePickerComponent} from './date-picker/date-picker.component';
 import {DayDateComponent} from './date-picker/day-date/day-date.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
-import {MatInputModule} from '@angular/material/input';
-import {MatCardModule} from '@angular/material/card';
+import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
+import {MatLegacyCardModule as MatCardModule} from '@angular/material/legacy-card';
 import {FormsModule} from '@angular/forms';
 import {SocialMediaShareComponent} from './social-media-share/social-media-share.component';
 import {MatIconModule} from '@angular/material/icon';
 import {ClipboardModule} from '@angular/cdk/clipboard';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatLegacySnackBarModule as MatSnackBarModule} from '@angular/material/legacy-snack-bar';
 import {DigitalClockComponent} from './digital-clock/digital-clock.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {EventPictureComponent} from './event-picture/event-picture.component';
@@ -22,8 +22,8 @@ import {EventTileListComponent} from './event-tile-list/event-tile-list.componen
 import {RouterModule} from '@angular/router';
 import {CategoryListComponent} from './category-list/category-list.component';
 import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.component';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatButtonModule} from '@angular/material/button';
+import {MatLegacyMenuModule as MatMenuModule} from '@angular/material/legacy-menu';
+import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 
