@@ -2,17 +2,16 @@
 @import '~leaflet/dist/leaflet.css';
 @import 'assets/fonts/fonts.css';
 
-html {
+html {}
 
-}
-
-html, body {
+html,
+body {
   height: 100%;
 }
 
 
 body {
-  margin:0;
+  margin: 0;
   padding-top: constant(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-top);
   padding-top: constant(safe-area-inset-bottom);

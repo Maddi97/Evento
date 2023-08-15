@@ -11,7 +11,7 @@ import {SettingsModule} from './settings/settings.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatIconModule} from '@angular/material/icon';
 
-import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy-dialog';
+import {MatDialogModule} from '@angular/material/dialog';
 
 import {CommonUtilitiesModule} from './common-utilities/common-utilities.module';
 import {NgxSpinnerModule} from 'ngx-spinner';

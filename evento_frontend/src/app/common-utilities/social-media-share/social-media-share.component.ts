@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
-import {DomSanitizer} from '@angular/platform-browser';
-import {Share} from '@capacitor/share';
-import {DeviceDetectorService} from 'ngx-device-detector';
-import {faWhatsapp, faTelegram} from '@fortawesome/free-brands-svg-icons';
+import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Share } from '@capacitor/share';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { faWhatsapp, faTelegram } from '@fortawesome/free-brands-svg-icons';
 
 
 @Component({
@@ -21,8 +21,8 @@ export class SocialMediaShareComponent implements OnInit {
   faTelegram = faTelegram;
 
   constructor(private _snackbar: MatSnackBar,
-              private sanitizer: DomSanitizer,
-              private deviceService: DeviceDetectorService,
+    private sanitizer: DomSanitizer,
+    private deviceService: DeviceDetectorService,
   ) {
   }
 

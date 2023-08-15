@@ -5,7 +5,7 @@ import { CommonUtilitiesModule } from '../common-utilities/common-utilities.modu
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from '../app-routing.module';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacySliderModule as MatSliderModule } from '@angular/material/legacy-slider';
+import { MatSliderModule } from '@angular/material/slider';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
