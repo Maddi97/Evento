@@ -45,7 +45,7 @@
   .event-tile-information {
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     max-width: 60%;
     margin-left: 10px;
   }
@@ -62,7 +62,7 @@
 .event-tile-information {
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
   width: 100%;
 }
 
@@ -70,14 +70,14 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .event-organizer-name {
   display: flex;
   justify-content: space-around;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
   margin: 0px;
   margin-left: 2px;
 }
@@ -101,8 +101,8 @@
 .date {
   display: flex;
   flex-direction: column;
-  justify-content: start;
-  align-items: start;
+  justify-content: flex-start;
+  align-items: flex-start;
   font-size: 0.8rem;
   margin-left: 2px;
   margin-top: 1px;

@@ -15,7 +15,7 @@
     flex-flow: row wrap;
     margin: 2rem;
     width: 90%;
-    align-items: start;
+    align-items: flex-start;
 }
 
 .organizer-image {

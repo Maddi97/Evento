@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {WebService} from "../../../web.service";
+import { Component, OnInit } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { WebService } from "../../../web.service";
 
 
 @Component({
@@ -11,6 +11,11 @@ import {WebService} from "../../../web.service";
 })
 export class InsertEventComponent implements OnInit {
 
+  constructor(private fb: UntypedFormBuilder,
+    private _snackbar: MatSnackBar,
+    private webService: WebService,
+  ) {
+  }
   eventForm = this.fb.group({
     eventName: new UntypedFormControl('', [Validators.required, Validators.minLength(3)]),
     organizerName: new UntypedFormControl('', []),
@@ -18,14 +23,6 @@ export class InsertEventComponent implements OnInit {
     link: new UntypedFormControl('', []),
     description: new UntypedFormControl('', [Validators.required, Validators.minLength(5)]),
   })
-
-
-  constructor(private fb: UntypedFormBuilder,
-              private _snackbar: MatSnackBar,
-              private webService: WebService,
-  ) {
-  }
-
   ngOnInit(): void {
   }
 

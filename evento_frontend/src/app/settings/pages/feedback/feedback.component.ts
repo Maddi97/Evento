@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {UntypedFormBuilder, UntypedFormControl, Validators} from "@angular/forms";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {HttpRequest} from '@angular/common/http';
-import {WebService} from "../../../web.service";
+import { Component, OnInit } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from "@angular/forms";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { HttpRequest } from '@angular/common/http';
+import { WebService } from "../../../web.service";
 
 @Component({
   selector: 'app-feedback',
@@ -11,18 +11,18 @@ import {WebService} from "../../../web.service";
 })
 export class FeedbackComponent implements OnInit {
 
+  constructor(private fb: UntypedFormBuilder,
+    private _snackbar: MatSnackBar,
+    private webService: WebService,
+  ) {
+  }
+
   feedbackForm = this.fb.group({
     name: new UntypedFormControl('', [Validators.required, Validators.minLength(3)]),
     mail: new UntypedFormControl('', [Validators.email, Validators.required]),
     reason: new UntypedFormControl('', [Validators.required, Validators.minLength(3)]),
     description: new UntypedFormControl('', [Validators.required, Validators.minLength(5)]),
   })
-
-  constructor(private fb: UntypedFormBuilder,
-              private _snackbar: MatSnackBar,
-              private webService: WebService,
-  ) {
-  }
 
   ngOnInit(): void {
   }
