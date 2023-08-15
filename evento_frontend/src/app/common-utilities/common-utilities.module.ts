@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventTileComponent } from './event-tile/event-tile.component';
 import { MapViewComponent } from './map-view/map-view.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FullEventComponent } from './full-event/full-event.component';
 import { DatePickerComponent } from './date-picker/date-picker.component';
 import { DayDateComponent } from './date-picker/day-date/day-date.component';
@@ -45,7 +44,6 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
   ],
   imports: [
     CommonModule,
-    FlexLayoutModule,
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
