@@ -1,4 +1,3 @@
-
 .nothing-found {
   display: flex;
   flex-direction: column;
@@ -9,11 +8,12 @@
   color: #9e9e9e;
 }
 
-.nothing-found > mat-icon {
+.nothing-found>mat-icon {
   font-size: 3rem;
-  margin: 2rem;
+  height: 100% !important;
+  margin: 1rem;
   padding-right: 50px;
-      
+
 }
 
 .load-more-events-button {
@@ -35,6 +35,6 @@
 
 }
 
-.load-more-events-button > p {
+.load-more-events-button>p {
   margin: 0;
 }
