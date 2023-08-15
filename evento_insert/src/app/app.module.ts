@@ -8,23 +8,23 @@ import { EventViewComponent } from './pages/event/event-view/event-view.componen
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 import { SelectionViewComponent } from './pages/selection-view/selection-view.component';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
-import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
@@ -33,7 +33,6 @@ import { authInterceptorProviders } from './services/auth.interceptor';
 
 import { OrganizerViewComponent } from './pages/organizer/organizer-view/organizer-view.component';
 
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CategorySelectComponent } from './pages/category/category-select/category-select.component';
@@ -78,7 +77,6 @@ import { CustomDialogComponent } from './custom-dialog/custom-dialog.component';
         MatSelectModule,
         MatChipsModule,
         MatRadioModule,
-        FlexLayoutModule,
         NgxMaterialTimepickerModule,
         MatDatepickerModule,
         MatNativeDateModule,

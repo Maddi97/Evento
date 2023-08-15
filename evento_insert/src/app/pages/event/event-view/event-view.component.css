@@ -87,7 +87,7 @@
     color: red;
 }
 
-.mat-radio-button ~ .mat-radio-button {
+.mat-mdc-radio-button ~ .mat-radio-button {
     margin-left: 16px;
 }
 

@@ -3,7 +3,7 @@ import {OrganizerService} from 'src/app/services/organizer.service';
 import {Organizer} from 'src/app/models/organizer';
 import {FormBuilder} from '@angular/forms';
 import {Category} from 'src/app/models/category';
-import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar'
+import {MatSnackBar} from '@angular/material/snack-bar'
 import {NominatimGeoService} from '../../../services/nominatim-geo.service'
 import {catchError, map} from 'rxjs/operators';
 import {EventsService} from '../../../services/events.service';
