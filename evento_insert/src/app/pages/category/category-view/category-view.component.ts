@@ -5,7 +5,7 @@ import {Category, Subcategory} from 'src/app/models/category';
 import {FileUploadService} from 'src/app/services/file-upload.service';
 import {map} from 'rxjs/operators';
 import {DomSanitizer} from '@angular/platform-browser';
-import {MatSnackBar} from '@angular/material/snack-bar'
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar'
 import {ViewChild} from '@angular/core';
 import * as log from 'loglevel';
 import {forkJoin} from 'rxjs';

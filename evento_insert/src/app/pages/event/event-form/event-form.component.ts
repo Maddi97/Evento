@@ -16,7 +16,7 @@ import {OrganizerService} from '../../../services/organizer.service';
 // import helper functions
 import {getEventFormTemplate, getEventFromForm} from '../event.helpers';
 import * as log from 'loglevel';
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatLegacySnackBar as MatSnackBar} from "@angular/material/legacy-snack-bar";
 
 @Component({
     selector: 'app-event-form',
