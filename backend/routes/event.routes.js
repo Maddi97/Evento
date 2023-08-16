@@ -17,7 +17,7 @@ router.get('/events/:eventId', limiter, (req, res) => {
         .catch((error) => console.log(error))
 });
 
-router.get('/organizer/:organizerId/events', (req, res) => {
+router.get('/organizer/:organizerId/events', limiter, (req, res) => {
     Event.find({ _organizerId: req.params.organizerId })
         .then((events) => res.send(events))
         .catch((error) => console.log(error))

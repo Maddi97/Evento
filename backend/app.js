@@ -7,7 +7,8 @@ var cors = require("cors");
 
 // configuration ===========================================
 const mongoose = require("./config/mongoose");
-
+const mongoSanitize = require("express-mongo-sanitize")
+const xss = require("xss-clean")
 const allowedOrigins = [
   "capacitor://localhost",
   "ionic://localhost",
@@ -42,7 +43,12 @@ app.get("/", cors(corsOptions), (req, res, next) => {
 
 app.use(express.json());
 app.use(cors());
-
+app.use(
+  mongoSanitize({
+    replaceWith: '_',
+  }),
+);
+app.use(xss)
 var organizerRouter = require("./routes/organizer.routes");
 app.use(organizerRouter);
 
