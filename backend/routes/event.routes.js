@@ -1,17 +1,17 @@
 var express = require('express');
 var router = express.Router();
 const auth = require("../middleware/authJWT");
-
+const limiter = require("../middleware/rateLimiter")
 const Event = require("../model/event.model")
 
 
-router.get('/events', (req, res) => {
+router.get('/events', limiter, (req, res) => {
     Event.find({})
         .then((events) => res.send(events))
         .catch((error) => console.log(error))
 })
 
-router.get('/events/:eventId', (req, res) => {
+router.get('/events/:eventId', limiter, (req, res) => {
     Event.find({ _id: req.params.eventId })
         .then((event) => res.send(event))
         .catch((error) => console.log(error))
@@ -24,7 +24,7 @@ router.get('/organizer/:organizerId/events', (req, res) => {
 });
 
 
-router.post('/eventOnDate', (req, res) => {
+router.post('/eventOnDate', limiter, (req, res) => {
     let date = req.body.date
     Event.find(
         {
@@ -44,7 +44,7 @@ router.post('/eventOnDate', (req, res) => {
         .catch((error) => console.log(error))
 });
 
-router.post('/eventOnDateCatAndSubcat', (req, res) => {
+router.post('/eventOnDateCatAndSubcat', limiter, (req, res) => {
     let date = new Date(req.body.fil.date)
     let categories = req.body.fil.cat
     let limit = req.body.fil.limit
@@ -57,8 +57,9 @@ router.post('/eventOnDateCatAndSubcat', (req, res) => {
     let subcategories = req.body.fil.subcat
     let subcatIds = []
     subcategories.forEach(sub => subcatIds.push(sub._id))
-
-
+    if (date == "Invalid Date") {
+        return;
+    }
     Event.find(
         {
             $and: [
@@ -111,7 +112,7 @@ router.post('/eventOnDateCatAndSubcat', (req, res) => {
 });
 
 
-router.post('/upcomingEvents', (req, res) => {
+router.post('/upcomingEvents', limiter, (req, res) => {
     let date = new Date(req.body.date)
     Event.find(
         {
@@ -137,7 +138,7 @@ router.post('/upcomingEvents', (req, res) => {
         .catch((error) => console.log(error))
 });
 
-router.post('/checkIfEventExists', (req, res) => {
+router.post('/checkIfEventExists', limiter, (req, res) => {
     const start = new Date(req.body.event.date.start).getTime()
     const end = new Date(req.body.event.date.end).getTime()
 
@@ -179,7 +180,7 @@ router.post('/checkIfEventExists', (req, res) => {
 });
 
 
-router.post('/getEventsOnCategory', (req, res) => {
+router.post('/getEventsOnCategory', limiter, (req, res) => {
     const id = String(req.body.category._id)
     Event.find({ "category._id": id })
         .then((events) => {
@@ -189,20 +190,20 @@ router.post('/getEventsOnCategory', (req, res) => {
 })
 
 
-router.post('/organizer/:organizerId/events', auth, (req, res) => {
+router.post('/organizer/:organizerId/events', limiter, auth, (req, res) => {
     (new Event(req.body.event))
         .save()
         .then((events) => res.send(events))
         .catch((error) => console.log(error))
 });
 
-router.get('/organizer/:organizerId/events/:eventId', (req, res) => {
+router.get('/organizer/:organizerId/events/:eventId', limiter, (req, res) => {
     Event.findOne({ _organizerId: req.params.organizerId, _id: req.params.eventId })
         .then((event) => res.send(event))
         .catch((error) => console.log(error))
 });
 
-router.patch('/organizer/:organizerId/events/:eventId', auth, (req, res) => {
+router.patch('/organizer/:organizerId/events/:eventId', limiter, auth, (req, res) => {
     Event.findOneAndUpdate(
         { _organizerId: req.params.organizerId, _id: req.params.eventId },
         { $set: req.body.event }, { new: true }
@@ -211,7 +212,7 @@ router.patch('/organizer/:organizerId/events/:eventId', auth, (req, res) => {
         .catch((error) => console.log(error));
 });
 
-router.delete('/organizer/:organizerId/events/:eventId', auth, (req, res) => {
+router.delete('/organizer/:organizerId/events/:eventId', limiter, auth, (req, res) => {
     Event.findOneAndDelete({ _organizerId: req.params.organizerId, _id: req.params.eventId })
         .then((event) => res.send(event))
         .catch((error) => console.log(error))

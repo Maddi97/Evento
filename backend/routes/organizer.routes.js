@@ -5,20 +5,20 @@ const Event = require("../model/event.model")
 const auth = require("../middleware/authJWT");
 const limiter = require("../middleware/rateLimiter")
 
-router.get('/organizer', (req, res) => {
+router.get('/organizer', limiter, (req, res) => {
     Organizer.find({})
         .then(organizer => res.send(organizer))
         .catch(error => console.log(error))
 });
 
-router.post('/organizer', auth, (req, res) => {
+router.post('/organizer', limiter, auth, (req, res) => {
     (new Organizer(req.body.organizer))
         .save()
         .then((organizer) => res.send(organizer))
         .catch((error) => console.log(error))
 });
 
-router.post('/organizerByEventCategory', (req, res) => {
+router.post('/organizerByEventCategory', limiter, (req, res) => {
     let orgs = []
     let catId = req.body.category._id
     Organizer.find(
@@ -45,7 +45,7 @@ router.post('/organizerByEventCategory', (req, res) => {
 
 })
 
-router.get('/organizer/:organizerId', (req, res) => {
+router.get('/organizer/:organizerId', limiter, (req, res) => {
     Organizer.find({ _id: req.params.organizerId })
         .then((organizer) => res.send(organizer))
         .catch((error) => console.log(error))
