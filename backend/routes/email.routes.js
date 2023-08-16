@@ -4,8 +4,9 @@ var express = require('express');
 var router = express.Router();
 
 const nodemailer = require("nodemailer");
+const limiter = require("../middleware/rateLimiter")
 
-router.post('/sendFeedback', (req, res) => {
+router.post('/sendFeedback', limiter, (req, res) => {
 
     const feedback = req.body
     const messageText = `Name: ${feedback.name} \n`
@@ -51,7 +52,7 @@ router.post('/sendFeedback', (req, res) => {
 });
 
 
-router.post('/sendEvent', (req, res) => {
+router.post('/sendEvent', limiter, (req, res) => {
 
     const event = req.body
     const messageText = `Name: ${event.name} \n`
@@ -60,13 +61,14 @@ router.post('/sendEvent', (req, res) => {
         + `Link: ${event.link} \n`
         + `Beschreibung: ${event.description}`
 
-    const messageHTML = `<ul>
-                             <li> Name: ${event.name} </li>
-                             <li> Organizer: ${event.organizerName} </li>
-                             <li> Adresse: ${event.adress} </li>
-                             <li> Link: ${event.link} </li>
-                             <li> Beschreibung: ${event.description} </li>
-                        </ul>`
+    const messageHTML =
+        `<ul>
+            <li> Name: ${event.name} </li>
+            <li> Organizer: ${event.organizerName} </li>
+            <li> Adresse: ${event.adress} </li>
+            <li> Link: ${event.link} </li>
+            <li> Beschreibung: ${event.description} </li>
+        </ul>`
 
     //  SMTP service account
     // create reusable transporter object using the default SMTP transport

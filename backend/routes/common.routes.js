@@ -1,7 +1,8 @@
 var express = require('express');
+const limiter = require("../middleware/rateLimiter")
 var router = express.Router();
 
-server.get("/search", async (request, response) => {
+server.get("/search", limiter, async (request, response) => {
 
     try {
 
