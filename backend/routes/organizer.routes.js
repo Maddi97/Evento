@@ -3,6 +3,7 @@ var router = express.Router();
 const Organizer = require("../model/organizer.model")
 const Event = require("../model/event.model")
 const auth = require("../middleware/authJWT");
+const limiter = require("../middleware/rateLimiter")
 
 router.get('/organizer', (req, res) => {
     Organizer.find({})
@@ -22,9 +23,9 @@ router.post('/organizerByEventCategory', (req, res) => {
     let catId = req.body.category._id
     Organizer.find(
         {}).then((organizers) => {
-        Event.find({'category._id': catId}).then(
-            (events) => {
-                organizers.map(o => {
+            Event.find({ 'category._id': catId }).then(
+                (events) => {
+                    organizers.map(o => {
                         events.map(ev => {
                             if (ev._organizerId.toString().trim() === o._id.toString().trim()) {
                                 if (!orgs.includes(o)) {
@@ -33,32 +34,32 @@ router.post('/organizerByEventCategory', (req, res) => {
                             }
                         })
                     }
-                )
-                return res.send(orgs)
+                    )
+                    return res.send(orgs)
 
-            }
-        ).catch((error) => console.log(error))
+                }
+            ).catch((error) => console.log(error))
 
-    }).catch((error) => console.log(error))
-    ;
+        }).catch((error) => console.log(error))
+        ;
 
 })
 
 router.get('/organizer/:organizerId', (req, res) => {
-    Organizer.find({_id: req.params.organizerId})
+    Organizer.find({ _id: req.params.organizerId })
         .then((organizer) => res.send(organizer))
         .catch((error) => console.log(error))
 })
 
 
-router.patch('/organizer/:organizerId', auth, (req, res) => {
-    Organizer.findByIdAndUpdate({_id: req.params.organizerId}, {$set: req.body.organizer})
+router.patch('/organizer/:organizerId', limiter, auth, (req, res) => {
+    Organizer.findByIdAndUpdate({ _id: req.params.organizerId }, { $set: req.body.organizer })
         .then((organizer) => res.send(organizer))
         .catch((error => console.log(error)))
 });
 
-router.delete('/organizer/:organizerId', auth, (req, res) => {
-    Organizer.findByIdAndDelete({_id: req.params.organizerId})
+router.delete('/organizer/:organizerId', limiter, auth, (req, res) => {
+    Organizer.findByIdAndDelete({ _id: req.params.organizerId })
         .then((organizer) => res.send(organizer))
         .catch((error => console.log(error)))
 });
