@@ -8,35 +8,24 @@ exports.signup = (req, res) => {
         email: req.query.email,
         password: bcrypt.hashSync(req.query.password, 16)
     });
-    user.save((err, user) => {
-            if (err) {
-                res.status(500).send({message: err});
-                return;
-            } else {
-                user.save(err => {
-                    if (err) {
-                        res.status(500).send({message: err});
-                        return;
-                    }
-                    res.send({message: "User was registered successfully!"});
-                });
-            }
-        }
-    );
 
+    user.save()
+        .then(() => {
+            res.send({ message: "User was registered successfully!" });
+        })
+        .catch((err) => {
+            res.status(500).send({ message: err });
+            return;
+        });
 };
 
 exports.signin = (req, res) => {
     User.findOne({
         username: req.body.username
     })
-        .exec((err, user) => {
-            if (err) {
-                res.status(500).send({message: err});
-                return;
-            }
+        .then((user) => {
             if (!user) {
-                return res.status(404).send({message: "User Not found."});
+                return res.status(404).send({ message: "User Not found." });
             }
             var passwordIsValid = bcrypt.compareSync(
                 req.body.password,
@@ -48,7 +37,7 @@ exports.signin = (req, res) => {
                     message: "Invalid Password!"
                 });
             }
-            var token = jwt.sign({user_id: user._id}, config.secret, {
+            var token = jwt.sign({ user_id: user._id }, config.secret, {
                 expiresIn: 86400 // 24 hours
             });
             res.status(200).send({
@@ -57,5 +46,8 @@ exports.signin = (req, res) => {
                 email: user.email,
                 accessToken: token
             });
+        }).catch((err) => {
+            res.status(500).send({ message: err });
+            return;
         });
 };
