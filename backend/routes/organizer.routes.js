@@ -53,7 +53,9 @@ router.get('/organizer/:organizerId', limiter, (req, res) => {
 
 
 router.patch('/organizer/:organizerId', limiter, auth, (req, res) => {
-    Organizer.findByIdAndUpdate({ _id: req.params.organizerId }, { $set: req.body.organizer })
+    const id = req.params.organizerId;
+    const organizer = req.body.organizer;
+    Organizer.findByIdAndUpdate({ _id: id }, { $set: organizer })
         .then((organizer) => res.send(organizer))
         .catch((error => console.log(error)))
 });
