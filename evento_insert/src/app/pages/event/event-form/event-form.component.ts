@@ -1,22 +1,22 @@
 // import packages
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild} from '@angular/core';
-import {FormControl, FormBuilder, Validators} from '@angular/forms';
-import {catchError, map, share} from 'rxjs/operators';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { FormControl, FormBuilder, Validators } from '@angular/forms';
+import { catchError, map, share } from 'rxjs/operators';
 import * as moment from 'moment';
 
 // import models
-import {Organizer} from '../../../models/organizer';
-import {Category, Subcategory} from '../../../models/category';
-import {Event} from '../../../models/event';
+import { Organizer } from '../../../models/organizer';
+import { Category, Subcategory } from '../../../models/category';
+import { Event } from '../../../models/event';
 
 // import services
-import {NominatimGeoService} from '../../../services/nominatim-geo.service';
-import {OrganizerService} from '../../../services/organizer.service';
+import { NominatimGeoService } from '../../../services/nominatim-geo.service';
+import { OrganizerService } from '../../../services/organizer.service';
 
 // import helper functions
-import {getEventFormTemplate, getEventFromForm} from '../event.helpers';
+import { getEventFormTemplate, getEventFromForm } from '../event.helpers';
 import * as log from 'loglevel';
-import {MatSnackBar} from "@angular/material/snack-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
     selector: 'app-event-form',
@@ -64,7 +64,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        this.filteredOrganizers=this.organizersIn
+        this.filteredOrganizers = this.organizersIn
         this.organizerName.valueChanges.subscribe(oNameStart => this.filterOrganizerByName(oNameStart))
     }
 
@@ -190,8 +190,8 @@ export class EventFormComponent implements OnInit, OnChanges {
         // prepare dates
         this.updateEventId = this.eventIn._id
         console.log(this.eventIn)
-        const start = moment(this.eventIn.date.start).toDate()
-        const end = moment(this.eventIn.date.end).toDate()
+        const start: any = moment(this.eventIn.date.start).toDate()
+        const end: any = moment(this.eventIn.date.end).toDate()
         const organizer = this.organizersIn.find(org => org._id === this.eventIn._organizerId)
         this.organizerName.setValue(organizer.name)
         this.updateOrganizerId = organizer._id
@@ -247,7 +247,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     checkDisabled() {
         return !(!this.eventForm.invalid && this.category !== undefined);
     }
-    filterOrganizerByName(oNameStart){
+    filterOrganizerByName(oNameStart) {
         this.filteredOrganizers = this.organizersIn.filter(organizer => organizer.name.toLowerCase().startsWith(oNameStart.toLowerCase()));
 
     }
