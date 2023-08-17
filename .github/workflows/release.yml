@@ -5,6 +5,7 @@ on:
     branches: [ develop ]
   workflow_dispatch:
 
+
 jobs:
   analyze:
     name: Analyze
@@ -124,7 +125,7 @@ jobs:
 
 
   deploy:
-    needs: [ build_frontend, build_insert-app, build_backend ]
+    needs: [analyze, build_frontend, build_insert-app, build_backend ]
     name: Deploy
     runs-on: strato
     steps:
