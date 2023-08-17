@@ -5,37 +5,7 @@ on:
     branches: [ develop ]
   workflow_dispatch:
 
-
 jobs:
-  analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'javascript' ]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          languages: ${{ matrix.language }}
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
-
-
-
   build_backend:
     #    needs: analyze
     name: Build And Push Backend
@@ -125,12 +95,12 @@ jobs:
 
 
   deploy:
-    needs: [analyze, build_frontend, build_insert-app, build_backend ]
+    needs: [build_frontend, build_insert-app, build_backend ]
     name: Deploy
     runs-on: strato
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
