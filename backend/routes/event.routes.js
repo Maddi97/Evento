@@ -141,9 +141,9 @@ router.post('/upcomingEvents', limiter, (req, res) => {
 router.post('/checkIfEventExists', limiter, (req, res) => {
     const start = new Date(req.body.event.date.start).getTime()
     const end = new Date(req.body.event.date.end).getTime()
-
-    const name = req.body.event.name
-    const organizerName = req.body.event.organizerName
+    const event = new Event(req.body.event)
+    const name = event.name
+    const organizerName = event.organizerName
 
     const oneDayInMillis = 24 * 60 * 60 * 1000; // One day in milliseconds
     const startMinus1 = new Date(start - oneDayInMillis);
@@ -170,7 +170,7 @@ router.post('/checkIfEventExists', limiter, (req, res) => {
                     permanent: true
                 },
                 {
-                    permanent: !req.body.event.permanent
+                    permanent: !event.permanent
                 }
             ]
         }
@@ -198,22 +198,29 @@ router.post('/organizer/:organizerId/events', limiter, auth, (req, res) => {
 });
 
 router.get('/organizer/:organizerId/events/:eventId', limiter, (req, res) => {
-    Event.findOne({ _organizerId: req.params.organizerId, _id: req.params.eventId })
+    const orgId = String(req.params.organizerId)
+    const eventId = String(req.params.eventId)
+    Event.findOne({ _organizerId: orgId, _id: eventId })
         .then((event) => res.send(event))
         .catch((error) => console.log(error))
 });
 
 router.patch('/organizer/:organizerId/events/:eventId', limiter, auth, (req, res) => {
+    const orgId = String(req.params.organizerId)
+    const eventId = String(req.params.eventId)
+    const event = new Event(req.body.event)
     Event.findOneAndUpdate(
-        { _organizerId: req.params.organizerId, _id: req.params.eventId },
-        { $set: req.body.event }, { new: true }
+        { _organizerId: orgId, _id: eventId },
+        { $set: event }, { new: true }
     )
         .then((event) => res.send(event))
         .catch((error) => console.log(error));
 });
 
 router.delete('/organizer/:organizerId/events/:eventId', limiter, auth, (req, res) => {
-    Event.findOneAndDelete({ _organizerId: req.params.organizerId, _id: req.params.eventId })
+    const orgId = String(req.params.organizerId)
+    const eventId = String(req.params.eventId)
+    Event.findOneAndDelete({ _organizerId: orgId, _id: eventId })
         .then((event) => res.send(event))
         .catch((error) => console.log(error))
 });

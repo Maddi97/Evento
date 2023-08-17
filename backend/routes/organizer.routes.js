@@ -23,7 +23,7 @@ router.post('/organizerByEventCategory', limiter, (req, res) => {
     let catId = req.body.category._id
     Organizer.find(
         {}).then((organizers) => {
-            Event.find({ 'category._id': catId }).then(
+            Event.find({ 'category._id': { $eq: catId } }).then(
                 (events) => {
                     organizers.map(o => {
                         events.map(ev => {
@@ -46,7 +46,7 @@ router.post('/organizerByEventCategory', limiter, (req, res) => {
 })
 
 router.get('/organizer/:organizerId', limiter, (req, res) => {
-    Organizer.find({ _id: req.params.organizerId })
+    Organizer.find({ _id: { $eq: req.params.organizerId } })
         .then((organizer) => res.send(organizer))
         .catch((error) => console.log(error))
 })
@@ -61,7 +61,7 @@ router.patch('/organizer/:organizerId', limiter, auth, (req, res) => {
 });
 
 router.delete('/organizer/:organizerId', limiter, auth, (req, res) => {
-    Organizer.findByIdAndDelete({ _id: req.params.organizerId })
+    Organizer.findByIdAndDelete({ _id: { $eq: req.params.organizerId } })
         .then((organizer) => res.send(organizer))
         .catch((error => console.log(error)))
 });
