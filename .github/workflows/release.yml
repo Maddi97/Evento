@@ -148,15 +148,15 @@ jobs:
 
       - name: Create Environment File
         env:
-          duckdns_token: ${{ secrets.PI }}
           auth_secret: ${{secrets.AUTH_SECRET}}
           auth_signupkey: ${{secrets.AUTH_SIGNUPKEY}}
 
         run: |
             touch .env.prod
             echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
-            echo "SIGNUPKEY=$auth_signupkey" >> .env.prod
-            echo "SECRET=$auth_secret" >> .env.prod
+            touch backend/.env
+            echo "SIGNUPKEY=$auth_signupkey" >> backend/.env
+            echo "SECRET=$auth_secret" >> backend/.env
 
 
       - name: Start Docker Containers
