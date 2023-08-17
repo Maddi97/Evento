@@ -6,6 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const limiter = require('../middleware/rateLimiter')
 const sanitizeFilename = require('sanitize-filename'); // You can use the sanitize-filename package for additional validation
+const { validatePath } = require("../helpers/filePathSanitize");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -32,15 +33,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (req, res, next) {
-
-    destinationIcon = String(req.body.file_path)
+    destinationIcon = req.body.file_path
     let icon = undefined
     //in case update updates only stockImage the Icon stays undefined
     if (destinationIcon !== undefined) {
         icon = req.files[0]
     }
 
-    destinationStockImage = String(req.body.stockImagePath)
+    destinationStockImage = req.body.stockImagePath
     let stockImage = undefined
     //case both are updated
     if (destinationStockImage !== undefined && destinationIcon !== undefined) {
@@ -52,12 +52,15 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
     //check if dest path exists otherwise create
 
     if (icon !== undefined && stockImage === undefined) {
+        console.log(1, destinationIcon)
+        destinationIcon = validatePath(destinationIcon)
         fs.mkdirSync(destinationIcon, { recursive: true });
         //move icon from temp dir to destination
 
         fs.copyFile(icon.path,
             path.join(destinationIcon, sanitizeFilename(icon.filename)),
             function (err) {
+                console.log(err)
                 if (err) {
                     return console.error(err);
                 } else {
@@ -66,7 +69,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
                             if (err) {
                                 return console.error(err);
                             }
-                            icon.path = path.join(destinationIcon, sanitizeFilename(icon.filename))
+                            icon.path = path.join(String(destinationIcon), icon.filename)
                             res.json({ 'icon': icon, 'stockImage': stockImage });
                         }
                     )
@@ -76,11 +79,13 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
     }
 
     if (stockImage !== undefined && icon === undefined) {
+        destinationStockImage = validatePath(destinationStockImage)
+
         fs.mkdirSync(destinationStockImage, { recursive: true });
         //move icon from temp dir to destination
         fs.copyFile(
-            stockImage.path,
-            path.join(destinationStockImage, sanitizeFilename(stockImage.filename)),
+            validatePath(stockImage.path),
+            path.join(validatePath(destinationStockImage), sanitizeFilename(stockImage.filename)),
             function (err) {
                 if (err) {
                     return console.error(err);
@@ -90,7 +95,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
                             if (err) {
                                 return console.error(err);
                             }
-                            stockImage.path = path.join(destinationStockImage, stockImage.filename)
+                            stockImage.path = path.join(String(destinationStockImage), stockImage.filename)
                             res.json({ 'icon': icon, 'stockImage': stockImage });
                         }
                     )
@@ -104,8 +109,8 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
         fs.mkdirSync(destinationIcon, { recursive: true });
         //move icon from temp dir to destination
         fs.copyFile(
-            icon.path,
-            path.join(destinationIcon, sanitizeFilename(icon.filename)),
+            validatePath(icon.path),
+            path.join(validatePath(destinationIcon), sanitizeFilename(icon.filename)),
             function (err) {
                 if (err) {
                     return console.error(err);
@@ -115,18 +120,19 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
                             if (err) {
                                 return console.error(err);
                             }
-                            icon.path = path.join(destinationIcon, icon.filename)
+                            icon.path = path.join(String(destinationIcon), icon.filename)
                         }
                     )
                 }
             }
         );
+        destinationStockImage = validatePath(destinationStockImage)
 
         fs.mkdirSync(destinationStockImage, { recursive: true });
 
         //move icon from temp dir to destination
         fs.copyFile(
-            stockImage.path,
+            validatePath(stockImage.path),
             path.join(destinationStockImage, stockImage.filename),
             function (err) {
                 if (err) {
@@ -137,7 +143,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
                             if (err) {
                                 return console.error(err);
                             }
-                            stockImage.path = path.join(destinationStockImage, sanitizeFilename(stockImage.filename))
+                            stockImage.path = path.join(String(destinationStockImage), sanitizeFilename(stockImage.filename))
                             res.json({ 'icon': icon, 'stockImage': stockImage });
                         }
                     )
@@ -159,18 +165,18 @@ router.post('/uploadEventImage', upload.array('files'), limiter, function (req, 
 
     //move icon from temp dir to destination
     fs.copyFile(
-        eventImage.path,
-        path.join(destinationEventImage, sanitizeFilename(eventImage.filename)),
+        validatePath(eventImage.path),
+        path.join(validatePath(destinationEventImage), sanitizeFilename(eventImage.filename)),
         function (err) {
             if (err) {
                 return console.error(err);
             } else {
-                fs.rm(eventImage.path,
+                fs.rm(validatePath(eventImage.path),
                     function (err) {
                         if (err) {
                             return console.error(err);
                         }
-                        eventImage.path = path.join(destinationEventImage, eventImage.filename)
+                        eventImage.path = path.join(String(destinationEventImage), eventImage.filename)
                         res.json({ 'eventImage': eventImage });
                     }
                 )
@@ -184,7 +190,7 @@ router.post('/uploadEventImage', upload.array('files'), limiter, function (req, 
 
 router.post('/uploadOrganizerImage', upload.array('files'), limiter, function (req, res, next) {
 
-    const destinationOrganizerImage = req.body.organizerImagePath
+    const destinationOrganizerImage = validatePath(req.body.organizerImagePath)
     const organizerImage = req.files[0]
 
     fs.mkdirSync(destinationOrganizerImage, { recursive: true });
@@ -192,13 +198,13 @@ router.post('/uploadOrganizerImage', upload.array('files'), limiter, function (r
 
     //move icon from temp dir to destination
     fs.copyFile(
-        organizerImage.path,
+        validatePath(organizerImage.path),
         path.join(destinationOrganizerImage, sanitizeFilename(organizerImage.filename)),
         function (err) {
             if (err) {
                 return console.error(err);
             } else {
-                fs.rm(organizerImage.path,
+                fs.rm(validatePath(organizerImage.path),
                     function (err) {
                         if (err) {
                             return console.error(err);

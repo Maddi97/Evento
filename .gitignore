@@ -8,7 +8,7 @@ node_modules
 
 .idea
 .env.prod
-
+.env
 #Include Only Important Configuration For Reverse-Proxy
 #letsencryptStrato/*
 #!letsencryptStrato/config/
