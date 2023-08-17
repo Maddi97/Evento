@@ -5,6 +5,7 @@ const multer = require('multer');
 const fs = require('fs')
 const path = require('path')
 const limiter = require('../middleware/rateLimiter')
+const sanitizeFilename = require('sanitize-filename'); // You can use the sanitize-filename package for additional validation
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -32,14 +33,14 @@ const upload = multer({ storage });
 
 router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (req, res, next) {
 
-    destinationIcon = req.body.file_path
+    destinationIcon = String(req.body.file_path)
     let icon = undefined
     //in case update updates only stockImage the Icon stays undefined
     if (destinationIcon !== undefined) {
         icon = req.files[0]
     }
 
-    destinationStockImage = req.body.stockImagePath
+    destinationStockImage = String(req.body.stockImagePath)
     let stockImage = undefined
     //case both are updated
     if (destinationStockImage !== undefined && destinationIcon !== undefined) {
@@ -55,7 +56,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
         //move icon from temp dir to destination
 
         fs.copyFile(icon.path,
-            path.join(destinationIcon, icon.filename),
+            path.join(destinationIcon, sanitizeFilename(icon.filename)),
             function (err) {
                 if (err) {
                     return console.error(err);
@@ -65,7 +66,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
                             if (err) {
                                 return console.error(err);
                             }
-                            icon.path = path.join(destinationIcon, icon.filename)
+                            icon.path = path.join(destinationIcon, sanitizeFilename(icon.filename))
                             res.json({ 'icon': icon, 'stockImage': stockImage });
                         }
                     )
@@ -79,7 +80,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
         //move icon from temp dir to destination
         fs.copyFile(
             stockImage.path,
-            path.join(destinationStockImage, stockImage.filename),
+            path.join(destinationStockImage, sanitizeFilename(stockImage.filename)),
             function (err) {
                 if (err) {
                     return console.error(err);
@@ -104,7 +105,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
         //move icon from temp dir to destination
         fs.copyFile(
             icon.path,
-            path.join(destinationIcon, icon.filename),
+            path.join(destinationIcon, sanitizeFilename(icon.filename)),
             function (err) {
                 if (err) {
                     return console.error(err);
@@ -136,7 +137,7 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
                             if (err) {
                                 return console.error(err);
                             }
-                            stockImage.path = path.join(destinationStockImage, stockImage.filename)
+                            stockImage.path = path.join(destinationStockImage, sanitizeFilename(stockImage.filename))
                             res.json({ 'icon': icon, 'stockImage': stockImage });
                         }
                     )
@@ -159,7 +160,7 @@ router.post('/uploadEventImage', upload.array('files'), limiter, function (req, 
     //move icon from temp dir to destination
     fs.copyFile(
         eventImage.path,
-        path.join(destinationEventImage, eventImage.filename),
+        path.join(destinationEventImage, sanitizeFilename(eventImage.filename)),
         function (err) {
             if (err) {
                 return console.error(err);
@@ -192,7 +193,7 @@ router.post('/uploadOrganizerImage', upload.array('files'), limiter, function (r
     //move icon from temp dir to destination
     fs.copyFile(
         organizerImage.path,
-        path.join(destinationOrganizerImage, organizerImage.filename),
+        path.join(destinationOrganizerImage, sanitizeFilename(organizerImage.filename)),
         function (err) {
             if (err) {
                 return console.error(err);
