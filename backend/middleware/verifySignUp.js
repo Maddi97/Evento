@@ -3,7 +3,7 @@ const User = require("../model/user.model");
 checkDuplicateUsernameOrEmail = (req, res, next) => {
     // Username
     User.findOne({
-        username: req.body.username
+        username: String(req.body.username)
     }).then((user) => {
 
         if (user) {
@@ -12,7 +12,7 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
         }
         // Email
         User.findOne({
-            email: req.body.email
+            email: String(req.body.email)
         }).then((user) => {
             if (user) {
                 res.status(400).send({ message: "Failed! Email is already in use!" });
