@@ -1,10 +1,10 @@
-import {AfterContentInit, AfterViewInit, Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
-import {Category, Subcategory} from '../../models/category';
-import {debounceTime, map, mergeMap, take} from 'rxjs/operators';
-import {CategoriesService} from '../../categories/categories.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FileService} from '../../file.service';
-import {DomSanitizer} from '@angular/platform-browser';
+import { AfterContentInit, AfterViewInit, Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
+import { Category, Subcategory } from '../../models/category';
+import { debounceTime, map, mergeMap, take } from 'rxjs/operators';
+import { CategoriesService } from '../../categories/categories.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FileService } from '../../file.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-category-list',
@@ -116,7 +116,7 @@ export class CategoryListComponent implements OnInit {
     if (cat.subcategories !== undefined) {
       this.filteredSubcategories = [];
     }
-    this.setRouteParameter({subcategory: this.filteredSubcategories, category: this.filteredCategory._id})
+    this.setRouteParameter({ subcategory: this.filteredSubcategories, category: this.filteredCategory._id })
     this.categoryOutputEmitter.emit(this.filteredCategory)
     this.subCategoryOutputEmitter.emit(this.filteredSubcategories)
   }
@@ -140,14 +140,21 @@ export class CategoryListComponent implements OnInit {
   }
 
   // change color if category picked
-  isElementPicked(cat: any) {
-    if (this.filteredCategory === cat || this.filteredSubcategories.includes(cat)) {
+  isCategoryPicked(cat: any) {
+    if (this.filteredCategory === cat) {
       return 'category-picked';
     } else {
       return 'category-non-picked';
     }
   }
 
+  isSubCategoryPicked(subcat: any) {
+    if (this.filteredSubcategories.includes(subcat)) {
+      return 'subcategory-picked';
+    } else {
+      return 'subcategory-non-picked';
+    }
+  }
 
   empty_filters() {
     this.filteredCategory = 'hot'
@@ -184,11 +191,11 @@ export class CategoryListComponent implements OnInit {
     this.setScrollMaxBool()
   }
   scrollToClicked() {
-  const element: HTMLElement = document.getElementById('category-picked')
-  console.log(element)
-  if(!element) return;
-  element.scrollIntoView({ inline: "center"})
-}
+    const element: HTMLElement = document.getElementById('category-picked')
+    console.log(element)
+    if (!element) return;
+    element.scrollIntoView({ inline: "center" })
+  }
 
   scrollRight() {
     const element = document.getElementById('main-category-container')
@@ -208,10 +215,10 @@ export class CategoryListComponent implements OnInit {
   @HostListener('window:mouseover', ['$event'])
   setScrollMaxBool() {
     setTimeout(() => {
-    const element = document.getElementById('main-category-container')
-    if(!element) {return;}
-    this.scrollLeftMax = (element.scrollLeft === 0)
-    this.scrollRightMax = (element.scrollLeft === element.scrollWidth - element.clientWidth);
+      const element = document.getElementById('main-category-container')
+      if (!element) { return; }
+      this.scrollLeftMax = (element.scrollLeft === 0)
+      this.scrollRightMax = (element.scrollLeft === element.scrollWidth - element.clientWidth);
     }, 300);
 
   }

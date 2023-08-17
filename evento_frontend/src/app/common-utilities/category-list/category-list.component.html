@@ -1,34 +1,31 @@
-<div
-  *ngIf="getScreenWidth>700"
+<div *ngIf="getScreenWidth>700"
   [ngStyle]="{ 'display': scrollLeftMax ? 'none' : 'flex', 'cursor': scrollLeftMax ? 'unset' : 'pointer' }"
   class="icon icon-left" (click)="scrollLeft()">
   <mat-icon>arrow_back_ios_new</mat-icon>
 </div>
 
-<span class="category" [ngClass]="isElementPicked('hot')" (click)="addCategoryToFilter('hot')">
-                <img src="assets/static-icons/icons8-flame-60.png"/>
-              Hot
-          </span>
+<span class="category" [ngClass]="isCategoryPicked('hot')" (click)="addCategoryToFilter('hot')">
+  <img src="assets/static-icons/icons8-flame-60.png" />
+  Hot
+</span>
 
 <div *ngFor="let category of categoryList" class="category-list">
-          <span class="category" id="{{isElementPicked(category)}}" [ngClass]="isElementPicked(category)"
-                (click)="addCategoryToFilter(category)">
-          <img [src]="category.iconTemporaryURL"/>
-            {{ category.name }}
-          </span>
-  <div class="arrow-and-subcategory" *ngIf="false && category?.subcategories?.length > 0
-                                                 && isElementPicked(category) == 'category-picked'">
-    <mat-icon>keyboard_arrow_down</mat-icon>
-    <div  class="subcategory-container">
+  <span class="category" id="{{isCategoryPicked(category)}}" [ngClass]="isCategoryPicked(category)"
+    (click)="addCategoryToFilter(category)">
+    <img [src]="category.iconTemporaryURL" />
+    {{ category.name }}
+  </span>
+  <div class="arrow-and-subcategory"
+    *ngIf="category?.subcategories?.length > 0 && isCategoryPicked(category) == 'category-picked'">
+    <div class="subcategory-container">
       <div *ngFor="let subcategory of category.subcategories">
-                <span class="subcategory" [ngClass]="isElementPicked(subcategory)"
-                      (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>
+        <span class="subcategory" [ngClass]="isSubCategoryPicked(subcategory)"
+          (click)="addSubcategoryToFilter(subcategory)">{{subcategory.name}}</span>
       </div>
     </div>
   </div>
 </div>
-<div
-  *ngIf="getScreenWidth>700"
+<div *ngIf="getScreenWidth>700"
   [ngStyle]="{ 'display': scrollRightMax ? 'none' : 'flex', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
   class="icon icon-right" (click)="scrollRight()">
   <mat-icon>arrow_forward_ios</mat-icon>
