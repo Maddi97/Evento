@@ -18,14 +18,16 @@ router.post('/category', limiter, auth, (req, res) => {
 });
 
 router.delete('/category/:categoryId', limiter, auth, (req, res) => {
-    Category.findByIdAndDelete({ _id: req.params.categoryId })
+    const id = String(req.params.categoryId)
+    Category.findByIdAndDelete({ _id: id })
         .then((category) => res.send(category))
         .catch((error) => console.log(error))
 });
 
 router.patch('/category/:categoryId', limiter, auth, (req, res) => {
-
-    Category.findByIdAndUpdate({ _id: req.params.categoryId }, { $set: req.body.category }, { returnOriginal: false },
+    const id = String(req.params.categoryId)
+    const cat = new Category(req.body.category)
+    Category.findByIdAndUpdate({ _id: id }, { $set: cat }, { returnOriginal: false },
     )
         .then((category) => {
             res.send(category)

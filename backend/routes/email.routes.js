@@ -8,7 +8,15 @@ const limiter = require("../middleware/rateLimiter")
 
 router.post('/sendFeedback', limiter, (req, res) => {
 
-    const feedback = req.body
+    const feedback = {
+        name: sanitizeInput(req.body.name),
+        mail: sanitizeInput(req.body.mail),
+        reason: sanitizeInput(req.body.reason),
+        description: sanitizeInput(req.body.description)
+    };
+
+
+
     const messageText = `Name: ${feedback.name} \n`
         + `Mail: ${feedback.mail} \n`
         + `Anliegen: ${feedback.reason} \n`
@@ -54,7 +62,14 @@ router.post('/sendFeedback', limiter, (req, res) => {
 
 router.post('/sendEvent', limiter, (req, res) => {
 
-    const event = req.body
+    const event = {
+        name: sanitizeInput(req.body.name),
+        organizerName: sanitizeInput(req.body.organizerName),
+        adress: sanitizeInput(req.body.adress),
+        link: sanitizeInput(req.body.link),
+        description: sanitizeInput(req.body.description)
+    };
+
     const messageText = `Name: ${event.name} \n`
         + `Organizer: ${event.organizerName} \n`
         + `Adresse: ${event.adress} \n`
@@ -101,6 +116,10 @@ router.post('/sendEvent', limiter, (req, res) => {
 
 
 });
+
+function sanitizeInput(input) {
+    return input.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
 
 module.exports = router;
