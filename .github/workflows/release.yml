@@ -149,7 +149,15 @@ jobs:
       - name: Create Environment File
         env:
           duckdns_token: ${{ secrets.PI }}
-        run: touch .env.prod && echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
+          auth_secret: ${{secrets.AUTH_SECRET}}
+          auth_signupkey: ${{secrets.AUTH_SIGNUPKEY}}
+
+        run: |
+            touch .env.prod
+            echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
+            echo "SIGNUPKEY=$auth_signupkey" >> .env.prod
+            echo "SECRET=$auth_secret" >> .env.prod
+
 
       - name: Start Docker Containers
         uses: nick-fields/retry@v2
