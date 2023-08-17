@@ -50,7 +50,6 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   constructor(
     private positionService: PositionService,
-    private router: Router
   ) {
   }
 

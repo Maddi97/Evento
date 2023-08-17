@@ -25,6 +25,10 @@
   img {
     width: 1.2rem !important;
   }
+
+  .subcategory-container {
+    margin-top: 16px !important;
+  }
 }
 
 .category-list {
@@ -43,13 +47,14 @@
   padding: .3rem;
 }
 
-.arrow-and-subcategory {
+.subcategory-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   max-width: 0rem;
   margin-top: -10px;
+  min-height: 29px;
 }
 
 .subcategory-container {
@@ -61,7 +66,7 @@
   scroll-behavior: smooth;
   /* Add smooth scroll behavior */
   transition: transform 1s linear;
-  margin-top: 16px;
+  margin-top: 5px;
 }
 
 .subcategory-container::-webkit-scrollbar {

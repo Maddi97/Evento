@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Event } from '../../models/event';
 import { EventService } from '../../events/event.service';
 import { PositionService } from '../map-view/position.service';
