@@ -19,9 +19,9 @@
     <img class="logo" src="assets/branding/logo_name.png" alt="logo name">
   </div>
 
-  <app-date-picker class="date-picker" (clickedDate)="searchForDay($event)"></app-date-picker>
+  <app-date-picker *ngIf="!fullEventPage" class="date-picker" (clickedDate)="searchForDay($event)"></app-date-picker>
 
-  <div class="menu-container">
+  <div *ngIf="!fullEventPage" class="menu-container">
     <app-hamburger-menu></app-hamburger-menu>
   </div>
 
