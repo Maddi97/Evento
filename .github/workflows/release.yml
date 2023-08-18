@@ -2,108 +2,104 @@ name: Release
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop]
   workflow_dispatch:
 
 jobs:
-  build_backend:
-    #    needs: analyze
-    name: Build And Push Backend
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+  # build_backend:
+  #   #    needs: analyze
+  #   name: Build And Push Backend
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v1
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v1
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.dockerhub_user }}
-          password: ${{ secrets.dockerhub_password }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.dockerhub_user }}
+  #         password: ${{ secrets.dockerhub_password }}
 
-      - name: Build Backend Docker Containers
-        uses: docker/build-push-action@v2
-        with:
-          platforms: linux/x86_64
-          context: https://github.com/Maddi97/Evento.git#develop:backend
-          file: ./prod.Dockerfile
-          push: true
-          tags: ${{secrets.dockerhub_user}}/evento_backend:latest
+  #     - name: Build Backend Docker Containers
+  #       uses: docker/build-push-action@v2
+  #       with:
+  #         platforms: linux/x86_64
+  #         context: https://github.com/Maddi97/Evento.git#develop:backend
+  #         file: ./prod.Dockerfile
+  #         push: true
+  #         tags: ${{secrets.dockerhub_user}}/evento_backend:latest
 
-  build_frontend:
-    #needs: analyze
-    name: Build And Push Events
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+  # build_frontend:
+  #   #needs: analyze
+  #   name: Build And Push Events
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v3
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v1
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v1
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.dockerhub_user }}
-          password: ${{ secrets.dockerhub_password }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.dockerhub_user }}
+  #         password: ${{ secrets.dockerhub_password }}
 
-      - name: Build Frontend Docker Containers
-        uses: docker/build-push-action@v2
-        with:
-          platforms: linux/x86_64
-          context: https://github.com/Maddi97/Evento.git#develop:evento_frontend
-          file: ./prod.Dockerfile
-          push: true
-          tags: ${{secrets.dockerhub_user}}/evento_frontend:latest
+  #     - name: Build Frontend Docker Containers
+  #       uses: docker/build-push-action@v2
+  #       with:
+  #         platforms: linux/x86_64
+  #         context: https://github.com/Maddi97/Evento.git#develop:evento_frontend
+  #         file: ./prod.Dockerfile
+  #         push: true
+  #         tags: ${{secrets.dockerhub_user}}/evento_frontend:latest
 
-  build_insert-app:
-    # needs: analyze
-    name: Build And Push Insert
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+  # build_insert-app:
+  #   # needs: analyze
+  #   name: Build And Push Insert
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v1
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v1
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.dockerhub_user }}
-          password: ${{ secrets.dockerhub_password }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.dockerhub_user }}
+  #         password: ${{ secrets.dockerhub_password }}
 
-      - name: Build Insert-App Docker Containers
-        uses: docker/build-push-action@v2
-        with:
-          platforms: linux/x86_64
-          context: https://github.com/Maddi97/Evento.git#develop:evento_insert
-          file: ./prod.Dockerfile
-          push: true
-          tags: ${{secrets.dockerhub_user}}/evento_insert:latest
-
+  #     - name: Build Insert-App Docker Containers
+  #       uses: docker/build-push-action@v2
+  #       with:
+  #         platforms: linux/x86_64
+  #         context: https://github.com/Maddi97/Evento.git#develop:evento_insert
+  #         file: ./prod.Dockerfile
+  #         push: true
+  #         tags: ${{secrets.dockerhub_user}}/evento_insert:latest
 
   deploy:
-    needs: [build_frontend, build_insert-app, build_backend ]
+    # needs: [build_frontend, build_insert-app, build_backend ]
     name: Deploy
     runs-on: strato
     steps:
-      - name: Clear repository
-        run: sudo rm -fr $GITHUB_WORKSPACE && mkdir $GITHUB_WORKSPACE
-        
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -126,12 +122,11 @@ jobs:
           auth_signupkey: ${{secrets.AUTH_SIGNUPKEY}}
 
         run: |
-            touch .env.prod
-            echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
-            touch backend/.env
-            echo "SIGNUPKEY=$auth_signupkey" >> backend/.env
-            echo "SECRET=$auth_secret" >> backend/.env
-
+          touch .env.prod
+          echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
+          touch backend/.env
+          echo "SIGNUPKEY=$auth_signupkey" >> backend/.env
+          echo "SECRET=$auth_secret" >> backend/.env
 
       - name: Start Docker Containers
         uses: nick-fields/retry@v2
@@ -140,4 +135,3 @@ jobs:
           retry_on: error
           timeout_seconds: 500
           command: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
-
