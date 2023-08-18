@@ -99,6 +99,9 @@ jobs:
     name: Deploy
     runs-on: strato
     steps:
+      - name: Clear repository
+        run: sudo rm -fr $GITHUB_WORKSPACE && mkdir $GITHUB_WORKSPACE
+        
       - name: Checkout Repository
         uses: actions/checkout@v2
 
