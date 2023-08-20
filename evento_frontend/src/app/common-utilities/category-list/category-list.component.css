@@ -29,6 +29,9 @@
   .subcategory-container {
     margin-top: 16px !important;
   }
+.subcategory-placeholder {
+      min-height: 39px !important;
+    }
 }
 
 .category-list {
