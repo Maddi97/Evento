@@ -4,6 +4,7 @@ letsencryptCertKeys
 
 backend/images
 backend/temp_dir
+backend/backup
 node_modules
 
 .idea
