@@ -136,7 +136,6 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
 
 
   getYPosition(e: Event): void {
-    console.log(e)
   }
 
   addDates() {
@@ -180,7 +179,6 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
   }
 
   setRouteParameter(params) {
-    console.log(this.router.routerState)
     this.router.navigate([], {
       queryParams: params,
       relativeTo: this._activatedRoute,

@@ -139,7 +139,6 @@ getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
       share()
     );
       obs.toPromise().then((response) => {
-          console.log(response)
       });
     return obs;
   }

@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { Category, Subcategory } from '../../models/category';
 import { debounceTime, map, mergeMap, take } from 'rxjs/operators';
 import { CategoriesService } from '../../categories/categories.service';
@@ -16,7 +16,7 @@ export class CategoryListComponent implements OnInit {
   categoryList: Category[] = [];
 
   subcategoryList: Subcategory[] = [];
-  filteredCategory: any = 'hot';
+  @Input() filteredCategory: any = {name: 'hot'};
 
   @Output() categoryOutputEmitter = new EventEmitter<any>();
   @Output() subCategoryOutputEmitter = new EventEmitter<Subcategory[]>();
@@ -39,16 +39,12 @@ export class CategoryListComponent implements OnInit {
   ) {
   }
 
-  ngOnDestroy() {
-    // this.events$.unsubscribe()
-    this.empty_filters()
-  }
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
     //document.getElementById('main-category-container').scrollLeft = 0;
     this.setScrollMaxBool()
-    this.filteredCategory = 'hot'
+
 
     const categories$ = this.categoriesService.categories.pipe(
       map((categories: Category[]) => {
@@ -61,36 +57,8 @@ export class CategoryListComponent implements OnInit {
       })
     )
 
-    const params$ = this._activatedRoute.queryParams.pipe(
-      map(params => {
-        console.log(params)
-        const category = params.category;
-        if (category !== undefined) {
-          this.categoryList.forEach(c => {
-            if (c._id === category) {
-              this.filteredCategory = c;
-            }
-          });
-        }
-
-        const subcategories = params.subcategory;
-        if (subcategories !== undefined) {
-          this.subcategoryList.forEach(s => {
-            if (subcategories.includes(s._id)) {
-              this.filteredSubcategories.push(s);
-            }
-          });
-        }
-        this.categoryOutputEmitter.emit(this.filteredCategory);
-        this.subCategoryOutputEmitter.emit(this.filteredSubcategories);
-      }));
 
     categories$
-      .pipe(
-        mergeMap(() => params$),
-        debounceTime(.1),
-        take(2)
-      )
       .subscribe(() => {
         this.downloadCategoryIcon()
         this.scrollToClicked()
@@ -106,7 +74,7 @@ export class CategoryListComponent implements OnInit {
   // add or remove clicked category to list of filter
   addCategoryToFilter(cat: any) {
     // scroll.scrollLeft = scroll.scrollWidth / 3
-    if (this.filteredCategory === cat) {
+    if (this.filteredCategory.name === cat.name) {
       return;
     } else {
       this.filteredCategory = cat;
@@ -141,7 +109,7 @@ export class CategoryListComponent implements OnInit {
 
   // change color if category picked
   isCategoryPicked(cat: any) {
-    if (this.filteredCategory === cat) {
+    if (this.filteredCategory.name === cat.name) {
       return 'category-picked';
     } else {
       return 'category-non-picked';
@@ -157,7 +125,7 @@ export class CategoryListComponent implements OnInit {
   }
 
   empty_filters() {
-    this.filteredCategory = 'hot'
+    this.filteredCategory = {name: 'hot'}
     this.filteredSubcategories = []
   }
 
@@ -192,7 +160,6 @@ export class CategoryListComponent implements OnInit {
   }
   scrollToClicked() {
     const element: HTMLElement = document.getElementById('category-picked')
-    console.log(element)
     if (!element) return;
     element.scrollIntoView({ inline: "center" })
   }

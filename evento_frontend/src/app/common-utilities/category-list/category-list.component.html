@@ -4,7 +4,7 @@
   <mat-icon>arrow_back_ios_new</mat-icon>
 </div>
 
-<span class="category" [ngClass]="isCategoryPicked('hot')" (click)="addCategoryToFilter('hot')">
+<span class="category" [ngClass]="isCategoryPicked({name: 'hot'})" (click)="addCategoryToFilter({name: 'hot'})">
   <img src="assets/static-icons/icons8-flame-60.png" />
   Hot
 </span>

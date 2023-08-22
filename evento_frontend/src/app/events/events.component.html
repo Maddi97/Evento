@@ -3,15 +3,14 @@
 
     <!--    <span class="category-label">Kategorien</span>-->
     <!-- <img class="category-headline" src="assets/design-elements/Kategorien_design.png"> -->
-    <app-category-list class="main-category-container" id="main-category-container"
-      (categoryOutputEmitter)="this.filteredCategory = $event"
-      (subCategoryOutputEmitter)="this.filteredSubcategories = $event"></app-category-list>
+    <app-category-list class="main-category-container" id="main-category-container" [filteredCategory] = filteredCategory
+      (categoryOutputEmitter)="triggerCategoryOutput($event)"
+      (subCategoryOutputEmitter)="triggerSubcategoryOutput($event)"></app-category-list>
 
     <div class="event-map-container" *ngIf="getScreenWidth>1000">
 
       <div class="event-container">
-        <app-event-tile-list [categories]="[filteredCategory]" [subcategories]="filteredSubcategories"
-          (eventListEmitter)="eventList = $event" (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
+        <app-event-tile-list [eventList] = eventList (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
       </div>
 
       <div class="map-container">
@@ -26,8 +25,12 @@
         </div>
         <div class="event-container">
 
-          <app-event-tile-list [categories]="[filteredCategory]" [subcategories]="filteredSubcategories"
-            (eventListEmitter)="eventList = $event" (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
+          <app-event-tile-list [eventList]="eventList" 
+       (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
+            <div *ngIf="eventList.length >= actualLoadEventLimit" class="load-more-events-button" (click)="loadMoreEvents()">
+              <mat-icon>autorenew</mat-icon>
+              <p>Lade mehr ...</p>
+            </div>
         </div>
       </div>
 

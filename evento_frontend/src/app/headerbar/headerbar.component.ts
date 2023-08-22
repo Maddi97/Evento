@@ -30,8 +30,7 @@ export class HeaderbarComponent implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      console.log(event.url)
-      console.log(event.url.includes('full-event'))
+
       if (event.url.includes('full-event')) {
         this.fullEventPage = true;
       }
