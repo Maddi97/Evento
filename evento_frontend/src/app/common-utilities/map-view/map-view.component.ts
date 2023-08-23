@@ -215,6 +215,10 @@ export class MapViewComponent implements OnInit, OnChanges {
   private setMarkers(markerData: any[]): void {
     this.markerGroup.clearLayers();
     markerData.forEach((marker) => {
+      const adressStringUrl = encodeURIComponent(
+        `${marker.address?.street} ${marker.address?.streetNumber} ${marker.address?.city}`
+      );
+      const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
       if (marker.geoData) {
         const mark = L.marker([marker.geoData.lat, marker.geoData.lon])
           .setIcon(
@@ -227,8 +231,10 @@ export class MapViewComponent implements OnInit, OnChanges {
           .bindPopup(
             `<div>${marker.name}</div>` +
               `<div class="popup-org-name">${marker.organizerName}</div>` +
+              `<div>${marker.address?.street} ${marker.address?.streetNumber}</div>` +
               `<a href="full-event/${marker._id}">Zum Event!</a>` +
-              `<app-event-picture *ngIf="event" [event]="${marker}"></app-event-picture>`
+              `<hr>` +
+              `<a target="_blank" rel="noopener noreferrer" href=${gmapsUrl} >Google Maps</a>`
           );
       }
     });
