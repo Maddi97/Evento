@@ -9,6 +9,7 @@ import { PositionService } from "../common-utilities/map-view/position.service";
 import { NominatimGeoService } from "../nominatim-geo.service";
 import { CategoriesService } from "../categories/categories.service";
 import { Category, Subcategory } from "../models/category";
+import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
 
 @Component({
   selector: "app-events",
@@ -24,8 +25,8 @@ export class EventsComponent implements OnInit {
   offset = 3;
 
   currentPosition;
-  mapView = false;
-
+  mapView = null;
+  mapView$;
   eventList: Event[] = [];
   // Applied filtered Category IDs
 
@@ -57,8 +58,21 @@ export class EventsComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private positionService: PositionService,
     private geoService: NominatimGeoService,
-    private categoriesService: CategoriesService
-  ) {}
+    private categoriesService: CategoriesService,
+    private sessionStorageService: SessionStorageService
+  ) {
+    this.mapView = this.sessionStorageService.getMapViewData();
+    if (this.mapView === null) {
+      this.sessionStorageService.setMapViewData(false); // Set the default value here as a boolean
+      this.mapView = false;
+    }
+
+    this.mapView$ = this.sessionStorageService
+      .mapViewChanges()
+      .subscribe((data) => {
+        this.mapView = data;
+      });
+  }
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
@@ -185,6 +199,7 @@ export class EventsComponent implements OnInit {
 
   changeToMapView() {
     this.mapView ? (this.mapView = false) : (this.mapView = true);
+    this.sessionStorageService.setMapViewData(this.mapView);
   }
 
   @HostListener("window:resize", ["$event"])
