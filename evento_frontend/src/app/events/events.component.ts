@@ -32,8 +32,11 @@ export class EventsComponent implements OnInit {
   categoryList: Category[] = [];
 
   subcategoryList: Subcategory[] = [];
+  hot = { name: "hot" };
+  loadMore = false;
+
   hoveredEventId = null;
-  filteredCategory = { name: "hot" };
+  filteredCategory = this.hot;
   // filteredSubcategories
   filteredSubcategories = [];
   scrollLeftMax: Boolean;
@@ -59,12 +62,10 @@ export class EventsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
-    timer(1 * 1)
-      .pipe(take(1))
-      .subscribe(() => window.scrollTo(0, 0));
     this.spinner.show();
     this.events$ = this.eventService.events.subscribe((events) => {
       this.eventList = events;
+      this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
       this.spinner.hide();
     });
     const categories$ = this.categoriesService.categories.pipe(
@@ -95,6 +96,8 @@ export class EventsComponent implements OnInit {
               this.filteredCategory = c;
             }
           });
+        } else {
+          this.filteredCategory = this.hot;
         }
 
         const subcategories = params.subcategory;
@@ -108,10 +111,11 @@ export class EventsComponent implements OnInit {
       })
     );
 
-    params$.pipe().subscribe();
+    params$.pipe().subscribe(() => this.applyFilters());
     categories$
       .pipe(
         mergeMap(() => params$),
+        debounceTime(1),
         take(2)
       )
       .subscribe(() => {

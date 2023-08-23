@@ -10,7 +10,14 @@
     <div class="event-map-container" *ngIf="getScreenWidth>1000">
 
       <div class="event-container">
-        <app-event-tile-list [eventList] = eventList (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
+        <app-event-tile-list [eventList] = eventList (hoverEventEmitter)="hoveredEventId = $event">
+                  
+        </app-event-tile-list>
+        <div *ngIf="loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
+          <mat-icon>autorenew</mat-icon>
+          <p>Lade mehr ...</p>
+        </div>
+
       </div>
 
       <div class="map-container">
@@ -27,7 +34,7 @@
 
           <app-event-tile-list [eventList]="eventList" 
        (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
-            <div *ngIf="eventList.length >= actualLoadEventLimit" class="load-more-events-button" (click)="loadMoreEvents()">
+            <div *ngIf="loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
               <mat-icon>autorenew</mat-icon>
               <p>Lade mehr ...</p>
             </div>

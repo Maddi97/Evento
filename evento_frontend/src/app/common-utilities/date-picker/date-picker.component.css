@@ -10,7 +10,7 @@
   align-items: center;
   scroll-behavior: smooth;
       /* Add smooth scroll behavior */
-  transition: transform 1s linear;
+  /* transition: transform 1s linear; */
   padding-top: 10px;
 }
 
