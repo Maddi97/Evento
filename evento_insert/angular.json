@@ -4,9 +4,9 @@
   "newProjectRoot": "projects",
   "projects": {
     "insert-app": {
+      "projectType": "application",
       "root": "",
       "sourceRoot": "src",
-      "projectType": "application",
       "prefix": "app",
       "schematics": {},
       "architect": {
