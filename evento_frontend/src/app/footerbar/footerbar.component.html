@@ -1,5 +1,5 @@
 <div class="footer" *ngIf="windowWidth<800">
-  <mat-icon class="icon" routerLink="/" [queryParams]="queryParams" [queryParamsHandling]="'merge'">
+  <mat-icon class="icon" routerLink="/" [queryParams]="queryParams" [queryParamsHandling]="'merge'" (click)="changeMapView()">
     calendar_today
   </mat-icon>
   <mat-icon class="icon" [routerLink]="['/categories']" [queryParams]="queryParams" [queryParamsHandling]="'merge'">

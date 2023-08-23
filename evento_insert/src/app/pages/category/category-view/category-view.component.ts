@@ -208,7 +208,6 @@ export class CategoryViewComponent implements OnInit {
         const category = this.updateCategoryObject;
         category.name = this.categoryName.value;
 
-        console.log('moin', this.stockImage, this.icon)
         if (this.icon && !this.stockImage) {
             const categoryImagePath = this.iconPath + category._id
             const formdata: FormData = new FormData();

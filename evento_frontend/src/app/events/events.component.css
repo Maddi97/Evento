@@ -32,6 +32,7 @@
   transition: transform 3s linear;
   /* Adjust the duration (3s) for slower or faster scrolling */
   margin-top: 0.5rem;
+  margin-bottom: 20px;
 }
 
 .category-list .ng-star-inserted {
@@ -65,10 +66,8 @@
     margin: 0 25px 0 10px !important;
     margin-top: 3rem !important;
     padding-top: 0 !important;
-  }
-
-  app-event-tile-list {
-    height: 60vh;
+    height: 60vh !important;
+    overflow: scroll !important;
   }
 }
 
@@ -87,6 +86,7 @@
 @media screen and (max-width: 1000px) {
   .main-category-container {
     margin-top: 0.5rem !important;
+    margin-bottom: 0px !important;
   }
 
   .event-map-container {
@@ -99,7 +99,6 @@
     width: 100% !important;
     padding-top: 0 !important;
     margin-top: 1.5rem;
-
   }
 
   .event-container {
@@ -108,20 +107,15 @@
   }
 }
 
-
 .map-container {
   width: 40%;
   height: auto;
   padding-top: 1rem;
-
 }
 
 app-event-tile-list {
   width: 90%;
 }
-
-
-
 
 @keyframes glowing {
   0% {
@@ -154,11 +148,11 @@ app-event-tile-list {
   z-index: 10;
 }
 
-.switchViewButton>* {
-  padding: 0.3rem
+.switchViewButton > * {
+  padding: 0.3rem;
 }
 
-.switchViewButton>p {
+.switchViewButton > p {
   display: flex;
   justify-content: center;
   align-self: center;
@@ -171,4 +165,25 @@ app-event-tile-list {
   align-self: center;
   justify-content: flex-end;
   width: 100%;
+}
+.load-more-events-button {
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  color: lightslategrey;
+  border-radius: 13px;
+  border: 1px solid;
+  padding: 4px;
+  padding-left: 15px;
+  padding-right: 15px;
+  align-items: center;
+  text-align: center;
+  box-shadow: 2px 2px 10px;
+  margin: 5px 5px 10px;
+  justify-content: center;
+  background-color: white;
+}
+
+.load-more-events-button > p {
+  margin: 0;
 }

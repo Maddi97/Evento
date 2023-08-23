@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {WebService} from './web.service';
-import {Observable, throwError as observableThrowError, BehaviorSubject, Subject} from 'rxjs';
+import {Observable, throwError as observableThrowError, BehaviorSubject, Subject, of} from 'rxjs';
 import {HttpRequest} from '@angular/common/http';
 import {filter, map, catchError, share} from 'rxjs/operators';
 import {Organizer} from './models/organizer';
@@ -12,6 +12,7 @@ import {Organizer} from './models/organizer';
 export class OrganizerService {
 
   private _organizers: BehaviorSubject<Organizer[]> = new BehaviorSubject(new Array<Organizer>());
+  private cachedFiles: Map<string, Organizer[]> = new Map();
 
   constructor(private webService: WebService) {
   }
@@ -35,6 +36,9 @@ export class OrganizerService {
   }
 
   getOrganizerById(organizerId: string): Observable<Organizer[]> {
+      if (this.cachedFiles.has(organizerId)) {
+      return of(this.cachedFiles.get(organizerId)!);
+  }
     const obs = this.webService.get(`organizer/${organizerId}`).pipe(
       map((r: HttpRequest<any>) => r as unknown as Organizer[]),
       catchError((error: any) => {
@@ -43,6 +47,7 @@ export class OrganizerService {
       }),
       share());
     obs.toPromise().then((response) => {
+      this.cachedFiles.set(organizerId, response);
       this._organizers.next(response);
     });
     return obs;
@@ -56,7 +61,7 @@ export class OrganizerService {
         return observableThrowError(error.error.message || error);
       }),
       share());
-    obs.toPromise().then((response) => {
+    obs.toPromise().then((response: Organizer[]) => {
       this._organizers.next(response);
     })
     return obs;

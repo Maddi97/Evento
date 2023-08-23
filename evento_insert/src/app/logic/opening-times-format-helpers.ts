@@ -21,8 +21,7 @@ export function dateTimesFormater(event): string {
         const day1 = start.getDate().toString().padStart(2, '0'); // Get day and pad with zero if needed
         const month1 = (start.getMonth() + 1).toString().padStart(2, '0'); // Get month (adding 1 as it's 0-indexed) and pad
         const year1 = start.getFullYear();
-        console.log(start)
-        console.log(day1)
+
         const day2 = end.getDate().toString().padStart(2, '0'); // Get day and pad with zero if needed
         const month2 = (end.getMonth() + 1).toString().padStart(2, '0'); // Get month (adding 1 as it's 0-indexed) and pad
         const year2 = end.getFullYear();
