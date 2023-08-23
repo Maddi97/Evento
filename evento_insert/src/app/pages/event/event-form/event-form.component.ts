@@ -43,7 +43,6 @@ export class EventFormComponent implements OnInit, OnChanges {
 
   updateOrganizerId = "";
   updateEventId = "";
-  eventForm = this.fb.group(getEventFormTemplate());
 
   date = new FormControl(new Date());
   category: Category;
@@ -69,6 +68,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     private organizerService: OrganizerService,
     private _snackbar: MatSnackBar
   ) {}
+  eventForm = this.fb.group(getEventFormTemplate());
 
   ngOnInit(): void {
     this.filteredOrganizers = this.organizersIn;
