@@ -50,7 +50,6 @@ export class FeedbackComponent implements OnInit {
         description: this.feedbackForm.get("description").value,
       };
       this.webService.post("sendFeedback", feedback).subscribe(
-        () => console.log,
         (error) => {
           this.openSnackBar(
             "Fehler beim senden! Bitte nochmal probieren",
