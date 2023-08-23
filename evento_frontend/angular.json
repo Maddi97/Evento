@@ -25,7 +25,9 @@
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",
                 "output": "./assets/"
-              }
+              },
+               {"glob": "robots.txt", "input": "src/assets", "output": "/"},
+                {"glob": "sitemap.xml", "input": "src/assets", "output": "/"}
             ],
             "styles": [
               "src/custom-theme.scss",
