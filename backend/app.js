@@ -7,7 +7,7 @@ var cors = require("cors");
 
 // configuration ===========================================
 const mongoose = require("./config/mongoose");
-const mongoSanitize = require("express-mongo-sanitize")
+const mongoSanitize = require("express-mongo-sanitize");
 //const xss = require("xss-clean")
 const allowedOrigins = [
   "capacitor://localhost",
@@ -43,10 +43,7 @@ app.get("/", cors(corsOptions), (req, res, next) => {
 
 app.use(express.json());
 app.use(cors());
-app.use(
-  mongoSanitize({
-  }),
-);
+app.use(mongoSanitize({}));
 //app.use(xss)
 var organizerRouter = require("./routes/organizer.routes");
 app.use(organizerRouter);
@@ -62,6 +59,7 @@ app.use(emailRouter);
 
 const authRouter = require("./routes/auth.routes");
 app.use(authRouter);
+app.enable("trust proxy");
 
 // startup our app at http://localhost:3000
 
