@@ -8,6 +8,12 @@ exports.signup = (req, res) => {
     email: String(req.query.email),
     password: bcrypt.hashSync(req.query.password, 16),
   });
+  console.log("___________________________________");
+  console.log("signup");
+  console.log("username", user.username);
+  console.log("mail", user.email);
+  console.log("password", user.password);
+  console.log("___________________________________");
 
   user
     .save()
@@ -21,6 +27,11 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
+  console.log("___________________________________");
+  console.log("signin");
+  console.log("username", String(req.body.username));
+  console.log("___________________________________");
+
   User.findOne({
     username: String(req.body.username),
   })
