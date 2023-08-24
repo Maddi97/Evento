@@ -3,7 +3,7 @@
 
     <!--    <span class="category-label">Kategorien</span>-->
     <!-- <img class="category-headline" src="assets/design-elements/Kategorien_design.png"> -->
-    <app-category-list class="main-category-container" id="main-category-container" [filteredCategory] = filteredCategory
+    <app-category-list class="main-category-container" id="main-category-container" [filteredCategory] = filteredCategory [filteredSubcategories] = filteredSubcategories
       (categoryOutputEmitter)="triggerCategoryOutput($event)"
       (subCategoryOutputEmitter)="triggerSubcategoryOutput($event)"></app-category-list>
 

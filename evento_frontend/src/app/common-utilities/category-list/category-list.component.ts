@@ -26,14 +26,13 @@ export class CategoryListComponent implements OnInit {
 
   subcategoryList: Subcategory[] = [];
   @Input() filteredCategory: any;
-
+  @Input() filteredSubcategories: any;
   @Output() categoryOutputEmitter = new EventEmitter<any>();
   @Output() subCategoryOutputEmitter = new EventEmitter<Subcategory[]>();
 
   public getScreenWidth: any;
 
   // filteredSubcategories
-  filteredSubcategories = [];
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
 

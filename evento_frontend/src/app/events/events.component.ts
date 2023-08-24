@@ -114,7 +114,7 @@ export class EventsComponent implements OnInit {
           this.filteredCategory = this.hot;
         }
 
-        const subcategories = params.subcategory;
+        let subcategories = params.subcategory;
         if (subcategories !== undefined) {
           this.subcategoryList.forEach((s) => {
             if (subcategories.includes(s._id)) {
