@@ -58,9 +58,11 @@ exports.signin = (req, res) => {
         email: user.email,
         accessToken: token,
       });
+      console.log("Sign in res:", user._id, user.username, user.email, token);
     })
     .catch((err) => {
       res.status(500).send({ message: err });
+      console.log("Signi Error: err");
       return;
     });
 };
