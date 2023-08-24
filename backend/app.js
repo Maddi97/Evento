@@ -59,7 +59,7 @@ app.use(emailRouter);
 
 const authRouter = require("./routes/auth.routes");
 app.use(authRouter);
-app.enable("trust proxy");
+app.set("trust proxy", 2);
 
 // startup our app at http://localhost:3000
 
