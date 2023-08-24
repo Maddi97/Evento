@@ -122,9 +122,8 @@ jobs:
           auth_signupkey: ${{secrets.AUTH_SIGNUPKEY}}
 
         run: |
-          touch .env.prod
-          echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
           touch backend/.env
+          echo "DUCKDNSTOKEN=$duckdns_token" >> .env
           echo "SIGNUPKEY=$auth_signupkey" >> backend/.env
           echo "SECRET=$auth_secret" >> backend/.env
 
@@ -134,4 +133,4 @@ jobs:
           max_attempts: 10
           retry_on: error
           timeout_seconds: 500
-          command: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
+          command: docker-compose --env-file .env -f docker-compose-prod-cd.yml up -d
