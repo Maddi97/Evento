@@ -22,6 +22,9 @@ COPY --from=build /app/dist /usr/share/nginx/html
 #deep links fix change the config file for nginx
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
+EXPOSE 80
+
+
 
 
 
