@@ -122,10 +122,10 @@ jobs:
           auth_signupkey: ${{secrets.AUTH_SIGNUPKEY}}
 
         run: |
-          touch backend/.env
+          touch .env
           echo "DUCKDNSTOKEN=$duckdns_token" >> .env
-          echo "SIGNUPKEY=$auth_signupkey" >> backend/.env
-          echo "SECRET=$auth_secret" >> backend/.env
+          echo "SIGNUPKEY=$auth_signupkey" >> .env
+          echo "SECRET=$auth_secret" >> .env
 
       - name: Start Docker Containers
         uses: nick-fields/retry@v2
