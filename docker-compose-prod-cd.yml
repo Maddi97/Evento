@@ -35,25 +35,25 @@ services:
   #  #    depends_on:
   #  #      - letsencrypt
 
- mongodb:
-   image: mongo
-   container_name: mongodb
-   depends_on:
-     - letsencrypt
+    mongodb:
+      image: mongo
+      container_name: mongodb
+      depends_on:
+        - letsencrypt
 
- letsencrypt:
-   image: linuxserver/swag
-   container_name: swag
-   volumes:
-     - ./letsencryptStrato/config:/config/
-   ports:
-     - "443:443"
-     - "80:80"
-   environment:
-     - PUID=1000
-     - PGID=1000
-     - TZ=Europe/Berlin
-     - URL=evento-leipzig.de
-     - SUBDOMAINS=www, insert, backend
-     - VALIDATION=http
-     - EMAIL=business@evento-leipzig.de
+    letsencrypt:
+      image: linuxserver/swag
+      container_name: swag
+      volumes:
+        - ./letsencryptStrato/config:/config/
+      ports:
+        - "443:443"
+        - "80:80"
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Berlin
+        - URL=evento-leipzig.de
+        - SUBDOMAINS=www, insert, backend
+        - VALIDATION=http
+        - EMAIL=business@evento-leipzig.de
