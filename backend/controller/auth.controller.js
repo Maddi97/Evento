@@ -62,7 +62,7 @@ exports.signin = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({ message: err });
-      console.log("Signi Error: err");
+      console.log("Signin Error: ", err);
       return;
     });
 };
