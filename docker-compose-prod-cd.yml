@@ -49,6 +49,9 @@ services:
       #         - ./backend:/app
       - /images/:/app/images
       - /app/node_modules
+    environment:
+      - SIGNUPKEY=${SIGNUPKEY}
+      - SECRET=${SECRET}
     depends_on:
       - letsencrypt
 

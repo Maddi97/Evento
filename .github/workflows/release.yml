@@ -122,10 +122,10 @@ jobs:
           auth_signupkey: ${{secrets.AUTH_SIGNUPKEY}}
 
         run: |
-          touch .env
-          echo "DUCKDNSTOKEN=$duckdns_token" >> .env
-          echo "SIGNUPKEY=$auth_signupkey" >> .env
-          echo "SECRET=$auth_secret" >> .env
+          touch .env.prod
+          echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
+          echo "SIGNUPKEY=$auth_signupkey" >> .env.prod
+          echo "SECRET=$auth_secret" >> .env.prod
 
       - name: Start Docker Containers
         uses: nick-fields/retry@v2
@@ -133,4 +133,4 @@ jobs:
           max_attempts: 10
           retry_on: error
           timeout_seconds: 500
-          command: docker-compose --env-file .env -f docker-compose-prod-cd.yml up -d
+          command: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
