@@ -39,7 +39,8 @@ export class CategoryViewComponent implements OnInit {
     iconPath = 'images/category_icons/'
 
     categoryName = new FormControl('')
-    weightFormValue = new FormControl('1')
+    weightFormValue = new FormControl('0')
+    weightFormValueSubcat = new FormControl('0')
     subcategoryName = new FormControl('')
     categories: Category[]
     category$;
@@ -190,6 +191,7 @@ export class CategoryViewComponent implements OnInit {
         if (this.check_if_icon_and_stock_foto_valid(TYPE_ADD)) {
             const subcategory = new Subcategory()
             subcategory.name = this.subcategoryName.value
+            subcategory.weight = this.weightFormValueSubcat.value
             category.subcategories.push(subcategory)
             this.completeAddSubcategory$(category, subcategory).subscribe(
                 {
@@ -282,6 +284,7 @@ export class CategoryViewComponent implements OnInit {
 
         const subcategory = this.updateSubcategoryObject
         subcategory.name = this.subcategoryName.value
+        subcategory.weight = this.weightFormValueSubcat
 
         if (this.icon && !this.stockImage) {
             this.uploadIconUpdateSubcategory$(category, subcategory).subscribe({
@@ -475,7 +478,7 @@ export class CategoryViewComponent implements OnInit {
 
     editCategoryClicked(category) {
         const value = this.categoryName.value !== category.name ? category.name : '';
-        const weight = this.weightFormValue.value !== category.weight ? category.weight : '1';
+        const weight = this.weightFormValue.value !== category.weight ? category.weight : '0';
         this.update = !this.update;
         this.updateCategoryObject = category
         this.categoryName.setValue(value)
@@ -485,9 +488,12 @@ export class CategoryViewComponent implements OnInit {
     editSubcategoryClicked(category, sub) {
 
         const value = this.subcategoryName.value !== sub.name ? sub.name : '';
+        const weight = this.weightFormValueSubcat.value !== sub.weight ? sub.weight : '0';
+
         this.updateSub = !this.updateSub;
         this.updateSubcategoryObject = sub
         this.subcategoryName.setValue(value)
+        this.weightFormValueSubcat.setValue(weight)
     }
 
 
@@ -506,6 +512,7 @@ export class CategoryViewComponent implements OnInit {
         this.categoryName.reset();
         this.weightFormValue.reset();
         this.subcategoryName.reset();
+        this.weightFormValueSubcat.reset();
         this.icon = null;
         this.stockImage = null;
         this.inputCat.nativeElement.value = '';

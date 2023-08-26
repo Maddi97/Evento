@@ -54,14 +54,9 @@ export class CategoryListComponent implements OnInit {
     const categories$ = this.categoriesService.categories.pipe(
       map((categories: Category[]) => {
         this.categoryList = categories;
-        // sort highest weight to the front
-        this.categoryList.sort((a, b) => {
-          const weightA = a.weight ? parseFloat(a.weight) : 0;
-          const weightB = b.weight ? parseFloat(b.weight) : 0;
-          return weightB - weightA;
-        });
-        console.log(this.categoryList)
+        this.sortCategoriesByWeight(this.categoryList)
         categories.forEach((category: Category) => {
+          this.sortCategoriesByWeight(category.subcategories)
           category.subcategories.forEach((subcategory) => {
             this.subcategoryList.push(subcategory);
           });
@@ -146,6 +141,15 @@ export class CategoryListComponent implements OnInit {
       queryParams: params,
       relativeTo: this._activatedRoute,
       queryParamsHandling: "merge",
+    });
+  }
+
+  // sort highest weight to the front
+  sortCategoriesByWeight(categoryList) {
+    categoryList.sort((a, b) => {
+      const weightA = a.weight ? parseFloat(a.weight) : 0;
+      const weightB = b.weight ? parseFloat(b.weight) : 0;
+      return weightB - weightA;
     });
   }
 

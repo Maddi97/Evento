@@ -14,6 +14,7 @@ export class Category {
 export class Subcategory {
   _id: string;
   name: string;
+  weight: string;
   iconTemporaryURL: SafeResourceUrl;
   iconPath: string;
   stockImageTemporaryURL: SafeResourceUrl;
