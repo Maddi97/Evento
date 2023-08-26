@@ -1,5 +1,5 @@
-import {Category} from './category'
-import {Day} from './organizer';
+import { Category } from './category'
+import { Day } from './organizer';
 import * as moment from 'moment';
 
 export class Event {
@@ -22,6 +22,8 @@ export class Event {
     link: string;
     price: string;
     permanent: boolean;
+    hot: boolean;
+    promotion: boolean;
     geoData: {
         lat: string,
         lon: string,

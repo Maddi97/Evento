@@ -154,6 +154,14 @@
         <div class="image-upload">
             <span class='col'>Select event image: <input type='file' #imageUpload (input)=iconChosen($event)></span>
         </div>
+        <div class="is-event-hot">
+            <mat-checkbox [checked]="isHot" (change)="isHot = !isHot">Hot
+            </mat-checkbox>
+        </div>
+        <div class="is-event-promotion">
+            <mat-checkbox [checked]="isPromotion" (change)="isPromotion = !isPromotion">Promotion
+            </mat-checkbox>
+        </div>
     </form>
 
     <div class="confirm-buttons">

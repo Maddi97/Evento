@@ -57,7 +57,8 @@ export class EventFormComponent implements OnInit, OnChanges {
     lat: "",
     lon: "",
   };
-
+  isHot = false
+  isPromotion = false;
   organizerName = new FormControl("", [Validators.required]);
   filteredOrganizers: Organizer[];
   image: any;
@@ -94,7 +95,9 @@ export class EventFormComponent implements OnInit, OnChanges {
       organizer,
       this.category,
       this.times,
-      this.updateEventId
+      this.updateEventId,
+      this.isHot,
+      this.isPromotion
     );
     const address = event.address;
     const formdata: FormData = new FormData();
@@ -162,7 +165,9 @@ export class EventFormComponent implements OnInit, OnChanges {
       organizer,
       this.category,
       this.times,
-      this.updateEventId
+      this.updateEventId,
+      this.isHot,
+      this.isPromotion
     );
     const address = event.address;
 
@@ -250,7 +255,8 @@ export class EventFormComponent implements OnInit, OnChanges {
       coord: this.eventIn.geoData.lat + ", " + this.eventIn.geoData.lon,
     });
     this.category = this.eventIn.category;
-
+    this.isHot = this.eventIn.hot
+    this.isPromotion = this.eventIn.promotion;
     this.times.start.setValue(this.eventIn.times.start);
     this.times.end.setValue(this.eventIn.times.end);
   }
@@ -278,6 +284,8 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.times.start.setValue("00:00");
     this.times.end.setValue("00:00");
     this.inputImage.nativeElement.value = "";
+    this.isHot = false;
+    this.isPromotion = false;
   }
 
   setCategory(value) {

@@ -1,9 +1,9 @@
-import {FormControl, Validators} from '@angular/forms';
-import {Event} from '../../models/event';
-import {Address} from '../../models/organizer';
+import { FormControl, Validators } from '@angular/forms';
+import { Event } from '../../models/event';
+import { Address } from '../../models/organizer';
 import * as moment from 'moment';
 
-export function getEventFromForm(eventForm, organizer, category, times, updateEventId) {
+export function getEventFromForm(eventForm, organizer, category, times, updateEventId, hot, promotion) {
     const event = new Event()
     const address = new Address()
     event._organizerId = organizer._id
@@ -30,6 +30,9 @@ export function getEventFromForm(eventForm, organizer, category, times, updateEv
     event.link = eventForm.get('link').value;
     event.price = eventForm.get('price').value;
     event.permanent = eventForm.get('permanent').value;
+    event.hot = hot;
+    event.promotion = promotion;
+
     event.category = category;
     event.date = {
         start: moment(new Date()).utcOffset(0, true),
@@ -46,7 +49,7 @@ export function getEventFromForm(eventForm, organizer, category, times, updateEv
         event.date.end = moment(new Date()).utcOffset(0, true)
     }
 
-    event.times = {start: times.start.value, end: times.end.value}
+    event.times = { start: times.start.value, end: times.end.value }
     event._id = updateEventId
     return event
 }
@@ -66,6 +69,7 @@ export function getEventFormTemplate() {
         start: new FormControl('', []),
         end: new FormControl('', []),
         coord: new FormControl('', []),
+
     }
 }
 
@@ -73,7 +77,7 @@ function formatDate(date) {
     // remove timezone and set time to 0
     date = moment(new Date(date))
         .utcOffset(0, true)
-        .set({hour: 0, minute: 0, second: 0, millisecond: 0})
+        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
         .format();
     return date
 }

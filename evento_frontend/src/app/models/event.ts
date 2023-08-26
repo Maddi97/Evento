@@ -26,6 +26,8 @@ export class Event {
     lat: string,
     lon: string,
   };
+  hot: boolean;
+  promotion: boolean;
   eventImageTemporaryURL: string;
   eventImagePath: string;
 }
