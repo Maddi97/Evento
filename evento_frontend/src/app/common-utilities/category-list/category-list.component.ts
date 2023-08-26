@@ -44,7 +44,7 @@ export class CategoryListComponent implements OnInit {
     private fileService: FileService,
     private sanitizer: DomSanitizer,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
@@ -54,6 +54,13 @@ export class CategoryListComponent implements OnInit {
     const categories$ = this.categoriesService.categories.pipe(
       map((categories: Category[]) => {
         this.categoryList = categories;
+        // sort highest weight to the front
+        this.categoryList.sort((a, b) => {
+          const weightA = a.weight ? parseFloat(a.weight) : 0;
+          const weightB = b.weight ? parseFloat(b.weight) : 0;
+          return weightB - weightA;
+        });
+        console.log(this.categoryList)
         categories.forEach((category: Category) => {
           category.subcategories.forEach((subcategory) => {
             this.subcategoryList.push(subcategory);

@@ -21,6 +21,9 @@ const CategorySchema = new mongoose.Schema({
         type: String,
         minlength: 3
     },
+    weight: {
+        type: String,
+    },
     iconPath: {
         type: String,
     },

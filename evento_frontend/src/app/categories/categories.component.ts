@@ -1,7 +1,7 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Category} from '../models/category';
-import {CategoriesService} from './categories.service';
-import {map} from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Category } from '../models/category';
+import { CategoriesService } from './categories.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-categories',

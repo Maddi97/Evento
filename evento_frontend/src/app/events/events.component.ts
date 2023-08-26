@@ -90,6 +90,7 @@ export class EventsComponent implements OnInit {
             this.subcategoryList.push(subcategory);
           });
         });
+
       })
     );
 

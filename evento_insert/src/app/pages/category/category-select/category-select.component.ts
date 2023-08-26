@@ -53,6 +53,7 @@ export class CategorySelectComponent implements OnInit, OnChanges {
         const cat = {
             _id: this.selectedCategory._id,
             name: this.selectedCategory.name,
+            weight: this.selectedCategory.weight,
             iconPath: this.selectedCategory.iconPath,
             iconTemporaryURL: this.selectedCategory.iconTemporaryURL,
             stockImagePath: this.selectedCategory.stockImagePath,
@@ -67,6 +68,7 @@ export class CategorySelectComponent implements OnInit, OnChanges {
         const cat = {
             _id: this.selectedCategory._id,
             name: this.selectedCategory.name,
+            weight: this.selectedCategory.weight,
             iconPath: this.selectedCategory.iconPath,
             iconTemporaryURL: this.selectedCategory.iconTemporaryURL,
             stockImagePath: this.selectedCategory.stockImagePath,

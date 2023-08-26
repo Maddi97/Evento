@@ -1,14 +1,14 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {CategoryService} from 'src/app/services/category.service';
-import {Category, Subcategory} from 'src/app/models/category';
-import {FileUploadService} from 'src/app/services/file-upload.service';
-import {map} from 'rxjs/operators';
-import {DomSanitizer} from '@angular/platform-browser';
-import {MatSnackBar} from '@angular/material/snack-bar'
-import {ViewChild} from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { CategoryService } from 'src/app/services/category.service';
+import { Category, Subcategory } from 'src/app/models/category';
+import { FileUploadService } from 'src/app/services/file-upload.service';
+import { map } from 'rxjs/operators';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { ViewChild } from '@angular/core';
 import * as log from 'loglevel';
-import {forkJoin} from 'rxjs';
+import { forkJoin } from 'rxjs';
 
 
 // constants
@@ -39,6 +39,7 @@ export class CategoryViewComponent implements OnInit {
     iconPath = 'images/category_icons/'
 
     categoryName = new FormControl('')
+    weightFormValue = new FormControl('1')
     subcategoryName = new FormControl('')
     categories: Category[]
     category$;
@@ -133,19 +134,19 @@ export class CategoryViewComponent implements OnInit {
 
     uploadIconUpdateSubcategory$ = (category, subcategory) => this.updateCategory$(category._id, category).pipe(
         map((updateCategoryResponse: Category) => {
-                const subcategoryIconPath = this.iconPath + updateCategoryResponse._id + '/' + subcategory._id
-                const formdata: FormData = new FormData();
-                formdata.append('files', this.icon);
-                formdata.append('file_path', subcategoryIconPath)
-                this.uploadFile$(formdata).subscribe(response => {
-                    updateCategoryResponse.subcategories.map(sub => {
-                        if (sub._id === subcategory._id) {
-                            sub.iconPath = response.icon.path
-                        }
-                    })
-                    this.categoryService.updateCategory(updateCategoryResponse._id, updateCategoryResponse)
+            const subcategoryIconPath = this.iconPath + updateCategoryResponse._id + '/' + subcategory._id
+            const formdata: FormData = new FormData();
+            formdata.append('files', this.icon);
+            formdata.append('file_path', subcategoryIconPath)
+            this.uploadFile$(formdata).subscribe(response => {
+                updateCategoryResponse.subcategories.map(sub => {
+                    if (sub._id === subcategory._id) {
+                        sub.iconPath = response.icon.path
+                    }
                 })
-            },
+                this.categoryService.updateCategory(updateCategoryResponse._id, updateCategoryResponse)
+            })
+        },
         ))
     uploadStockFotoUpdateSubcategory$ = (category, subcategory) => this.updateCategory$(category._id, category).pipe(
         map(
@@ -173,6 +174,7 @@ export class CategoryViewComponent implements OnInit {
         ) {
             const category = new Category();
             category.name = this.categoryName.value;
+            category.weight = this.weightFormValue.value;
             this.completeAddCategory$(category).subscribe({
                 complete: () => {
                     this.openSnackBar('Successfully uploaded category: '
@@ -207,6 +209,7 @@ export class CategoryViewComponent implements OnInit {
 
         const category = this.updateCategoryObject;
         category.name = this.categoryName.value;
+        category.weight = this.weightFormValue.value;
 
         if (this.icon && !this.stockImage) {
             const categoryImagePath = this.iconPath + category._id
@@ -231,13 +234,13 @@ export class CategoryViewComponent implements OnInit {
             formdata.append('stockImagePath', categoryStockImagePath)
             // TODO delete old Icon
             this.uploadStockImageAndUpdateCategory$(formdata, category).subscribe({
-                    complete: () => {
-                        this.openSnackBar('Successfully uploaded category: ' + category.name, 'success')
-                        this.resetForms()
-                    },
+                complete: () => {
+                    this.openSnackBar('Successfully uploaded category: ' + category.name, 'success')
+                    this.resetForms()
+                },
 
-                    error: (err) => this.openSnackBar('An error occurred: ' + err, 'error'),
-                }
+                error: (err) => this.openSnackBar('An error occurred: ' + err, 'error'),
+            }
             )
 
         }
@@ -254,7 +257,7 @@ export class CategoryViewComponent implements OnInit {
             formdata2.append('stockImagePath', categoryStockImagePath)
 
             forkJoin([this.uploadIconAndUpdateCategory$(formdata1, category),
-                this.uploadStockImageAndUpdateCategory$(formdata2, category)]
+            this.uploadStockImageAndUpdateCategory$(formdata2, category)]
             ).subscribe({
                 complete: () => {
                     this.openSnackBar('Successfully uploaded category: ' + category.name, 'success')
@@ -300,7 +303,7 @@ export class CategoryViewComponent implements OnInit {
         }
         if (this.icon && this.stockImage) {
             forkJoin([this.uploadIconUpdateSubcategory$(category, subcategory),
-                this.uploadStockFotoUpdateSubcategory$(category, subcategory)])
+            this.uploadStockFotoUpdateSubcategory$(category, subcategory)])
                 .subscribe({
                     complete: () => {
                         this.openSnackBar('Successfully uploaded subcategory: ' + subcategory.name, 'success')
@@ -329,8 +332,8 @@ export class CategoryViewComponent implements OnInit {
     }
 
     check_if_icon_and_stock_foto_valid(type
-                                           :
-                                           string
+        :
+        string
     ) {
         const valid = false
         if (this.icon && this.icon.size > this.uploadedIconSize) {
@@ -408,8 +411,8 @@ export class CategoryViewComponent implements OnInit {
     }
 
     iconChosen(event
-                   :
-                   any
+        :
+        any
     ) {
         if (event.target.value) {
             this.icon = (event.target.files[0] as File);
@@ -472,9 +475,11 @@ export class CategoryViewComponent implements OnInit {
 
     editCategoryClicked(category) {
         const value = this.categoryName.value !== category.name ? category.name : '';
+        const weight = this.weightFormValue.value !== category.weight ? category.weight : '1';
         this.update = !this.update;
         this.updateCategoryObject = category
         this.categoryName.setValue(value)
+        this.weightFormValue.setValue(weight)
     }
 
     editSubcategoryClicked(category, sub) {
@@ -499,6 +504,7 @@ export class CategoryViewComponent implements OnInit {
 
     resetForms() {
         this.categoryName.reset();
+        this.weightFormValue.reset();
         this.subcategoryName.reset();
         this.icon = null;
         this.stockImage = null;
