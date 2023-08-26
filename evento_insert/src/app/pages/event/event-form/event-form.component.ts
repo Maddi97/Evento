@@ -61,14 +61,16 @@ export class EventFormComponent implements OnInit, OnChanges {
   organizerName = new FormControl("", [Validators.required]);
   filteredOrganizers: Organizer[];
   image: any;
-
+  eventForm;
   constructor(
     private fb: FormBuilder,
     private geoService: NominatimGeoService,
     private organizerService: OrganizerService,
     private _snackbar: MatSnackBar
-  ) {}
-  eventForm = this.fb.group(getEventFormTemplate());
+  ) {
+    this.eventForm = this.fb.group(getEventFormTemplate());
+
+  }
 
   ngOnInit(): void {
     this.filteredOrganizers = this.organizersIn;

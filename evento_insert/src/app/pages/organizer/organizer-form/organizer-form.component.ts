@@ -40,11 +40,13 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
   isOpeningTimesRequired = false;
 
   image: any;
+  organizerForm
+  constructor(private fb: FormBuilder) {
+    this.organizerForm = this.fb.group(getOrganizerFormTemplate());
 
-  constructor(private fb: FormBuilder) {}
-  organizerForm: FormGroup = this.fb.group(getOrganizerFormTemplate());
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   ngOnChanges() {
     if (this.organizerIn !== undefined) this.setOrganizerForm(this.organizerIn);
