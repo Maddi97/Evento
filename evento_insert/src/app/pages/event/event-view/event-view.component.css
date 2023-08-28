@@ -6,7 +6,6 @@
 .form-and-image-upload {
     display: flex;
     flex-direction: column;
-    flex-basis: 50%;
     margin: 2rem;
 }
 
@@ -87,7 +86,7 @@
     color: red;
 }
 
-.mat-mdc-radio-button ~ .mat-radio-button {
+.mat-mdc-radio-button~.mat-radio-button {
     margin-left: 16px;
 }
 
