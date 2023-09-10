@@ -161,4 +161,4 @@ jobs:
             echo "SECRET=$auth_secret" >> backend/.env
 
       - name: Start Docker Containers
-        run: docker-compose --env-file .env.prod -f docker-compose-deploy-dev.yml up -d
+        run: docker compose --env-file .env.prod -f docker-compose-deploy-dev.yml up -d
