@@ -133,4 +133,4 @@ jobs:
           max_attempts: 10
           retry_on: error
           timeout_seconds: 500
-          command: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
+          command: docker compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
