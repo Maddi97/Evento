@@ -60,6 +60,19 @@
   }
 }
 
+@media screen and (min-width: 1500px) {
+  .event-tile {
+    flex-direction: row;
+  }
+
+  .event-tile-picture {
+    min-width: unset !important;
+    max-width: unset !important;
+    width: 250px !important;
+
+  }
+}
+
 .event-tile-information {
   display: flex;
   flex-direction: column;
