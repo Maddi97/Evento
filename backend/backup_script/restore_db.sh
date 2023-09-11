@@ -1,5 +1,5 @@
 DOCKER_CONTAINER = 'backend'
-IMAGE_PATH = 'app'
+IMAGE_PATH = 'app/images'
 
 docker cp /home/evento/backup/mongodb_backup/IMAGE_BACKUP/ ${DOCKER_CONTAINER}:/${IMAGE_PATH} 
 
