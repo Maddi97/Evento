@@ -12,14 +12,15 @@
   /*padding-top: env(safe-area-inset-top);*/
 
 }
+
 .header::after {
-    content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background-color: rgba(128, 128, 128, 0.5);
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(128, 128, 128, 0.5);
 }
 
 .logo-container {
@@ -31,8 +32,8 @@
 }
 
 .date-picker {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
   width: 50%;
 }
 
@@ -54,22 +55,30 @@
   .header {
     justify-content: center;
   }
-  .logo-container {
-      display: flex;
-      justify-content: center;
-      margin: 5px;
-      width: 20%;
-      min-width: 15%;
-      margin-left: 25px;
-    }
-    .date-picker {
 
-      width: 80%;
-    }
-    .button-container {
-      display: none;
-    }
-    app-hamburger-menu {
-      display:none
-    }
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    margin: 8px;
+    width: 20%;
+    min-width: 20%;
+    align-items: center;
+  }
+
+  .date-picker {
+
+    width: 70%;
+  }
+
+  .button-container {
+    display: none;
+  }
+
+  app-hamburger-menu {
+    display: none
+  }
+
+  .logo {
+    min-width: 5.5rem;
+  }
 }
