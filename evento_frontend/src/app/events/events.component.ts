@@ -129,7 +129,6 @@ export class EventsComponent implements OnInit {
     categories$
       .pipe(
         mergeMap(() => params$),
-        take(3)
       )
       .subscribe(() => {
         this.applyFilters();

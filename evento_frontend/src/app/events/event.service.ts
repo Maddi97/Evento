@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, throwError as observableThrowError, of, throwError} from 'rxjs';
-import {Event} from '../models/event';
-import {WebService} from '../web.service';
-import {filter, map, catchError, share, switchMap, tap} from 'rxjs/operators';
-import {HttpRequest} from '@angular/common/http';
-import {Organizer} from '../models/organizer';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, throwError as observableThrowError, of, throwError } from 'rxjs';
+import { Event } from '../models/event';
+import { WebService } from '../web.service';
+import { filter, map, catchError, share, switchMap, tap } from 'rxjs/operators';
+import { HttpRequest } from '@angular/common/http';
+import { Organizer } from '../models/organizer';
 import * as moment from 'moment';
 
 
@@ -59,8 +59,8 @@ export class EventService {
       share());
     obs.toPromise().then((response) => {
       const ids = response.map(o => {
-          this.getEventForOrgId(o._id);
-        }
+        this.getEventForOrgId(o._id);
+      }
       );
     });
   }
@@ -106,7 +106,7 @@ export class EventService {
   }
 
   getEventsOnDate(date: moment.Moment): Observable<Event[]> {
-    const obs = this.webService.post('eventOnDate', {date}).pipe(
+    const obs = this.webService.post('eventOnDate', { date }).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
         console.error('an error occured', error);
@@ -119,7 +119,8 @@ export class EventService {
     return obs;
   }
 
-getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
+  getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
+
     const cacheKey = JSON.stringify(fil);
     if (this.cachedEvents.has(cacheKey)) {
       this._events.next(this.cachedEvents.get(cacheKey))
@@ -134,12 +135,13 @@ getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
       }),
       tap((events) => {
         this.cachedEvents.set(cacheKey, events);
+        console.log(events)
         this._events.next(events);
       }),
       share()
     );
-      obs.toPromise().then((response) => {
-      });
+    obs.toPromise().then((response) => {
+    });
     return obs;
   }
 
