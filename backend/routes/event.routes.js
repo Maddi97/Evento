@@ -137,6 +137,16 @@ router.post('/upcomingEvents', limiter, (req, res) => {
         .then((events) => res.send(events))
         .catch((error) => console.log(error))
 });
+router.post('/outdatedEvents', limiter, (req, res) => {
+    let date = new Date()
+    Event.find(
+        {
+
+            'date.end': { $lte: date }
+        })
+        .then((events) => res.send(events))
+        .catch((error) => console.log(error))
+});
 
 router.post('/checkIfEventExists', limiter, (req, res) => {
     const start = new Date(req.body.event.date.start).getTime()
@@ -189,6 +199,45 @@ router.post('/getEventsOnCategory', limiter, (req, res) => {
         .catch((error) => console.log(error))
 })
 
+router.post('/getActualEventsOnCategory', limiter, (req, res) => {
+    let date = new Date()
+    const id = String(req.body.category._id)
+    Event.find(
+        {
+            $and: [
+                {
+                    "category._id": id
+                },
+                {
+                    $or: [
+                        {
+                            'date.start': { $gte: date }  //-1 um den heutigen Tag mit zu finden
+                        },
+                        {
+                            $and: [
+                                {
+                                    'date.start': { $lte: date }  //-1 um den heutigen Tag mit zu finden
+                                },
+                                {
+                                    'date.end': { $gte: date }
+                                }
+                            ]
+                        },
+                        {
+                            permanent: { $eq: true }
+                        },
+                    ]
+                }
+            ]
+        }
+    )
+        .then((events) => {
+            console.log(events)
+            res.send(events);
+        })
+        .catch((error) => console.log(error))
+})
+
 
 router.post('/organizer/:organizerId/events', limiter, auth, (req, res) => {
     (new Event(req.body.event))
@@ -224,6 +273,33 @@ router.delete('/organizer/:organizerId/events/:eventId', limiter, auth, (req, re
         .then((event) => res.send(event))
         .catch((error) => console.log(error))
 });
+
+router.post('/deleteOutdatedEvents', limiter, auth, async (req, res) => {
+    try {
+        const currentDate = new Date();
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+        console.log(thirtyDaysAgo)
+        // Find events with 'start' and 'end' before thirtyDaysAgo
+        const outdatedEvents = await Event.find({
+            $and: [
+                { 'date.end': { $lt: thirtyDaysAgo } },
+                {
+                    permanent: { $eq: false }
+                }
+            ]
+        });
+        console.log(outdatedEvents)
+        await Event.deleteMany({ _id: { $in: outdatedEvents.map(event => event._id) } });
+        console.log(outdatedEvents)
+
+        res.status(200).json({ outdatedEvents });
+    }
+    catch (error) {
+        console.error('Error deleting outdated events:', error);
+        res.status(500).json({ message: 'Error deleting outdated events' });
+    }
+})
 
 // Todo refactor to other location
 function get_distance(startPosition, endPosition) {

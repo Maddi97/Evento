@@ -85,7 +85,7 @@
                             <button class="category-edit-button"
                                 (click)="$event.stopPropagation(); editSubcategoryClicked(category, sub)">Edit
                             </button>
-                            <div class="category-delete-button" (click)="deleteSubcategory(category, sub)">
+                            <div class="category-delete-button" (click)="deleteSubcategory(category, sub).subscribe()">
                                 Delete
                             </div>
                         </div>

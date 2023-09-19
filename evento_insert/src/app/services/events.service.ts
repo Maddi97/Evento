@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WebService } from './web.service';
-import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
+import { Observable, throwError as observableThrowError, BehaviorSubject, of } from 'rxjs';
 import { HttpRequest } from '@angular/common/http';
 import { filter, map, catchError, share } from 'rxjs/operators';
 import { Event } from '../models/event';
@@ -127,8 +127,8 @@ export class EventsService {
         return obs;
     }
 
-    getEventsOnCategory(category: Category): Observable<Event[]> {
-        const obs = this.webService.post('getEventsOnCategory', { category }).pipe(
+    getActualEventsOnCategory(category: Category): Observable<Event[]> {
+        const obs = this.webService.post('getActualEventsOnCategory', { category }).pipe(
             map((res: HttpRequest<any>) => res as unknown as Event[]),
             catchError((error: any) => {
                 console.error('an error occured', error);
@@ -143,6 +143,19 @@ export class EventsService {
 
     getEventsOnDate(date: moment.Moment): Observable<Event[]> {
         const obs = this.webService.post('eventOnDate', { date }).pipe(
+            map((res: HttpRequest<any>) => res as unknown as Event[]),
+            catchError((error: any) => {
+                console.error('an error occured', error);
+                return observableThrowError(error.error.message || error);
+            }),
+            share());
+        obs.toPromise().then((response) => {
+            this._events.next(response);
+        })
+        return obs;
+    }
+    getOutdatedEvents(): Observable<Event[]> {
+        const obs = this.webService.post('outdatedEvents', {}).pipe(
             map((res: HttpRequest<any>) => res as unknown as Event[]),
             catchError((error: any) => {
                 console.error('an error occured', error);
@@ -185,5 +198,19 @@ export class EventsService {
             }
         )
         return obs;
+    }
+
+    deleteOutdatedEvents() {
+        return this.webService.post('deleteOutdatedEvents', {}).pipe(
+            map(response => {
+                return response;
+            }),
+            catchError(error => {
+                // Handle the error here, log it, etc.
+                console.error('Error deleting outdated events:', error);
+                // Return false to indicate that an error occurred
+                return of({ outdatedEvents: false });
+            })
+        );
     }
 }

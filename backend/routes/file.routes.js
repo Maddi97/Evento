@@ -185,6 +185,20 @@ router.post('/uploadEventImage', upload.array('files'), limiter, function (req, 
 }
 )
 
+router.post('/deleteImage', function (req, res) {
+    const filePath = req.body.path;
+    console.log(filePath)
+    fs.unlink(filePath, function (err) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Failed to delete event image' });
+        } else {
+            const folderPath = path.dirname(filePath);
+            deleteEmptyFolders(folderPath);
+            res.status(200).json({ message: 'Event image deleted successfully' });
+        }
+    });
+});
 
 router.post('/uploadOrganizerImage', upload.array('files'), limiter, function (req, res, next) {
 
@@ -221,5 +235,25 @@ router.post('/downloadFile', limiter, function (req, res) {
     const dest = req.body.path
     res.download(dest)
 })
+
+async function deleteEmptyFolders(directoryPath) {
+    if (fs.existsSync(directoryPath)) {
+        const files = await fs.promises.readdir(directoryPath);
+
+        for (const file of files) {
+            const currentPath = path.join(directoryPath, file);
+            const stats = await fs.promises.stat(currentPath);
+
+            if (stats.isDirectory()) {
+                await deleteEmptyFolders(currentPath); // Recursively check and delete empty folders
+            }
+        }
+
+        if ((await fs.promises.readdir(directoryPath)).length === 0) {
+            await fs.promises.rmdir(directoryPath); // Delete the folder if it's empty
+        }
+    }
+}
+
 
 module.exports = router;

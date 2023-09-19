@@ -7,6 +7,7 @@
     display: flex;
     flex-direction: column;
     margin: 2rem;
+    flex-basis: 50%;
 }
 
 .event-image {
@@ -72,6 +73,17 @@
     background-color: red;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.delete-outdated-events-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px;
+    margin: 8px;
 }
 
 .green {

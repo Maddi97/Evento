@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {WebService} from './web.service';
-import {Observable, throwError as observableThrowError, BehaviorSubject} from 'rxjs';
-import {HttpRequest} from '@angular/common/http';
-import {filter, map, catchError, share, shareReplay} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { WebService } from './web.service';
+import { Observable, throwError as observableThrowError, BehaviorSubject, throwError, of } from 'rxjs';
+import { HttpRequest } from '@angular/common/http';
+import { filter, map, catchError, share, shareReplay } from 'rxjs/operators';
 import * as log from 'loglevel';
 
 @Injectable({
@@ -70,7 +70,7 @@ export class FileUploadService {
     }
 
     downloadFile(path: string): Observable<Blob> {
-        const obs = this.webService.get_file('downloadFile', {path}).pipe(
+        const obs = this.webService.get_file('downloadFile', { path }).pipe(
             map((r) => r as unknown as any),
             catchError((error: any) => {
                 console.error('an error occurred', error);
@@ -83,5 +83,20 @@ export class FileUploadService {
             }
         )
         return obs;
+    }
+
+    deleteFile(path: string): Observable<any> {
+        const deleteEndpoint = `deleteImage`; // Update this with the actual endpoint URL
+
+        // Send a DELETE request to delete the file
+        return this.webService.post(deleteEndpoint, { path: path })
+            .pipe(
+                map(response => { return response }),
+                catchError((error: any) => {
+                    // Handle the error here, log it, etc.
+                    console.error('Error deleting file:', error);
+                    return of(false);
+                })
+            );
     }
 }

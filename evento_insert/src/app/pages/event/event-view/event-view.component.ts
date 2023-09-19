@@ -3,8 +3,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { DomSanitizer } from "@angular/platform-browser";
 import * as moment from "moment";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Observable, forkJoin } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
 import { CustomDialogComponent } from "src/app/custom-dialog/custom-dialog.component";
 import { Category } from "src/app/models/category";
 import { Organizer } from "src/app/models/organizer";
@@ -43,7 +43,7 @@ export class EventViewComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private _snackbar: MatSnackBar,
     public dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.category$ = this.categoryService.categories;
@@ -242,8 +242,8 @@ export class EventViewComponent implements OnInit {
     }
   }
 
-  loadEventsByCategory(category: Category) {
-    this.eventService.getEventsOnCategory(category);
+  loadActualEventsByCategory(category: Category) {
+    this.eventService.getActualEventsOnCategory(category);
   }
 
   openSnackBar(message, state) {
@@ -285,5 +285,24 @@ export class EventViewComponent implements OnInit {
         this.openSnackBar("Event not added " + event.name, "error");
       }
     });
+  }
+  getOutdatedEvents() {
+    this.eventService.getOutdatedEvents().subscribe();
+  }
+  deleteOutdatedEvents() {
+    if (confirm('Are you sure to delete all events older than 30 days')
+    ) {
+      this.eventService.deleteOutdatedEvents().pipe(
+        switchMap((response: any) => {
+          const deletedEvents = response.outdatedEvents
+          const deleteObservables: Observable<void>[] = deletedEvents.map(event => {
+            return this.fileService.deleteFile(event.eventImagePath);
+          });
+
+          // Execute all delete observables in parallel and wait for all to complete
+          return forkJoin(deleteObservables);
+        }),
+      ).subscribe()
+    }
   }
 }

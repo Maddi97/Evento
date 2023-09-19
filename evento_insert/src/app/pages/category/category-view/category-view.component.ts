@@ -3,12 +3,12 @@ import { FormControl } from '@angular/forms';
 import { CategoryService } from 'src/app/services/category.service';
 import { Category, Subcategory } from 'src/app/models/category';
 import { FileUploadService } from 'src/app/services/file-upload.service';
-import { map } from 'rxjs/operators';
+import { concatMap, map, switchMap, tap } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { ViewChild } from '@angular/core';
 import * as log from 'loglevel';
-import { forkJoin } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 
 
 // constants
@@ -327,10 +327,33 @@ export class CategoryViewComponent implements OnInit {
     }
 
     deleteCategory(category: Category): void {
-        if (confirm('Are you sure to delete Category ' + category.name +
-            '\nYou are not able to find the related events again')
+        if (
+            confirm(
+                'Are you sure to delete Category ' +
+                category.name +
+                '\nYou are not able to find the related events again'
+            )
         ) {
-            this.categoryService.deleteCategory(category._id).subscribe()
+            const deleteSubcategories$ = category.subcategories.reduce(
+                (acc, subcategory) => {
+                    return acc.pipe(
+                        concatMap(() => this.deleteSubcategory(category, subcategory))
+                    );
+                },
+                of(null)
+            );
+
+            deleteSubcategories$
+                .pipe(
+                    concatMap(() => this.categoryService.deleteCategory(category._id)),
+                    concatMap(() => this.fileService.deleteFile(category.stockImagePath)),
+                    concatMap(() => this.fileService.deleteFile(category.iconPath)),
+                )
+                .subscribe(
+
+            );
+        } else {
+            return
         }
     }
 
@@ -378,15 +401,38 @@ export class CategoryViewComponent implements OnInit {
     }
 
 
-    deleteSubcategory(category: Category, subcategory
-    ):
-        void {
-        if (confirm('Are you sure to delete Subcategory ' + subcategory.name +
-            '\nYou are not able to find the related events again')
-        ) {
-            category.subcategories = category.subcategories.filter(subcat => subcat.name !== subcategory.name)
-            this.categoryService.updateCategory(category._id, category).subscribe()
-        }
+    deleteSubcategory(category: Category, subcategory: Subcategory): Observable<void> {
+        return new Observable<void>((observer) => {
+            if (
+                confirm(
+                    'Are you sure to delete Subcategory ' +
+                    subcategory.name +
+                    '\nYou are not able to find the related events again'
+                )
+            ) {
+                category.subcategories = category.subcategories.filter(
+                    (subcat) => subcat.name !== subcategory.name
+                );
+
+                forkJoin([
+                    this.categoryService.updateCategory(category._id, category),
+                    this.fileService.deleteFile(subcategory.iconPath),
+                    this.fileService.deleteFile(subcategory.stockImagePath),
+                ])
+                    .pipe(concatMap(() => of(null)))
+                    .subscribe(
+                        () => {
+                            observer.next(); // Emit a completion signal
+                            observer.complete();
+                        },
+                        (error) => {
+                            observer.error(error);
+                        }
+                    );
+            } else {
+                observer.complete(); // If the user cancels, just complete the observable
+            }
+        });
     }
 
     prepare_formdata(id, type) {
