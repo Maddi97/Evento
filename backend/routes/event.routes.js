@@ -101,9 +101,22 @@ router.post('/eventOnDateCatAndSubcat', limiter, (req, res) => {
         })
 
         //sort events by distance
-        events = events.sort((ev1, ev2) =>
-            get_distance([ev1.geoData.lat, ev1.geoData.lon], userPosition) - get_distance([ev2.geoData.lat, ev2.geoData.lon], userPosition)
-        );
+        events.sort((ev1, ev2) => {
+            // Check if ev1 should be promoted (promote == true) and ev2 should not
+            if (ev1.promotion && !ev2.promotion) {
+                return -1; // ev1 comes before ev2
+            }
+            // Check if ev2 should be promoted (promote == true) and ev1 should not
+            else if (!ev1.promotion && ev2.promotion) {
+                return 1; // ev2 comes before ev1
+            }
+            // If neither should be promoted, compare by distance
+            else {
+                const distance1 = get_distance([ev1.geoData.lat, ev1.geoData.lon], userPosition);
+                const distance2 = get_distance([ev2.geoData.lat, ev2.geoData.lon], userPosition);
+                return distance1 - distance2;
+            }
+        });
         // Return events from offset to limit to not load all at once
 
         res.send(events.slice(0, limit));

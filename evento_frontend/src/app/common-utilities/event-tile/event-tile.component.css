@@ -4,8 +4,14 @@
   margin-bottom: 1rem;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  box-shadow: none !important;
+  box-shadow: none;
   border: none;
+}
+
+.promo {
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  box-shadow: 0px 0px 10px 8px #46048f7d;
 }
 
 .event-tile:hover {
