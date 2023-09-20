@@ -26,8 +26,8 @@ services:
     volumes:
       - ./threeventsfiveone:/app
       - /app/node_modules
-    depends_on:
-      - letsencrypt
+    # depends_on:
+    #   - letsencrypt
 
   evento_insert:
     image: eventodockerhub/evento_insert:latest
@@ -37,8 +37,8 @@ services:
     volumes:
       - ./insertApp:/app
       - /app/node_modules
-    depends_on:
-      - letsencrypt
+    # depends_on:
+    #   - letsencrypt
 
   backend:
     image: eventodockerhub/evento_backend:latest
@@ -52,12 +52,12 @@ services:
     environment:
       - SIGNUPKEY=${SIGNUPKEY}
       - SECRET=${SECRET}
-    depends_on:
-      - letsencrypt
+    # depends_on:
+    #   - letsencrypt
 
-  # mongodb:
-  #   image: mongo
-  #   container_name: mongodb
-  #   depends_on:
-  #     - letsencrypt
+    # mongodb:
+    #   image: mongo
+    #   container_name: mongodb
+    #   depends_on:
+    #     - letsencrypt
 
