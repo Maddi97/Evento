@@ -20,9 +20,9 @@ export class EventsComponent implements OnInit {
   public isDropdown = false;
   private events$;
 
-  actualLoadEventLimit = 8;
-  startLoadEventLimit = 8;
-  offset = 3;
+  actualLoadEventLimit = 13;
+  startLoadEventLimit = 13;
+  offset = 5;
 
   currentPosition;
   mapView = null;
