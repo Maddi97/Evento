@@ -1,7 +1,9 @@
 .event-form-container {
+    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 95%;
 }
 
 .organizer-name {}
@@ -41,12 +43,21 @@
 
 .end {}
 
-.confirm-buttons {}
+.confirm-buttons {
+    display: flex;
+    justify-content: center;
+}
 
 .image-upload {
     display: flex;
-    margin: 16px;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+}
+
+.image-upload .input {
+    margin-left: 4rem;
+    margin-top: 8px;
 }
 
 .is-event-props {
@@ -60,13 +71,4 @@ mat-form-field {
     width: 100%;
 }
 
-@media screen and (max-width: 800px) {
-    mat-form-field {
-        width: 80%;
-    }
-
-    .category {
-        max-width: 80%;
-        margin-left: 0;
-    }
-}
+@media screen and (min-width: 900px) {}

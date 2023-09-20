@@ -18,16 +18,21 @@
         </div>
         <img *ngIf="update" class="category-icon" [src]="updateCategoryObject.iconTemporaryURL">
 
-        <span class='col'>Select category icon: <input type='file' #iconUpload (input)=iconChosen($event)></span>
-        <span class='col'>Select category stock foto: <input type='file' #stockFotoUpload
-                (input)=stockImageChosen($event)></span>
+        <div class='image-upload'>Select category icon: <input class="input" type='file' #iconUpload
+                (input)=iconChosen($event)></div>
+        <div class='image-upload'>Select category stock foto: <input class="input" type='file' #stockFotoUpload
+                (input)=stockImageChosen($event)>
+        </div>
 
-        <button *ngIf="!update" class='btn btn-warning' (click)="addNewCategory()">Add Category</button>
-        <button class="update-category-button" *ngIf="update" (click)="updateCategory()">Update Category
+        <button *ngIf="!update" class="add-button" mat-raised-button color="primary" (click)="addNewCategory()">Add
+            Category</button>
+        <button class="add-button update-category-button" mat-raised-button color="primary" *ngIf="update"
+            (click)="updateCategory()">Update Category
         </button>
     </div>
 
     <div class="category-panel-collection" *ngFor="let category of categories">
+        <div class="category-headline">Categories</div>
         <mat-accordion>
             <div class="category-panel">
                 <mat-expansion-panel>
@@ -62,12 +67,14 @@
                                         (keydown.enter)="!update ? addNewCategory() :  updateCategory(); target.value = '0'">
                                 </mat-form-field>
                             </div>
-                            <span class='col'>Select category icon: <input type='file' #iconUploadSubcat
-                                    (input)=iconChosen($event)></span>
-                            <span class='col'>Select category stock foto: <input type='file' #stockFotoUploadSubcat
-                                    (input)=stockImageChosen($event)></span>
-                            <button *ngIf="!updateSub" class='btn btn-warning' (click)="addNewSubcategory(category)">Add
-                                Subcategory
+                            <div class='image-upload'>Select category icon: <input class="input" type='file' #iconUpload
+                                    (input)=iconChosen($event)>
+                            </div>
+                            <div class='image-upload'>Select category stock foto: <input class="input" type='file'
+                                    #stockFotoUpload (input)=stockImageChosen($event)>
+                            </div>
+                            <button *ngIf="!updateSub" class="add-button" mat-raised-button color="primary"
+                                (click)="addNewSubcategory(category)">Add Subcategory
                             </button>
                             <button *ngIf="updateSub" (click)="updateSubcategory(category)">Update Subcategory</button>
 

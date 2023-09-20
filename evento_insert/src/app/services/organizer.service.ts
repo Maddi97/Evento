@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {WebService} from './web.service';
-import {Observable, throwError as observableThrowError, BehaviorSubject, Subject} from 'rxjs';
-import {Organizer} from '../models/organizer';
-import {HttpRequest} from '@angular/common/http';
-import {filter, map, catchError, share} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { WebService } from './web.service';
+import { Observable, throwError as observableThrowError, BehaviorSubject, Subject } from 'rxjs';
+import { Organizer } from '../models/organizer';
+import { HttpRequest } from '@angular/common/http';
+import { filter, map, catchError, share } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -34,7 +34,7 @@ export class OrganizerService {
     }
 
     filterOrganizerByEventsCategory(category: any): Observable<Organizer[]> {
-        const obs = this.webService.post('organizerByEventCategory', {category}).pipe(
+        const obs = this.webService.post('organizerByEventCategory', { category }).pipe(
             map((r: HttpRequest<any>) => r as unknown as Organizer[]),
             catchError((error: any) => {
                 console.error('an error occurred', error);
@@ -49,7 +49,7 @@ export class OrganizerService {
 
 
     createOrganizer(organizer: Organizer): Observable<Organizer> {
-        const obs = this.webService.post('organizer', {organizer}).pipe(
+        const obs = this.webService.post('organizer', { organizer }).pipe(
             map((r: HttpRequest<any>) => r as unknown as Organizer),
             catchError((error: any) => {
                 console.error('an error occurred', error);
@@ -68,7 +68,7 @@ export class OrganizerService {
     }
 
     updateOrganizer(id: string, organizer: Organizer) {
-        const obs = this.webService.patch(`organizer/${id}`, {organizer}).pipe(
+        const obs = this.webService.patch(`organizer/${id}`, { organizer }).pipe(
             map((r: HttpRequest<any>) => r as unknown as Organizer),
             catchError((error: any) => {
                 console.error('an error occurred', error);
@@ -93,7 +93,7 @@ export class OrganizerService {
     }
 
     deleteOrganizer(id: string) {
-        const obs = this.webService.delete(`organizer/${id}`).pipe(
+        const obs = this.webService.post(`deleteOrganizer`, { id }).pipe(
             map((r: HttpRequest<any>) => r as unknown as Organizer),
             catchError((error: any) => {
                 console.error('an error occurred', error);

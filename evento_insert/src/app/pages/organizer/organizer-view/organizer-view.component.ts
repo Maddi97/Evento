@@ -1,20 +1,20 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {OrganizerService} from 'src/app/services/organizer.service';
-import {Organizer} from 'src/app/models/organizer';
-import {FormBuilder} from '@angular/forms';
-import {Category} from 'src/app/models/category';
-import {MatSnackBar} from '@angular/material/snack-bar'
-import {NominatimGeoService} from '../../../services/nominatim-geo.service'
-import {catchError, map} from 'rxjs/operators';
-import {EventsService} from '../../../services/events.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { OrganizerService } from 'src/app/services/organizer.service';
+import { Organizer } from 'src/app/models/organizer';
+import { FormBuilder } from '@angular/forms';
+import { Category } from 'src/app/models/category';
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { NominatimGeoService } from '../../../services/nominatim-geo.service'
+import { catchError, concatMap, map } from 'rxjs/operators';
+import { EventsService } from '../../../services/events.service';
 import * as log from 'loglevel';
 
 import {
     createEventFromOrg, getOrganizerFormTemplate
 } from './organizer.helpers'
-import {FileUploadService} from "../../../services/file-upload.service";
-import {DomSanitizer} from "@angular/platform-browser";
-import {of, throwError} from "rxjs";
+import { FileUploadService } from "../../../services/file-upload.service";
+import { DomSanitizer } from "@angular/platform-browser";
+import { of, throwError } from "rxjs";
 
 @Component({
     selector: 'app-organizer-view',
@@ -56,10 +56,10 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.organizer$ = this.organizerService.organizers.pipe(
             map(o => {
-                    this.organizers = o;
-                    this.downloadImage()
+                this.organizers = o;
+                this.downloadImage()
 
-                }
+            }
             )
         );
         this.organizer$.subscribe()
@@ -169,6 +169,7 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
                                             eventResponse => {
                                                 org.ifEventId = eventResponse._id
                                                 this.organizerService.updateOrganizer(org._id, org).subscribe(
+                                                    a => console.log(a)
                                                 )
                                             }
                                         )
@@ -194,9 +195,16 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
 
     }
 
-    deleteOrganizer(id: string): void {
-        this.deleteOrganizer$ = this.organizerService.deleteOrganizer(id)
-        this.deleteOrganizer$.subscribe();
+    deleteOrganizer(organizer: Organizer): void {
+        if (confirm('Are you sure to delete the organizer and all related events???')) {
+
+            this.deleteOrganizer$ = this.organizerService.deleteOrganizer(organizer._id)
+            this.deleteOrganizer$.pipe(
+                concatMap(
+                    () => this.fileService.deleteFile(organizer.organizerImagePath)
+                )
+            ).subscribe();
+        }
     }
 
     downloadImage() {

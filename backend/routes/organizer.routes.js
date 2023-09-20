@@ -17,6 +17,13 @@ router.post('/organizer', limiter, auth, (req, res) => {
         .then((organizer) => res.send(organizer))
         .catch((error) => console.log(error))
 });
+router.post('/deleteOrganizer', limiter, auth, (req, res) => {
+    const organizerId = String(req.body.id);
+    console.log(organizerId)
+    Organizer.findByIdAndDelete({ _id: organizerId })
+        .then((organizer) => res.send(organizer))
+        .catch((error => console.log(error)))
+});
 
 router.post('/organizerByEventCategory', limiter, (req, res) => {
     let orgs = []
@@ -56,12 +63,6 @@ router.patch('/organizer/:organizerId', limiter, auth, (req, res) => {
     const id = req.params.organizerId;
     const organizer = new Organizer(req.body.organizer);
     Organizer.findByIdAndUpdate({ _id: id }, { $set: organizer })
-        .then((organizer) => res.send(organizer))
-        .catch((error => console.log(error)))
-});
-
-router.delete('/organizer/:organizerId', limiter, auth, (req, res) => {
-    Organizer.findByIdAndDelete({ _id: { $eq: req.params.organizerId } })
         .then((organizer) => res.send(organizer))
         .catch((error => console.log(error)))
 });

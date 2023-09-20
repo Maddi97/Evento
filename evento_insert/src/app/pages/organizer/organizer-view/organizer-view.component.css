@@ -12,10 +12,24 @@
 
 .organizer-page {
     display: flex;
-    flex-flow: row wrap;
     margin: 2rem;
-    width: 90%;
-    align-items: flex-start;
+    width: 95%;
+    flex-direction: column;
+}
+
+@media screen and (min-width:900px) {
+    .organizer-page {
+        flex-direction: row;
+    }
+
+
+    .organizer-container {
+        justify-content: flex-start !important;
+        align-content: center;
+        width: 40%;
+        margin: 5rem;
+        margin-top: 0rem;
+    }
 }
 
 .organizer-image {
@@ -28,8 +42,6 @@
     flex-direction: column;
     justify-content: center;
     align-content: center;
-    flex-basis: 35%;
-    margin-left: 3rem;
 }
 
 .organizer-panel {
@@ -46,6 +58,7 @@
 
 .organizer-name {
     margin: 0.5rem;
+    width: 100%;
 }
 
 .delete-button {
@@ -63,5 +76,5 @@
 .map-container {
     display: flex;
     justify-content: center;
-    margin: 5rem;
+    margin-bottom: 5rem;
 }

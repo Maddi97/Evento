@@ -1,13 +1,13 @@
 .event-container {
     display: flex;
-    flex-flow: row wrap;
+    justify-content: center;
+    flex-direction: column;
 }
 
 .form-and-image-upload {
     display: flex;
     flex-direction: column;
-    margin: 2rem;
-    flex-basis: 50%;
+    margin: 1rem;
 }
 
 .event-image {
@@ -104,4 +104,25 @@
 
 mat-expansion-panel {
     width: 100%;
+}
+
+@media screen and (min-width: 900px) {
+    .event-container {
+        flex-direction: row;
+        margin: 2rem;
+    }
+
+    .form-and-image-upload {
+        display: flex;
+        flex-basis: 50%;
+        flex-direction: column;
+        flex-grow: 1;
+        margin: 0rem;
+    }
+
+    .events {
+        margin: 5rem;
+        margin-top: 0rem;
+    }
+
 }

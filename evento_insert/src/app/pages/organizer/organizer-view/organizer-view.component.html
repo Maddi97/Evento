@@ -1,7 +1,8 @@
 <div class="organizer-view-container">
     <div class="organizer-page">
-        <app-organizer-form class="organizer-form" [organizerIn]="organizerInformation" (addNewOrganizer)="addNewOrganizer($event)"
-                            (updateOrganizer)="updateOrganizer($event)"></app-organizer-form>
+        <app-organizer-form class="organizer-form" [organizerIn]="organizerInformation"
+            (addNewOrganizer)="addNewOrganizer($event)"
+            (updateOrganizer)="updateOrganizer($event)"></app-organizer-form>
 
 
         <div class="organizer-container">
@@ -9,15 +10,13 @@
                 <app-map-view [markerData]="organizers"></app-map-view>
             </div>
 
-            <div *ngFor="let organizer of organizers"
-                 (click)="organizerInformation=organizer">
+            <div *ngFor="let organizer of organizers">
                 <div class="organizer-panel">
-                    <div class="organizer-name">
+                    <div class="organizer-name" (click)="organizerInformation=organizer">
                         {{organizer.name}}
                     </div>
-                    <img class="organizer-image"
-                         [src]="organizer.organizerImageTemporaryURL">
-                    <div class="delete-button" (click)="deleteOrganizer(organizer._id)">
+                    <img class="organizer-image" [src]="organizer.organizerImageTemporaryURL">
+                    <div class="delete-button" (click)="deleteOrganizer(organizer)">
                         Delete
                     </div>
                 </div>

@@ -1,6 +1,4 @@
-.form-container {
-
-}
+.form-container {}
 
 mat-form-field {
     width: 100%;
@@ -11,22 +9,14 @@ mat-form-field {
     flex-direction: column;
 }
 
-.address {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-}
+.address {}
 
-.plz {
+.plz {}
 
-}
-
-.city {
-
-}
+.city {}
 
 .street {
-    flex-grow: 0.9;
+    flex-grow: 1;
 }
 
 .additional-information {
@@ -34,14 +24,13 @@ mat-form-field {
     flex-direction: column;
 }
 
-.category {
-}
+.category {}
 
 .radio-group-organizer-is-event {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    margin: 1.5rem;
+    margin-top: 1rem;
     align-items: center;
 }
 
@@ -56,17 +45,11 @@ mat-form-field {
     margin: 1rem;
 }
 
-.opening-times-form {
+.opening-times-form {}
 
-}
+.opening-times-start {}
 
-.opening-times-start {
-
-}
-
-.opening-times-end {
-
-}
+.opening-times-end {}
 
 .mat-mdc-radio-button {
     padding-right: 1rem;
@@ -74,7 +57,14 @@ mat-form-field {
 
 .image-upload {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+}
+
+.image-upload .input {
+    margin-left: 4rem;
+    margin-top: 8px;
 }
 
 .confirm-buttons {
