@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { CategoryService } from 'src/app/services/category.service';
 import { Category, Subcategory } from 'src/app/models/category';
 import { FileUploadService } from 'src/app/services/file-upload.service';
@@ -39,7 +39,7 @@ export class CategoryViewComponent implements OnInit {
     iconPath = 'images/category_icons/'
 
     categoryName = new FormControl('')
-    weightFormValue = new FormControl('0')
+    weightFormValue = new FormControl('0', [Validators.min(0), Validators.max(100)])
     weightFormValueSubcat = new FormControl('0')
     subcategoryName = new FormControl('')
     categories: Category[]

@@ -23,7 +23,6 @@ export class WebService {
     }
 
     get_file(uri: string, payload: object) {
-        log.info(payload)
         return this.http.post(`${this.ROOT_URL}/${uri}`, payload, { responseType: 'blob' })
     }
 
@@ -33,7 +32,6 @@ export class WebService {
 
     patch(uri: string, payload: object) {
         log.info(payload)
-        log.info(uri)
         return this.http.patch(`${this.ROOT_URL}/${uri}`, payload)
     }
 
