@@ -8,21 +8,30 @@ const limiter = require("../middleware/rateLimiter")
 router.get('/organizer', limiter, (req, res) => {
     Organizer.find({})
         .then(organizer => res.send(organizer))
-        .catch(error => console.log(error))
+        .catch((error) => {
+            console.error('Internal error organizer:', error);
+            res.status(500).json({ message: 'Internal error organizer:' });
+        })
 });
 
 router.post('/organizer', limiter, auth, (req, res) => {
     (new Organizer(req.body.organizer))
         .save()
         .then((organizer) => res.send(organizer))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error('Internal error organizer:', error);
+            res.status(500).json({ message: 'Internal error organizer:' });
+        })
 });
 router.post('/deleteOrganizer', limiter, auth, (req, res) => {
     const organizerId = String(req.body.id);
     console.log(organizerId)
     Organizer.findByIdAndDelete({ _id: organizerId })
         .then((organizer) => res.send(organizer))
-        .catch((error => console.log(error)))
+        .catch((error) => {
+            console.error('Internal error organizer:', error);
+            res.status(500).json({ message: 'Internal error organizer:' });
+        })
 });
 
 router.post('/organizerByEventCategory', limiter, (req, res) => {
@@ -45,9 +54,15 @@ router.post('/organizerByEventCategory', limiter, (req, res) => {
                     return res.send(orgs)
 
                 }
-            ).catch((error) => console.log(error))
+            ).catch((error) => {
+                console.error('Internal error organizer:', error);
+                res.status(500).json({ message: 'Internal error organizer:' });
+            })
 
-        }).catch((error) => console.log(error))
+        }).catch((error) => {
+            console.error('Internal error organizer:', error);
+            res.status(500).json({ message: 'Internal error organizer:' });
+        })
         ;
 
 })
@@ -55,7 +70,10 @@ router.post('/organizerByEventCategory', limiter, (req, res) => {
 router.get('/organizer/:organizerId', limiter, (req, res) => {
     Organizer.find({ _id: { $eq: req.params.organizerId } })
         .then((organizer) => res.send(organizer))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error('Internal error organizer:', error);
+            res.status(500).json({ message: 'Internal error organizer:' });
+        })
 })
 
 
@@ -64,7 +82,10 @@ router.patch('/organizer/:organizerId', limiter, auth, (req, res) => {
     const organizer = new Organizer(req.body.organizer);
     Organizer.findByIdAndUpdate({ _id: id }, { $set: organizer })
         .then((organizer) => res.send(organizer))
-        .catch((error => console.log(error)))
+        .catch((error) => {
+            console.error('Internal error organizer:', error);
+            res.status(500).json({ message: 'Internal error organizer:' });
+        })
 });
 
 module.exports = router

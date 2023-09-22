@@ -50,7 +50,8 @@ router.post('/sendFeedback', limiter, (req, res) => {
         html: messageHTML, // html body
     }, function (err, info) {
         if (err) {
-            res.send(err)
+            console.error('Internal error in Categories:', err);
+            res.status(500).json({ message: 'Mail Service Error: ', err });
         } else {
             res.send(info);
         }
@@ -106,9 +107,8 @@ router.post('/sendEvent', limiter, (req, res) => {
         html: messageHTML, // html body
     }, function (err, info) {
         if (err) {
-            res.status(400).send({
-                message: 'Error while Sending'
-            })
+            console.error('Internal error in Categories:', err);
+            res.status(500).json({ message: 'Mail Service Error: ', err });
         } else {
             res.send(info);
         }

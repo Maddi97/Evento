@@ -134,11 +134,13 @@ router.post('/uploadCategoryFiles', upload.array('files'), limiter, function (re
             path.join(destinationStockImage, stockImage.filename),
             function (err) {
                 if (err) {
+                    res.status(500).json({ message: 'File Service Error: ', err });
                     return console.error(err);
                 } else {
                     fs.rm(stockImage.path,
                         function (err) {
                             if (err) {
+                                res.status(500).json({ message: 'File Service Error: ', err });
                                 return console.error(err);
                             }
                             stockImage.path = path.join(String(destinationStockImage), sanitizeFilename(stockImage.filename))
@@ -167,11 +169,13 @@ router.post('/uploadEventImage', upload.array('files'), limiter, function (req, 
         path.join(destinationEventImage, sanitizeFilename(eventImage.filename)),
         function (err) {
             if (err) {
+                res.status(500).json({ message: 'File Service Error: ', err });
                 return console.error(err);
             } else {
                 fs.rm(eventImage.path,
                     function (err) {
                         if (err) {
+                            res.status(500).json({ message: 'File Service Error: ', err });
                             return console.error(err);
                         }
                         eventImage.path = path.join(String(destinationEventImage), eventImage.filename)
@@ -214,11 +218,13 @@ router.post('/uploadOrganizerImage', upload.array('files'), limiter, function (r
         path.join(destinationOrganizerImage, sanitizeFilename(organizerImage.filename)),
         function (err) {
             if (err) {
+                res.status(500).json({ message: 'File Service Error: ', err });
                 return console.error(err);
             } else {
                 fs.rm(organizerImage.path,
                     function (err) {
                         if (err) {
+                            res.status(500).json({ message: 'File Service Error: ', err });
                             return console.error(err);
                         }
                         organizerImage.path = path.join(destinationOrganizerImage, organizerImage.filename)

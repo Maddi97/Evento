@@ -219,7 +219,7 @@ router.post('/checkIfEventExists', limiter, (req, res) => {
             ]
         }
     )
-        .then((events) => { console.log(events); res.send(events) })
+        .then((events) => { res.send(events) })
         .catch((error) => {
             console.error(error);
             res.status(500).json({ error: error }); // Send an error response with status code 500 (Internal Server Error)
@@ -272,7 +272,6 @@ router.post('/getActualEventsOnCategory', limiter, (req, res) => {
         }
     )
         .then((events) => {
-            console.log(events)
             res.send(events);
         })
         .catch((error) => {
@@ -334,7 +333,6 @@ router.post('/deleteOutdatedEvents', limiter, auth, async (req, res) => {
         const currentDate = new Date();
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(currentDate.getDate() - 30);
-        console.log(thirtyDaysAgo)
         // Find events with 'start' and 'end' before thirtyDaysAgo
         const outdatedEvents = await Event.find({
             $and: [
@@ -344,9 +342,7 @@ router.post('/deleteOutdatedEvents', limiter, auth, async (req, res) => {
                 }
             ]
         });
-        console.log(outdatedEvents)
         await Event.deleteMany({ _id: { $in: outdatedEvents.map(event => event._id) } });
-        console.log(outdatedEvents)
 
         res.status(200).json({ outdatedEvents });
     }
