@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {WebService} from './web.service';
-import {Observable, throwError as observableThrowError, BehaviorSubject} from 'rxjs';
-import {HttpRequest} from '@angular/common/http';
-import {filter, map, catchError, share} from 'rxjs/operators';
-import {Category} from '../models/category';
+import { Injectable } from '@angular/core';
+import { WebService } from './web.service';
+import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
+import { HttpRequest } from '@angular/common/http';
+import { filter, map, catchError, share } from 'rxjs/operators';
+import { Category } from '../models/category';
 
 @Injectable({
     providedIn: 'root'
@@ -55,28 +55,36 @@ export class CategoryService {
     }
 
     updateCategory(catId: string, category: Category): Observable<Category> {
-        const obs = this.webService.patch(`category/${catId}`, {category}).pipe(
-            map((r: HttpRequest<any>) => r as unknown as Category),
-            catchError((error: any) => {
-                console.error('an error occurred', error);
-                return observableThrowError(error.error.message || error);
-            }),
-            share());
-        obs.toPromise().then(
-            (response: Category) => {
-                const tempCat = this._categories.getValue();
-                let indeX: number;
-                tempCat.map((cat: Category, index) => {
-                    if (cat._id === catId) {
-                        indeX = index;
-                    }
-                });
-                tempCat[indeX] = category;
+        const obs = this.webService
+            .patch(`category/${catId}`, { category })
+            .pipe(
+                map((r: HttpRequest<any>) => r as unknown as Category),
+                catchError((error: any) => {
+                    console.error('An error occurred', error);
+                    return observableThrowError(error.message || error);
+                }),
+                share()
+            );
+
+        obs.toPromise().then((response: Category) => {
+            const tempCat = this._categories.getValue();
+            let index: number;
+
+            tempCat.forEach((cat: Category, idx) => {
+                if (cat._id === catId) {
+                    index = idx;
+                }
+            });
+
+            if (index !== undefined) {
+                tempCat[index] = category;
                 this._categories.next(tempCat);
             }
-        )
+        });
+
         return obs;
     }
+
 
     deleteCategory(categoryId: string) {
         const obs = this.webService.delete(`category/${categoryId}`).pipe(

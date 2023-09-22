@@ -40,12 +40,16 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         this.categoryName.setValue(changes.loadedCategory.currentValue?.name)
         this.selectedCategory = this.categories.find(cat => cat.name === this.categoryName.value)
-        this.selectedSubcategories.setValue(changes.loadedCategory.currentValue?.subcategories)
+        this.selectedSubcategories.setValue(this.loadedCategory?.subcategories)
     }
 
     private _filter(value): string[] {
         const filterValue = value.name.toLowerCase();
         return this.categories.map(cat => cat.name).filter(cat => cat.toLowerCase().includes(filterValue));
+    }
+
+    compareWith(subcat1: any, subcat2: any): boolean {
+        return subcat1 && subcat2 && subcat1.id === subcat2.id;
     }
 
     selectCategory() {
@@ -65,6 +69,7 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     }
 
     emitCategory() {
+        console.log(this.selectedSubcategories)
         const cat = {
             _id: this.selectedCategory._id,
             name: this.selectedCategory.name,

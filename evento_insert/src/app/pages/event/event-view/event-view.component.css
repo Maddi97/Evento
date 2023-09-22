@@ -62,6 +62,9 @@
     background-color: rgb(214 214 214);
     margin-bottom: 0.2rem;
     border-radius: 5px;
+}
+
+.event-name {
     cursor: pointer;
 }
 

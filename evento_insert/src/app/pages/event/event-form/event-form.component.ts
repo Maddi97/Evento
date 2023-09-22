@@ -278,6 +278,11 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.eventForm
       .get("street")
       .setValue(org.address.street + " " + org.address.streetNumber);
+    // set category to organizers category but leave subcat empty
+    const cat = org.category;
+    cat.subcategories = [];
+    this.category = cat;
+
   }
 
   iconChosen(event: any) {

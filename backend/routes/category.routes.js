@@ -27,6 +27,7 @@ router.delete('/category/:categoryId', limiter, auth, (req, res) => {
 router.patch('/category/:categoryId', limiter, auth, (req, res) => {
     const id = String(req.params.categoryId)
     const cat = new Category(req.body.category)
+    console.log(id)
     Category.findByIdAndUpdate({ _id: id }, { $set: cat }, { returnOriginal: false },
     )
         .then((category) => {

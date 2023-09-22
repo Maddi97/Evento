@@ -69,24 +69,9 @@ export class MapViewComponent implements OnInit, OnChanges {
         // })
         // this.updatePosition(this.positionService.getDefaultLocation());
         this.initMapIfNeeded(); // Use the method to initialize the map
-
-        const locationFromSession = JSON.parse(sessionStorage.getItem("location"));
-        if (locationFromSession !== null && locationFromSession !== "disabled") {
-            this.currentPosition.lat = locationFromSession[0];
-            this.currentPosition.lon = locationFromSession[1];
-            this.setPositionMarker();
-        } else {
-            this.getCurrentPosition();
-        }
-    }
-
-    updatePosition(locationList) {
-        this.currentPosition.lat = locationList[0];
-        this.currentPosition.lon = locationList[1];
     }
 
     resetCenter() {
-        this.updatePosition(this.positionService.getCurrentPosition());
         this.setPositionMarker();
         this.map.panTo(
             new L.LatLng(this.currentPosition.lat, this.currentPosition.lon)
@@ -98,22 +83,6 @@ export class MapViewComponent implements OnInit, OnChanges {
         const address = this.sanitizeInput(this.address);
 
         this.positionService.getPositionByInput(address).subscribe(() => {
-            this.resetCenter();
-        });
-    }
-
-    async getCurrentPosition(request = false) {
-        // const coordinates = await Geolocation.getCurrentPosition();
-        //
-        // console.log('Current position:', coordinates);
-
-        if (
-            request &&
-            JSON.parse(sessionStorage.getItem("location")) === "disabled"
-        ) {
-            sessionStorage.removeItem("location");
-        }
-        this.positionService.getPositionByLocation().then((res) => {
             this.resetCenter();
         });
     }

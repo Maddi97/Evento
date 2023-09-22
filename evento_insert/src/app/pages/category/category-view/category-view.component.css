@@ -25,7 +25,9 @@
     margin-right: 1em;
 }
 
-.category-panel-collection {}
+.category-panel-collection {
+    margin: 1rem;
+}
 
 .category-panel {
     display: flex;
@@ -92,7 +94,7 @@ mat-form-field {
     width: 100%;
 }
 
-.category-panel-collection {
+.category-container {
     width: 95%;
 }
 
@@ -130,7 +132,7 @@ mat-form-field {
         align-items: flex-start;
     }
 
-    .category-panel-collection {
+    .category-container {
         width: 70%;
         margin: 1rem;
     }

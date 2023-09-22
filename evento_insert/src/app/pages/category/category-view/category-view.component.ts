@@ -281,11 +281,11 @@ export class CategoryViewComponent implements OnInit {
 
     updateSubcategory(category) {
         if (!this.check_if_icon_and_stock_foto_valid(TYPE_UPDATE)) { return }
-
+        const updateCategory = category
         const subcategory = this.updateSubcategoryObject
         subcategory.name = this.subcategoryName.value
-        subcategory.weight = this.weightFormValueSubcat
-
+        subcategory.weight = this.weightFormValueSubcat.value
+        console.log(this.icon, this.stockImage)
         if (this.icon && !this.stockImage) {
             this.uploadIconUpdateSubcategory$(category, subcategory).subscribe({
                 complete: () => {
@@ -305,6 +305,7 @@ export class CategoryViewComponent implements OnInit {
             })
         }
         if (this.icon && this.stockImage) {
+            console.log("Hallo")
             forkJoin([this.uploadIconUpdateSubcategory$(category, subcategory),
             this.uploadStockFotoUpdateSubcategory$(category, subcategory)])
                 .subscribe({
@@ -315,15 +316,14 @@ export class CategoryViewComponent implements OnInit {
                     error: err => this.openSnackBar('An error occurred: ' + err, 'error')
                 })
         } else if (!this.icon && !this.stockImage) {
+            console.log(updateCategory)
+            this.updateCategory$(updateCategory._id, updateCategory).subscribe(
+                categoryResponse => this.openSnackBar('Successfully uploaded category: ' + categoryResponse.name, 'success'),
+                err => this.openSnackBar('An error occurred: ' + err, 'error'),
+            )
+            this.resetForms()
         }
-        this.updateCategory$(category._id, category).subscribe(
-            {
-                complete: () => {
-                    this.openSnackBar('Successfully uploaded subcategory: ' + subcategory.name, 'success')
-                    this.resetForms()
-                },
-                error: err => this.openSnackBar('An error occurred: ' + err, 'error')
-            })
+
     }
 
     deleteCategory(category: Category): void {
@@ -563,7 +563,6 @@ export class CategoryViewComponent implements OnInit {
         this.stockImage = null;
         this.inputCat.nativeElement.value = '';
         this.inputCat2.nativeElement.value = '';
-        this.inputSubcat.nativeElement.value = '';
         this.updateCategoryObject = null;
         this.update = false;
         this.updateSubcategoryObject = null;
