@@ -1,9 +1,9 @@
-import {Component, OnInit, Input, OnChanges} from '@angular/core';
-import {Event} from '../../models/event';
-import {FileService} from '../../file.service';
-import {OrganizerService} from '../../organizer.service';
-import {openingTimesFormatter, dateTimesFormater} from '../logic/opening-times-format-helpers'
-import {isScreenMinWidth} from '../logic/screen-size-helpers'
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Event } from '../../models/event';
+import { FileService } from '../../file.service';
+import { OrganizerService } from '../../organizer.service';
+import { openingTimesFormatter, dateTimesFormater } from '../logic/opening-times-format-helpers'
+import { isScreenMinWidth } from '../logic/screen-size-helpers'
 
 @Component({
   selector: 'app-event-tile',
@@ -18,11 +18,11 @@ export class EventTileComponent implements OnInit, OnChanges {
   IconURL = null;
   ImageURL = null;
   organizer = null;
-
+  hasUserPosition = false;
   public openingTimesFormatter = openingTimesFormatter;
   public dateTimesFormater = dateTimesFormater;
   public isScreenMinWidth = isScreenMinWidth;
-  
+
   constructor(
     private organizerService: OrganizerService,
   ) {
@@ -35,6 +35,7 @@ export class EventTileComponent implements OnInit, OnChanges {
       }
     );
     this.distance = Math.round(this.distance * 100) / 100 // 2 decimals
+    this.hasUserPosition = JSON.parse(sessionStorage.getItem("location")) !== "disabled"
   }
 
   ngOnChanges() {

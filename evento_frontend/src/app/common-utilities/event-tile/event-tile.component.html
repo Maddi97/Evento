@@ -8,8 +8,11 @@
 
       <mat-card-subtitle class="event-organizer-name">
         {{event.organizerName}}
-        <div class="event-distance">
+        <div *ngIf="hasUserPosition" class="event-distance">
           Entfernung: {{distance}}km
+        </div>
+        <div *ngIf="!hasUserPosition" class="event-distance" style="font-size: 14px !important;">
+          Entfernung zum Zentrum: {{distance}}km
         </div>
       </mat-card-subtitle>
       <div class="date" *ngIf="isScreenMinWidth(1000)">
