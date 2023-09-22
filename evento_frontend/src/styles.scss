@@ -31,15 +31,15 @@ body {
 
 
 .green-snackbar {
-  color: green;
-  background-color: greenyellow;
-  border-color: green;
+  --mat-mdc-snack-bar-button-color: green;
+  --mdc-snackbar-container-color: greenyellow;
+  --mdc-snackbar-supporting-text-color: green;
 }
 
 .red-snackbar {
-  color: #660808;
-  background-color: #fc4545;
-  border-color: #660808;
+  --mat-mdc-snack-bar-button-color: #660808 !important;
+  --mdc-snackbar-container-color: #fc4545 !important;
+  --mdc-snackbar-supporting-text-color: #660808;
 }
 
 @media screen and (min-width: 1000px) {

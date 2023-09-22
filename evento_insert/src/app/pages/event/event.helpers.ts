@@ -66,8 +66,8 @@ export function getEventFormTemplate() {
         link: new FormControl('', []),
         price: new FormControl('', []),
         permanent: new FormControl('false', []),
-        start: new FormControl('', []),
-        end: new FormControl('', []),
+        start: new FormControl('', [Validators.required]),
+        end: new FormControl('', [Validators.required]),
         coord: new FormControl('', []),
 
     }

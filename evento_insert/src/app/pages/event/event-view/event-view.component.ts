@@ -3,8 +3,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { DomSanitizer } from "@angular/platform-browser";
 import * as moment from "moment";
-import { Observable, forkJoin } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
+import { Observable, forkJoin, of } from "rxjs";
+import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
 import { CustomDialogComponent } from "src/app/custom-dialog/custom-dialog.component";
 import { Category } from "src/app/models/category";
 import { Organizer } from "src/app/models/organizer";
@@ -75,13 +75,20 @@ export class EventViewComponent implements OnInit {
   addEventCheckDuplicate(event) {
     this.eventService
       .checkIfEventsExistsInDB(event)
-      .subscribe((existingEvents) => {
-        if (existingEvents.length > 0) {
-          this.openDialogIfDuplicate(existingEvents, event);
-        } else {
-          this.addNewEvent(event);
-        }
-      });
+      .pipe(
+        map((existingEvents) => {
+          if (existingEvents.length > 0) {
+            this.openDialogIfDuplicate(existingEvents, event);
+          } else {
+            this.addNewEvent(event);
+          }
+        }),
+        catchError((error) => {
+          console.error('Error checking duplicate', error);
+          this.openSnackBar(error.message, "error")
+          return of(null); // Continue with null eventImagePath
+        }),
+      ).subscribe();
   }
 
   addNewEvent(event) {
@@ -91,37 +98,60 @@ export class EventViewComponent implements OnInit {
     this.eventService
       .createEvent(event)
       .pipe(
-        map((createEventResponse) => {
-          // upload image
+        switchMap((createEventResponse) => {
           event._id = createEventResponse._id;
           const formdata = event.fd;
-          // fd only for passing formdata form input
           delete event.fd;
           if (formdata !== undefined) {
             const fullEventImagePath =
               this.eventImagePath + createEventResponse._id;
             formdata.append("eventImagePath", fullEventImagePath);
-            this.fileService
-              .uploadEventImage(formdata)
-              .pipe(
-                map((uploadImageResponse) => {
+            return this.fileService.uploadEventImage(formdata).pipe(
+              catchError((uploadImageError) => {
+                console.error('Error uploading event image:', uploadImageError);
+                this.openSnackBar(uploadImageError.message, "error")
+                return of(null); // Continue with null eventImagePath
+              }),
+              tap((uploadImageResponse) => {
+                if (uploadImageResponse) {
                   event.eventImagePath = uploadImageResponse.eventImage.path;
-                  this.eventService.updateEvent(
-                    event._organizerId,
-                    event._id,
-                    event
-                  );
-                })
-              )
-              .subscribe();
+                }
+              })
+            );
           }
-          this.openSnackBar(
-            "Successfully added Event: " + event.name,
-            "success"
+          return of(null); // Continue with null eventImagePath
+        }),
+        switchMap((eventWithImagePath) => {
+          return this.eventService.updateEvent(
+            event._organizerId,
+            event._id,
+            event
+          ).pipe(
+            catchError((updateEventError) => {
+              console.error('Error updating event:', updateEventError);
+              this.openSnackBar(updateEventError.message, "error")
+              return of(null); // Continue without showing success message
+            }),
+            tap(() => {
+              this.openSnackBar(
+                "Successfully added Event: " + event.name,
+                "success"
+              );
+            })
           );
         })
       )
-      .subscribe();
+      .subscribe(
+        () => {
+          // Success
+        },
+        (error) => {
+          console.error('Error:', error);
+          this.openSnackBar(error.message, "error")
+
+          // Handle error here, e.g., show an error message to the user.
+        }
+      );
   }
 
   updateEvent(event) {
@@ -248,10 +278,10 @@ export class EventViewComponent implements OnInit {
 
   openSnackBar(message, state) {
     this._snackbar.open(message, "", {
-      duration: 1000,
+      duration: 2000,
       verticalPosition: "top",
       horizontalPosition: "center",
-      panelClass: [state !== "error" ? "green-snackbar" : "red-snackbar"],
+      panelClass: state !== "error" ? "green-snackbar" : "red-snackbar",
     });
   }
 

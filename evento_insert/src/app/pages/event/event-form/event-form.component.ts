@@ -59,6 +59,8 @@ export class EventFormComponent implements OnInit, OnChanges {
   };
   isHot = false
   isPromotion = false;
+  isPermanent = "false";
+
   organizerName = new FormControl("", [Validators.required]);
   filteredOrganizers: Organizer[];
   image: any;
@@ -238,7 +240,8 @@ export class EventFormComponent implements OnInit, OnChanges {
     );
     this.organizerName.setValue(organizer.name);
     this.updateOrganizerId = organizer._id;
-    this.eventForm.setValue({
+
+    const eventFormValues = {
       name: this.eventIn.name,
       city: this.eventIn.address.city,
       plz: this.eventIn.address.plz,
@@ -250,15 +253,23 @@ export class EventFormComponent implements OnInit, OnChanges {
       link: this.eventIn.link,
       permanent: String(this.eventIn.permanent),
       price: this.eventIn.price,
-      start,
-      end,
       coord: this.eventIn.geoData.lat + ", " + this.eventIn.geoData.lon,
-    });
+    }
+    if (!this.eventIn.permanent) {
+      eventFormValues['start'] = start;
+      eventFormValues['end'] = end;
+    }
+    else {
+      this.eventForm.removeControl("start");
+      this.eventForm.removeControl("end");
+    }
+    console.log(eventFormValues)
+
+    this.eventForm.setValue(eventFormValues);
     this.category = this.eventIn.category;
     this.isHot = this.eventIn.hot
     this.isPromotion = this.eventIn.promotion;
-    this.times.start.setValue(this.eventIn.times.start);
-    this.times.end.setValue(this.eventIn.times.end);
+
   }
 
   insertOrgInfo(org: Organizer) {
@@ -299,6 +310,18 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.filteredOrganizers = this.organizersIn.filter((organizer) =>
       organizer.name.toLowerCase().startsWith(oNameStart.toLowerCase())
     );
+  }
+  isPermanentChange() {
+    this.isPermanent = this.eventForm.get("permanent").value;
+    if (this.isPermanent === "true") {
+      this.eventForm.removeControl("start");
+      this.eventForm.removeControl("end");
+
+    }
+    else {
+      this.eventForm.addControl('start', this.fb.control('', [Validators.required]))
+      this.eventForm.addControl('end', this.fb.control('', [Validators.required]))
+    }
   }
 
   openSnackBar(message, state) {

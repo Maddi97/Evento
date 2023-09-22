@@ -111,13 +111,13 @@
         </div>
         <div class="radio-group-permanent-event">
             <label id="permanent-radio-group-label">Is event permanent?</label>
-            <mat-radio-group formControlName="permanent">
+            <mat-radio-group formControlName="permanent" (ngModelChange)="isPermanentChange()">
                 <mat-radio-button value="true">Yes</mat-radio-button>
                 <mat-radio-button value="false">No</mat-radio-button>
             </mat-radio-group>
         </div>
 
-        <div class="is-permanent" *ngIf="eventForm.get('permanent').value === 'false'">
+        <div class="is-permanent" *ngIf="isPermanent === 'false'">
             <mat-form-field appearance="fill">
                 <mat-label>Enter a date range</mat-label>
                 <mat-date-range-input [rangePicker]="picker">

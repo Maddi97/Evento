@@ -8,19 +8,28 @@ const Event = require("../model/event.model")
 router.get('/events', limiter, (req, res) => {
     Event.find({})
         .then((events) => res.send(events))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 })
 
 router.get('/events/:eventId', limiter, (req, res) => {
     Event.find({ _id: req.params.eventId })
         .then((event) => res.send(event))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 
 router.get('/organizer/:organizerId/events', limiter, (req, res) => {
     Event.find({ _organizerId: req.params.organizerId })
         .then((events) => res.send(events))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 
 
@@ -41,7 +50,10 @@ router.post('/eventOnDate', limiter, (req, res) => {
         .then((events) => {
             res.send(events);
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 
 router.post('/eventOnDateCatAndSubcat', limiter, (req, res) => {
@@ -58,7 +70,7 @@ router.post('/eventOnDateCatAndSubcat', limiter, (req, res) => {
     let subcatIds = []
     subcategories.forEach(sub => subcatIds.push(sub._id))
     if (date == "Invalid Date") {
-        return;
+        res.status(500).json({ error: 'Invalid Date Error' }); // Send an error response with status code 500 (Internal Server Error)
     }
     Event.find(
         {
@@ -121,7 +133,10 @@ router.post('/eventOnDateCatAndSubcat', limiter, (req, res) => {
 
         res.send(events.slice(0, limit));
     })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 
 
@@ -148,7 +163,10 @@ router.post('/upcomingEvents', limiter, (req, res) => {
     )
 
         .then((events) => res.send(events))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 router.post('/outdatedEvents', limiter, (req, res) => {
     let date = new Date()
@@ -158,7 +176,10 @@ router.post('/outdatedEvents', limiter, (req, res) => {
             'date.end': { $lte: date }
         })
         .then((events) => res.send(events))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 
 router.post('/checkIfEventExists', limiter, (req, res) => {
@@ -199,7 +220,10 @@ router.post('/checkIfEventExists', limiter, (req, res) => {
         }
     )
         .then((events) => { console.log(events); res.send(events) })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: error }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 
 
@@ -209,7 +233,10 @@ router.post('/getEventsOnCategory', limiter, (req, res) => {
         .then((events) => {
             res.send(events);
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 })
 
 router.post('/getActualEventsOnCategory', limiter, (req, res) => {
@@ -248,15 +275,21 @@ router.post('/getActualEventsOnCategory', limiter, (req, res) => {
             console.log(events)
             res.send(events);
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 })
 
 
 router.post('/organizer/:organizerId/events', limiter, auth, (req, res) => {
     (new Event(req.body.event))
         .save()
-        .then((events) => res.send(events))
-        .catch((error) => console.log(error))
+        .then((event) => res.status(201).json(event)) // Send a successful response with status code 201 (Created)
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 
 router.get('/organizer/:organizerId/events/:eventId', limiter, (req, res) => {
@@ -264,7 +297,10 @@ router.get('/organizer/:organizerId/events/:eventId', limiter, (req, res) => {
     const eventId = String(req.params.eventId)
     Event.findOne({ _organizerId: orgId, _id: eventId })
         .then((event) => res.send(event))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 
 router.patch('/organizer/:organizerId/events/:eventId', limiter, auth, (req, res) => {
@@ -276,7 +312,10 @@ router.patch('/organizer/:organizerId/events/:eventId', limiter, auth, (req, res
         { $set: event }, { new: true }
     )
         .then((event) => res.send(event))
-        .catch((error) => console.log(error));
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 
 router.delete('/organizer/:organizerId/events/:eventId', limiter, auth, (req, res) => {
@@ -284,7 +323,10 @@ router.delete('/organizer/:organizerId/events/:eventId', limiter, auth, (req, re
     const eventId = String(req.params.eventId)
     Event.findOneAndDelete({ _organizerId: orgId, _id: eventId })
         .then((event) => res.send(event))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
+        });
 });
 
 router.post('/deleteOutdatedEvents', limiter, auth, async (req, res) => {
