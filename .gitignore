@@ -8,6 +8,7 @@ backend/backup
 node_modules
 
 mongodb_backup
+backup_local_dev
 
 .idea
 .env.prod
