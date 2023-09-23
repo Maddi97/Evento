@@ -49,13 +49,15 @@ if [ ${AUTH_ENABLED} -eq 1 ]; then
  AUTH_PARAM=" --username ${MONGO_USER} --password ${MONGO_PASSWD} "
 fi
 
- echo "Running backup for selected databases"
- for DB_NAME in ${DATABASE_NAMES}
- do
- docker exec -i mongodb mongodump --host ${MONGO_HOST} --port ${MONGO_PORT} --db ${DB_NAME} ${AUTH_PARAM} --out ${BACKUP_PATH_MONGO} --gzip
- docker cp mongodb:/${BACKUP_PATH_MONGO}/ ${BACKUP_PATH_SEVRVER}/${TODAY}/
- done
-fi
+echo "Running backup for selected databases"
+for DB_NAME in ${DATABASE_NAMES}
+do
+docker exec -i mongodb mongodump --host ${MONGO_HOST} --port ${MONGO_PORT} --db ${DB_NAME} ${AUTH_PARAM} --out ${BACKUP_PATH_MONGO} --gzip
+docker cp mongodb:/${BACKUP_PATH_MONGO}/ ${BACKUP_PATH_SEVRVER}/${TODAY}/
+docker exec -i mongodb mongodump --host ${MONGO_HOST} --port ${MONGO_PORT} --db ${DB_NAME} ${AUTH_PARAM} --out ${BACKUP_PATH_MONGO} --gzip
+docker exec -i mongodb bash -c rm -f -r /${BACKUP_PATH_MONGO}/
+done
+
 
 
 
