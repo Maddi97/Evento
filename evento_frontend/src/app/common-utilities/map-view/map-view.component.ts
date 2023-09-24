@@ -189,7 +189,7 @@ export class MapViewComponent implements OnInit, OnChanges {
           .addTo(this.markerGroup)
           .bindPopup(
             `<div>${marker.name}</div>` +
-            `<div class="popup-org-name">${marker.organizerName}</div>` +
+            //`<div *ngIf="false" class="popup-org-name">${marker.organizerName}</div>` +
             `<div>${marker.address?.street} ${marker.address?.streetNumber}</div>` +
             `<a href="full-event/${marker._id}">Zum Event!</a>` +
             `<hr>` +

@@ -35,7 +35,7 @@ export class EventTileComponent implements OnInit, OnChanges {
       }
     );
     this.distance = Math.round(this.distance * 100) / 100 // 2 decimals
-    this.hasUserPosition = JSON.parse(sessionStorage.getItem("location")) !== "disabled"
+    this.hasUserPosition = !JSON.parse(sessionStorage.getItem("defaultLocation"))
   }
 
   ngOnChanges() {

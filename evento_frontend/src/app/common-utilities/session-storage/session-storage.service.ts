@@ -48,11 +48,13 @@ export class SessionStorageService {
   }
 
   setLocation(location) {
+    sessionStorage.setItem('defaultLocation', JSON.stringify(false))
     sessionStorage.setItem('location', JSON.stringify(location));
     this.locationSubject.next(location);
   }
 
   setDefaultLocation() {
+    sessionStorage.setItem('defaultLocation', JSON.stringify(true))
     sessionStorage.setItem('location', JSON.stringify(this.defaultCenterPosition));
     this.locationSubject.next(this.defaultCenterPosition);
   }
