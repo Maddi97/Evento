@@ -32,7 +32,14 @@ export class PositionService {
         const coordinates = [geoData.lat, geoData.lon];
         this.searchedCenter = coordinates;
         this.sessionStorageService.setLocation(coordinates)
-      });
+      })
+      .catch((error) => {
+        // Handle the error here
+        this.openErrorSnackBar('Adresse konnte nicht gefunden werden.');
+
+        console.error("An error occurred while fetching geo data:", error);
+        // You can also show an error message to the user or take other appropriate actions.
+      });;
   }
 
   getPositionByLocation() {
@@ -50,7 +57,7 @@ export class PositionService {
         }
         else {
           this.sessionStorageService.setDefaultLocation()
-          this.openErrorSnackBar('Standort konnte nicht ermittelt werden und wird auf Leipzig Zentrum gesetzt');
+          this.openErrorSnackBar('Standort konnte nicht ermittelt werden und wird auf Leipzig Zentrum gesetzt.');
         }
       }, (error: GeolocationPositionError) => {
         let message = 'Standort konnte nicht ermittelt werden';
