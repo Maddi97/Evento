@@ -42,12 +42,12 @@
 
 
 
-      <div class="information-container times">
+      <div class="information-container times" *ngIf="openingTimesFormatter(event)">
         <div class="tag">Öffnungszeiten</div>
         <div class="name">{{openingTimesFormatter(event)}}</div>
       </div>
 
-      <div class="information-container dates">
+      <div class="information-container dates" *ngIf="openingTimesFormatter(event)">
         <div class="tag">Datum</div>
         <div class="name">{{dateTimesFormater(event)}}</div>
       </div>

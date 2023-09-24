@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header header-{{getClassOnFullEvent()}}">
   <!-- <mat-icon class="arrow-back" (click)="navBack()">
     arrow_back
   </mat-icon> -->
@@ -15,13 +15,14 @@
   <!--         value="" placeholder="Search...">-->
   <!--  </div>-->
 
-  <div class="logo-container" routerLink="/" [queryParamsHandling]="'merge'" (click)="changeMapView()">
+  <div class="logo-container logo-{{getClassOnFullEvent()}}" routerLink="/" [queryParamsHandling]="'merge'"
+    (click)="changeMapView()">
     <img class="logo" src="assets/branding/logo_name.png" alt="logo name">
   </div>
 
   <app-date-picker *ngIf="!fullEventPage" class="date-picker" (clickedDate)="searchForDay($event)"></app-date-picker>
 
-  <div *ngIf="!fullEventPage" class="menu-container">
+  <div class="menu-container menu-{{getClassOnFullEvent()}}">
     <app-hamburger-menu></app-hamburger-menu>
   </div>
 

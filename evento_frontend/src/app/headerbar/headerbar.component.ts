@@ -24,7 +24,7 @@ export class HeaderbarComponent implements OnInit {
     private location: Location,
     private router: Router,
     private sessionStorageService: SessionStorageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.router.events
@@ -47,6 +47,12 @@ export class HeaderbarComponent implements OnInit {
   }
   changeMapView() {
     this.sessionStorageService.setMapViewData(false);
+  }
+  getClassOnFullEvent() {
+    if (this.fullEventPage) {
+      return 'fullevent'
+    }
+    else return ''
   }
 }
 
