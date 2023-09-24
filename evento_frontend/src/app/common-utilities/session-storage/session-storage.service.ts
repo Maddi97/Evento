@@ -2,15 +2,19 @@
 
 import { Injectable } from "@angular/core";
 import { Subject, Observable, BehaviorSubject } from "rxjs";
+import { PositionService } from "../map-view/position.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class SessionStorageService {
-  private mapViewSubject = new Subject<boolean>(); // Change the type to boolean
-  private locationSubject = new BehaviorSubject<string>(this.getLocationFromStorage());
+  defaultCenterPosition = [51.33962, 12.37129];
 
-  constructor() {
+  private mapViewSubject = new Subject<boolean>(); // Change the type to boolean
+  private locationSubject = new BehaviorSubject<Array<Number>>(this.getLocationFromStorage());
+
+  constructor(
+  ) {
     const initialMapViewData = this.getMapViewData();
     if (initialMapViewData === null) {
       this.setMapViewData(false); // Set the default value here as a boolean
@@ -43,13 +47,18 @@ export class SessionStorageService {
     return this.locationSubject.asObservable();
   }
 
-  setLocation(location: string) {
-    sessionStorage.setItem('location', location);
+  setLocation(location) {
+    sessionStorage.setItem('location', JSON.stringify(location));
     this.locationSubject.next(location);
   }
 
+  setDefaultLocation() {
+    sessionStorage.setItem('location', JSON.stringify(this.defaultCenterPosition));
+    this.locationSubject.next(this.defaultCenterPosition);
+  }
+
   private getLocationFromStorage() {
-    const storedLocation = sessionStorage.getItem('location');
-    return storedLocation !== 'disabled' ? storedLocation : null;
+    const storedLocation = JSON.parse(sessionStorage.getItem('location'));
+    return storedLocation || this.defaultCenterPosition;
   }
 }

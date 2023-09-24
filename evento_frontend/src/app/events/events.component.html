@@ -3,15 +3,16 @@
 
     <!--    <span class="category-label">Kategorien</span>-->
     <!-- <img class="category-headline" src="assets/design-elements/Kategorien_design.png"> -->
-    <app-category-list class="main-category-container" id="main-category-container" [filteredCategory] = filteredCategory [filteredSubcategories] = filteredSubcategories
-      (categoryOutputEmitter)="triggerCategoryOutput($event)"
+    <app-category-list class="main-category-container" id="main-category-container" [filteredCategory]=filteredCategory
+      [filteredSubcategories]=filteredSubcategories (categoryOutputEmitter)="triggerCategoryOutput($event)"
       (subCategoryOutputEmitter)="triggerSubcategoryOutput($event)"></app-category-list>
 
     <div class="event-map-container" *ngIf="getScreenWidth>1000">
 
       <div class="event-container">
-        <app-event-tile-list [eventList] = eventList (hoverEventEmitter)="hoveredEventId = $event">
-                  
+        <app-event-tile-list [eventList]=eventList [userPosition]="currentPosition"
+          (hoverEventEmitter)="hoveredEventId = $event">
+
         </app-event-tile-list>
         <div *ngIf="loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
           <mat-icon>autorenew</mat-icon>
@@ -21,7 +22,8 @@
       </div>
 
       <div class="map-container">
-        <map-view [markerData]="eventList" [hoveredData]="getEventFromId()"></map-view>
+        <map-view [markerData]="eventList" [hoveredData]="getEventFromId()" [currentPosition]="currentPosition"
+          [centerMapOnPosition]="currentPosition"></map-view>
       </div>
     </div>
     <div class="event-map-container" *ngIf="getScreenWidth<1000">
@@ -32,12 +34,12 @@
         </div>
         <div class="event-container">
 
-          <app-event-tile-list [eventList]="eventList" 
-       (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
-            <div *ngIf="loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
-              <mat-icon>autorenew</mat-icon>
-              <p>Lade mehr ...</p>
-            </div>
+          <app-event-tile-list [eventList]="eventList"
+            (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
+          <div *ngIf="loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
+            <mat-icon>autorenew</mat-icon>
+            <p>Lade mehr ...</p>
+          </div>
         </div>
       </div>
 
@@ -46,7 +48,8 @@
           <p> Zu den Events </p>
           <mat-icon class="change-view-icon" (click)="changeToMapView()">event</mat-icon>
         </div>
-        <map-view [markerData]="eventList" [hoveredData]="getEventFromId()"></map-view>
+        <map-view [markerData]="eventList" [hoveredData]="getEventFromId()" [currentPosition]="currentPosition"
+          [centerMapOnPosition]="currentPosition"></map-view>
       </div>
     </div>
   </div>

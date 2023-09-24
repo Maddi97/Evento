@@ -37,7 +37,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
   constructor(
     private _activatedRoute: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.getScreenWidth = window.innerWidth;
@@ -131,7 +131,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     }, 200);
   }
 
-  getYPosition(e: Event): void {}
+  getYPosition(e: Event): void { }
 
   addDates() {
     // TODO maybe try to add number of dates dynamically

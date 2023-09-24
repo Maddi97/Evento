@@ -7,6 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { debounceTime, map, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
+import { SessionStorageService } from '../session-storage/session-storage.service';
 
 @Component({
   selector: 'app-event-tile-list',
@@ -15,6 +16,7 @@ import * as moment from 'moment';
 })
 export class EventTileListComponent implements OnInit {
   @Input() eventList;
+  @Input() userPosition;
   @Output() hoverEventEmitter = new EventEmitter<string>();
 
   private events$;
@@ -26,13 +28,17 @@ export class EventTileListComponent implements OnInit {
   to: any;
 
   constructor(
-        private positionService: PositionService,
+    private sessionStorageService: SessionStorageService,
     private geoService: NominatimGeoService,
   ) {
   }
 
   ngOnInit(): void {
+    this.sessionStorageService.getLocation().subscribe(location => {
+      this.userPosition = location
+    })
   }
+
 
   hover(eventId: string) {
     this.hoverEventEmitter.emit(eventId);
@@ -42,10 +48,9 @@ export class EventTileListComponent implements OnInit {
     this.hoverEventEmitter.emit(null);
   }
 
-    get_distance_to_current_position(event) {
+  get_distance_to_current_position(event) {
     // get distance
-    this.currentPosition = this.positionService.getCurrentPosition();
-    const dist = this.geoService.get_distance(this.currentPosition, [event.geoData.lat, event.geoData.lon]);
+    const dist = this.geoService.get_distance(this.userPosition, [event.geoData.lat, event.geoData.lon]);
     return dist;
   }
 

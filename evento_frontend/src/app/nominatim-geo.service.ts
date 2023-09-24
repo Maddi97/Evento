@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {map, take} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { map, take } from 'rxjs/operators';
 
 
 @Injectable({
@@ -33,15 +33,14 @@ export class NominatimGeoService {
   }
 
   get_geo_data_address(address) {
-    return this.http.get(this.ROOT_URL + address + this.URL_END).pipe(
-      take(1),
-      map(geoData => {
+    return this.http.get(this.ROOT_URL + address + this.URL_END)
+      .toPromise() // Convert the observable to a promise
+      .then(geoData => {
         if (Object.keys(geoData).length < 1) {
-          throw console.error(('No coordinates found to given address'));
+          throw new Error('No coordinates found for the given address');
         }
-        return geoData;
-      }),
-    );
+        return geoData[0];
+      });
   }
 
   get_distance(startPosition, endPosition) {

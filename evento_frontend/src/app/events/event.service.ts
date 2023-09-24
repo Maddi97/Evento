@@ -135,7 +135,6 @@ export class EventService {
       }),
       tap((events) => {
         this.cachedEvents.set(cacheKey, events);
-        console.log(events)
         this._events.next(events);
       }),
       share()

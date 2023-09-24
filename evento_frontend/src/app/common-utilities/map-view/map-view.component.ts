@@ -10,6 +10,7 @@ import * as L from "leaflet";
 import { PositionService } from "./position.service";
 import { Router } from "@angular/router";
 import { Geolocation } from "@capacitor/geolocation";
+import { SessionStorageService } from "../session-storage/session-storage.service";
 
 @Component({
   selector: "map-view",
@@ -19,8 +20,9 @@ import { Geolocation } from "@capacitor/geolocation";
 export class MapViewComponent implements OnInit, OnChanges {
   @Input() markerData = [];
   @Input() hoveredData = null;
-  @Input() zoomInput = 12;
-  @Input() centerInput = null;
+  @Input() zoomInput = 13;
+  @Input() currentPosition: Array<Number>;
+  @Input() centerMapOnPosition: Array<Number>;
 
   private map;
   private mapInitialized;
@@ -28,11 +30,6 @@ export class MapViewComponent implements OnInit, OnChanges {
   private positionMarkerGroup;
   private hoverMarkerGroup;
   address = "";
-
-  currentPosition = {
-    lat: "",
-    lon: "",
-  };
 
   private defaultIconRetina =
     "./assets/leaflet_color_markers/marker-icon-2x-red.png";
@@ -58,7 +55,8 @@ export class MapViewComponent implements OnInit, OnChanges {
     },
   });
 
-  constructor(private positionService: PositionService) { }
+  constructor(
+    private positionService: PositionService) { }
 
   sanitizeInput(value) {
     return value.replace(/ /g, "+");
@@ -70,53 +68,23 @@ export class MapViewComponent implements OnInit, OnChanges {
     // })
     // this.updatePosition(this.positionService.getDefaultLocation());
     this.initMapIfNeeded(); // Use the method to initialize the map
-
-    const locationFromSession = JSON.parse(sessionStorage.getItem("location"));
-    if (locationFromSession !== null && locationFromSession !== "disabled") {
-      this.currentPosition.lat = locationFromSession[0];
-      this.currentPosition.lon = locationFromSession[1];
-      this.setPositionMarker();
-    } else {
-      this.getCurrentPosition();
-    }
-  }
-
-  updatePosition(locationList) {
-    this.currentPosition.lat = locationList[0];
-    this.currentPosition.lon = locationList[1];
   }
 
   resetCenter() {
-    this.updatePosition(this.positionService.getCurrentPosition());
     this.setPositionMarker();
     this.map.panTo(
-      new L.LatLng(this.currentPosition.lat, this.currentPosition.lon)
+      new L.LatLng(String(this.centerMapOnPosition[0]), String(this.centerMapOnPosition[1]))
     );
     //this.router.navigate(['/', 'events'], {queryParams: {positionUpdate: true}});
   }
 
   searchForLocationInput() {
     const address = this.sanitizeInput(this.address);
-
-    this.positionService.getPositionByInput(address).subscribe(() => {
-      this.resetCenter();
-    });
+    this.positionService.getPositionByInput(address)
   }
 
-  async getCurrentPosition(request = false) {
-    // const coordinates = await Geolocation.getCurrentPosition();
-    //
-    // console.log('Current position:', coordinates);
-
-    if (
-      request &&
-      JSON.parse(sessionStorage.getItem("location")) === "disabled"
-    ) {
-      sessionStorage.removeItem("location");
-    }
-    this.positionService.getPositionByLocation().subscribe((res) => {
-      this.resetCenter();
-    });
+  async setCurrentPositionOfUserToStorage() {
+    this.positionService.getPositionByLocation()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -146,6 +114,9 @@ export class MapViewComponent implements OnInit, OnChanges {
           );
         }
       }
+      if (changes.currentPosition) {
+        this.resetCenter()
+      }
     }, 10); // Adjust the delay time in milliseconds
   }
   private initMapIfNeeded(): void {
@@ -156,20 +127,12 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private initMap(): void {
-    if (this.centerInput === null) {
-      this.map = L.map("map", {
-        center: [
-          this.positionService.getDefaultLocation()[0],
-          this.positionService.getDefaultLocation()[1],
-        ],
-        zoom: this.zoomInput,
-      });
-    } else {
-      this.map = L.map("map", {
-        center: this.centerInput,
-        zoom: this.zoomInput,
-      });
-    }
+
+    this.map = L.map("map", {
+      center: this.centerMapOnPosition,
+      zoom: this.zoomInput,
+    });
+
     this.positionMarkerGroup = L.layerGroup().addTo(this.map);
 
     this.markerGroup = L.layerGroup().addTo(this.map);
@@ -194,14 +157,10 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private setPositionMarker(): void {
-    if (this.currentPosition.lat === "0" && this.currentPosition.lon === "0") {
-      return;
-    }
     this.positionMarkerGroup.clearLayers();
-    const positionMarker = L.marker([
-      this.currentPosition.lat,
-      this.currentPosition.lon,
-    ]).setIcon(
+    const positionMarker = L.marker(
+      this.currentPosition
+    ).setIcon(
       new this.LeafIcon({
         iconUrl: this.locationIcon,
         iconRetinaUrl: this.locationIconRetina,

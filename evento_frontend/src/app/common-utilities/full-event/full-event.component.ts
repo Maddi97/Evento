@@ -11,6 +11,7 @@ import {
   openingTimesFormatter,
   dateTimesFormater,
 } from "../logic/opening-times-format-helpers";
+import { SessionStorageService } from "../session-storage/session-storage.service";
 
 @Component({
   selector: "app-full-event",
@@ -18,8 +19,8 @@ import {
   styleUrls: ["./full-event.component.css"],
 })
 export class FullEventComponent implements OnInit {
+  currentPosition: Array<Number>;
   eventId: string;
-
   event: Event;
   organizer: Organizer;
 
@@ -32,11 +33,12 @@ export class FullEventComponent implements OnInit {
     private route: ActivatedRoute,
     private eventService: EventService,
     private router: Router,
-    private sanitizer: DomSanitizer,
+    private sessionStorageService: SessionStorageService,
     private organizerService: OrganizerService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    this.sessionStorageService.getLocation().subscribe(position => { this.currentPosition = position })
     this.route.params
       .pipe(
         map((eventIdParam) => eventIdParam["eventId"]),
@@ -55,6 +57,7 @@ export class FullEventComponent implements OnInit {
         this.gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
         this.clearQueryParams();
       });
+
   }
   clearQueryParams() {
     this.router.navigate([], {

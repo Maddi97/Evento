@@ -1,11 +1,11 @@
 import { Component, HostListener, OnInit } from "@angular/core";
 import { Event } from "../models/event";
 import * as moment from "moment";
-import { debounceTime, map, mergeMap, take, timer } from "rxjs";
+import { combineLatest, combineLatestAll, debounceTime, forkJoin, map, mergeMap, switchMap, take, timer } from "rxjs";
 import { EventService } from "./event.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ActivatedRoute } from "@angular/router";
-import { PositionService } from "../common-utilities/map-view/position.service";
+import { PositionService } from '../common-utilities/map-view/position.service';
 import { NominatimGeoService } from "../nominatim-geo.service";
 import { CategoriesService } from "../categories/categories.service";
 import { Category, Subcategory } from "../models/category";
@@ -75,6 +75,8 @@ export class EventsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.positionService.getPositionByLocation()
+    this.currentPosition = [51, 13]
     this.getScreenWidth = window.innerWidth;
     this.spinner.show();
     this.events$ = this.eventService.events.subscribe((events) => {
@@ -82,6 +84,12 @@ export class EventsComponent implements OnInit {
       this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
       this.spinner.hide();
     });
+
+    const positionService$ = this.sessionStorageService.getLocation().pipe(
+      map((position) => {
+        this.currentPosition = position;
+      }));
+
     const categories$ = this.categoriesService.categories.pipe(
       map((categories: Category[]) => {
         this.categoryList = categories;
@@ -128,20 +136,19 @@ export class EventsComponent implements OnInit {
 
     categories$
       .pipe(
-        mergeMap(() => params$),
+        //mergeMap(() => positionService$),
+        switchMap(() => params$),
+        switchMap(() => positionService$)
       )
       .subscribe(() => {
-        this.applyFilters();
+        this.applyFilters()
       });
-  }
-  ngOnChanges(): void {
-    this.applyFilters();
+
   }
 
   applyFilters() {
     // Request backend for date, category and subcategory filter
     // filter object
-    this.currentPosition = this.positionService.getCurrentPosition();
     const fil = {
       date: this.filteredDate,
       cat: [this.filteredCategory],
@@ -161,7 +168,6 @@ export class EventsComponent implements OnInit {
   }
   get_distance_to_current_position(event) {
     // get distance
-    this.currentPosition = this.positionService.getCurrentPosition();
     const dist = this.geoService.get_distance(this.currentPosition, [
       event.geoData.lat,
       event.geoData.lon,
@@ -171,7 +177,6 @@ export class EventsComponent implements OnInit {
 
   loadMoreEvents() {
     this.actualLoadEventLimit += this.offset;
-    this.applyFilters();
   }
 
   searchForDay(filter: DateClicked) {
@@ -187,12 +192,10 @@ export class EventsComponent implements OnInit {
 
   triggerCategoryOutput(cat) {
     this.filteredCategory = cat;
-    this.applyFilters();
   }
 
   triggerSubcategoryOutput(subcats) {
     this.filteredSubcategories = subcats;
-    this.applyFilters();
   }
 
   changeToMapView() {

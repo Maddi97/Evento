@@ -2,7 +2,7 @@
   <div class="event-tile" *ngIf="event">
 
     <div class="column-container-1 column">
-    
+
       <div class="event-pic">
         <app-event-picture [event]="event"></app-event-picture>
       </div>
@@ -13,7 +13,7 @@
       </div>
 
       <div class="event-link" *ngIf="event?.link.length>0">
-        <a href="{{addHttpProtocol(event.link)}}" >Link zur Veranstaltung</a>
+        <a href="{{addHttpProtocol(event.link)}}">Link zur Veranstaltung</a>
       </div>
       <app-social-media-share class="social-media-buttons"></app-social-media-share>
     </div>
@@ -58,27 +58,28 @@
       </div>
     </div>
 
-      <div class="column-container-3 column">
-        <div class="information-container-description">
+    <div class="column-container-3 column">
+      <div class="information-container-description">
         <div class="description-tag">
           Description
           <div class="description">
             {{event?.description}}
           </div>
-          </div>
         </div>
       </div>
+    </div>
 
     <div class="column-container-4">
-        <div class="address">
-          {{event?.address?.street}} {{event?.address?.streetNumber}}, {{event?.address?.plz}} {{event?.address?.city}}
-          </div>
-          <a class="gmaps-link" target="_blank" rel="noopener noreferrer" href="{{addHttpProtocol(gmapsUrl)}}">Google Maps</a>
+      <div class="address">
+        {{event?.address?.street}} {{event?.address?.streetNumber}}, {{event?.address?.plz}} {{event?.address?.city}}
+      </div>
+      <a class="gmaps-link" target="_blank" rel="noopener noreferrer" href="{{addHttpProtocol(gmapsUrl)}}">Google
+        Maps</a>
 
       <div class="map-container">
 
-        <map-view [markerData]="[event]" [zoomInput]="14"
-                  [centerInput]="[event.geoData.lat, event.geoData.lon]"></map-view>
+        <map-view [markerData]="[event]" [zoomInput]="14" [currentPosition]="currentPosition"
+          [centerMapOnPosition]="[event.geoData.lat, event.geoData.lon]"></map-view>
       </div>
     </div>
   </div>
