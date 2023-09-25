@@ -15,6 +15,7 @@ import {
 import { FileUploadService } from "../../../services/file-upload.service";
 import { DomSanitizer } from "@angular/platform-browser";
 import { of, throwError } from "rxjs";
+import { CategoryService } from 'src/app/services/category.service';
 
 @Component({
     selector: 'app-organizer-view',
@@ -30,6 +31,8 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
     category: Category;
 
     // subscriptions
+    category$
+    categories
     organizer$;
     createOrganizer$;
     updateOrganizer$;
@@ -50,19 +53,13 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
         private eventService: EventsService,
         private fileService: FileUploadService,
         private sanitizer: DomSanitizer,
+        private categoryService: CategoryService,
     ) {
     }
 
     ngOnInit(): void {
-        this.organizer$ = this.organizerService.organizers.pipe(
-            map(o => {
-                this.organizers = o;
-                this.downloadImage()
-
-            }
-            )
-        );
-        this.organizer$.subscribe()
+        this.category$ = this.categoryService.categories;
+        this.category$.subscribe((cat) => (this.categories = cat));
     }
 
     ngOnDestroy(): void {
@@ -221,6 +218,17 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
                 }
             }
         })
+    }
+
+    loadOrganizerOfCategory(category) {
+        this.organizerService.filterOrganizerByEventsCategory(category).pipe(
+            map(o => {
+                this.organizers = o;
+                this.downloadImage()
+
+            }
+            )
+        ).subscribe();
     }
 
     openSnackBar(message, state) {

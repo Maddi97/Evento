@@ -17,6 +17,11 @@
     flex-direction: column;
 }
 
+.all-organizer-expansion-panel {
+    margin: 1rem;
+    width: 100%;
+}
+
 @media screen and (min-width:900px) {
     .organizer-page {
         flex-direction: row;

@@ -10,16 +10,29 @@
                 <app-map-view [markerData]="organizers"></app-map-view>
             </div>
 
-            <div *ngFor="let organizer of organizers">
-                <div class="organizer-panel">
-                    <div class="organizer-name" (click)="organizerInformation=organizer">
-                        {{organizer.name}}
+
+            <div class="all-organizer-expansion-panel" *ngFor="let category of categories">
+                <mat-expansion-panel (afterExpand)="loadOrganizerOfCategory(category)">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{category.name}}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Open to see all events
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let organizer of organizers">
+                        <div class="organizer-panel">
+                            <div class="organizer-name" (click)="organizerInformation=organizer">
+                                {{organizer.name}}
+                            </div>
+                            <img class="organizer-image" [src]="organizer.organizerImageTemporaryURL">
+                            <div class="delete-button" (click)="deleteOrganizer(organizer)">
+                                Delete
+                            </div>
+                        </div>
                     </div>
-                    <img class="organizer-image" [src]="organizer.organizerImageTemporaryURL">
-                    <div class="delete-button" (click)="deleteOrganizer(organizer)">
-                        Delete
-                    </div>
-                </div>
+                </mat-expansion-panel>
             </div>
 
 
