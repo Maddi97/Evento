@@ -28,7 +28,7 @@ ssh "root@h2970439.stratoserver.net" "docker cp ${DOCKER_CONTAINER_SERVER}:/${IM
 scp -r root@h2970439.stratoserver.net:${DB_BACKUP_PATH}/instant_dump/${DB_NAME}/ ../backup_local_dev/db_backup/
 scp -r root@h2970439.stratoserver.net:${DB_BACKUP_PATH}/instant_dump/IMAGE_BACKUP/ ../backup_local_dev/image_backup
 
-docker cp ../backup_local_dev/image_backup/. ${DOCKER_CONTAINER}:/${IMAGE_PATH} 
+docker cp ../backup_local_dev/image_backup/IMAGE_BACKUP/. ${DOCKER_CONTAINER}:/${IMAGE_PATH} 
 
 docker cp ../backup_local_dev/db_backup/${DB_NAME} mongodb:/backup/
 

@@ -20,9 +20,10 @@ export class EventsComponent implements OnInit {
   public isDropdown = false;
   private events$;
 
-  actualLoadEventLimit = 13;
+  // equal limit at start == start limit
+  actualLoadEventLimit;
   startLoadEventLimit = 13;
-  offset = 5;
+  offset = 10;
 
   currentPosition;
   mapView = null;
@@ -61,6 +62,7 @@ export class EventsComponent implements OnInit {
     private categoriesService: CategoriesService,
     private sessionStorageService: SessionStorageService
   ) {
+    this.actualLoadEventLimit = this.startLoadEventLimit;
     this.mapView = this.sessionStorageService.getMapViewData();
     if (this.mapView === null) {
       this.sessionStorageService.setMapViewData(false); // Set the default value here as a boolean
@@ -177,6 +179,7 @@ export class EventsComponent implements OnInit {
 
   loadMoreEvents() {
     this.actualLoadEventLimit += this.offset;
+    this.applyFilters()
   }
 
   searchForDay(filter: DateClicked) {
