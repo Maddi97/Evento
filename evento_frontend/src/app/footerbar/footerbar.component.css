@@ -13,6 +13,10 @@
   padding-bottom: env(safe-area-inset-bottom) +10px;
 }
 
+.picked {
+  border-bottom: 1px solid white;
+}
+
 .icon {
   display: flex;
   justify-content: center;
