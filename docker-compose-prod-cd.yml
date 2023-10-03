@@ -55,8 +55,8 @@ services:
     depends_on:
       - letsencrypt
 
-    mongodb:
-      image: mongo
-      container_name: mongodb
-      depends_on:
-        - letsencrypt
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    depends_on:
+      - letsencrypt
