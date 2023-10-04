@@ -49,7 +49,7 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     }
 
     compareWith(subcat1: any, subcat2: any): boolean {
-        return subcat1 && subcat2 && subcat1.id === subcat2.id;
+        return subcat1 && subcat2 && subcat1._id === subcat2._id;
     }
 
     selectCategory() {
