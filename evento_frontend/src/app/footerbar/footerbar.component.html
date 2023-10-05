@@ -1,15 +1,14 @@
 <div class="footer" *ngIf="windowWidth<800">
-  <mat-icon class="icon" [ngClass]="footerPickedField==='events' ? 'picked' : ''" routerLink="/"
-    [queryParams]="queryParams" [queryParamsHandling]="'merge'"
-    (click)="changeMapView(); setFooterPickedField('events');">
+  <mat-icon class="icon" [ngClass]="footerPickedField==='/' ? 'picked' : ''" routerLink="/" [queryParams]="queryParams"
+    [queryParamsHandling]="'merge'" (click)="changeMapView(); setFooterPickedField('/');">
     calendar_today
   </mat-icon>
-  <mat-icon class="icon" [ngClass]="footerPickedField==='categories' ? 'picked' : ''" [routerLink]="['/categories']"
-    [queryParams]="queryParams" [queryParamsHandling]="'merge'" (click)="setFooterPickedField('categories')">
+  <mat-icon class="icon" [ngClass]="footerPickedField==='/categories' ? 'picked' : ''" [routerLink]="['/categories']"
+    [queryParams]="queryParams" [queryParamsHandling]="'merge'" (click)="setFooterPickedField('/categories')">
     format_list_bulleted
   </mat-icon>
-  <mat-icon class="icon" routerLink="settings" [ngClass]="footerPickedField==='settings' ? 'picked' : ''"
-    [queryParams]="queryParams" [queryParamsHandling]="'merge'" (click)="setFooterPickedField('settings')">
+  <mat-icon class="icon" routerLink="settings" [ngClass]="footerPickedField==='/settings' ? 'picked' : ''"
+    [queryParams]="queryParams" [queryParamsHandling]="'merge'" (click)="setFooterPickedField('/settings')">
     settings
   </mat-icon>
 </div>
