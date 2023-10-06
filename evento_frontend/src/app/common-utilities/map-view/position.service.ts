@@ -45,7 +45,10 @@ export class PositionService {
 
   getPositionByLocation(forcePositionCall = false) {
     this.spinner.show()
-    if (this.disableCallLocation || (!forcePositionCall && this.sessionStorageService.getDefaultLocationValue())) { return }
+    if (this.disableCallLocation || (!forcePositionCall && this.sessionStorageService.getDefaultLocationValue())) {
+      this.spinner.hide()
+      return
+    }
     this.disableCallLocation = true
     // Simple geolocation API check provides values to publish
     // unfortunately needs some seconds sometimes
@@ -76,7 +79,7 @@ export class PositionService {
     }
     setTimeout(() => {
       this.disableCallLocation = false;
-    }, 5000)
+    }, 3000)
 
   };
 

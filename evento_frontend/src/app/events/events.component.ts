@@ -78,6 +78,7 @@ export class EventsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.spinner.show()
     this.positionService.getPositionByLocation()
     this.currentPosition = [51, 13]
     this.getScreenWidth = window.innerWidth;
@@ -86,7 +87,7 @@ export class EventsComponent implements OnInit {
       this.fetchEventsCompleted = true;
       this.eventList = events;
       this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
-      this.spinner.hide();
+      this.spinner.hide()
 
     });
 
@@ -145,10 +146,9 @@ export class EventsComponent implements OnInit {
       .pipe(
         //mergeMap(() => positionService$),
         switchMap(() => params$),
-        switchMap(() => positionService$)
+        switchMap(() => positionService$),
       )
       .subscribe(() => {
-
         this.applyFilters()
       });
 
