@@ -1,23 +1,20 @@
 <div class="date-picker">
   <div class="scroll" id="scroll-date-picker">
-    <div
-      *ngIf="getScreenWidth>700"
+    <div *ngIf="getScreenWidth>700"
       [ngStyle]="{ 'color': scrollLeftMax ? 'lightgrey' : 'black', 'cursor': scrollLeftMax ? 'unset' : 'pointer' }"
       class="icon icon-left" (click)="scrollLeft()">
       <mat-icon>arrow_back_ios_new</mat-icon>
     </div>
     <app-day-date class="events-day-date" *ngFor="let day of nextMonth" [date]="day.date" [isClicked]="day.isClicked"
-                  (click)="safeDate(day.date);"
-                  [ngClass]="{'clicked' : day.isClicked}">
+      (click)="safeDate(day.date, day.date);" [ngClass]="{'clicked' : day.isClicked}">
       >
     </app-day-date>
     <div class="add-dates">
       <div (click)="addDates()" class="add-text">
-        <img class="view-more-icon" src="assets/static-icons/view-more.png"/>
+        <img class="view-more-icon" src="assets/static-icons/view-more.png" />
       </div>
     </div>
-    <div
-      *ngIf="getScreenWidth>700"
+    <div *ngIf="getScreenWidth>700"
       [ngStyle]="{ 'color': scrollRightMax ? 'lightgrey' : 'black', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
       class="icon icon-right" (click)="scrollRight(); setScrollMaxBool()
       ">

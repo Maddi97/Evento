@@ -12,7 +12,7 @@ import {
 import { MatCalendar } from "@angular/material/datepicker";
 import * as moment from "moment";
 import { ActivatedRoute, Router } from "@angular/router";
-import { debounceTime, map, mergeMap, skip, take } from "rxjs/operators";
+import { debounceTime, map, mergeMap, skip, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-date-picker",
@@ -20,8 +20,6 @@ import { debounceTime, map, mergeMap, skip, take } from "rxjs/operators";
   styleUrls: ["./date-picker.component.css"],
 })
 export class DatePickerComponent implements OnInit, AfterViewInit {
-  @Output() clickedDate = new EventEmitter<DateClicked>();
-
   @ViewChild(MatCalendar) datePicker: MatCalendar<Date>;
 
   public getScreenWidth: any;
@@ -53,15 +51,18 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
         if (date !== undefined) {
           this.startDate = new Date(date);
         }
-      })
+      }),
+      tap()
     );
 
     params$
       .pipe(
         debounceTime(1),
-        mergeMap(() => this.createDateList())
+        mergeMap(() => this.createDateList()),
       )
-      .subscribe(() => this.scrollToClicked());
+      .subscribe(() => {
+        this.scrollToClicked()
+      });
     this.setScrollMaxBool();
   }
 
@@ -69,7 +70,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     this.scrollToClicked();
   }
 
-  safeDate(day: moment.Moment) {
+  safeDate(day: moment.Moment, str = "bla") {
     this.nextMonth.map((m) => {
       if (m.date === day) {
         m.isClicked = true;
@@ -78,7 +79,6 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
       }
     });
     const emitDate = this.nextMonth.find((m) => m.date === day);
-    this.clickedDate.emit(emitDate);
     this.setRouteParameter({
       date: emitDate.date.clone().format("YYYY-MM-DD"),
     });
@@ -90,8 +90,8 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
         ? this.transformDateFormat(new Date())
         : this.transformDateFormat(new Date())
     );
-    let differencesParamDateTodayDays = moment(this.startDate).diff(
-      thisDay,
+    let differencesParamDateTodayDays = this.transformDateFormat(this.startDate).diff(
+      this.transformDateFormat(thisDay),
       "days"
     );
     if (differencesParamDateTodayDays < 0) {
@@ -99,12 +99,11 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     }
     if (differencesParamDateTodayDays > this.numberOfDates)
       this.numberOfDates = differencesParamDateTodayDays + this.numberOfDates;
-
     for (let i = this.firstDate; i < this.numberOfDates; i++) {
       const day = thisDay.clone().add(i, "days");
-
       this.nextMonth[i] = new DateClicked();
       this.nextMonth[i].date = day;
+
       if (i === differencesParamDateTodayDays) {
         this.safeDate(this.nextMonth[i].date);
       } else {
