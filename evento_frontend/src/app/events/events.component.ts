@@ -80,7 +80,8 @@ export class EventsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.spinner.show()
+    this.spinner.show();
+    this.closeSpinnerAfterTimeout();
     this.positionService.getPositionByLocation()
     this.currentPosition = [51, 13]
     this.getScreenWidth = window.innerWidth;
@@ -118,6 +119,7 @@ export class EventsComponent implements OnInit {
       map((params) => {
         this.fetchEventsCompleted = false
         this.spinner.show()
+        this.closeSpinnerAfterTimeout();
         this.filteredDate = moment(new Date(params.date))
           .utcOffset(0, false)
           .set({
@@ -189,6 +191,7 @@ export class EventsComponent implements OnInit {
 
   loadMoreEvents() {
     this.spinner.show()
+    this.closeSpinnerAfterTimeout();
     this.isLoadMoreClicked = true
     this.actualLoadEventLimit += this.offset;
     this.applyFilters()
@@ -244,6 +247,11 @@ export class EventsComponent implements OnInit {
     this.scrollLeftMax = element.scrollLeft === 0;
     this.scrollRightMax =
       element.scrollLeft === element.scrollWidth - element.clientWidth;
+  }
+  closeSpinnerAfterTimeout() {
+    setTimeout(() => {
+      this.spinner.hide()
+    }, 8000)
   }
 }
 

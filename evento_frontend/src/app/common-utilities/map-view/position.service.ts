@@ -28,6 +28,7 @@ export class PositionService {
 
   getPositionByInput(addressInput) {
     this.spinner.show()
+    this.closeSpinnerAfterTimeout()
     this.geoService.get_geo_data_address(addressInput).then(
       (geoData) => {
         const coordinates = [geoData.lat, geoData.lon];
@@ -45,6 +46,7 @@ export class PositionService {
 
   getPositionByLocation(forcePositionCall = false) {
     this.spinner.show()
+    this.closeSpinnerAfterTimeout()
     if (this.disableCallLocation || (!forcePositionCall && this.sessionStorageService.getDefaultLocationValue())) {
       this.spinner.hide()
       return
@@ -94,5 +96,10 @@ export class PositionService {
       panelClass: ['red-snackbar'],
 
     });
+  }
+  closeSpinnerAfterTimeout() {
+    setTimeout(() => {
+      this.spinner.hide()
+    }, 8000)
   }
 }
