@@ -43,7 +43,6 @@ export class EventTileListComponent implements OnInit, OnChanges {
     if (eventToScrollId) {
       setTimeout(() => {
         const id = "event-tile-" + eventToScrollId
-        console.log(id)
         const element = document.getElementById(id)
 
         element.scrollIntoView()
