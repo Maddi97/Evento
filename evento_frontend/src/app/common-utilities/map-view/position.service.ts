@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { from, Observable } from "rxjs";
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { addAriaReferencedId } from '@angular/cdk/a11y';
+import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable({
   providedIn: 'root'
@@ -17,16 +18,16 @@ export class PositionService {
   // New York Center
   // default_center_position = [40.7142700, -74.0059700]
 
-  disabledStr = "disabled"
-
   constructor(
     private geoService: NominatimGeoService,
     private _snackbar: MatSnackBar,
+    private spinner: NgxSpinnerService,
     private sessionStorageService: SessionStorageService
   ) {
   }
 
   getPositionByInput(addressInput) {
+    this.spinner.show()
     this.geoService.get_geo_data_address(addressInput).then(
       (geoData) => {
         const coordinates = [geoData.lat, geoData.lon];
@@ -42,8 +43,9 @@ export class PositionService {
       });;
   }
 
-  getPositionByLocation() {
-    if (this.disableCallLocation) return
+  getPositionByLocation(forcePositionCall = false) {
+    this.spinner.show()
+    if (this.disableCallLocation || (!forcePositionCall && this.sessionStorageService.getDefaultLocationValue())) { return }
     this.disableCallLocation = true
     // Simple geolocation API check provides values to publish
     // unfortunately needs some seconds sometimes
@@ -83,7 +85,7 @@ export class PositionService {
       message = 'Standort konnte nicht ermittelt werden'
     }
     this._snackbar.open(message, '', {
-      duration: 3000,
+      duration: 1500,
       verticalPosition: 'bottom',
       horizontalPosition: 'center',
       panelClass: ['red-snackbar'],

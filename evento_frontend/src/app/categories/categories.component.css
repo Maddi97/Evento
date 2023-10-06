@@ -9,13 +9,22 @@
   margin-right: 20px;
   padding-right: 0rem !important;
   min-width: 1rem;
+}
+
+.headline-container {
   align-self: center;
+  min-height: 125px;
 }
 
 @media screen and (max-width: 800px) {
   .category-headline {
     height: 100%;
     width: 20rem;
+  }
+
+  .headline-container {
+    align-self: center;
+    min-height: 100px;
   }
 }
 

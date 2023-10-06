@@ -13,7 +13,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 
 import { CommonUtilitiesModule } from './common-utilities/common-utilities.module';
-import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 
@@ -28,8 +27,6 @@ import { LocationStrategy, PathLocationStrategy } from '@angular/common';
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
-    NgxSpinnerModule,
-
     /*
     Angular Material
     */

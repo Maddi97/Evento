@@ -23,8 +23,8 @@ import { CategoryListComponent } from './category-list/category-list.component';
 import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { NgxSpinnerModule } from 'ngx-spinner';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 @NgModule({
@@ -56,8 +56,8 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
     MatCardModule,
     MatMenuModule,
     MatButtonModule,
-    NgxSpinnerModule,
-    LazyLoadImageModule
+    LazyLoadImageModule,
+    NgxSpinnerModule
   ],
   exports: [
     EventTileComponent,

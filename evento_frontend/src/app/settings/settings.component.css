@@ -96,21 +96,30 @@
   }
 }
 
+.headline-container {
+  align-self: center;
+  min-height: 125px;
+  align-self: center;
+}
+
 .settings-headline {
-  height: 80%;
-  width: 20rem;
+  height: 125px;
+  width: auto;
   margin-top: 5px;
   margin-bottom: 5px;
   margin-right: 25px;
   padding-right: 0rem !important;
   min-width: 1rem;
-  align-self: center;
 }
 
 @media screen and (max-width: 800px) {
   .settings-headline {
-    height: 80%;
-    width: 16rem;
+    height: 100px;
+    width: auto;
+  }
+
+  .headline-container {
+    align-self: center;
+    min-height: 100px;
   }
 }
-

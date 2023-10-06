@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 
@@ -19,6 +20,7 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule,
     CommonModule,
     CommonUtilitiesModule,
+    NgxSpinnerModule,
     /**
      * Flex
      */

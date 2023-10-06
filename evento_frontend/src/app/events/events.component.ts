@@ -22,9 +22,10 @@ export class EventsComponent implements OnInit {
 
   // equal limit at start == start limit
   actualLoadEventLimit;
-  startLoadEventLimit = 13;
-  offset = 10;
+  startLoadEventLimit = 24;
+  offset = 19;
 
+  fetchEventsCompleted = false;
   currentPosition;
   mapView = null;
   mapView$;
@@ -65,7 +66,7 @@ export class EventsComponent implements OnInit {
     this.actualLoadEventLimit = this.startLoadEventLimit;
     this.mapView = this.sessionStorageService.getMapViewData();
     if (this.mapView === null) {
-      this.sessionStorageService.setMapViewData(false); // Set the default value here as a boolean
+      this.sessionStorageService.setMapViewData(false);
       this.mapView = false;
     }
 
@@ -80,11 +81,13 @@ export class EventsComponent implements OnInit {
     this.positionService.getPositionByLocation()
     this.currentPosition = [51, 13]
     this.getScreenWidth = window.innerWidth;
-    this.spinner.show();
     this.events$ = this.eventService.events.subscribe((events) => {
+
+      this.fetchEventsCompleted = true;
       this.eventList = events;
       this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
       this.spinner.hide();
+
     });
 
     const positionService$ = this.sessionStorageService.getLocation().pipe(
@@ -106,6 +109,8 @@ export class EventsComponent implements OnInit {
 
     const params$ = this._activatedRoute.queryParams.pipe(
       map((params) => {
+        this.fetchEventsCompleted = false
+        this.spinner.show()
         this.filteredDate = moment(new Date(params.date))
           .utcOffset(0, false)
           .set({
@@ -143,6 +148,7 @@ export class EventsComponent implements OnInit {
         switchMap(() => positionService$)
       )
       .subscribe(() => {
+
         this.applyFilters()
       });
 
@@ -158,7 +164,6 @@ export class EventsComponent implements OnInit {
       limit: this.actualLoadEventLimit,
       currentPosition: this.currentPosition,
     };
-    // this.spinner.show();
     // if category is not hot
     if (!fil.cat.find((el) => el.name === "hot")) {
       this.eventService.getEventsOnDateCategoryAndSubcategory(fil);
@@ -166,7 +171,6 @@ export class EventsComponent implements OnInit {
       // if hot filter by date
       this.eventService.getEventsOnDate(this.filteredDate);
     }
-    // this.spinner.hide();
   }
   get_distance_to_current_position(event) {
     // get distance

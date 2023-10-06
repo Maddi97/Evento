@@ -1,12 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Event } from '../../models/event';
-import { EventService } from '../../events/event.service';
-import { PositionService } from '../map-view/position.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NominatimGeoService } from '../../nominatim-geo.service';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { debounceTime, map, take } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import * as moment from 'moment';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 
 @Component({
@@ -15,11 +8,11 @@ import { SessionStorageService } from '../session-storage/session-storage.servic
   styleUrls: ['./event-tile-list.component.css']
 })
 export class EventTileListComponent implements OnInit {
+  @Input() fetchEventsCompleted = false;
   @Input() eventList;
   @Input() userPosition;
   @Output() hoverEventEmitter = new EventEmitter<string>();
 
-  private events$;
   currentPosition;
 
   emittedEventId = null;

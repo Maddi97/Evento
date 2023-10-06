@@ -1,6 +1,6 @@
 <div class="event-page">
   <div class="filter-container">
-
+    <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
     <!--    <span class="category-label">Kategorien</span>-->
     <!-- <img class="category-headline" src="assets/design-elements/Kategorien_design.png"> -->
     <app-category-list class="main-category-container" id="main-category-container" [filteredCategory]=filteredCategory
@@ -10,11 +10,11 @@
     <div class="event-map-container" *ngIf="getScreenWidth>1000">
 
       <div class="event-container">
-        <app-event-tile-list [eventList]=eventList [userPosition]="currentPosition"
-          (hoverEventEmitter)="hoveredEventId = $event">
+        <app-event-tile-list [fetchEventsCompleted]="fetchEventsCompleted" [eventList]=eventList
+          [userPosition]="currentPosition" (hoverEventEmitter)="hoveredEventId = $event">
 
         </app-event-tile-list>
-        <div *ngIf="loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
+        <div *ngIf="fetchEventsCompleted && loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
           <mat-icon>autorenew</mat-icon>
           <p>Lade mehr ...</p>
         </div>
@@ -34,9 +34,9 @@
         </div>
         <div class="event-container">
 
-          <app-event-tile-list [eventList]="eventList"
+          <app-event-tile-list [fetchEventsCompleted]="fetchEventsCompleted" [eventList]="eventList"
             (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
-          <div *ngIf="loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
+          <div *ngIf="fetchEventsCompleted && loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
             <mat-icon>autorenew</mat-icon>
             <p>Lade mehr ...</p>
           </div>

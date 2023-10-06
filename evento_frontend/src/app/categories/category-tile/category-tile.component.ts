@@ -2,7 +2,6 @@ import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { Category } from 'src/app/models/category';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FileService } from '../../file.service';
-import { FooterbarComponent } from 'src/app/footerbar/footerbar.component';
 
 @Component({
   selector: 'app-category-tile',

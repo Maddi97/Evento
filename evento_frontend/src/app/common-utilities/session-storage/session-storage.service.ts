@@ -59,6 +59,11 @@ export class SessionStorageService {
     this.locationSubject.next(this.defaultCenterPosition);
   }
 
+  getDefaultLocationValue() {
+    const isDefaultLocation = JSON.parse(sessionStorage.getItem('defaultLocation'));
+    return isDefaultLocation || false;
+  }
+
   private getLocationFromStorage() {
     const storedLocation = JSON.parse(sessionStorage.getItem('location'));
     return storedLocation || this.defaultCenterPosition;

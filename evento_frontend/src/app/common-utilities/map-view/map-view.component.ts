@@ -79,12 +79,14 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   searchForLocationInput() {
+
     const address = this.sanitizeInput(this.address);
     this.positionService.getPositionByInput(address)
   }
 
   async setCurrentPositionOfUserToStorage() {
-    this.positionService.getPositionByLocation()
+    const forcePositionCall = true;
+    this.positionService.getPositionByLocation(forcePositionCall)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
