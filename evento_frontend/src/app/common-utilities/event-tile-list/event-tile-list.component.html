@@ -1,8 +1,8 @@
 <div *ngIf="fetchEventsCompleted">
   <div class="event-tile-list" *ngFor="let event of eventList">
-    <app-event-tile [routerLink]="['/full-event', event._id]" [event]="event" [queryParamsHandling]="'merge'"
-      [distance]="get_distance_to_current_position(event)" (mouseenter)="hover(event._id)"
-      (mouseleave)="hoverLeave()"></app-event-tile>
+    <app-event-tile [routerLink]="['/full-event', event._id]" id="event-tile-{{event._id}}" [event]="event"
+      [queryParamsHandling]="'merge'" [distance]="get_distance_to_current_position(event)"
+      (mouseenter)="hover(event._id)" (mouseleave)="hoverLeave()"></app-event-tile>
   </div>
   <div class="nothing-found" *ngIf="eventList.length < 1">
     <mat-icon>block</mat-icon>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { NominatimGeoService } from '../../nominatim-geo.service';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 
@@ -7,10 +7,11 @@ import { SessionStorageService } from '../session-storage/session-storage.servic
   templateUrl: './event-tile-list.component.html',
   styleUrls: ['./event-tile-list.component.css']
 })
-export class EventTileListComponent implements OnInit {
+export class EventTileListComponent implements OnInit, OnChanges {
   @Input() fetchEventsCompleted = false;
   @Input() eventList;
   @Input() userPosition;
+  @Input() eventToScrollId;
   @Output() hoverEventEmitter = new EventEmitter<string>();
 
   currentPosition;
@@ -32,7 +33,23 @@ export class EventTileListComponent implements OnInit {
     })
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.eventToScrollId) {
+      this.scrollToEvent(this.eventToScrollId)
+    }
+  }
 
+  scrollToEvent(eventToScrollId) {
+    if (eventToScrollId) {
+      setTimeout(() => {
+        const id = "event-tile-" + eventToScrollId
+        console.log(id)
+        const element = document.getElementById(id)
+
+        element.scrollIntoView()
+      }, 100)
+    }
+  }
   hover(eventId: string) {
     this.hoverEventEmitter.emit(eventId);
   }

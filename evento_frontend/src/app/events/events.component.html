@@ -9,9 +9,10 @@
 
     <div class="event-map-container" *ngIf="getScreenWidth>1000">
 
-      <div class="event-container">
+      <div class="event-container" id="event-container">
         <app-event-tile-list [fetchEventsCompleted]="fetchEventsCompleted" [eventList]=eventList
-          [userPosition]="currentPosition" (hoverEventEmitter)="hoveredEventId = $event">
+          [userPosition]="currentPosition" [eventToScrollId]="eventToScrollId"
+          (hoverEventEmitter)="hoveredEventId = $event">
 
         </app-event-tile-list>
         <div *ngIf="fetchEventsCompleted && loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
@@ -32,10 +33,10 @@
           <p> Zur Karte </p>
           <mat-icon class="change-view-icon">map</mat-icon>
         </div>
-        <div class="event-container">
+        <div class="event-container" id="event-container">
 
           <app-event-tile-list [fetchEventsCompleted]="fetchEventsCompleted" [eventList]="eventList"
-            (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
+            [eventToScrollId]="eventToScrollId" (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
           <div *ngIf="fetchEventsCompleted && loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
             <mat-icon>autorenew</mat-icon>
             <p>Lade mehr ...</p>

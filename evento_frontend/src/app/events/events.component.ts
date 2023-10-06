@@ -38,6 +38,8 @@ export class EventsComponent implements OnInit {
   hot = { name: "hot" };
   loadMore = false;
 
+  isLoadMoreClicked = false
+  eventToScrollId = undefined
   hoveredEventId = null;
   filteredCategory = this.hot;
   // filteredSubcategories
@@ -83,10 +85,14 @@ export class EventsComponent implements OnInit {
     this.currentPosition = [51, 13]
     this.getScreenWidth = window.innerWidth;
     this.events$ = this.eventService.events.subscribe((events) => {
-
+      const indexLastEvent = this.eventList.length
       this.fetchEventsCompleted = true;
       this.eventList = events;
       this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
+      if (this.isLoadMoreClicked) {
+        this.isLoadMoreClicked = false;
+        this.eventToScrollId = this.eventList[indexLastEvent - 2]._id
+      }
       this.spinner.hide()
 
     });
@@ -182,8 +188,11 @@ export class EventsComponent implements OnInit {
   }
 
   loadMoreEvents() {
+    this.spinner.show()
+    this.isLoadMoreClicked = true
     this.actualLoadEventLimit += this.offset;
     this.applyFilters()
+
   }
 
   searchForDay(filter: DateClicked) {
