@@ -4,6 +4,7 @@ services:
   # letsencrypt:
   #   image: linuxserver/swag
   #   container_name: swag
+  #   restart: always
   #   volumes:
   #     - ./letsencryptStrato/config:/config/
   #   ports:
@@ -21,6 +22,7 @@ services:
   evento_frontend:
     image: eventodockerhub/evento_frontend:latest
     container_name: evento_app
+    restart: always
     ports:
       - "10000:80"
     volumes:
@@ -32,6 +34,7 @@ services:
   evento_insert:
     image: eventodockerhub/evento_insert:latest
     container_name: insert_app
+    restart: always
     ports:
       - "10001:80"
     volumes:
@@ -43,6 +46,7 @@ services:
   backend:
     image: eventodockerhub/evento_backend:latest
     container_name: backend
+    restart: always
     ports:
       - "10002:3000"
     volumes:
@@ -57,6 +61,7 @@ services:
 
     # mongodb:
     #   image: mongo
+    #   restart: always
     #   container_name: mongodb
     #   depends_on:
     #     - letsencrypt

@@ -33,7 +33,7 @@ jobs:
           context: https://github.com/Maddi97/Evento.git#develop:backend
           file: ./prod.Dockerfile
           push: true
-          tags: ${{secrets.dockerhub_user}}/evento_backend:latest
+          tags: ${{secrets.dockerhub_user}}/evento_backend_staging:latest
 
   build_frontend:
     #needs: analyze
@@ -62,7 +62,7 @@ jobs:
           context: https://github.com/Maddi97/Evento.git#develop:evento_frontend
           file: ./prod.Dockerfile
           push: true
-          tags: ${{secrets.dockerhub_user}}/evento_frontend:latest
+          tags: ${{secrets.dockerhub_user}}/evento_frontend_staging:latest
 
   build_insert-app:
     # needs: analyze
@@ -91,7 +91,7 @@ jobs:
           context: https://github.com/Maddi97/Evento.git#develop:evento_insert
           file: ./prod.Dockerfile
           push: true
-          tags: ${{secrets.dockerhub_user}}/evento_insert:latest
+          tags: ${{secrets.dockerhub_user}}/evento_insert_staging:latest
 
   deploy:
     needs: [build_frontend, build_insert-app, build_backend]
@@ -108,13 +108,13 @@ jobs:
           password: ${{ secrets.dockerhub_password }}
 
       - name: Pull Backend Docker Container
-        run: docker pull ${{secrets.dockerhub_user}}/evento_backend:latest
+        run: docker pull ${{secrets.dockerhub_user}}/evento_backend_staging:latest
 
       - name: Pull Frontend  Docker Containers
-        run: docker pull ${{secrets.dockerhub_user}}/evento_frontend:latest
+        run: docker pull ${{secrets.dockerhub_user}}/evento_frontend_staging:latest
 
       - name: Pull Insert-App Docker Container
-        run: docker pull ${{secrets.dockerhub_user}}/evento_insert:latest
+        run: docker pull ${{secrets.dockerhub_user}}/evento_insert_staging:latest
 
       - name: Create Environment File
         env:
