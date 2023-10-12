@@ -59,9 +59,9 @@ services:
     depends_on:
       - letsencrypt
 
-    mongodb:
-      image: mongo
-      restart: always
-      container_name: mongodb
-      depends_on:
-        - letsencrypt
+  mongodb:
+    image: mongo
+    restart: always
+    container_name: mongodb
+    depends_on:
+      - letsencrypt
