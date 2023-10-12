@@ -6,7 +6,7 @@ BACKUP_PATH_MONGO="instant_dump"
 DOCKER_CONTAINER='evento_backend_container'
 DB_BACKUP_PATH='/home/evento/backup/mongodb_instant_backup'
 IMAGE_PATH='app/images'
-DATE='22Sep2023'
+DATE='12Oct2023'
 
 MONGO_HOST='0.0.0.0'
 MONGO_PORT='27017'
@@ -30,7 +30,7 @@ scp -r root@h2970439.stratoserver.net:${DB_BACKUP_PATH}/instant_dump/IMAGE_BACKU
 
 docker cp ../backup_local_dev/image_backup/IMAGE_BACKUP/. ${DOCKER_CONTAINER}:/${IMAGE_PATH} 
 
-docker cp ../backup_local_dev/db_backup/${DB_NAME} mongodb:/backup/
+docker cp ../backup_local_dev/db_backup/${DB_NAME} mongodb:/backup/db_evento
 
 docker exec -it mongodb bash -c 'mongorestore --gzip --uri "mongodb://mongodb:27017/db_evento" backup/db_evento'
 

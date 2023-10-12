@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -96,7 +96,7 @@ jobs:
   deploy:
     needs: [build_frontend, build_insert-app, build_backend]
     name: Deploy
-    runs-on: strato
+    runs-on: netcup_runner
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -133,4 +133,4 @@ jobs:
           max_attempts: 10
           retry_on: error
           timeout_seconds: 500
-          command: docker compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
+          command: docker compose --env-file .env.prod -f docker-compose-prod.yml up -d

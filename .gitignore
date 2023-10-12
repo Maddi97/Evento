@@ -24,5 +24,6 @@ backup_local_dev
 #letsencryptStrato/config/nginx/proxy-confs/*
 #!letsencrypt/config/nginx/proxy-confs/*.conf
 /**/.angular
+.vscode
 .vscode/start_local_docker.json
 .vscode/tasks.json

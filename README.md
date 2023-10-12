@@ -74,7 +74,13 @@ Here only http is supported.
 Rebuild only one container of the docker compose
 
 ``` 
- docker-compose -f docker-compose-deploy-dev.yml up  -d --force-recreate --no-deps --build mongodb
+docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up  -d --build mongo
+```
+
+Rebuild backend
+
+```
+docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up  -d --build backend
 ```
 
 ## How build and deploy of apps works

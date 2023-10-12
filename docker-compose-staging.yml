@@ -1,0 +1,62 @@
+version: "3"
+
+services:
+  # letsencrypt:
+  #   image: linuxserver/swag
+  #   container_name: swag
+  #   volumes:
+  #     - ./letsencryptStrato/config:/config/
+  #   ports:
+  #     - "443:443"
+  #     - "80:80"
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Europe/Berlin
+  #     - URL=evento-leipzig.de
+  #     - SUBDOMAINS=www, insert, backend
+  #     - VALIDATION=http
+  #     - EMAIL=business@evento-leipzig.de
+
+  evento_frontend:
+    image: eventodockerhub/evento_frontend:latest
+    container_name: evento_app
+    ports:
+      - "10000:80"
+    volumes:
+      - ./threeventsfiveone:/app
+      - /app/node_modules
+    # depends_on:
+    #   - letsencrypt
+
+  evento_insert:
+    image: eventodockerhub/evento_insert:latest
+    container_name: insert_app
+    ports:
+      - "10001:80"
+    volumes:
+      - ./insertApp:/app
+      - /app/node_modules
+    # depends_on:
+    #   - letsencrypt
+
+  backend:
+    image: eventodockerhub/evento_backend:latest
+    container_name: backend
+    ports:
+      - "10002:3000"
+    volumes:
+      #         - ./backend:/app
+      - /images/:/app/images
+      - /app/node_modules
+    environment:
+      - SIGNUPKEY=${SIGNUPKEY}
+      - SECRET=${SECRET}
+    # depends_on:
+    #   - letsencrypt
+
+    # mongodb:
+    #   image: mongo
+    #   container_name: mongodb
+    #   depends_on:
+    #     - letsencrypt
