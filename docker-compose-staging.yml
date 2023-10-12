@@ -22,7 +22,6 @@ services:
 
   evento_frontend:
     build:
-      context: evento_app
       dockerfile: staging.Dockerfile
     image: eventodockerhub/evento_frontend_staging:latest
     container_name: evento_app
@@ -37,7 +36,6 @@ services:
 
   evento_insert:
     build:
-      context: evento_app
       dockerfile: staging.Dockerfile
     image: eventodockerhub/evento_insert_staging:latest
     container_name: insert_app
