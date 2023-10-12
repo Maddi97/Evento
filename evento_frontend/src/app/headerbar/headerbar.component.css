@@ -1,0 +1,106 @@
+.header {
+  position: sticky;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  top: 0;
+  left: 0;
+  background-color: white;
+  z-index: 1;
+  justify-content: space-around;
+  /*padding-top: constant(safe-area-inset-top);*/
+  /*padding-top: env(safe-area-inset-top);*/
+
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(128, 128, 128, 0.5);
+}
+
+.header-fullevent {
+  justify-content: space-between !important;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin: 5px;
+  width: 10%;
+  min-width: 10%;
+}
+
+.logo-fullevent {
+  min-width: 14% !important;
+  margin-left: 44.5vw;
+}
+
+.date-picker {
+  display: flex;
+  justify-content: center;
+  width: 50%;
+}
+
+.menu-container {
+  display: flex;
+  justify-content: center;
+  margin: 5px;
+  width: 10%;
+}
+
+.menu-fullevent {
+  margin: 16px
+}
+
+/* Additional styling for the logo and button */
+.logo {
+  max-width: 100%;
+  min-width: 4rem;
+  height: auto;
+}
+
+@media screen and (max-width: 800px) {
+  .header {
+    justify-content: center !important;
+  }
+
+  .menu-container {
+    display: none;
+  }
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    margin: 8px;
+    width: 20%;
+    min-width: 20%;
+    align-items: center;
+  }
+
+  .logo-fullevent {
+    min-width: unset;
+    margin-left: unset;
+  }
+
+  .date-picker {
+
+    width: 70%;
+  }
+
+  .button-container {
+    display: none;
+  }
+
+  app-hamburger-menu {
+    display: none
+  }
+
+  .logo {
+    min-width: 5.5rem;
+  }
+}

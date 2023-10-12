@@ -4,10 +4,19 @@ var express = require('express');
 var router = express.Router();
 
 const nodemailer = require("nodemailer");
+const limiter = require("../middleware/rateLimiter")
 
-router.post('/sendFeedback', (req, res) => {
+router.post('/sendFeedback', limiter, (req, res) => {
 
-    const feedback = req.body
+    const feedback = {
+        name: sanitizeInput(req.body.name),
+        mail: sanitizeInput(req.body.mail),
+        reason: sanitizeInput(req.body.reason),
+        description: sanitizeInput(req.body.description)
+    };
+
+
+
     const messageText = `Name: ${feedback.name} \n`
         + `Mail: ${feedback.mail} \n`
         + `Anliegen: ${feedback.reason} \n`
@@ -41,7 +50,8 @@ router.post('/sendFeedback', (req, res) => {
         html: messageHTML, // html body
     }, function (err, info) {
         if (err) {
-            res.send(err)
+            console.error('Internal error in Categories:', err);
+            res.status(500).json({ message: 'Mail Service Error: ', err });
         } else {
             res.send(info);
         }
@@ -51,22 +61,30 @@ router.post('/sendFeedback', (req, res) => {
 });
 
 
-router.post('/sendEvent', (req, res) => {
+router.post('/sendEvent', limiter, (req, res) => {
 
-    const event = req.body
+    const event = {
+        name: sanitizeInput(req.body.name),
+        organizerName: sanitizeInput(req.body.organizerName),
+        adress: sanitizeInput(req.body.adress),
+        link: sanitizeInput(req.body.link),
+        description: sanitizeInput(req.body.description)
+    };
+
     const messageText = `Name: ${event.name} \n`
         + `Organizer: ${event.organizerName} \n`
         + `Adresse: ${event.adress} \n`
         + `Link: ${event.link} \n`
         + `Beschreibung: ${event.description}`
 
-    const messageHTML = `<ul>
-                             <li> Name: ${event.name} </li>
-                             <li> Organizer: ${event.organizerName} </li>
-                             <li> Adresse: ${event.adress} </li>
-                             <li> Link: ${event.link} </li>
-                             <li> Beschreibung: ${event.description} </li>
-                        </ul>`
+    const messageHTML =
+        `<ul>
+            <li> Name: ${event.name} </li>
+            <li> Organizer: ${event.organizerName} </li>
+            <li> Adresse: ${event.adress} </li>
+            <li> Link: ${event.link} </li>
+            <li> Beschreibung: ${event.description} </li>
+        </ul>`
 
     //  SMTP service account
     // create reusable transporter object using the default SMTP transport
@@ -89,9 +107,8 @@ router.post('/sendEvent', (req, res) => {
         html: messageHTML, // html body
     }, function (err, info) {
         if (err) {
-            res.status(400).send({
-                message: 'Error while Sending'
-            })
+            console.error('Internal error in Categories:', err);
+            res.status(500).json({ message: 'Mail Service Error: ', err });
         } else {
             res.send(info);
         }
@@ -99,6 +116,10 @@ router.post('/sendEvent', (req, res) => {
 
 
 });
+
+function sanitizeInput(input) {
+    return input.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
 
 module.exports = router;

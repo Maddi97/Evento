@@ -1,0 +1,32 @@
+<mat-card appearance="outlined" *ngIf="event" [ngClass]="{'event-tile': true, 'promo': event.promotion}">
+  <app-event-picture class="event-tile-picture" [event]="event"></app-event-picture>
+  <div class="event-tile-information">
+    <div class="event-tile-information-name-date">
+      <mat-card-title class="event-name">
+        {{ event?.name }}
+      </mat-card-title>
+
+      <mat-card-subtitle class="event-organizer-name">
+        {{event.organizerName}}
+        <div *ngIf="hasUserPosition" class="event-distance">
+          Entfernung: {{distance}}km
+        </div>
+        <div *ngIf="!hasUserPosition" class="event-distance" style="font-size: 14px !important;">
+          Entfernung zum Zentrum: {{distance}}km
+        </div>
+      </mat-card-subtitle>
+      <div class="date" *ngIf="isScreenMinWidth(1000)">
+        <p>{{openingTimesFormatter(event)}}</p>
+        <p>{{dateTimesFormater(event)}}</p>
+      </div>
+
+      <!--      <div class="category">-->
+      <!--        {{ event?.category?.name }}-->
+      <!--      </div>-->
+    </div>
+  </div>
+  <div class="date" *ngIf="!isScreenMinWidth(1000)">
+    <div>{{openingTimesFormatter(event)}}</div>
+    <div>{{dateTimesFormater(event)}}</div>
+  </div>
+</mat-card>

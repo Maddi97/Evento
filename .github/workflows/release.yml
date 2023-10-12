@@ -2,39 +2,10 @@ name: Release
 
 on:
   push:
-    branches: [ develop ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'javascript' ]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          languages: ${{ matrix.language }}
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
-
-
-
   build_backend:
     #    needs: analyze
     name: Build And Push Backend
@@ -59,10 +30,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           platforms: linux/x86_64
-          context: https://github.com/Maddi97/3vents51.git#master:backend
+          context: https://github.com/Maddi97/Evento.git#develop:backend
           file: ./prod.Dockerfile
           push: true
-          tags: ${{secrets.dockerhub_user}}/3vents51_backend:latest
+          tags: ${{secrets.dockerhub_user}}/evento_backend:latest
 
   build_frontend:
     #needs: analyze
@@ -70,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -88,10 +59,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           platforms: linux/x86_64
-          context: https://github.com/Maddi97/3vents51.git#master:threeventsfiveone
+          context: https://github.com/Maddi97/Evento.git#develop:evento_frontend
           file: ./prod.Dockerfile
           push: true
-          tags: ${{secrets.dockerhub_user}}/3vents51_threeventsfiveone:latest
+          tags: ${{secrets.dockerhub_user}}/evento_frontend:latest
 
   build_insert-app:
     # needs: analyze
@@ -117,19 +88,18 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           platforms: linux/x86_64
-          context: https://github.com/Maddi97/3vents51.git#master:insertApp
+          context: https://github.com/Maddi97/Evento.git#develop:evento_insert
           file: ./prod.Dockerfile
           push: true
-          tags: ${{secrets.dockerhub_user}}/3vents51_insert-app:latest
-
+          tags: ${{secrets.dockerhub_user}}/evento_insert:latest
 
   deploy:
-    needs: [ build_frontend, build_insert-app, build_backend ]
+    needs: [build_frontend, build_insert-app, build_backend]
     name: Deploy
-    runs-on: strato
+    runs-on: netcup_runner
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -138,18 +108,29 @@ jobs:
           password: ${{ secrets.dockerhub_password }}
 
       - name: Pull Backend Docker Container
-        run: docker pull ${{secrets.dockerhub_user}}/3vents51_backend:latest
+        run: docker pull ${{secrets.dockerhub_user}}/evento_backend:latest
 
       - name: Pull Frontend  Docker Containers
-        run: docker pull ${{secrets.dockerhub_user}}/3vents51_threeventsfiveone:latest
+        run: docker pull ${{secrets.dockerhub_user}}/evento_frontend:latest
 
       - name: Pull Insert-App Docker Container
-        run: docker pull ${{secrets.dockerhub_user}}/3vents51_insert-app:latest
+        run: docker pull ${{secrets.dockerhub_user}}/evento_insert:latest
 
       - name: Create Environment File
         env:
-          duckdns_token: ${{ secrets.PI }}
-        run: touch .env.prod && echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
+          auth_secret: ${{secrets.AUTH_SECRET}}
+          auth_signupkey: ${{secrets.AUTH_SIGNUPKEY}}
+
+        run: |
+          touch .env.prod
+          echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
+          echo "SIGNUPKEY=$auth_signupkey" >> .env.prod
+          echo "SECRET=$auth_secret" >> .env.prod
 
       - name: Start Docker Containers
-        run: docker-compose --env-file .env.prod -f docker-compose-prod-cd.yml up -d
+        uses: nick-fields/retry@v2
+        with:
+          max_attempts: 10
+          retry_on: error
+          timeout_seconds: 500
+          command: docker compose --env-file .env.prod -f docker-compose-prod.yml up -d

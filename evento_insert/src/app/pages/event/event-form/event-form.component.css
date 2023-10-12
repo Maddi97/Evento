@@ -1,0 +1,74 @@
+.event-form-container {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 95%;
+}
+
+.organizer-name {}
+
+.event-name {
+    display: flex;
+}
+
+.plz {}
+
+.city {}
+
+.street {}
+
+.coordinates {}
+
+.category {
+    margin: 1rem;
+}
+
+.description {}
+
+.link {}
+
+.price {}
+
+.is-permanent {}
+
+.time {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 28px;
+}
+
+.start {}
+
+.end {}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.image-upload {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-upload .input {
+    margin-left: 4rem;
+    margin-top: 8px;
+}
+
+.is-event-props {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 16px;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+@media screen and (min-width: 900px) {}

@@ -1,0 +1,20 @@
+<mat-form-field appearance="fill">
+    <mat-label>Category</mat-label>
+    <input matInput required [formControl]="categoryName" [matAutocomplete]="auto" type="text">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="selectCategory()">
+        <mat-option *ngFor="let category of categories" [value]="category.name">
+            {{category.name}}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
+
+<mat-form-field *ngIf="selectedCategory?.subcategories?.length > 0" appearance="fill">
+    <mat-label>Subcategory</mat-label>
+
+    <mat-select [formControl]="selectedSubcategories" multiple [compareWith]="compareWith" (selectionChange)="
+        emitCategory()">
+        <mat-option *ngFor="let subcategory of selectedCategory.subcategories" [value]="subcategory">
+            {{subcategory.name}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>

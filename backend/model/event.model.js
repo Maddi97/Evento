@@ -121,6 +121,12 @@ const EventSchema = new mongoose.Schema({
         type: Boolean,
     },
 
+    hot: {
+        type: Boolean,
+    },
+    promotion: {
+        type: Boolean,
+    },
     times: {
         start: {
             type: String,

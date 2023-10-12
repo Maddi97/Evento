@@ -1,0 +1,10 @@
+<div [ngClass]="{'day-date': !isClicked, 'day-date-clicked': isClicked}" id="{{isDateClicked()}}">
+  <div class="date-container">
+    <div class="day">
+      {{ dayToString() }}
+    </div>
+    <div class="date">
+      {{ dateToString() }}
+    </div>
+  </div>
+</div>

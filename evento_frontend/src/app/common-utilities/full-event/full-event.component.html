@@ -1,0 +1,86 @@
+<div class="full-event-page">
+  <div class="event-tile" *ngIf="event">
+
+    <div class="column-container-1 column">
+
+      <div class="event-pic">
+        <app-event-picture [event]="event"></app-event-picture>
+      </div>
+      <div class="event-name">
+        <span>
+          {{event?.name}}
+        </span>
+      </div>
+
+      <div class="event-link" *ngIf="event?.link.length>0">
+        <a href="{{addHttpProtocol(event.link)}}">Link zur Veranstaltung</a>
+      </div>
+      <app-social-media-share class="social-media-buttons"></app-social-media-share>
+    </div>
+
+    <div class="column-container-2 column">
+
+      <div class="information-container">
+        <div class="tag">
+          Kategorie
+        </div>
+        <div class="name">
+          {{ event?.category.name}}
+        </div>
+        <div *ngIf="false">
+          <div *ngIf="event?.category?.subcategories?.length > 0"> ></div>
+          <div class="subcategories" *ngFor="let subcategory of event?.category.subcategories">
+            {{ subcategory?.name }}
+          </div>
+        </div>
+      </div>
+
+      <div class="information-container organizer">
+        <div class="tag">Veranstalter</div>
+        <div class="name">{{organizer?.name}}</div>
+      </div>
+
+
+
+      <div class="information-container times" *ngIf="openingTimesFormatter(event)">
+        <div class="tag">Öffnungszeiten</div>
+        <div class="name">{{openingTimesFormatter(event)}}</div>
+      </div>
+
+      <div class="information-container dates" *ngIf="openingTimesFormatter(event)">
+        <div class="tag">Datum</div>
+        <div class="name">{{dateTimesFormater(event)}}</div>
+      </div>
+
+      <div class="information-container preis" *ngIf="event?.price">
+        <div class="tag">Preis</div>
+        <div class="name">{{event.price}} Euro</div>
+      </div>
+    </div>
+
+    <div class="column-container-3 column">
+      <div class="information-container-description">
+        <div class="description-tag">
+          Description
+          <div class="description">
+            {{event?.description}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="column-container-4">
+      <div class="address">
+        {{event?.address?.street}} {{event?.address?.streetNumber}}, {{event?.address?.plz}} {{event?.address?.city}}
+      </div>
+      <a class="gmaps-link" target="_blank" rel="noopener noreferrer" href="{{addHttpProtocol(gmapsUrl)}}">Google
+        Maps</a>
+
+      <div class="map-container">
+
+        <map-view [markerData]="[event]" [zoomInput]="14" [currentPosition]="currentPosition"
+          [centerMapOnPosition]="[event.geoData.lat, event.geoData.lon]"></map-view>
+      </div>
+    </div>
+  </div>
+</div>

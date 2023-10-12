@@ -1,0 +1,180 @@
+<div class="event-form-container">
+    <div class="organizer-name">
+        <mat-form-field appearance="fill">
+            <mat-label>Organizer</mat-label>
+            <input matInput [formControl]="organizerName" [matAutocomplete]="auto" required type="text">
+
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let organizer of filteredOrganizers" [value]="organizer.name"
+                    (click)="insertOrgInfo(organizer)">
+                    {{organizer.name}}
+                </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="organizerName.hasError('required')">Organizer is required</mat-error>
+        </mat-form-field>
+    </div>
+
+
+    <form class="form-container" [formGroup]="eventForm">
+
+        <div class="event-name">
+            <mat-form-field appearance="fill">
+                <mat-label>Event Name</mat-label>
+                <input matInput #target required formControlName="name"
+                    (keydown.enter)="emitAddNewEvent(); target.value = ''">
+                <mat-error *ngIf="eventForm.get('name').hasError('required')">Event name is required</mat-error>
+                <mat-error *ngIf="eventForm.get('name').hasError('minlength')">Event name minlength is 3</mat-error>
+
+            </mat-form-field>
+        </div>
+
+        <mat-slide-toggle [formControl]="toggleIsChecked">Address or coordinates?</mat-slide-toggle>
+
+        <div class="address" *ngIf="toggleIsChecked.value">
+            <div class="plz">
+                <mat-form-field appearance="fill">
+                    <mat-label>Plz</mat-label>
+                    <input matInput #target required minlength="5" maxlength="5" formControlName="plz"
+                        (keydown.enter)="emitAddNewEvent(); target.value = ''">
+                    <mat-error *ngIf="eventForm.get('plz').hasError('required')">Plz is required</mat-error>
+                    <mat-error *ngIf="eventForm.get('plz').hasError('minlength')">Plz length is 5</mat-error>
+
+                </mat-form-field>
+            </div>
+
+            <div class="city">
+                <mat-form-field appearance="fill">
+                    <mat-label>City</mat-label>
+                    <input matInput #target required formControlName="city"
+                        (keydown.enter)="emitAddNewEvent(); target.value = ''">
+                    <mat-error *ngIf="eventForm.get('city').hasError('required')">City is required</mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="street">
+                <mat-form-field appearance="fill">
+                    <mat-label>Street</mat-label>
+                    <input matInput #target required formControlName="street"
+                        (keydown.enter)="emitAddNewEvent(); target.value = ''">
+                    <mat-error *ngIf="eventForm.get('street').hasError('required')">Street is required
+                    </mat-error>
+
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="coordinates" *ngIf="!toggleIsChecked.value">
+            <mat-form-field appearance="fill">
+                <mat-label>Coordinates:</mat-label>
+                <input matInput #target required formControlName="coord"
+                    (keydown.enter)="emitAddNewEvent(); target.value = ''">
+                <mat-error *ngIf="eventForm.get('coord').hasError('required')">Coords are required if no Address
+                    is given
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+
+        <div class="category">
+            <mat-card appearance="outlined">
+                <app-category-select [loadedCategory]="category" (newCategorySelect)="setCategory($event)">
+                </app-category-select>
+            </mat-card>
+        </div>
+
+        <div class="additional-information">
+            <div class="description">
+                <mat-form-field appearance="fill">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput #target required="true" formControlName="description"
+                        (keydown.enter)="emitAddNewEvent(); target.value = ''" cdkTextareaAutosize
+                        cdkAutosizeMinRows="6"></textarea>
+                    <mat-error *ngIf="eventForm.get('description').hasError('required')">Description is required
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="link">
+                <mat-form-field appearance="fill">
+                    <mat-label>Link</mat-label>
+                    <input matInput #target formControlName="link"
+                        (keydown.enter)="emitAddNewEvent(); target.value = ''">
+                </mat-form-field>
+            </div>
+            <div class="price">
+                <mat-form-field appearance="fill">
+                    <mat-label>Price: 0,00</mat-label>
+                    <input matInput #target formControlName="price"
+                        (keydown.enter)="emitAddNewEvent(); target.value = ''">
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="radio-group-permanent-event">
+            <label id="permanent-radio-group-label">Is event permanent?</label>
+            <mat-radio-group formControlName="permanent" (ngModelChange)="isPermanentChange()">
+                <mat-radio-button value="true">Yes</mat-radio-button>
+                <mat-radio-button value="false">No</mat-radio-button>
+            </mat-radio-group>
+        </div>
+
+        <div class="is-permanent" *ngIf="isPermanent === 'false'">
+            <mat-form-field appearance="fill">
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Start date">
+                    <input matEndDate formControlName="end" placeholder="End date">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+                <mat-error
+                    *ngIf="eventForm.get('start').hasError('required') && eventForm.get('end').hasError('required')">
+                    Date range is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+
+        <div class="time">
+            <div class="start">
+                <p>Start :</p>
+                <div class="ngx-timepicker-field-example">
+
+                    <ngx-timepicker-field #startTime [formControl]="times.start" [format]="24" [defaultTime]="'00:00'">
+                    </ngx-timepicker-field>
+                </div>
+            </div>
+            <div class="end">
+                <p>Ende:</p>
+                <div class="ngx-timepicker-field-example">
+                    <ngx-timepicker-field #endTime [formControl]="times.end" [format]="24" [defaultTime]="'00:00'">
+                    </ngx-timepicker-field>
+                </div>
+            </div>
+        </div>
+        <div class="image-upload">
+            <div class="image-upload text">Select event image: <input class="image-upload input" type='file'
+                    #imageUpload (input)=iconChosen($event)></div>
+        </div>
+        <div class="is-event-props">
+            <div class="is-event-hot">
+                <mat-checkbox [checked]="isHot" (change)="isHot = !isHot">Hot
+                </mat-checkbox>
+            </div>
+            <div class="is-event-promotion">
+                <mat-checkbox [checked]="isPromotion" (change)="isPromotion = !isPromotion">Promotion
+                </mat-checkbox>
+            </div>
+        </div>
+    </form>
+
+    <div class="confirm-buttons">
+        <button mat-raised-button color="primary" (click)="updateEventId !== '' ? emitUpdateEvent() : emitAddNewEvent()"
+            [disabled]="checkDisabled()">
+            {{ updateEventId !== '' ? 'Update' : 'Submit'}}
+        </button>
+        <button mat-raised-button color="accent" (click)="nullFormField()">
+            Clear
+        </button>
+    </div>
+
+</div>

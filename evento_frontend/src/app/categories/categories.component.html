@@ -1,0 +1,12 @@
+<div class="category-page>" id="category-page">
+  <div class="headline-container">
+    <img class="category-headline" src="assets/design-elements/Kategorien_design.png">
+  </div>
+  <div class="category-components">
+    <div *ngFor="let category of categoryList" class="category-component">
+      <app-category-tile [category]=category></app-category-tile>
+    </div>
+    <div class="whitespace"></div>
+  </div>
+
+</div>

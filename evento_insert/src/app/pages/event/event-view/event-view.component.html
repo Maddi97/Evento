@@ -1,0 +1,94 @@
+<div class="event-container">
+    <div class="form-and-image-upload" *ngIf="allOrganizers.length > 0">
+        <app-event-form (updateEvent)="updateEvent($event)" (addNewEvent)="addEventCheckDuplicate($event)"
+            [organizersIn]="allOrganizers" [eventIn]="eventIn"></app-event-form>
+    </div>
+    <div class="events">
+        <div class="map-container">
+            <app-map-view [markerData]="allFilteredEvents"></app-map-view>
+        </div>
+
+        All actual events grouped by category
+
+        <div class="all-events-expansion-panel" *ngFor="let category of categories">
+            <mat-expansion-panel (afterExpand)="loadActualEventsByCategory(category)">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{category.name}}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        Open to see all events
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div *ngFor="let event of allFilteredEvents">
+                    <div class="event-panel">
+                        <div class="event-name" (click)="eventIn = event">
+                            {{event.name}}
+                        </div>
+                        <img class="event-image" [src]="event.eventImageTemporaryURL">
+                        <div class="delete-event-button" (click)="deleteEvent(event._organizerId, event._id)">
+                            Delete
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </div>
+
+        All hot events
+
+        <div class="all-hot-events-expansion-panel">
+            <mat-expansion-panel (afterExpand)="getHotEvents()">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        All Hot Events
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        Open to see all events
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div *ngFor="let event of allFilteredEvents">
+                    <div class="event-panel" (click)="eventIn = event">
+                        <div class="event-name">
+                            {{event.name}}
+                        </div>
+                        <img class="event-image" [src]="event.eventImageTemporaryURL">
+                        <div class="delete-event-button" (click)="deleteEvent(event._organizerId, event._id)">
+                            Delete
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </div>
+
+        Old Events
+        <div class="all-hot-events-expansion-panel">
+            <mat-expansion-panel (afterExpand)="getOutdatedEvents()">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Old Events
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        Open to see all events
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div *ngFor="let event of allFilteredEvents">
+                    <div class="event-panel" (click)="eventIn = event">
+                        <div class="event-name">
+                            {{event.name}}
+                        </div>
+                        <img class="event-image" [src]="event.eventImageTemporaryURL">
+                        <div class="delete-event-button" (click)="deleteEvent(event._organizerId, event._id)">
+                            Delete
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </div>
+        <div class="delete-outdated-events-button" (click)="deleteOutdatedEvents()">
+            Delete Outdated Events
+        </div>
+    </div>
+</div>

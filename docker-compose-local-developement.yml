@@ -1,0 +1,40 @@
+services:
+  evento_frontend:
+    build:
+      context: evento_frontend
+      dockerfile: dev.Dockerfile
+    container_name: evento_frontend_container
+    ports:
+      - 4200:4200
+    volumes:
+      - ./evento_frontend:/app
+      - /app/node_modules
+
+  evento_insert:
+    build:
+      context: evento_insert
+      dockerfile: dev.Dockerfile
+    container_name: evento_insert_container
+    ports:
+      - 4201:4200
+    volumes:
+      - ./evento_insert:/app
+      - /app/node_modules
+
+  backend:
+    build:
+      context: backend
+      dockerfile: dev.Dockerfile
+    container_name: evento_backend_container
+    ports:
+      - 3000:3000
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - SIGNUPKEY=${SIGNUPKEY}
+      - SECRET=${SECRET}
+
+  mongodb:
+    image: mongo
+    container_name: mongodb

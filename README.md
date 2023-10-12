@@ -50,13 +50,13 @@ Afterwards the containers are reachable from the domain:
 For the local development the tech stack can be started with:
 
 ```shell
-docker-compose -f docker-compose-dev.yml up --build
+docker-compose -f docker-compose-local-developement.yml up --build
 ```
 
 Also, if the containers have been built use:
 
 ```shell
-docker-compose -f docker-compose-dev.yml up
+docker-compose -f docker-compose-local-developement.yml up
 ```
 
 The containers are then reachable via localhost and the specific ports:
@@ -74,7 +74,13 @@ Here only http is supported.
 Rebuild only one container of the docker compose
 
 ``` 
- docker-compose -f docker-compose-deploy-dev.yml up  -d --force-recreate --no-deps --build mongodb
+docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up  -d --build mongo
+```
+
+Rebuild backend
+
+```
+docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up  -d --build backend
 ```
 
 ## How build and deploy of apps works

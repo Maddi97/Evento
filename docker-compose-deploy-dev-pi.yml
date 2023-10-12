@@ -3,7 +3,7 @@ version: "3"
 services:
   threeventsfiveone:
     build:
-      context: threeventsfiveone
+      context: evento_frontend
       dockerfile: prod.Dockerfile
     container_name: 3vents51_threeventsfiveone
     ports:
@@ -16,7 +16,7 @@ services:
 
   insert-app:
     build:
-      context: insertApp
+      context: evento_insert
       dockerfile: prod.Dockerfile
     container_name: 3vents51_insert-app
     ports:

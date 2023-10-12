@@ -1,0 +1,131 @@
+.event-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.form-and-image-upload {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+}
+
+.event-image {
+    padding-right: 5%;
+    height: 100%;
+}
+
+.events {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem;
+    flex-basis: 35%;
+}
+
+.map-container {
+    margin: 1rem;
+}
+
+.category-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.organizer-panel {
+    margin: 1rem;
+    width: 100%;
+}
+
+.event-panel-collection {
+    margin: 1rem;
+    width: 100%;
+}
+
+.all-events-expansion-panel {
+    margin: 1rem;
+    width: 100%;
+}
+
+.all-hot-events-expansion-panel {
+    margin: 1rem;
+    width: 100%;
+}
+
+.event-panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 85%;
+    height: 2rem;
+    background-color: rgb(214 214 214);
+    margin-bottom: 0.2rem;
+    border-radius: 5px;
+}
+
+.event-name {
+    cursor: pointer;
+}
+
+.delete-event-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    background-color: red;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-outdated-events-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px;
+    margin: 8px;
+}
+
+.green {
+    color: green;
+}
+
+.yellow {
+    color: yellow;
+}
+
+.red {
+    color: red;
+}
+
+.mat-mdc-radio-button~.mat-radio-button {
+    margin-left: 16px;
+}
+
+mat-expansion-panel {
+    width: 100%;
+}
+
+@media screen and (min-width: 900px) {
+    .event-container {
+        flex-direction: row;
+        margin: 2rem;
+    }
+
+    .form-and-image-upload {
+        display: flex;
+        flex-basis: 50%;
+        flex-direction: column;
+        flex-grow: 1;
+        margin: 0rem;
+    }
+
+    .events {
+        margin: 5rem;
+        margin-top: 0rem;
+    }
+
+}

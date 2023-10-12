@@ -5,6 +5,9 @@ const SubcategorySchema = new mongoose.Schema({
         type: String,
         minlength: 3
     },
+    weight: {
+        type: String,
+    },
     iconPath: {
         type: String,
     },
@@ -20,6 +23,9 @@ const CategorySchema = new mongoose.Schema({
     name: {
         type: String,
         minlength: 3
+    },
+    weight: {
+        type: String,
     },
     iconPath: {
         type: String,

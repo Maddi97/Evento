@@ -1,0 +1,219 @@
+.full-event-page {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  background: white;
+}
+
+@media screen and (min-width: 1000px) {
+  .full-event-page {
+    max-width: 55vw;
+    border: 0px solid grey;
+    box-shadow: grey 0px 0px 10px 0px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+  }
+
+  .event-tile {
+    margin-bottom: 0 !important;
+  }
+
+  .event-pic {
+    object-fit: cover;
+    min-width: 100%;
+    height: auto;
+    display: inline-block !important;
+    border: 1px solid white;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-basis: unset !important;
+  }
+}
+
+.column-container-1 {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 30%;
+}
+
+.column-container-2 {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 40%;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+.column-container-3 {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+.column::after {
+  content: "";
+  position: relative;
+  bottom: 0;
+  left: 4%;
+  width: 92%;
+  height: 1px;
+  background-color: rgba(193, 190, 190, 0.727);
+  margin-top: 12px
+}
+
+.column-container-4 {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 30%;
+}
+
+.event-tile {}
+
+.event-tile {
+  display: flex;
+  flex-direction: column !important;
+  width: 100% !important;
+  min-width: 300px;
+  margin-bottom: calc(8em + constant(safe-area-inset-bottom)) !important;
+  margin-bottom: calc(8em + env(safe-area-inset-bottom));
+}
+
+.event-pic {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-basis: 33%;
+}
+
+/*passing down max-width to child component with ng deep */
+::ng-deep app-event-picture .event-pic img {
+  max-width: 100%;
+}
+
+.social-media-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.event-name {
+  text-align: center;
+  line-height: 2rem;
+  margin: 2.5vw 0.5vw 0.7vw 0.5vw;
+  font-size: 30px;
+}
+
+.event-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.organizer-name {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 0.5vw;
+}
+
+.price {
+  margin-left: 0.5vw;
+}
+
+.opening-times {
+  margin-left: 0.5vw;
+}
+
+.information-container {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+  justify-content: flex-start;
+  align-items: baseline;
+  width: 100%;
+  margin-left: 2rem;
+}
+
+.tag {
+  font-size: 20px;
+  font-weight: 400 !important;
+  width: 165px;
+}
+
+.name {
+  font-size: 15px;
+}
+
+.subcategories {
+  height: 1rem;
+  background-color: #e8ebe8;
+  border: 1px solid #373434;
+  border-radius: 23px;
+  color: #373434;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  padding: 0.1rem 1rem 0.1rem 1rem;
+  margin-left: 0.5vw;
+  margin-right: 0.5vw;
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 3px 0px 0px;
+}
+
+.address {
+  display: flex;
+  font-size: 18px;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.map-container {
+  display: flex;
+  justify-content: center;
+}
+
+.information-container-description {
+  display: flex;
+  flex-direction: row;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.description-tag {
+  font-size: 20px;
+  font-weight: 400 !important;
+}
+
+.description {
+  margin-top: 5px;
+  font-size: 15px;
+  text-align: justify;
+}
+
+.map-container {
+  height: auto;
+  margin-right: 0.5vw;
+  margin-left: 0.5vw;
+  margin-top: 1rem;
+  flex-basis: 50%;
+}
+
+app-event-picture {
+  width: 100%;
+}
+
+app-event-picture ::ng-deep img {
+  width: 100%;
+  height: 100%;
+}
+
+.gmaps-link {
+  display: flex;
+  justify-content: center;
+}

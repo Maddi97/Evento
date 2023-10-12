@@ -4,11 +4,16 @@ letsencryptCertKeys
 
 backend/images
 backend/temp_dir
+backend/backup
 node_modules
+
+mongodb_backup
+backup_local_dev
 
 .idea
 .env.prod
-
+.env.dev
+.env
 #Include Only Important Configuration For Reverse-Proxy
 #letsencryptStrato/*
 #!letsencryptStrato/config/
@@ -19,3 +24,6 @@ node_modules
 #letsencryptStrato/config/nginx/proxy-confs/*
 #!letsencrypt/config/nginx/proxy-confs/*.conf
 /**/.angular
+.vscode
+.vscode/start_local_docker.json
+.vscode/tasks.json

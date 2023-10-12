@@ -1,0 +1,150 @@
+.category {
+  margin: 1rem;
+  width: fit-content;
+  font-size: 1.2rem;
+  cursor: pointer;
+  height: 4rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.now {
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 800px) {
+  .category {
+    min-width: unset;
+    margin: 0.5rem !important;
+    height: 3rem !important;
+    font-size: 0.9rem !important;
+    margin-top: 0.8rem !important;
+    padding-left: 0.7rem !important;
+    padding-right: 0.7rem !important;
+  }
+
+  img {
+    width: 1.2rem !important;
+  }
+
+  .subcategory-container {
+    margin-top: 16px !important;
+    justify-content: unset !important;
+    left: 0 !important;
+    width: 100% !important;
+  }
+  .subcategory-placeholder {
+    min-height: 39px !important;
+  }
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.category-label {
+  font-size: 2rem;
+}
+
+.category-container {
+  padding: 0.3rem;
+}
+
+.subcategory-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -10px;
+  min-height: 29px;
+}
+
+.subcategory-container {
+  display: flex;
+  position: absolute;
+  padding-left: 10px;
+  padding-right: 10px;
+  justify-content: center;
+  flex-direction: row;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  /* Add smooth scroll behavior */
+  transition: transform 1s linear;
+  margin-top: 15px;
+  left: 2%;
+}
+
+.filter-tag {
+  margin-right: 10px;
+}
+
+.subcategory-container::-webkit-scrollbar {
+  display: none;
+}
+
+.subcategory {
+  background-color: rgb(160 167 160 / 39%);
+  border-radius: 44px;
+  padding: 3px 10px 3px 10px;
+  width: -moz-fit-content;
+  width: fit-content;
+  font-size: 14px;
+  margin: 0rem 0.2rem 0.2rem 0rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.subcategory-picked {
+  color: white;
+  background: #000000d1;
+}
+
+.category-non-picked {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.category-picked {
+  border-bottom: 2px solid #000000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.category-yellow {
+  background-color: rgb(245, 241, 0);
+}
+
+img {
+  height: auto;
+  width: 1.5rem;
+  padding-bottom: 10px;
+}
+
+.icon {
+  position: absolute;
+  width: unset !important;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  display: flex;
+  cursor: pointer;
+  color: grey;
+  border: 1px solid grey;
+  border-radius: 100px;
+  background: white;
+  box-shadow: rgb(0 0 0 / 21%) 0px 5px 12px;
+}
+
+.icon-left {
+  left: 5%;
+}
+
+.icon-right {
+  right: 5%;
+}

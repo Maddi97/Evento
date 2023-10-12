@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+@import "~leaflet/dist/leaflet.css";
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.green-snackbar {
+    --mat-mdc-snack-bar-button-color: green;
+    --mdc-snackbar-container-color: greenyellow;
+    --mdc-snackbar-supporting-text-color: green;
+}
+
+.red-snackbar {
+    --mat-mdc-snack-bar-button-color: #660808 !important;
+    --mdc-snackbar-container-color: #fc4545 !important;
+    --mdc-snackbar-supporting-text-color: #660808;
+}
