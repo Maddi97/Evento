@@ -16,6 +16,7 @@ services:
       - TZ=Europe/Berlin
       - URL=evento-leipzig.de
       - SUBDOMAINS=staging, insert.staging, backend.staging
+      - ONLY_SUBDOMAINS=true
       - VALIDATION=http
       - EMAIL=business@evento-leipzig.de
 
