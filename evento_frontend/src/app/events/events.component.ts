@@ -158,15 +158,26 @@ export class EventsComponent implements OnInit {
         switchMap(() => params$),
         switchMap(() => positionService$),
       )
-      .subscribe(() => {
-        this.applyFilters()
-      });
+      .subscribe(
+        {
+          next: () => {
+            this.applyFilters()
+          },
+          error: (error) => { console.log(error) },
+          complete: () => {
+            console.log('categories loaded complete');
+          }
+        });
 
   }
 
   ngOnDestroy() {
-    this.events$.unsubscribe();
-    this.categories$.unsubscribe();
+    if (this.events$) {
+      this.events$.unsubscribe();
+    }
+    if (this.categories$) {
+      this.categories$.unsubscribe();
+    }
   }
 
   applyFilters() {

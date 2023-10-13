@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { NgxSpinnerService } from "ngx-spinner";
 import { map } from "rxjs";
-import { switchMap } from "rxjs/operators";
+import { switchMap, tap } from "rxjs/operators";
 import { EventService } from "src/app/events/event.service";
 import { Event } from "../../models/event";
 import { Organizer } from "../../models/organizer";
@@ -11,18 +12,20 @@ import {
   openingTimesFormatter,
 } from "../logic/opening-times-format-helpers";
 import { SessionStorageService } from "../session-storage/session-storage.service";
-import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-full-event",
   templateUrl: "./full-event.component.html",
   styleUrls: ["./full-event.component.css"],
 })
-export class FullEventComponent implements OnInit {
+export class FullEventComponent implements OnInit, OnDestroy {
   currentPosition: Array<Number>;
   eventId: string;
   event: Event;
   organizer: Organizer;
+
+  private storage$;
+  private params$;
 
   IconURL = null;
   ImageURL = null;
@@ -39,9 +42,9 @@ export class FullEventComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.sessionStorageService.getLocation().subscribe(position => { this.currentPosition = position })
+    this.storage$ = this.sessionStorageService.getLocation().subscribe(position => { this.currentPosition = position })
     this.spinner.show();
-    this.route.params
+    this.params$ = this.route.params
       .pipe(
         map((eventIdParam) => eventIdParam["eventId"]),
         switchMap((eventId) => this.eventService.getEventById(eventId)),
@@ -49,17 +52,29 @@ export class FullEventComponent implements OnInit {
         switchMap((event) =>
           this.organizerService.getOrganizerById(event._organizerId)
         ),
-        map((organizerResponse) => organizerResponse[0])
+        map((organizerResponse) => organizerResponse[0]),
+        tap(() => {
+          this.spinner.show(); // Show spinner when the observable starts
+        })
       )
-      .subscribe((organizer) => {
-        this.organizer = organizer;
-        const adressStringUrl = encodeURIComponent(
-          `${this.event.address?.street} ${this.event.address?.streetNumber} ${this.event.address?.city}`
-        );
-        this.gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
-        this.clearQueryParams();
-        this.spinner.hide()
-      });
+      .subscribe(
+        {
+          next: (organizer) => {
+            this.organizer = organizer;
+            const adressStringUrl = encodeURIComponent(
+              `${this.event.address?.street} ${this.event.address?.streetNumber} ${this.event.address?.city}`
+            );
+            this.gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
+            this.clearQueryParams();
+            this.spinner.hide()
+          },
+          error: (error) => { console.log(error) },
+          complete: () => {
+            console.log('Full event loaded complete');
+          }
+        }
+      )
+      ;
 
   }
   clearQueryParams() {
@@ -75,5 +90,12 @@ export class FullEventComponent implements OnInit {
     }
     return url;
   }
-
+  ngOnDestroy(): void {
+    if (this.params$) {
+      this.params$.unsubscribe()
+    }
+    if (this.storage$) {
+      this.storage$.unsubscribe()
+    }
+  }
 }

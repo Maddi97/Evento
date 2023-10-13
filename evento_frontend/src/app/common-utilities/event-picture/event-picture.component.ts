@@ -1,8 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {FileService} from "../../file.service";
-import {DomSanitizer} from "@angular/platform-browser";
-import {OrganizerService} from "../../organizer.service";
-import {debounceTime} from 'rxjs/operators';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FileService } from "../../file.service";
+import { OrganizerService } from "../../organizer.service";
 
 
 @Component({
@@ -10,78 +8,62 @@ import {debounceTime} from 'rxjs/operators';
   templateUrl: './event-picture.component.html',
   styleUrls: ['./event-picture.component.css']
 })
-export class EventPictureComponent implements OnInit {
+export class EventPictureComponent implements OnInit, OnDestroy {
 
   @Input() event;
   category;
   organizer;
   IconURL = null;
   ImageURL = null;
+  private downloadedImage = false;
+
+  private organizer$;
+  private fileService$;
 
   constructor(
     private fileService: FileService,
-    private sanitizer: DomSanitizer,
     private organizerService: OrganizerService,
   ) {
   }
 
   ngOnInit(): void {
     this.category = this.event?.category;
-    this.organizerService.getOrganizerById(this.event?._organizerId).subscribe(
+    this.organizer$ = this.organizerService.getOrganizerById(this.event?._organizerId).subscribe(
       organizer => {
         this.organizer = organizer[0]
         this.downloadImage()
       }
     )
   }
-
-  downloadImage() {
-    if (this.event?.eventImagePath !== undefined) {
-      if (this.event?.eventImageTemporaryURL === undefined) {
-        this.fileService.downloadFile(this.event.eventImagePath).subscribe(imageData => {
-          // create temporary Url for the downloaded image and bypass security
-          const unsafeImg = URL.createObjectURL(imageData);
-          //this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-          this.ImageURL = unsafeImg
-        });
-      }
-    } else if (this.organizer.organizerImagePath !== undefined) {
-      if (this.organizer.organizerImageTemporaryURL === undefined) {
-        this.fileService.downloadFile(this.organizer.organizerImagePath).subscribe(imageData => {
-          // create temporary Url for the downloaded image and bypass security
-          const unsafeImg = URL.createObjectURL(imageData);
-          //this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-          this.ImageURL = unsafeImg
-        });
-      }
-    } else if (this.event.category.subcategories[0]?.stockImagePath !== undefined) {
-      if (this.event.category.subcategories[0]?.stockImageTemporaryURL === undefined) {
-        this.fileService.downloadFile(this.event.category.subcategories[0]?.stockImagePath).subscribe(imageData => {
-          // create temporary Url for the downloaded image and bypass security
-          const unsafeImg = URL.createObjectURL(imageData);
-          //this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-          this.ImageURL = unsafeImg
-        });
-      }
-    } else if (this.category.stockImagePath !== undefined) {
-      if (this.category.stockImageTemporaryURL === undefined) {
-        this.fileService.downloadFile(this.category.stockImagePath).pipe(debounceTime(20000)).subscribe(imageData => {
-          // create temporary Url for the downloaded image and bypass security
-          const unsafeImg = URL.createObjectURL(imageData);
-          //this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-          this.ImageURL = unsafeImg
-        });
-      }
-    } else if (this.category.iconPath !== undefined) {
-      if (this.category.iconTemporaryURL === undefined) {
-        this.fileService.downloadFile(this.category.iconPath).subscribe(imageData => {
-          // create temporary Url for the downloaded image and bypass security
-          const unsafeImg = URL.createObjectURL(imageData);
-          //this.ImageURL = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-          this.ImageURL = unsafeImg
-        });
-      }
-
+  ngOnDestroy() {
+    if (this.organizer$) {
+      this.organizer$.unsubscribe();
+    }
+    if (this.fileService$) {
+      this.fileService$.unsubscribe()
     }
   }
+
+  downloadImageIfNotExists(imagePath: string, temporaryURL: string) {
+    if (!this.downloadedImage && imagePath !== undefined && temporaryURL === undefined) {
+      this.downloadedImage = true
+      this.fileService$ = this.fileService.downloadFile(imagePath).subscribe({
+        next: (imageData) => {
+          const unsafeImg = URL.createObjectURL(imageData);
+          this.ImageURL = unsafeImg;
+        },
+        error: (error) => { console.log(error); },
+        complete: () => { console.log('Image download complete'); }
+      });
+    }
+  }
+
+  downloadImage() {
+    this.downloadImageIfNotExists(this.event?.eventImagePath, this.event?.eventImageTemporaryURL);
+    this.downloadImageIfNotExists(this.organizer?.organizerImagePath, this.organizer?.organizerImageTemporaryURL);
+    this.downloadImageIfNotExists(this.event?.category.subcategories[0]?.stockImagePath, this.event?.category.subcategories[0]?.stockImageTemporaryURL);
+    this.downloadImageIfNotExists(this.category?.stockImagePath, this.category?.stockImageTemporaryURL);
+    this.downloadImageIfNotExists(this.category?.iconPath, this.category?.iconTemporaryURL);
+  }
+
 }
