@@ -93,6 +93,7 @@ export class EventsComponent implements OnInit {
   private setupPositionService(): void {
     this.sessionStorageService.getLocation().subscribe(position => {
       this.currentPosition = position;
+      this.applyFilters()
     });
   }
 
