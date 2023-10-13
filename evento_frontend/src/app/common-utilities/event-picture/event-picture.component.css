@@ -11,19 +11,22 @@ img {
 
 @media screen and (max-width: 800px) {
   img {
-    max-height: 220px;
+    max-height: 240px;
+    min-height: 210px;
     width: 100%;
   }
 }
 
 @media screen and (min-width: 400px) {
   img {
+    min-height: 180px;
     width: 350px;
   }
 }
 
 @media screen and (min-width: 500px) {
   img {
+    min-height: 200px;
     width: 450px;
   }
 }
@@ -31,6 +34,7 @@ img {
 @media screen and (min-width: 1000px) {
   img {
     width: 100%;
+    min-height: unset !important;
     height: 140px;
   }
 }
