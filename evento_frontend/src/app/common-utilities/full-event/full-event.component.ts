@@ -1,17 +1,17 @@
-import { Component, OnInit, Input, Inject } from "@angular/core";
-import { Event } from "../../models/event";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { EventService } from "src/app/events/event.service";
-import { DomSanitizer } from "@angular/platform-browser";
 import { map } from "rxjs";
+import { switchMap } from "rxjs/operators";
+import { EventService } from "src/app/events/event.service";
+import { Event } from "../../models/event";
 import { Organizer } from "../../models/organizer";
 import { OrganizerService } from "../../organizer.service";
-import { switchMap } from "rxjs/operators";
 import {
-  openingTimesFormatter,
   dateTimesFormater,
+  openingTimesFormatter,
 } from "../logic/opening-times-format-helpers";
 import { SessionStorageService } from "../session-storage/session-storage.service";
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-full-event",
@@ -33,12 +33,14 @@ export class FullEventComponent implements OnInit {
     private route: ActivatedRoute,
     private eventService: EventService,
     private router: Router,
+    private spinner: NgxSpinnerService,
     private sessionStorageService: SessionStorageService,
     private organizerService: OrganizerService
   ) { }
 
   ngOnInit(): void {
     this.sessionStorageService.getLocation().subscribe(position => { this.currentPosition = position })
+    this.spinner.show();
     this.route.params
       .pipe(
         map((eventIdParam) => eventIdParam["eventId"]),
@@ -56,6 +58,7 @@ export class FullEventComponent implements OnInit {
         );
         this.gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
         this.clearQueryParams();
+        this.spinner.hide()
       });
 
   }
@@ -72,4 +75,5 @@ export class FullEventComponent implements OnInit {
     }
     return url;
   }
+
 }

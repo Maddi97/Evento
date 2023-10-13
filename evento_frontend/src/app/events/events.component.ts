@@ -1,15 +1,15 @@
 import { Component, HostListener, OnInit } from "@angular/core";
-import { Event } from "../models/event";
-import * as moment from "moment";
-import { combineLatest, combineLatestAll, debounceTime, forkJoin, map, mergeMap, switchMap, take, timer } from "rxjs";
-import { EventService } from "./event.service";
-import { NgxSpinnerService } from "ngx-spinner";
 import { ActivatedRoute } from "@angular/router";
-import { PositionService } from '../common-utilities/map-view/position.service';
-import { NominatimGeoService } from "../nominatim-geo.service";
+import * as moment from "moment";
+import { NgxSpinnerService } from "ngx-spinner";
+import { map, switchMap } from "rxjs";
 import { CategoriesService } from "../categories/categories.service";
-import { Category, Subcategory } from "../models/category";
+import { PositionService } from '../common-utilities/map-view/position.service';
 import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
+import { Category, Subcategory } from "../models/category";
+import { Event } from "../models/event";
+import { NominatimGeoService } from "../nominatim-geo.service";
+import { EventService } from "./event.service";
 
 @Component({
   selector: "app-events",
@@ -18,8 +18,10 @@ import { SessionStorageService } from "../common-utilities/session-storage/sessi
 })
 export class EventsComponent implements OnInit {
   public isDropdown = false;
-  private events$;
 
+  //Observables
+  private events$;
+  private categories$;
   // equal limit at start == start limit
   actualLoadEventLimit;
   startLoadEventLimit = 24;
@@ -103,7 +105,7 @@ export class EventsComponent implements OnInit {
         this.currentPosition = position;
       }));
 
-    const categories$ = this.categoriesService.categories.pipe(
+    this.categories$ = this.categoriesService.categories.pipe(
       map((categories: Category[]) => {
         this.categoryList = categories;
         categories.forEach((category: Category) => {
@@ -150,7 +152,7 @@ export class EventsComponent implements OnInit {
       })
     );
 
-    categories$
+    this.categories$
       .pipe(
         //mergeMap(() => positionService$),
         switchMap(() => params$),
@@ -160,6 +162,11 @@ export class EventsComponent implements OnInit {
         this.applyFilters()
       });
 
+  }
+
+  ngOnDestroy() {
+    this.events$.unsubscribe();
+    this.categories$.unsubscribe();
   }
 
   applyFilters() {
