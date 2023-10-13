@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.css']
 })
-export class CategoriesComponent implements OnInit, OnDestroy {
+export class CategoriesComponent implements OnInit {
 
   categoryList: Category[] = [];
   category$;
@@ -17,21 +17,20 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     private categoriesService: CategoriesService,
   ) {
   }
-
   ngOnInit(): void {
-    this.category$ = this.categoriesService.categories
-      .pipe(
-        map(cat => {
-          this.categoryList = cat;
-          if (cat.length === 0) {
-            this.categoriesService.getAllCategories();
-          }
-        }));
-    this.category$.subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.category$.unsubscribe();
+    this.categoriesService.getAllCategories().subscribe(
+      {
+        next: (categories: Category[]) => {
+          this.categoryList = categories;
+        },
+        error: (error) => {
+          // Handle error here
+          console.error('An error occurred while fetching categories', error);
+        },
+        complete: () => { console.log('Complete categories') }
+      }
+    );
   }
 
 }
+

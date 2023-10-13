@@ -92,7 +92,7 @@ export class EventsComponent implements OnInit {
         this.currentPosition = position;
       }));
 
-    this.categories$ = this.categoriesService.categories.pipe(
+    this.categories$ = this.categoriesService.getAllCategories().pipe(
       map((categories: Category[]) => {
         this.categoryList = categories;
         categories.forEach((category: Category) => {
@@ -164,9 +164,6 @@ export class EventsComponent implements OnInit {
         event$.unsubscribe()
       }
     })
-    if (this.categories$) {
-      this.categories$.unsubscribe();
-    }
   }
 
   applyFilters() {

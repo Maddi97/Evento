@@ -1,19 +1,17 @@
 import {
-  AfterContentInit,
-  AfterViewInit,
   Component,
   EventEmitter,
   HostListener,
   Input,
   OnInit,
-  Output,
+  Output
 } from "@angular/core";
-import { Category, Subcategory } from "../../models/category";
-import { debounceTime, map, mergeMap, take } from "rxjs/operators";
-import { CategoriesService } from "../../categories/categories.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FileService } from "../../file.service";
 import { DomSanitizer } from "@angular/platform-browser";
+import { ActivatedRoute, Router } from "@angular/router";
+import { map } from "rxjs/operators";
+import { CategoriesService } from "../../categories/categories.service";
+import { FileService } from "../../file.service";
+import { Category, Subcategory } from "../../models/category";
 
 @Component({
   selector: "app-category-list",
@@ -51,7 +49,7 @@ export class CategoryListComponent implements OnInit {
     //document.getElementById('main-category-container').scrollLeft = 0;
     this.setScrollMaxBool();
 
-    const categories$ = this.categoriesService.categories.pipe(
+    const categories$ = this.categoriesService.getAllCategories().pipe(
       map((categories: Category[]) => {
         this.categoryList = categories;
         this.sortCategoriesByWeight(this.categoryList)
