@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import * as moment from "moment";
+import * as moment from 'moment-timezone';
 import { NgxSpinnerService } from "ngx-spinner";
 import { map, switchMap } from "rxjs";
 import { CategoriesService } from "../categories/categories.service";
@@ -124,15 +124,7 @@ export class EventsComponent implements OnInit {
         next: (params) => {
           this.fetchEventsCompleted = false;
           this.spinner.show();
-
-          this.filteredDate = moment(params.date)
-            .utcOffset(0, false)
-            .set({
-              hour: 0,
-              minute: 0,
-              second: 0,
-              millisecond: 0,
-            });
+          this.filteredDate = moment(params.date).tz('Europe/Berlin');
 
           const category = params.category;
           this.filteredCategory = category
@@ -161,14 +153,14 @@ export class EventsComponent implements OnInit {
   applyFilters() {
     // Request backend for date, category and subcategory filter
     // filter object
+    //format date because in post request it is stringified and formatted, this could change the date
     const fil = {
-      date: this.filteredDate,
+      date: this.filteredDate.format('YYYY-MM-DDTHH:mm:ss'),
       cat: [this.filteredCategory],
       subcat: this.filteredSubcategories,
       limit: this.actualLoadEventLimit,
       currentPosition: this.currentPosition,
     };
-
     let event$;
     // if category is not hot
     if (!fil.cat.find((el) => el.name === "hot")) {
