@@ -56,7 +56,7 @@ export class EventsComponent implements OnInit {
     millisecond: 0,
   });
 
-  public getScreenWidth: any;
+  public getScreenWidth: number;
 
   constructor(
     private eventService: EventService,
@@ -80,83 +80,74 @@ export class EventsComponent implements OnInit {
         this.mapView = data;
       });
   }
-
   ngOnInit(): void {
+    this.getScreenWidth = window.innerWidth;
     this.spinner.show();
     this.closeSpinnerAfterTimeout();
-    this.positionService.getPositionByLocation()
-    this.currentPosition = [51, 13]
-    this.getScreenWidth = window.innerWidth;
-    const positionService$ = this.sessionStorageService.getLocation().pipe(
-      map((position) => {
-        this.currentPosition = position;
-      }));
 
-    this.categories$ = this.categoriesService.getAllCategories().pipe(
-      map((categories: Category[]) => {
-        this.categoryList = categories;
-        categories.forEach((category: Category) => {
-          category.subcategories.forEach((subcategory) => {
-            this.subcategoryList.push(subcategory);
-          });
-        });
-
-      })
-    );
-
-    const params$ = this._activatedRoute.queryParams.pipe(
-      map((params) => {
-        this.fetchEventsCompleted = false
-        this.spinner.show()
-        this.closeSpinnerAfterTimeout();
-        this.filteredDate = moment(new Date(params.date))
-          .utcOffset(0, false)
-          .set({
-            hour: 0,
-            minute: 0,
-            second: 0,
-            millisecond: 0,
-          });
-        const category = params.category;
-        if (category !== undefined) {
-          this.categoryList.forEach((c) => {
-            if (c._id === category) {
-              this.filteredCategory = c;
-            }
-          });
-        } else {
-          this.filteredCategory = this.hot;
-        }
-
-        let subcategories = params.subcategory;
-        if (subcategories !== undefined) {
-          this.subcategoryList.forEach((s) => {
-            if (subcategories.includes(s._id)) {
-              this.filteredSubcategories.push(s);
-            }
-          });
-        }
-      })
-    );
-
-    this.categories$
-      .pipe(
-        //mergeMap(() => positionService$),
-        switchMap(() => params$),
-        switchMap(() => positionService$),
-      )
-      .subscribe(
-        {
-          next: () => {
-            this.applyFilters()
-          },
-          error: (error) => { console.log(error) },
-          complete: () => {
-            console.log('Categories loaded complete');
-          }
-        });
+    this.setupPositionService();
+    this.setupCategoriesService();
 
   }
+
+  private setupPositionService(): void {
+    this.sessionStorageService.getLocation().subscribe(position => {
+      this.currentPosition = position;
+    });
+  }
+
+  private setupCategoriesService(): void {
+    this.categoriesService.getAllCategories().subscribe(
+      {
+        next: (categories) => {
+          this.categoryList = categories;
+
+          categories.forEach((category: Category) => {
+            category.subcategories.forEach((subcategory) => {
+              this.subcategoryList.push(subcategory);
+            });
+          });
+        },
+        error: (error) => { console.log(error) },
+        complete: () => {
+          console.log('Categories complete')
+          this.setupQueryParams();
+        }
+      }
+    )
+  }
+
+  private setupQueryParams(): void {
+    this._activatedRoute.queryParams.subscribe(
+      {
+        next: (params) => {
+          this.fetchEventsCompleted = false;
+          this.spinner.show();
+
+          this.filteredDate = moment(params.date)
+            .utcOffset(0, false)
+            .set({
+              hour: 0,
+              minute: 0,
+              second: 0,
+              millisecond: 0,
+            });
+
+          const category = params.category;
+          this.filteredCategory = category
+            ? this.categoryList.find(c => c._id === category)
+            : this.hot;
+
+          const subcategories = params.subcategory;
+          this.filteredSubcategories = subcategories
+            ? this.subcategoryList.filter(s => subcategories.includes(s._id))
+            : [];
+          this.applyFilters()
+        },
+        error: (error) => { console.log(error) },
+      });
+  }
+
 
   ngOnDestroy() {
     this.events$.forEach((event$) => {
@@ -176,6 +167,7 @@ export class EventsComponent implements OnInit {
       limit: this.actualLoadEventLimit,
       currentPosition: this.currentPosition,
     };
+
     let event$;
     // if category is not hot
     if (!fil.cat.find((el) => el.name === "hot")) {
@@ -243,7 +235,6 @@ export class EventsComponent implements OnInit {
   }
 
   onFetchEventsCompleted() {
-    console.log('Events fetch Completed')
     this.fetchEventsCompleted = true;
     this.spinner.hide()
   }

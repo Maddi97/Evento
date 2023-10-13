@@ -1,17 +1,12 @@
 import {
   Component,
+  Input,
   OnChanges,
   OnInit,
-  Input,
-  OnDestroy,
   SimpleChanges,
 } from "@angular/core";
 import * as L from "leaflet";
 import { PositionService } from "./position.service";
-import { Router } from "@angular/router";
-import { Geolocation } from "@capacitor/geolocation";
-import { SessionStorageService } from "../session-storage/session-storage.service";
-
 @Component({
   selector: "map-view",
   templateUrl: "./map-view.component.html",
