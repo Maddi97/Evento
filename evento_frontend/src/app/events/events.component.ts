@@ -20,7 +20,7 @@ export class EventsComponent implements OnInit {
   public isDropdown = false;
 
   //Observables
-  private events$;
+  private events$: Array<any> = [];
   private categories$;
   // equal limit at start == start limit
   actualLoadEventLimit;
@@ -87,19 +87,6 @@ export class EventsComponent implements OnInit {
     this.positionService.getPositionByLocation()
     this.currentPosition = [51, 13]
     this.getScreenWidth = window.innerWidth;
-    this.events$ = this.eventService.events.subscribe((events) => {
-      const indexLastEvent = this.eventList.length
-      this.fetchEventsCompleted = true;
-      this.eventList = events;
-      this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
-      if (this.isLoadMoreClicked) {
-        this.isLoadMoreClicked = false;
-        this.eventToScrollId = this.eventList[indexLastEvent - 2]._id
-      }
-      this.spinner.hide()
-
-    });
-
     const positionService$ = this.sessionStorageService.getLocation().pipe(
       map((position) => {
         this.currentPosition = position;
@@ -165,16 +152,18 @@ export class EventsComponent implements OnInit {
           },
           error: (error) => { console.log(error) },
           complete: () => {
-            console.log('categories loaded complete');
+            console.log('Categories loaded complete');
           }
         });
 
   }
 
   ngOnDestroy() {
-    if (this.events$) {
-      this.events$.unsubscribe();
-    }
+    this.events$.forEach((event$) => {
+      if (event$) {
+        event$.unsubscribe()
+      }
+    })
     if (this.categories$) {
       this.categories$.unsubscribe();
     }
@@ -190,13 +179,29 @@ export class EventsComponent implements OnInit {
       limit: this.actualLoadEventLimit,
       currentPosition: this.currentPosition,
     };
+    let event$;
     // if category is not hot
     if (!fil.cat.find((el) => el.name === "hot")) {
-      this.eventService.getEventsOnDateCategoryAndSubcategory(fil);
+      event$ = this.eventService.getEventsOnDateCategoryAndSubcategory(fil).subscribe(
+        {
+          next: (events) => {
+            this.handlyEventListLoaded(events)
+          },
+          error: (error) => { console.log(error) },
+          complete: () => { this.onFetchEventsCompleted() }
+        });
     } else {
       // if hot filter by date
-      this.eventService.getEventsOnDate(this.filteredDate);
+      event$ = this.eventService.getEventsOnDate(this.filteredDate).subscribe(
+        {
+          next: (events) => {
+            this.handlyEventListLoaded(events)
+          },
+          error: (error) => { console.log(error) },
+          complete: () => { this.onFetchEventsCompleted() }
+        });
     }
+    this.events$.push(event$)
   }
   get_distance_to_current_position(event) {
     // get distance
@@ -240,6 +245,22 @@ export class EventsComponent implements OnInit {
     this.sessionStorageService.setMapViewData(this.mapView);
   }
 
+  onFetchEventsCompleted() {
+    console.log('Events fetch Completed')
+    this.fetchEventsCompleted = true;
+    this.spinner.hide()
+  }
+
+  handlyEventListLoaded(events: Event[]) {
+    const indexLastEvent = this.eventList.length
+    this.eventList = events;
+    this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
+    if (this.isLoadMoreClicked) {
+      this.isLoadMoreClicked = false;
+      this.eventToScrollId = this.eventList[indexLastEvent - 2]._id
+    }
+  }
+
   @HostListener("window:resize", ["$event"])
   getScreenSize(event?) {
     this.getScreenWidth = window.innerWidth;
@@ -269,7 +290,7 @@ export class EventsComponent implements OnInit {
   closeSpinnerAfterTimeout() {
     setTimeout(() => {
       this.spinner.hide()
-    }, 8000)
+    }, 10000)
   }
 }
 
