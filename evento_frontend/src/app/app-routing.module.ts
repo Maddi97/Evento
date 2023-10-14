@@ -1,9 +1,9 @@
-import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
-import {EventsComponent} from './events/events.component';
-import {CategoriesComponent} from './categories/categories.component';
-import {SettingsComponent} from './settings/settings.component';
-import {FullEventComponent} from './common-utilities/full-event/full-event.component';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { EventsComponent } from './events/events.component';
+import { CategoriesComponent } from './categories/categories.component';
+import { SettingsComponent } from './settings/settings.component';
+import { FullEventComponent } from './common-utilities/full-event/full-event.component';
 
 const routes: Routes = [
   {
@@ -18,7 +18,7 @@ const routes: Routes = [
     path: 'full-event/:eventId',
     component: FullEventComponent
   },
-  {path: '**', component: EventsComponent}
+  { path: '**', component: EventsComponent }
 ];
 
 @NgModule({

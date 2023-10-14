@@ -1,15 +1,15 @@
 import { Component, HostListener, OnInit } from "@angular/core";
-import { Event } from "../models/event";
-import * as moment from "moment";
-import { combineLatest, combineLatestAll, debounceTime, forkJoin, map, mergeMap, switchMap, take, timer } from "rxjs";
-import { EventService } from "./event.service";
-import { NgxSpinnerService } from "ngx-spinner";
 import { ActivatedRoute } from "@angular/router";
-import { PositionService } from '../common-utilities/map-view/position.service';
-import { NominatimGeoService } from "../nominatim-geo.service";
+import * as moment from 'moment-timezone';
+import { NgxSpinnerService } from "ngx-spinner";
+import { delay, map, switchMap, take, tap } from "rxjs";
 import { CategoriesService } from "../categories/categories.service";
-import { Category, Subcategory } from "../models/category";
+import { PositionService } from '../common-utilities/map-view/position.service';
 import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
+import { Category, Subcategory } from "../models/category";
+import { Event } from "../models/event";
+import { NominatimGeoService } from "../nominatim-geo.service";
+import { EventService } from "./event.service";
 
 @Component({
   selector: "app-events",
@@ -18,14 +18,17 @@ import { SessionStorageService } from "../common-utilities/session-storage/sessi
 })
 export class EventsComponent implements OnInit {
   public isDropdown = false;
-  private events$;
 
+  //Observables
+  private events$: Array<any> = [];
+  private categories$;
   // equal limit at start == start limit
   actualLoadEventLimit;
   startLoadEventLimit = 24;
   offset = 19;
 
   fetchEventsCompleted = false;
+  fetchParamsCompleted = false;
   currentPosition;
   mapView = null;
   mapView$;
@@ -54,13 +57,12 @@ export class EventsComponent implements OnInit {
     millisecond: 0,
   });
 
-  public getScreenWidth: any;
+  public getScreenWidth: number;
 
   constructor(
     private eventService: EventService,
     private spinner: NgxSpinnerService,
     private _activatedRoute: ActivatedRoute,
-    private positionService: PositionService,
     private geoService: NominatimGeoService,
     private categoriesService: CategoriesService,
     private sessionStorageService: SessionStorageService
@@ -77,108 +79,110 @@ export class EventsComponent implements OnInit {
       .subscribe((data) => {
         this.mapView = data;
       });
+    this.spinner.show()
   }
-
   ngOnInit(): void {
+    this.getScreenWidth = window.innerWidth;
     this.spinner.show();
     this.closeSpinnerAfterTimeout();
-    this.positionService.getPositionByLocation()
-    this.currentPosition = [51, 13]
-    this.getScreenWidth = window.innerWidth;
-    this.events$ = this.eventService.events.subscribe((events) => {
-      const indexLastEvent = this.eventList.length
-      this.fetchEventsCompleted = true;
-      this.eventList = events;
-      this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
-      if (this.isLoadMoreClicked) {
-        this.isLoadMoreClicked = false;
-        this.eventToScrollId = this.eventList[indexLastEvent - 2]._id
-      }
-      this.spinner.hide()
 
+    //this.setupPositionService();
+    this.setupCategoriesService();
+
+  }
+
+  private setupPositionService(): void {
+    this.sessionStorageService.getLocation().pipe(
+    ).subscribe(position => {
+      this.currentPosition = position;
+      this.applyFilters()
     });
+  }
 
-    const positionService$ = this.sessionStorageService.getLocation().pipe(
-      map((position) => {
-        this.currentPosition = position;
-      }));
+  private setupCategoriesService(): void {
+    this.categoriesService.getAllCategories().subscribe(
+      {
+        next: (categories) => {
+          this.categoryList = categories;
 
-    const categories$ = this.categoriesService.categories.pipe(
-      map((categories: Category[]) => {
-        this.categoryList = categories;
-        categories.forEach((category: Category) => {
-          category.subcategories.forEach((subcategory) => {
-            this.subcategoryList.push(subcategory);
+          categories.forEach((category: Category) => {
+            category.subcategories.forEach((subcategory) => {
+              this.subcategoryList.push(subcategory);
+            });
           });
-        });
-
-      })
-    );
-
-    const params$ = this._activatedRoute.queryParams.pipe(
-      map((params) => {
-        this.fetchEventsCompleted = false
-        this.spinner.show()
-        this.closeSpinnerAfterTimeout();
-        this.filteredDate = moment(new Date(params.date))
-          .utcOffset(0, false)
-          .set({
-            hour: 0,
-            minute: 0,
-            second: 0,
-            millisecond: 0,
-          });
-        const category = params.category;
-        if (category !== undefined) {
-          this.categoryList.forEach((c) => {
-            if (c._id === category) {
-              this.filteredCategory = c;
-            }
-          });
-        } else {
-          this.filteredCategory = this.hot;
+        },
+        error: (error) => { console.log(error) },
+        complete: () => {
+          console.log('Categories complete')
+          this.setupQueryParams();
         }
+      }
+    )
+  }
 
-        let subcategories = params.subcategory;
-        if (subcategories !== undefined) {
-          this.subcategoryList.forEach((s) => {
-            if (subcategories.includes(s._id)) {
-              this.filteredSubcategories.push(s);
-            }
-          });
-        }
-      })
-    );
+  private setupQueryParams(): void {
+    this._activatedRoute.queryParams.pipe(
+      tap(() => {
+        this.spinner.show();
+      }),
+      delay(200),
+    ).subscribe(
+      {
+        next: (params) => {
+          this.fetchEventsCompleted = false;
+          this.filteredDate = moment(params.date).tz('Europe/Berlin');
 
-    categories$
-      .pipe(
-        //mergeMap(() => positionService$),
-        switchMap(() => params$),
-        switchMap(() => positionService$),
-      )
-      .subscribe(() => {
-        this.applyFilters()
+          const category = params.category;
+          this.filteredCategory = category
+            ? this.categoryList.find(c => c._id === category)
+            : this.hot;
+
+          const subcategories = params.subcategory;
+          this.filteredSubcategories = subcategories
+            ? this.subcategoryList.filter(s => subcategories.includes(s._id))
+            : [];
+          this.fetchParamsCompleted = true;
+          this.setupPositionService()
+          //this.applyFilters()
+        },
+        error: (error) => { console.log(error) },
       });
-
   }
 
   applyFilters() {
     // Request backend for date, category and subcategory filter
     // filter object
+    //format date because in post request it is stringified and formatted, this could change the date
     const fil = {
-      date: this.filteredDate,
+      date: this.filteredDate.format('YYYY-MM-DDTHH:mm:ss'),
       cat: [this.filteredCategory],
       subcat: this.filteredSubcategories,
       limit: this.actualLoadEventLimit,
       currentPosition: this.currentPosition,
     };
+    let event$;
     // if category is not hot
     if (!fil.cat.find((el) => el.name === "hot")) {
-      this.eventService.getEventsOnDateCategoryAndSubcategory(fil);
+      event$ = this.eventService.getEventsOnDateCategoryAndSubcategory(fil).subscribe(
+        {
+          next: (events) => {
+            this.handlyEventListLoaded(events)
+          },
+          error: (error) => { console.log(error) },
+          complete: () => { this.onFetchEventsCompleted() }
+        });
     } else {
       // if hot filter by date
-      this.eventService.getEventsOnDate(this.filteredDate);
+      event$ = this.eventService.getEventsOnDate(this.filteredDate).subscribe(
+        {
+          next: (events) => {
+            this.handlyEventListLoaded(events)
+          },
+          error: (error) => { console.log(error) },
+          complete: () => { this.onFetchEventsCompleted() }
+        });
     }
+    this.events$.push(event$)
   }
   get_distance_to_current_position(event) {
     // get distance
@@ -222,6 +226,21 @@ export class EventsComponent implements OnInit {
     this.sessionStorageService.setMapViewData(this.mapView);
   }
 
+  onFetchEventsCompleted() {
+    this.fetchEventsCompleted = true;
+    this.spinner.hide()
+  }
+
+  handlyEventListLoaded(events: Event[]) {
+    const indexLastEvent = this.eventList.length
+    this.eventList = events;
+    this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
+    if (this.isLoadMoreClicked) {
+      this.isLoadMoreClicked = false;
+      this.eventToScrollId = this.eventList[indexLastEvent - 2]._id
+    }
+  }
+
   @HostListener("window:resize", ["$event"])
   getScreenSize(event?) {
     this.getScreenWidth = window.innerWidth;
@@ -230,28 +249,36 @@ export class EventsComponent implements OnInit {
 
   scrollRight() {
     const element = document.getElementById("main-category-container");
-    element.scrollLeft += 80;
+    if (element) {
+      element.scrollLeft += 80;
+
+    }
     this.setScrollMaxBool();
     // if max scrolled true then true
   }
 
   scrollLeft() {
     const element = document.getElementById("main-category-container");
-    element.scrollLeft -= 80;
+    if (element) {
+      element.scrollLeft -= 80;
+    }
     this.setScrollMaxBool();
   }
 
   @HostListener("window:mouseover", ["$event"])
   setScrollMaxBool() {
     const element = document.getElementById("main-category-container");
-    this.scrollLeftMax = element.scrollLeft === 0;
-    this.scrollRightMax =
-      element.scrollLeft === element.scrollWidth - element.clientWidth;
+    if (element) {
+      this.scrollLeftMax = element.scrollLeft === 0;
+      this.scrollRightMax =
+        element.scrollLeft === element.scrollWidth - element.clientWidth;
+    }
+
   }
   closeSpinnerAfterTimeout() {
     setTimeout(() => {
       this.spinner.hide()
-    }, 8000)
+    }, 10000)
   }
 }
 

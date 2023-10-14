@@ -63,7 +63,7 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.organizer$.unsubscribe();
+        if (this.organizer$) { this.organizer$.unsubscribe(); }
     }
 
     addNewOrganizer(organizer): void {
@@ -229,6 +229,11 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
             }
             )
         ).subscribe();
+    }
+    loadAllOrganizer() {
+        this.organizerService.getOrganizer().subscribe((organizer) => {
+            this.organizers = organizer
+        })
     }
 
     openSnackBar(message, state) {

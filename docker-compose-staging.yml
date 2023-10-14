@@ -15,12 +15,16 @@ services:
   #     - PGID=1000
   #     - TZ=Europe/Berlin
   #     - URL=evento-leipzig.de
-  #     - SUBDOMAINS=www, insert, backend
+  #     - SUBDOMAINS=staging, insert.staging, backend.staging
+  #     - ONLY_SUBDOMAINS=true
   #     - VALIDATION=http
   #     - EMAIL=business@evento-leipzig.de
 
   evento_frontend:
-    image: eventodockerhub/evento_frontend:latest
+    build:
+      context: evento_frontend
+      dockerfile: staging.Dockerfile
+    image: eventodockerhub/evento_frontend_staging:latest
     container_name: evento_app
     restart: always
     ports:
@@ -32,7 +36,10 @@ services:
     #   - letsencrypt
 
   evento_insert:
-    image: eventodockerhub/evento_insert:latest
+    build:
+      context: evento_frontend
+      dockerfile: staging.Dockerfile
+    image: eventodockerhub/evento_insert_staging:latest
     container_name: insert_app
     restart: always
     ports:
@@ -44,7 +51,7 @@ services:
     #   - letsencrypt
 
   backend:
-    image: eventodockerhub/evento_backend:latest
+    image: eventodockerhub/evento_backend_staging:latest
     container_name: backend
     restart: always
     ports:
@@ -58,7 +65,6 @@ services:
       - SECRET=${SECRET}
     # depends_on:
     #   - letsencrypt
-
     # mongodb:
     #   image: mongo
     #   restart: always

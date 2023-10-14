@@ -108,7 +108,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  font-size: 1rem;
+  font-size: 1.2rem;
   max-width: 70vw;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -142,9 +142,9 @@
 }
 
 /*medium screen size*/
-@media screen and (min-width: 440px) and (max-width: 600px) {
+@media screen and (min-width: 440px) and (max-width: 1000px) {
   .event-name {
-    font-size: 1.3rem !important;
+    font-size: 1.1rem !important;
   }
 
   .date {

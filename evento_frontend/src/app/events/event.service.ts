@@ -1,150 +1,117 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError as observableThrowError, of, throwError } from 'rxjs';
-import { Event } from '../models/event';
-import { WebService } from '../web.service';
-import { filter, map, catchError, share, switchMap, tap } from 'rxjs/operators';
+import { Observable, combineLatest, of, throwError } from 'rxjs';
+import { map, catchError, share } from 'rxjs/operators';
 import { HttpRequest } from '@angular/common/http';
+import { Event } from '../models/event';
 import { Organizer } from '../models/organizer';
 import * as moment from 'moment';
-
+import { WebService } from '../web.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
-
-  private _events: BehaviorSubject<Event[]> = new BehaviorSubject(new Array<Event>());
   private cachedEvents: Map<string, Event[]> = new Map();
 
-  constructor(
-    private webService: WebService,
-  ) {
-  }
+  constructor(private webService: WebService) { }
 
   get events(): Observable<Event[]> {
-    return this._events;
+    return this.getAllEvents(); // Example, you can customize this based on your needs.
   }
 
-  public eventForId(id: string): Event {
-    return this._events.getValue().find(f => f._id === id);
+  public eventForId(id: string): Observable<Event | undefined> {
+    return this.getAllEvents().pipe(
+      map(events => events.find(event => event._id === id))
+    );
   }
 
-  getEventById(id: string) {
-    const obs = this.webService.get('events/' + id).pipe(
-      map((r: HttpRequest<any>) => r as unknown as Event[]),
+  getEventById(id: string): Observable<Event> {
+    return this.webService.get('events/' + id).pipe(
+      map((r: HttpRequest<any>) => r as unknown as Event),
       catchError((error: any) => {
         console.error('an error occurred', error);
-        return observableThrowError(error.error.message || error);
+        return throwError(error.error.message || error);
       }),
-      share());
-    obs.toPromise().then((response) => {
-      const tempEv = this._events.getValue();
-      response.map(res => {
-        if (!tempEv.map(r => r._id).includes(res._id)) {
-          tempEv.push(res);
-        }
-      });
-      this._events.next(tempEv);
-    });
-    return obs;
+      share()
+    );
   }
 
-  getAllEvents() {
-    const obs = this.webService.get('organizer').pipe(
+  getAllEvents(): Observable<Event[]> { //might be broken
+    return this.webService.get('organizer').pipe(
       map((r: HttpRequest<any>) => r as unknown as Organizer[]),
-      catchError((error: any) => {
-        console.error('an error occurred', error);
-        return observableThrowError(error.error.message || error);
-      }),
-      share());
-    obs.toPromise().then((response) => {
-      const ids = response.map(o => {
-        this.getEventForOrgId(o._id);
-      }
-      );
-    });
+      map(response => response.map(o => this.getEventForOrgId(o._id))),// Flatten the array of events
+      map(responses => {
+        return responses.reduce((acc, current) => acc.concat(current), []);
+      }), // Flatten the array of events
+      share()
+    );
   }
 
-  getEventForOrgId(id: string) {
-    const obs = this.webService.get('organizer/' + id + '/events').pipe(
+  getEventForOrgId(id: string): Observable<Event[]> {
+    return this.webService.get('organizer/' + id + '/events').pipe(
       map((r: HttpRequest<any>) => r as unknown as Event[]),
       catchError((error: any) => {
         console.error('an error occurred', error);
-        return observableThrowError(error.error.message || error);
+        return throwError(error.error.message || error);
       }),
-      share());
-    obs.toPromise().then((response) => {
-      const tempEv = this._events.getValue();
-      response.map(res => {
-        if (!tempEv.map(r => r._id).includes(res._id)) {
-          tempEv.push(res);
-        }
-      });
-      this._events.next(tempEv);
-    });
-    return obs;
+      share()
+    );
   }
 
   getAllUpcomingEvents(): Observable<Event[]> {
-    const date = new Date()
+    const date = new Date();
     const cacheKey = JSON.stringify(date);
     if (this.cachedEvents.has(cacheKey)) {
-      this._events.next(this.cachedEvents.get(cacheKey))
       return of(this.cachedEvents.get(cacheKey)!);
     }
+
     const obs = this.webService.get('upcomingEvents').pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
-        console.error('an error occured', error);
-        return observableThrowError(error.error.message || error);
+        console.error('an error occurred', error);
+        return throwError(error.error.message || error);
       }),
-      share());
-    obs.toPromise().then((response) => {
-      this._events.next(response);
+      share()
+    );
+
+    obs.subscribe(response => {
+      this.cachedEvents.set(cacheKey, response);
     });
+
     return obs;
   }
 
   getEventsOnDate(date: moment.Moment): Observable<Event[]> {
-    const obs = this.webService.post('eventOnDate', { date }).pipe(
+    return this.webService.post('eventOnDate', { date }).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
-        console.error('an error occured', error);
-        return observableThrowError(error.error.message || error);
+        console.error('an error occurred', error);
+        return throwError(error.error.message || error);
       }),
-      share());
-    obs.toPromise().then((response) => {
-      this._events.next(response);
-    });
-    return obs;
+      share()
+    );
   }
 
   getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
-
     const cacheKey = JSON.stringify(fil);
     if (this.cachedEvents.has(cacheKey)) {
-      this._events.next(this.cachedEvents.get(cacheKey))
       return of(this.cachedEvents.get(cacheKey)!);
     }
 
-    const obs = this.webService.post('eventOnDateCatAndSubcat', { fil }).pipe(
-      map((res: any) => res as Event[]),
+    return this.webService.post('eventOnDateCatAndSubcat', { fil }).pipe(
+      map((response: any) => {
+        this.cachedEvents.set(cacheKey, response);
+        return response as Event[]; // Return the response array
+      }),
       catchError((error: any) => {
         console.error('An error occurred', error);
         return throwError(error.error.message || error);
       }),
-      tap((events) => {
-        this.cachedEvents.set(cacheKey, events);
-        this._events.next(events);
-      }),
       share()
     );
-    obs.toPromise().then((response) => {
-    });
-    return obs;
   }
 
   get cachedEventList(): Observable<Event[]> {
-    return this._events.asObservable();
+    return this.getAllEvents();
   }
 }

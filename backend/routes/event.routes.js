@@ -242,6 +242,7 @@ router.post('/getEventsOnCategory', limiter, (req, res) => {
 router.post('/getActualEventsOnCategory', limiter, (req, res) => {
     let date = new Date()
     const id = String(req.body.category._id)
+    console.log(id)
     Event.find(
         {
             $and: [
@@ -272,6 +273,7 @@ router.post('/getActualEventsOnCategory', limiter, (req, res) => {
         }
     )
         .then((events) => {
+            console.log(events)
             res.send(events);
         })
         .catch((error) => {

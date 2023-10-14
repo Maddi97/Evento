@@ -1,17 +1,12 @@
 import {
   Component,
+  Input,
   OnChanges,
   OnInit,
-  Input,
-  OnDestroy,
   SimpleChanges,
 } from "@angular/core";
 import * as L from "leaflet";
 import { PositionService } from "./position.service";
-import { Router } from "@angular/router";
-import { Geolocation } from "@capacitor/geolocation";
-import { SessionStorageService } from "../session-storage/session-storage.service";
-
 @Component({
   selector: "map-view",
   templateUrl: "./map-view.component.html",
@@ -119,6 +114,13 @@ export class MapViewComponent implements OnInit, OnChanges {
       if (changes.currentPosition) {
         this.resetCenter()
       }
+
+      // set blue position marker always to top
+      this.updateZIndexPosition('blue')
+      this.map.on('moveend', (e) => {
+        console.log("zoomed")
+        this.updateZIndexPosition('blue')
+      })
     }, 10); // Adjust the delay time in milliseconds
   }
   private initMapIfNeeded(): void {
@@ -128,6 +130,19 @@ export class MapViewComponent implements OnInit, OnChanges {
     }
   }
 
+  private updateZIndexPosition(color: 'blue' | 'yellow') {
+    const markerElement = document.querySelectorAll('img');
+    markerElement.forEach((element) => {
+      if (String(element.src).includes(color)) {
+        element.style.zIndex = '99999'
+        if (color === 'blue') {
+          element.style.width = '20px'
+          element.style.height = '20px'
+        }
+
+      }
+    })
+  }
   private initMap(): void {
 
     this.map = L.map("map", {
@@ -153,6 +168,8 @@ export class MapViewComponent implements OnInit, OnChanges {
         })
       )
       .addTo(this.hoverMarkerGroup);
+    this.updateZIndexPosition('yellow')
+
   }
   private clearHoverMarker(): void {
     this.hoverMarkerGroup.clearLayers();
@@ -170,6 +187,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     );
     this.map.removeLayer(positionMarker);
     this.positionMarkerGroup.addLayer(positionMarker);
+
     positionMarker.zIndexOffset = this.map.getSize().y * 10000;
   }
 

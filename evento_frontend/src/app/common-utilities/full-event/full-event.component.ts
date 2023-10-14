@@ -1,15 +1,15 @@
-import { Component, OnInit, Input, Inject } from "@angular/core";
-import { Event } from "../../models/event";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { EventService } from "src/app/events/event.service";
-import { DomSanitizer } from "@angular/platform-browser";
+import { NgxSpinnerService } from "ngx-spinner";
 import { map } from "rxjs";
+import { delay, switchMap, take, tap } from "rxjs/operators";
+import { EventService } from "src/app/events/event.service";
+import { Event } from "../../models/event";
 import { Organizer } from "../../models/organizer";
 import { OrganizerService } from "../../organizer.service";
-import { switchMap } from "rxjs/operators";
 import {
-  openingTimesFormatter,
   dateTimesFormater,
+  openingTimesFormatter,
 } from "../logic/opening-times-format-helpers";
 import { SessionStorageService } from "../session-storage/session-storage.service";
 
@@ -18,11 +18,14 @@ import { SessionStorageService } from "../session-storage/session-storage.servic
   templateUrl: "./full-event.component.html",
   styleUrls: ["./full-event.component.css"],
 })
-export class FullEventComponent implements OnInit {
+export class FullEventComponent implements OnInit, OnDestroy {
   currentPosition: Array<Number>;
   eventId: string;
   event: Event;
   organizer: Organizer;
+
+  private storage$;
+  private params$;
 
   IconURL = null;
   ImageURL = null;
@@ -33,13 +36,14 @@ export class FullEventComponent implements OnInit {
     private route: ActivatedRoute,
     private eventService: EventService,
     private router: Router,
+    private spinner: NgxSpinnerService,
     private sessionStorageService: SessionStorageService,
     private organizerService: OrganizerService
   ) { }
 
   ngOnInit(): void {
-    this.sessionStorageService.getLocation().subscribe(position => { this.currentPosition = position })
-    this.route.params
+    this.storage$ = this.sessionStorageService.getLocation().subscribe(position => { this.currentPosition = position })
+    this.params$ = this.route.params
       .pipe(
         map((eventIdParam) => eventIdParam["eventId"]),
         switchMap((eventId) => this.eventService.getEventById(eventId)),
@@ -47,16 +51,27 @@ export class FullEventComponent implements OnInit {
         switchMap((event) =>
           this.organizerService.getOrganizerById(event._organizerId)
         ),
-        map((organizerResponse) => organizerResponse[0])
+        map((organizerResponse) => this.organizer = organizerResponse[0]),
+        delay(150),
+        take(1)
       )
-      .subscribe((organizer) => {
-        this.organizer = organizer;
-        const adressStringUrl = encodeURIComponent(
-          `${this.event.address?.street} ${this.event.address?.streetNumber} ${this.event.address?.city}`
-        );
-        this.gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
-        this.clearQueryParams();
-      });
+      .subscribe(
+        {
+          next: () => {
+            const adressStringUrl = encodeURIComponent(
+              `${this.event.address?.street} ${this.event.address?.streetNumber} ${this.event.address?.city}`
+            );
+            this.gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
+
+          },
+          error: (error) => { console.log(error) },
+          complete: () => {
+            //this.clearQueryParams(); not working
+            this.spinner.hide()
+          }
+        }
+      )
+      ;
 
   }
   clearQueryParams() {
@@ -71,5 +86,13 @@ export class FullEventComponent implements OnInit {
       return "https://" + url;
     }
     return url;
+  }
+  ngOnDestroy(): void {
+    if (this.params$) {
+      this.params$.unsubscribe()
+    }
+    if (this.storage$) {
+      this.storage$.unsubscribe()
+    }
   }
 }

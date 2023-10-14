@@ -60,7 +60,7 @@ jobs:
         with:
           platforms: linux/x86_64
           context: https://github.com/Maddi97/Evento.git#develop:evento_frontend
-          file: ./prod.Dockerfile
+          file: ./staging.Dockerfile
           push: true
           tags: ${{secrets.dockerhub_user}}/evento_frontend_staging:latest
 
@@ -89,7 +89,7 @@ jobs:
         with:
           platforms: linux/x86_64
           context: https://github.com/Maddi97/Evento.git#develop:evento_insert
-          file: ./prod.Dockerfile
+          file: ./staging.Dockerfile
           push: true
           tags: ${{secrets.dockerhub_user}}/evento_insert_staging:latest
 

@@ -12,7 +12,7 @@ import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
 })
 export class PositionService {
 
-  searchedCenter: Array<Number>;
+  searchedCenter: Array<number>;
   disableCallLocation = false;
 
   // New York Center

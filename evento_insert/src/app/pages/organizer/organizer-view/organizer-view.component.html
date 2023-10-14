@@ -35,7 +35,28 @@
                 </mat-expansion-panel>
             </div>
 
-
+            ALL
+            <mat-expansion-panel (afterExpand)="loadAllOrganizer()">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        ALL organizer
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        Open to see all organizer
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div *ngFor="let organizer of organizers">
+                    <div class="organizer-panel">
+                        <div class="organizer-name" (click)="organizerInformation=organizer">
+                            {{organizer.name}}
+                        </div>
+                        <img class="organizer-image" [src]="organizer.organizerImageTemporaryURL">
+                        <div class="delete-button" (click)="deleteOrganizer(organizer)">
+                            Delete
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
         </div>
     </div>
 </div>
