@@ -230,6 +230,11 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
             )
         ).subscribe();
     }
+    loadAllOrganizer() {
+        this.organizerService.getOrganizer().subscribe((organizer) => {
+            this.organizers = organizer
+        })
+    }
 
     openSnackBar(message, state) {
         this._snackbar.open(message, '', {
