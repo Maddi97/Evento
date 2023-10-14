@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { Event } from '../../models/event';
-import { FileService } from '../../file.service';
 import { OrganizerService } from '../../organizer.service';
-import { openingTimesFormatter, dateTimesFormater } from '../logic/opening-times-format-helpers'
-import { isScreenMinWidth } from '../logic/screen-size-helpers'
+import { dateTimesFormater, openingTimesFormatter } from '../logic/opening-times-format-helpers';
+import { isScreenMinWidth } from '../logic/screen-size-helpers';
 
 @Component({
   selector: 'app-event-tile',

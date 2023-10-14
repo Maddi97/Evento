@@ -43,9 +43,6 @@ export class FullEventComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.storage$ = this.sessionStorageService.getLocation().subscribe(position => { this.currentPosition = position })
-    this.spinner.show();
-
-
     this.params$ = this.route.params
       .pipe(
         map((eventIdParam) => eventIdParam["eventId"]),
@@ -55,7 +52,7 @@ export class FullEventComponent implements OnInit, OnDestroy {
           this.organizerService.getOrganizerById(event._organizerId)
         ),
         map((organizerResponse) => this.organizer = organizerResponse[0]),
-        delay(350),
+        delay(150),
         take(1)
       )
       .subscribe(
@@ -71,7 +68,6 @@ export class FullEventComponent implements OnInit, OnDestroy {
           complete: () => {
             //this.clearQueryParams(); not working
             this.spinner.hide()
-            console.log('Full event loaded complete');
           }
         }
       )

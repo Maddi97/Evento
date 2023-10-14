@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { NominatimGeoService } from '../../nominatim-geo.service';
 import { SessionStorageService } from '../session-storage/session-storage.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-event-tile-list',
@@ -24,6 +25,7 @@ export class EventTileListComponent implements OnInit, OnChanges {
   constructor(
     private sessionStorageService: SessionStorageService,
     private geoService: NominatimGeoService,
+    private spinner: NgxSpinnerService,
   ) {
   }
 
@@ -51,6 +53,10 @@ export class EventTileListComponent implements OnInit, OnChanges {
   }
   hover(eventId: string) {
     this.hoverEventEmitter.emit(eventId);
+  }
+
+  onClickEvent() {
+    this.spinner.show();
   }
 
   hoverLeave() {

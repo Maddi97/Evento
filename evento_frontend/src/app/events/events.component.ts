@@ -62,7 +62,6 @@ export class EventsComponent implements OnInit {
     private eventService: EventService,
     private spinner: NgxSpinnerService,
     private _activatedRoute: ActivatedRoute,
-    private positionService: PositionService,
     private geoService: NominatimGeoService,
     private categoriesService: CategoriesService,
     private sessionStorageService: SessionStorageService
@@ -79,6 +78,7 @@ export class EventsComponent implements OnInit {
       .subscribe((data) => {
         this.mapView = data;
       });
+    this.spinner.show()
   }
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
