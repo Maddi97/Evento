@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { map } from "rxjs";
-import { switchMap, tap } from "rxjs/operators";
+import { delay, switchMap, take, tap } from "rxjs/operators";
 import { EventService } from "src/app/events/event.service";
 import { Event } from "../../models/event";
 import { Organizer } from "../../models/organizer";
@@ -44,6 +44,8 @@ export class FullEventComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.storage$ = this.sessionStorageService.getLocation().subscribe(position => { this.currentPosition = position })
     this.spinner.show();
+
+
     this.params$ = this.route.params
       .pipe(
         map((eventIdParam) => eventIdParam["eventId"]),
@@ -55,7 +57,9 @@ export class FullEventComponent implements OnInit, OnDestroy {
         map((organizerResponse) => organizerResponse[0]),
         tap(() => {
           this.spinner.show(); // Show spinner when the observable starts
-        })
+        }),
+        delay(1000),
+        take(1)
       )
       .subscribe(
         {
@@ -65,11 +69,12 @@ export class FullEventComponent implements OnInit, OnDestroy {
               `${this.event.address?.street} ${this.event.address?.streetNumber} ${this.event.address?.city}`
             );
             this.gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
-            this.clearQueryParams();
-            this.spinner.hide()
+
           },
           error: (error) => { console.log(error) },
           complete: () => {
+            this.clearQueryParams();
+            this.spinner.hide()
             console.log('Full event loaded complete');
           }
         }
