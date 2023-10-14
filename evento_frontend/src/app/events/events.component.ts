@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import * as moment from 'moment-timezone';
 import { NgxSpinnerService } from "ngx-spinner";
-import { map, switchMap } from "rxjs";
+import { delay, map, switchMap, take, tap } from "rxjs";
 import { CategoriesService } from "../categories/categories.service";
 import { PositionService } from '../common-utilities/map-view/position.service';
 import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
@@ -119,11 +119,15 @@ export class EventsComponent implements OnInit {
   }
 
   private setupQueryParams(): void {
-    this._activatedRoute.queryParams.subscribe(
+    this._activatedRoute.queryParams.pipe(
+      tap(() => {
+        this.spinner.show();
+      }),
+      delay(200),
+    ).subscribe(
       {
         next: (params) => {
           this.fetchEventsCompleted = false;
-          this.spinner.show();
           this.filteredDate = moment(params.date).tz('Europe/Berlin');
 
           const category = params.category;
@@ -139,15 +143,6 @@ export class EventsComponent implements OnInit {
         },
         error: (error) => { console.log(error) },
       });
-  }
-
-
-  ngOnDestroy() {
-    this.events$.forEach((event$) => {
-      if (event$) {
-        event$.unsubscribe()
-      }
-    })
   }
 
   applyFilters() {

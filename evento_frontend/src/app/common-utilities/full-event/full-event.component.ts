@@ -54,16 +54,13 @@ export class FullEventComponent implements OnInit, OnDestroy {
         switchMap((event) =>
           this.organizerService.getOrganizerById(event._organizerId)
         ),
-        map((organizerResponse) => organizerResponse[0]),
-        tap(() => {
-          this.spinner.show(); // Show spinner when the observable starts
-        }),
+        map((organizerResponse) => this.organizer = organizerResponse[0]),
+        delay(350),
         take(1)
       )
       .subscribe(
         {
-          next: (organizer) => {
-            this.organizer = organizer;
+          next: () => {
             const adressStringUrl = encodeURIComponent(
               `${this.event.address?.street} ${this.event.address?.streetNumber} ${this.event.address?.city}`
             );
@@ -72,7 +69,7 @@ export class FullEventComponent implements OnInit, OnDestroy {
           },
           error: (error) => { console.log(error) },
           complete: () => {
-            this.clearQueryParams();
+            //this.clearQueryParams(); not working
             this.spinner.hide()
             console.log('Full event loaded complete');
           }
