@@ -59,7 +59,7 @@ export class CategoryViewComponent implements OnInit {
 
     private allowedImageTypes = ['image/png', 'image/jpeg', 'image/jpg']
     private uploadedIconSize = 50000
-    private uploadedStockImageSize = 50000000; // 500MB?
+    private uploadedStockImageSize = 500000; // 500KB?
 
     constructor(
         private categoryService: CategoryService,

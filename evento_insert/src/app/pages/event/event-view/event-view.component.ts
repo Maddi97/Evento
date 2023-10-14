@@ -319,6 +319,9 @@ export class EventViewComponent implements OnInit {
   getOutdatedEvents() {
     this.eventService.getOutdatedEvents().subscribe();
   }
+  getAllEvents() {
+    this.eventService.getAllEvents().subscribe()
+  }
   deleteOutdatedEvents() {
     if (confirm('Are you sure to delete all events older than 30 days')
     ) {

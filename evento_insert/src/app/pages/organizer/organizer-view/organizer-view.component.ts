@@ -63,7 +63,7 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.organizer$.unsubscribe();
+        if (this.organizer$) { this.organizer$.unsubscribe(); }
     }
 
     addNewOrganizer(organizer): void {

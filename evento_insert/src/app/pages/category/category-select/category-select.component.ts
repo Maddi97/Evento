@@ -29,7 +29,9 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     }
 
     ngOnInit(): void {
-        this.categoryService.categories.subscribe(cat => this.categories = cat);
+        this.categoryService.categories.subscribe(cat => {
+            this.categories = cat;
+        });
         this.filteredOptions = this.categoryName.valueChanges.pipe(
             startWith(''),
             map(value => this._filter(value)),
@@ -38,8 +40,12 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        this.selectedCategory = this.categories.find(cat => cat._id === changes.loadedCategory.currentValue._id)
+        if (!this.selectCategory) {
+            console.error('Input categories id not found. Name: ', changes.loadedCategory.currentValue?.name)
+            return;
+        }
         this.categoryName.setValue(changes.loadedCategory.currentValue?.name)
-        this.selectedCategory = this.categories.find(cat => cat.name === this.categoryName.value)
         this.selectedSubcategories.setValue(this.loadedCategory?.subcategories)
     }
 

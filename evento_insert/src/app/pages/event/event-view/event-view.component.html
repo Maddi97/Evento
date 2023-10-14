@@ -90,5 +90,30 @@
         <div class="delete-outdated-events-button" (click)="deleteOutdatedEvents()">
             Delete Outdated Events
         </div>
+        All Events
+        <div class="all-hot-events-expansion-panel">
+            <mat-expansion-panel (afterExpand)="getAllEvents()">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        ALL EVENTS. ATTENTION
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        Open to see all events
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div *ngFor="let event of allFilteredEvents">
+                    <div class="event-panel" (click)="eventIn = event">
+                        <div class="event-name">
+                            {{event.name}}
+                        </div>
+                        <img class="event-image" [src]="event.eventImageTemporaryURL">
+                        <div class="delete-event-button" (click)="deleteEvent(event._organizerId, event._id)">
+                            Delete
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </div>
     </div>
 </div>
