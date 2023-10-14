@@ -58,7 +58,6 @@ export class FullEventComponent implements OnInit, OnDestroy {
         tap(() => {
           this.spinner.show(); // Show spinner when the observable starts
         }),
-        delay(1000),
         take(1)
       )
       .subscribe(

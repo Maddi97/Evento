@@ -23,7 +23,6 @@ export class FileService {
         console.error('An error occurred', error);
         return throwError(error.error.message || error);
       }),
-      delay(3000),
       tap((blob) => {
         this.cachedFiles.set(path, blob);
       }),
