@@ -93,7 +93,6 @@ export class EventService {
   }
 
   getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
-    console.log(fil)
     const cacheKey = JSON.stringify(fil);
     if (this.cachedEvents.has(cacheKey)) {
       return of(this.cachedEvents.get(cacheKey)!);

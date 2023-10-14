@@ -28,6 +28,7 @@ export class EventsComponent implements OnInit {
   offset = 19;
 
   fetchEventsCompleted = false;
+  fetchParamsCompleted = false;
   currentPosition;
   mapView = null;
   mapView$;
@@ -85,13 +86,14 @@ export class EventsComponent implements OnInit {
     this.spinner.show();
     this.closeSpinnerAfterTimeout();
 
-    this.setupPositionService();
+    //this.setupPositionService();
     this.setupCategoriesService();
 
   }
 
   private setupPositionService(): void {
-    this.sessionStorageService.getLocation().subscribe(position => {
+    this.sessionStorageService.getLocation().pipe(
+    ).subscribe(position => {
       this.currentPosition = position;
       this.applyFilters()
     });
@@ -139,7 +141,9 @@ export class EventsComponent implements OnInit {
           this.filteredSubcategories = subcategories
             ? this.subcategoryList.filter(s => subcategories.includes(s._id))
             : [];
-          this.applyFilters()
+          this.fetchParamsCompleted = true;
+          this.setupPositionService()
+          //this.applyFilters()
         },
         error: (error) => { console.log(error) },
       });
@@ -245,23 +249,31 @@ export class EventsComponent implements OnInit {
 
   scrollRight() {
     const element = document.getElementById("main-category-container");
-    element.scrollLeft += 80;
+    if (element) {
+      element.scrollLeft += 80;
+
+    }
     this.setScrollMaxBool();
     // if max scrolled true then true
   }
 
   scrollLeft() {
     const element = document.getElementById("main-category-container");
-    element.scrollLeft -= 80;
+    if (element) {
+      element.scrollLeft -= 80;
+    }
     this.setScrollMaxBool();
   }
 
   @HostListener("window:mouseover", ["$event"])
   setScrollMaxBool() {
     const element = document.getElementById("main-category-container");
-    this.scrollLeftMax = element.scrollLeft === 0;
-    this.scrollRightMax =
-      element.scrollLeft === element.scrollWidth - element.clientWidth;
+    if (element) {
+      this.scrollLeftMax = element.scrollLeft === 0;
+      this.scrollRightMax =
+        element.scrollLeft === element.scrollWidth - element.clientWidth;
+    }
+
   }
   closeSpinnerAfterTimeout() {
     setTimeout(() => {
