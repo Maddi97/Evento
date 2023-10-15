@@ -28,7 +28,7 @@
   }
 }
 
-@media screen and (min-width: 500px) {
+@media screen and (min-width: 500px) and (max-width: 1000px) {
   .event-tile {
     width: 415px;
   }
@@ -68,20 +68,23 @@
 @media screen and (min-width: 1000px) {
   .event-tile {
     flex-direction: row;
-    width: 95% !important;
+    width: 92%;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 0.65rem !important;
+    margin-bottom: 0.65rem !important;
   }
 
   .event-tile-picture {
-    min-width: 40%;
-    max-width: 40%;
-
+    min-width: 45%;
+    max-width: 45%;
   }
 
   .event-tile-information {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    max-width: 60%;
+    max-width: 52%;
     margin-left: 10px;
   }
 
@@ -91,6 +94,12 @@
 
   .event-name {
     max-width: 100% !important;
+  }
+
+  mat-card {
+    width: 90% !important;
+    padding: unset;
+
   }
 }
 
