@@ -1,19 +1,20 @@
-.event-pic {
-  height: 100%;
-  width: 100%;
-}
-
 img {
   border: 1px solid #80808039;
   border-radius: 10px;
-  height: 60%;
+  width: 250px;
 }
 
 @media screen and (max-width: 800px) {
   img {
     max-height: 240px;
     min-height: 210px;
-    width: 100%;
+  }
+}
+
+@media screen and (min-width: 300px) {
+  img {
+    min-height: 180px;
+    width: 280px;
   }
 }
 
@@ -27,7 +28,7 @@ img {
 @media screen and (min-width: 500px) {
   img {
     min-height: 200px;
-    width: 450px;
+    width: 400px;
   }
 }
 

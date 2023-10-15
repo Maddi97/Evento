@@ -9,6 +9,32 @@
   border: none;
 }
 
+/* event tile width as picture */
+@media screen and (max-width: 300px) {
+  .event-tile {
+    width: 265px !important;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .event-tile {
+    width: 295px;
+  }
+}
+
+@media screen and (min-width: 400px) and (max-width: 500px) {
+  .event-tile {
+    width: 365px;
+  }
+}
+
+@media screen and (min-width: 500px) {
+  .event-tile {
+    width: 415px;
+  }
+}
+
+
 .promo {
   margin-top: 1.5rem !important;
   margin-bottom: 1.5rem !important;
@@ -42,6 +68,7 @@
 @media screen and (min-width: 1000px) {
   .event-tile {
     flex-direction: row;
+    width: 95% !important;
   }
 
   .event-tile-picture {
@@ -166,4 +193,9 @@
 /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
 mat-card {
   padding: 6px !important;
+}
+
+app-event-tile-list {
+  display: flex;
+  flex-direction: column;
 }
