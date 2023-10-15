@@ -18,7 +18,7 @@
   <div class="subcategory-placeholder">
     <div class="subcategory-container" id="subcategory-container"
       *ngIf="category?.subcategories?.length > 0 && isCategoryPicked(category) == 'category-picked'">
-      <p class="filter-tag">Filter |</p>
+      <span class="filter-tag">Filter |</span>
       <div *ngFor="let subcategory of category.subcategories">
         <span class="subcategory" [ngClass]="isSubCategoryPicked(subcategory)"
           (click)="selectSubcategory(subcategory)">{{subcategory.name}}</span>
