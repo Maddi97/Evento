@@ -1,10 +1,8 @@
 import {
   Component,
-  EventEmitter,
   HostListener,
   Input,
-  OnInit,
-  Output
+  OnInit
 } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -12,6 +10,8 @@ import { map } from "rxjs/operators";
 import { CategoriesService } from "../../categories/categories.service";
 import { FileService } from "../../file.service";
 import { Category, Subcategory } from "../../models/category";
+
+type ID = string;
 
 @Component({
   selector: "app-category-list",
@@ -24,9 +24,7 @@ export class CategoryListComponent implements OnInit {
 
   subcategoryList: Subcategory[] = [];
   @Input() filteredCategory: any;
-  @Input() filteredSubcategories: any;
-  @Output() categoryOutputEmitter = new EventEmitter<any>();
-  @Output() subCategoryOutputEmitter = new EventEmitter<Subcategory[]>();
+  @Input() filteredSubcategories: Array<Subcategory>;
 
   public getScreenWidth: any;
 
@@ -73,45 +71,27 @@ export class CategoryListComponent implements OnInit {
     }
   }
 
-  // add or remove clicked category to list of filter
-  addCategoryToFilter(cat: any) {
-    // scroll.scrollLeft = scroll.scrollWidth / 3
-    if (this.filteredCategory.name === cat.name) {
-      return;
-    } else {
-      this.filteredCategory = cat;
-    }
-
-    // if remove category also remove subcategories
-    if (cat.subcategories !== undefined) {
-      this.filteredSubcategories = [];
-    }
+  selectCategory(category) {
+    this.filteredCategory = category;
+    this.filteredSubcategories = []
     this.setRouteParameter({
-      subcategory: this.filteredSubcategories,
+      subcategory: this.filteredSubcategories.map((subcategory) => subcategory._id),
       category: this.filteredCategory._id,
     });
-    this.categoryOutputEmitter.emit(this.filteredCategory);
-    this.subCategoryOutputEmitter.emit(this.filteredSubcategories);
   }
 
-  addSubcategoryToFilter(subcat: Subcategory) {
-    if (!this.filteredSubcategories.includes(subcat)) {
-      // because only push doesnt trigger ngOnchanges
-      this.filteredSubcategories.push(subcat);
-      this.filteredSubcategories = [].concat(this.filteredSubcategories);
-    } else {
-      // remove subcat from list
-      this.filteredSubcategories = this.filteredSubcategories.filter(
-        (obj) => obj !== subcat
-      );
+  selectSubcategory(subcategory) {
+    if (this.filteredSubcategories.map(subcat => subcat._id).includes(subcategory._id)) {
+      this.filteredSubcategories = this.filteredSubcategories.filter(subcat => subcat._id !== subcategory._id)
+    }
+    else {
+      this.filteredSubcategories.push(subcategory)
     }
     this.setRouteParameter({
-      subcategory: this.filteredSubcategories.map((sub) => sub._id),
+      subcategory: this.filteredSubcategories.map((subcategory) => subcategory._id),
       category: this.filteredCategory._id,
     });
-    this.subCategoryOutputEmitter.emit(this.filteredSubcategories);
   }
-
   // change color if category picked
   isCategoryPicked(cat: any) {
     if (this.filteredCategory.name === cat.name) {
@@ -121,8 +101,8 @@ export class CategoryListComponent implements OnInit {
     }
   }
 
-  isSubCategoryPicked(subcat: any) {
-    if (this.filteredSubcategories.includes(subcat)) {
+  isSubCategoryPicked(subcat: Subcategory) {
+    if (this.filteredSubcategories.map((subcat) => subcat._id).includes(subcat._id)) {
       return "subcategory-picked";
     } else {
       return "subcategory-non-picked";

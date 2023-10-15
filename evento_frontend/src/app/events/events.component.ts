@@ -2,9 +2,8 @@ import { Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import * as moment from 'moment-timezone';
 import { NgxSpinnerService } from "ngx-spinner";
-import { delay, map, switchMap, take, tap } from "rxjs";
+import { delay, tap } from "rxjs";
 import { CategoriesService } from "../categories/categories.service";
-import { PositionService } from '../common-utilities/map-view/position.service';
 import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
 import { Category, Subcategory } from "../models/category";
 import { Event } from "../models/event";
@@ -137,10 +136,12 @@ export class EventsComponent implements OnInit {
             ? this.categoryList.find(c => c._id === category)
             : this.hot;
 
-          const subcategories = params.subcategory;
-          this.filteredSubcategories = subcategories
-            ? this.subcategoryList.filter(s => subcategories.includes(s._id))
-            : [];
+          if (params.subcategory) {
+            this.filteredSubcategories = this.subcategoryList.filter(s => params.subcategory.includes(s._id))
+          }
+          else {
+            this.filteredSubcategories = [];
+          }
           this.fetchParamsCompleted = true;
           this.setupPositionService()
           //this.applyFilters()
@@ -213,13 +214,6 @@ export class EventsComponent implements OnInit {
     return event || null;
   }
 
-  triggerCategoryOutput(cat) {
-    this.filteredCategory = cat;
-  }
-
-  triggerSubcategoryOutput(subcats) {
-    this.filteredSubcategories = subcats;
-  }
 
   changeToMapView() {
     this.mapView ? (this.mapView = false) : (this.mapView = true);
