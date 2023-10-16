@@ -1,4 +1,4 @@
-<div *ngIf="fetchEventsCompleted">
+<div *ngIf="fetchEventsCompleted" class="event-tile-list-container">
   <div class="event-tile-list" *ngFor="let event of eventList">
     <app-event-tile [routerLink]="['/full-event', event._id]" id="event-tile-{{event._id}}" [event]="event"
       [queryParamsHandling]="'merge'" (click)="onClickEvent()" [distance]="get_distance_to_current_position(event)"

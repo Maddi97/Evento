@@ -231,7 +231,7 @@ export class EventsComponent implements OnInit {
     this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
     if (this.isLoadMoreClicked) {
       this.isLoadMoreClicked = false;
-      this.eventToScrollId = this.eventList[indexLastEvent - 2]._id
+      this.eventToScrollId = this.eventList[indexLastEvent - 3]._id
     }
   }
 
