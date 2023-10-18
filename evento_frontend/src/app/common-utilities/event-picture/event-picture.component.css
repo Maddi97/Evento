@@ -46,3 +46,9 @@ img {
     height: 150px
   }
 }
+
+.ng-lazyloaded {
+  min-height: unset !important;
+  width: 100% !important;
+  height: auto !important;
+}
