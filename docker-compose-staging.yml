@@ -1,24 +1,24 @@
 version: "3"
 
 services:
-  # letsencrypt:
-  #   image: linuxserver/swag
-  #   container_name: swag
-  #   restart: always
-  #   volumes:
-  #     - ./letsencryptStrato/config:/config/
-  #   ports:
-  #     - "443:443"
-  #     - "80:80"
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=Europe/Berlin
-  #     - URL=evento-leipzig.de
-  #     - SUBDOMAINS=staging, insert.staging, backend.staging
-  #     - ONLY_SUBDOMAINS=true
-  #     - VALIDATION=http
-  #     - EMAIL=business@evento-leipzig.de
+  letsencrypt:
+    image: linuxserver/swag
+    container_name: swag
+    restart: always
+    volumes:
+      - ./letsencryptStrato/config:/config/
+    ports:
+      - "443:443"
+      - "80:80"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - URL=evento-leipzig.de
+      - SUBDOMAINS=staging, insert.staging, backend.staging
+      - ONLY_SUBDOMAINS=true
+      - VALIDATION=http
+      - EMAIL=business@evento-leipzig.de
 
   evento_frontend:
     build:
@@ -32,8 +32,8 @@ services:
     volumes:
       - ./threeventsfiveone:/app
       - /app/node_modules
-    # depends_on:
-    #   - letsencrypt
+    depends_on:
+      - letsencrypt
 
   evento_insert:
     build:
@@ -47,8 +47,8 @@ services:
     volumes:
       - ./insertApp:/app
       - /app/node_modules
-    # depends_on:
-    #   - letsencrypt
+    depends_on:
+      - letsencrypt
 
   backend:
     image: eventodockerhub/evento_backend_staging:latest
@@ -63,11 +63,11 @@ services:
     environment:
       - SIGNUPKEY=${SIGNUPKEY}
       - SECRET=${SECRET}
-    # depends_on:
-    #   - letsencrypt
-    # mongodb:
-    #   image: mongo
-    #   restart: always
-    #   container_name: mongodb
-    #   depends_on:
-    #     - letsencrypt
+    depends_on:
+      - letsencrypt
+  mongodb:
+    image: mongo
+    restart: always
+    container_name: mongodb
+    depends_on:
+      - letsencrypt
