@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router"
+import { Component, OnInit } from '@angular/core';
+import { PositionService } from './common-utilities/map-view/position.service';
 
 
 @Component({
@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   private cookieDismiss = 'Verstanden!'
   private cookieLinkText = 'Hier gehts zur Datenschutzerklärung'
 
-  constructor(private router: Router) {
+  constructor(private positionService: PositionService) {
   }
 
 
@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
         href: window.location.href + '/settings'
       }
     });
+    this.positionService.getPositionByLocation()
   }
 }
 

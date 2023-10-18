@@ -136,8 +136,10 @@ export class MapViewComponent implements OnInit, OnChanges {
       if (String(element.src).includes(color)) {
         element.style.zIndex = '99999'
         if (color === 'blue') {
-          element.style.width = '20px'
-          element.style.height = '20px'
+          element.style.marginLeft = '-2px'
+          element.style.marginTop = '-15px'
+          element.style.width = '16px'
+          element.style.height = '16px'
         }
 
       }

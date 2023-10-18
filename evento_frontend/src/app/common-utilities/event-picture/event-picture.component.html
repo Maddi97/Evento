@@ -1,5 +1,5 @@
 <div class="event-pic">
   <!-- <img class='pic' *ngIf="!ImageURL && !IconURL" src="assets/static-icons/image-loading.webp"> -->
-  <img class='pic' [defaultImage]="'assets/design-elements/loading-image.gif'" [lazyLoad]="ImageURL">
+  <img class='pic' [defaultImage]="'assets/design-elements/loading-image.svg'" [lazyLoad]="ImageURL">
   <img class='pic' *ngIf="ImageURL===undefined" [lazyLoad]="IconURL">
 </div>
