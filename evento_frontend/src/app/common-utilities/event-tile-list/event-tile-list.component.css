@@ -39,3 +39,10 @@
   align-items: center;
   width: 100%;
 }
+
+.app-event-tile {
+  display: block;
+  color: unset !important;
+  text-decoration: unset !important;
+  background-color: unset !important;
+}
