@@ -58,6 +58,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     lon: "",
   };
   isHot = false
+  hasUnkownOpeningTimes = false;
   isPromotion = false;
   isPermanent = "false";
 
@@ -99,7 +100,8 @@ export class EventFormComponent implements OnInit, OnChanges {
       this.times,
       this.updateEventId,
       this.isHot,
-      this.isPromotion
+      this.isPromotion,
+      this.hasUnkownOpeningTimes,
     );
     const address = event.address;
     const formdata: FormData = new FormData();
@@ -169,7 +171,9 @@ export class EventFormComponent implements OnInit, OnChanges {
       this.times,
       this.updateEventId,
       this.isHot,
-      this.isPromotion
+      this.isPromotion,
+      this.hasUnkownOpeningTimes,
+
     );
     const address = event.address;
 
@@ -263,13 +267,12 @@ export class EventFormComponent implements OnInit, OnChanges {
       this.eventForm.removeControl("start");
       this.eventForm.removeControl("end");
     }
-    console.log(eventFormValues)
-
     this.eventForm.setValue(eventFormValues);
     this.category = this.eventIn.category;
     this.isHot = this.eventIn.hot
+    this.hasUnkownOpeningTimes = this.eventIn.hasUnkownOpeningTimes;
     this.isPromotion = this.eventIn.promotion;
-
+    console.log(this.eventIn)
   }
 
   insertOrgInfo(org: Organizer) {
@@ -301,6 +304,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.times.end.setValue("00:00");
     this.inputImage.nativeElement.value = "";
     this.isHot = false;
+    this.hasUnkownOpeningTimes = false;
     this.isPromotion = false;
   }
 

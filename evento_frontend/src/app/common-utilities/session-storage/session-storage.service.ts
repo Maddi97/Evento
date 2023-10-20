@@ -10,8 +10,10 @@ import { PositionService } from "../map-view/position.service";
 export class SessionStorageService {
   defaultCenterPosition = [51.33962, 12.37129];
 
+  public searchNewCenterSubject = new Subject<Array<number>>()
+  public draggedMapCenterSubject = new Subject<Array<number>>();
   private mapViewSubject = new Subject<boolean>(); // Change the type to boolean
-  private locationSubject = new BehaviorSubject<Array<Number>>(this.getLocationFromStorage());
+  private locationSubject = new BehaviorSubject<Array<number>>(this.getLocationFromStorage());
 
   constructor(
   ) {
@@ -67,5 +69,13 @@ export class SessionStorageService {
   private getLocationFromStorage() {
     const storedLocation = JSON.parse(sessionStorage.getItem('location'));
     return storedLocation || this.defaultCenterPosition;
+  }
+
+  setMapCenter(mapCenter: [number, number]) {
+    sessionStorage.setItem('mapCenter', JSON.stringify(mapCenter))
+    this.draggedMapCenterSubject.next(mapCenter);
+  }
+  emitSearchOnNewCenter() {
+    this.searchNewCenterSubject.next(JSON.parse(sessionStorage.getItem('mapCenter')))
   }
 }

@@ -12,6 +12,7 @@ export class Event {
     end: Date,
   };
   permanent: boolean;
+  hasUnkownOpeningTimes: boolean;
   times: {
     start: string,
     end: string

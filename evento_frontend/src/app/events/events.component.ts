@@ -23,8 +23,8 @@ export class EventsComponent implements OnInit {
   private categories$;
   // equal limit at start == start limit
   actualLoadEventLimit;
-  startLoadEventLimit = 24;
-  offset = 19;
+  startLoadEventLimit = 16;
+  offset = 14;
 
   fetchEventsCompleted = false;
   fetchParamsCompleted = false;
@@ -96,6 +96,11 @@ export class EventsComponent implements OnInit {
       this.currentPosition = position;
       this.applyFilters()
     });
+    this.sessionStorageService.searchNewCenterSubject.subscribe(
+      (mapCenterPosition) => {
+        this.loadMoreEvents(mapCenterPosition)
+      }
+    )
   }
 
   private setupCategoriesService(): void {
@@ -150,7 +155,7 @@ export class EventsComponent implements OnInit {
       });
   }
 
-  applyFilters() {
+  applyFilters(mapCenter = undefined) {
     // Request backend for date, category and subcategory filter
     // filter object
     //format date because in post request it is stringified and formatted, this could change the date
@@ -159,7 +164,7 @@ export class EventsComponent implements OnInit {
       cat: [this.filteredCategory],
       subcat: this.filteredSubcategories,
       limit: this.actualLoadEventLimit,
-      currentPosition: this.currentPosition,
+      currentPosition: mapCenter ? mapCenter : this.currentPosition,
     };
     let event$;
     // if category is not hot
@@ -194,12 +199,12 @@ export class EventsComponent implements OnInit {
     return dist;
   }
 
-  loadMoreEvents() {
+  loadMoreEvents(mapCenter = undefined) {
     this.spinner.show()
     this.closeSpinnerAfterTimeout();
-    this.isLoadMoreClicked = true
+    this.isLoadMoreClicked = mapCenter ? false : true;
     this.actualLoadEventLimit += this.offset;
-    this.applyFilters()
+    this.applyFilters(mapCenter)
 
   }
 

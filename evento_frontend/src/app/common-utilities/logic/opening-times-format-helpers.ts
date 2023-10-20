@@ -4,7 +4,10 @@ import { Event } from '../../models/event';
 /* calculate von bis for every event */
 /* include always 24/7 open (is permanent and no openening times) von - bis per week day, if opening times than von - bis for every week day (open) and if von freitag 23 - sonntag 28 write with date von bis*/
 export function openingTimesFormatter(event: Event): string {
-    if (event.openingTimes?.length > 0) {
+    if (event.hasUnkownOpeningTimes) {
+        return ""
+    }
+    else if (event.openingTimes?.length > 0) {
         return ""
     }
     else if (event.times.start === event.times.end) {
@@ -16,6 +19,10 @@ export function openingTimesFormatter(event: Event): string {
 }
 
 export function dateTimesFormater(event: Event): string {
+    if (event.hasUnkownOpeningTimes) {
+        return ""
+    }
+
     if (event.openingTimes?.length > 0) {
         return ""
     }

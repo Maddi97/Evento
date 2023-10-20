@@ -22,6 +22,7 @@ export class Event {
     link: string;
     price: string;
     permanent: boolean;
+    hasUnkownOpeningTimes: boolean;
     hot: boolean;
     promotion: boolean;
     geoData: {

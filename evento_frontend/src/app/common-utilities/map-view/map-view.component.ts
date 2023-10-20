@@ -7,6 +7,8 @@ import {
 } from "@angular/core";
 import * as L from "leaflet";
 import { PositionService } from "./position.service";
+import { SessionStorageService } from "../session-storage/session-storage.service";
+import { skip, switchMap, takeUntil, timer } from "rxjs";
 @Component({
   selector: "map-view",
   templateUrl: "./map-view.component.html",
@@ -19,6 +21,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Input() currentPosition: Array<Number>;
   @Input() centerMapOnPosition: Array<Number>;
 
+  isMapDragged = false;
   private map;
   private mapInitialized;
   private markerGroup;
@@ -51,7 +54,8 @@ export class MapViewComponent implements OnInit, OnChanges {
   });
 
   constructor(
-    private positionService: PositionService) { }
+    private positionService: PositionService,
+    private sessionStorageService: SessionStorageService) { }
 
   sanitizeInput(value) {
     return value.replace(/ /g, "+");
@@ -62,6 +66,16 @@ export class MapViewComponent implements OnInit, OnChanges {
     //   this.resetCenter();
     // })
     // this.updatePosition(this.positionService.getDefaultLocation());
+    this.sessionStorageService.draggedMapCenterSubject.pipe(
+      skip(1),
+      switchMap(() => {
+        this.isMapDragged = true;
+        // Set the timeout to reset the variable
+        return timer(5000); // 5000 milliseconds (adjust as needed)
+      })
+    ).subscribe(() => {
+      this.isMapDragged = false; // Reset the variable after the timeout
+    });
     this.initMapIfNeeded(); // Use the method to initialize the map
   }
 
@@ -116,10 +130,11 @@ export class MapViewComponent implements OnInit, OnChanges {
       }
 
       // set blue position marker always to top
+
       this.updateZIndexPosition('blue')
       this.map.on('moveend', (e) => {
-        console.log("zoomed")
         this.updateZIndexPosition('blue')
+        this.loadNewEventsOnDrag()
       })
     }, 10); // Adjust the delay time in milliseconds
   }
@@ -160,6 +175,10 @@ export class MapViewComponent implements OnInit, OnChanges {
     this.map.invalidateSize();
   }
 
+  loadNewEventsOnDrag() {
+    this.sessionStorageService.setMapCenter(this.map.getCenter())
+  }
+
   private setHoverMarker(lat, lon): void {
     this.hoverMarkerGroup.clearLayers();
     L.marker([lat, lon])
@@ -192,6 +211,10 @@ export class MapViewComponent implements OnInit, OnChanges {
 
     positionMarker.zIndexOffset = this.map.getSize().y * 10000;
   }
+  searchEventsInNewArea() {
+    this.isMapDragged = false;
+    this.sessionStorageService.emitSearchOnNewCenter()
+  }
 
   private setMarkers(markerData: any[]): void {
     this.markerGroup.clearLayers();
@@ -221,3 +244,4 @@ export class MapViewComponent implements OnInit, OnChanges {
     });
   }
 }
+

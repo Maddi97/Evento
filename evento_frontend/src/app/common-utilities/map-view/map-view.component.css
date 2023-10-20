@@ -6,6 +6,8 @@
 }
 
 .map-frame {
+  display: flex;
+  justify-content: center;
   border: 0px solid black;
   height: 100%;
   border-radius: 10px;
@@ -14,7 +16,7 @@
 #map {
   z-index: 0;
   padding-top: 60vh;
-  width: 95vw;
+  width: 100vw;
   border-radius: 10px;
   height: 100%;
 }
@@ -22,7 +24,10 @@
 @media screen and (min-width: 1000px) {
   #map {
     width: 55vw;
+  }
 
+  .map-frame {
+    width: 55vw;
   }
 }
 
@@ -124,4 +129,10 @@
   100% {
     background-position: 0 0;
   }
+}
+
+.map-dragged-button {
+  position: fixed;
+  z-index: 10 !important;
+  margin-top: 20px
 }

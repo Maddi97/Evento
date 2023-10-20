@@ -115,6 +115,12 @@
                 <mat-radio-button value="true">Yes</mat-radio-button>
                 <mat-radio-button value="false">No</mat-radio-button>
             </mat-radio-group>
+            <div *ngIf="this.isPermanent === 'true'">
+                Permanent, but not 24/open?
+                <mat-checkbox [checked]="hasUnkownOpeningTimes"
+                    (change)="hasUnkownOpeningTimes = !hasUnkownOpeningTimes">
+                </mat-checkbox>
+            </div>
         </div>
 
         <div class="is-permanent" *ngIf="isPermanent === 'false'">

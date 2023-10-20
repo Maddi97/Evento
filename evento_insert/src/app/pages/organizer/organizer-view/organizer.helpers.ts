@@ -1,11 +1,11 @@
-import {FormControl, Validator, Validators} from '@angular/forms';
-import {Address, Day, Organizer} from '../../../models/organizer';
-import {Event} from '../../../models/event';
+import { FormControl, Validator, Validators } from '@angular/forms';
+import { Address, Day, Organizer } from '../../../models/organizer';
+import { Event } from '../../../models/event';
 import * as moment from 'moment';
 
 
 export function getOrganizerFormTemplate() {
-// return organizer Form
+    // return organizer Form
     return {
         name: new FormControl('', [Validators.required, Validators.minLength(3)]),
         city: new FormControl('Leipzig', [Validators.required, Validators.minLength(3)]),
@@ -24,13 +24,13 @@ export function getOrganizerFormTemplate() {
 
 export function getOpeningTimesTemplate() {
     const openingTimes: Day[] = [
-        {day: 'Monday', start: '00:00', end: '00:00'},
-        {day: 'Tuesday', start: '00:00', end: '00:00'},
-        {day: 'Wednesday', start: '00:00', end: '00:00'},
-        {day: 'Thursday', start: '00:00', end: '00:00'},
-        {day: 'Friday', start: '00:00', end: '00:00'},
-        {day: 'Saturday', start: '00:00', end: '00:00'},
-        {day: 'Sunday', start: '00:00', end: '00:00'}
+        { day: 'Monday', start: '00:00', end: '00:00' },
+        { day: 'Tuesday', start: '00:00', end: '00:00' },
+        { day: 'Wednesday', start: '00:00', end: '00:00' },
+        { day: 'Thursday', start: '00:00', end: '00:00' },
+        { day: 'Friday', start: '00:00', end: '00:00' },
+        { day: 'Saturday', start: '00:00', end: '00:00' },
+        { day: 'Sunday', start: '00:00', end: '00:00' }
     ]
     return openingTimes
 }
@@ -94,7 +94,7 @@ export function createEventFromOrg(org) {
         start: moment(new Date()).utcOffset(0, false),
         end: moment(new Date()).utcOffset(0, false)
     }
-    const times = {start: '00:00', end: '00:00'}
+    const times = { start: '00:00', end: '00:00' }
     event.name = org.name
     event.description = org.description
     event.address = org.address
@@ -107,5 +107,6 @@ export function createEventFromOrg(org) {
     event.geoData = org.geoData
     event.date = date
     event.price = ''
+    event.hasUnkownOpeningTimes = true;
     return event
 }
