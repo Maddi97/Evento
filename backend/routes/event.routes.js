@@ -101,15 +101,7 @@ router.post('/eventOnDateCatAndSubcat', limiter, (req, res) => {
     ).then((events) => {
         // events contains all events filtered by date and category, based on this here we filter on the subcategory
         events = events.filter(event => {
-            if (subcategories.length > 0) {
-                r = false
-                event.category.subcategories.forEach(sub => {
-                    if (subcatIds.includes(sub._id)) {
-                        r = true
-                    }
-                })
-                return r
-            } else return true
+            return subcatIds.every((subcat) => event.category.subcategories.map((subcategory) => subcategory._id).includes(subcat))
         })
 
         //sort events by distance

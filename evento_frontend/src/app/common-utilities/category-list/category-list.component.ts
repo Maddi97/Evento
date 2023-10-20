@@ -114,6 +114,14 @@ export class CategoryListComponent implements OnInit {
     this.filteredSubcategories = [];
   }
 
+  clearSubcategoryFilters() {
+    this.filteredSubcategories = [];
+    this.setRouteParameter({
+      subcategory: [],
+      category: this.filteredCategory._id,
+    });
+  }
+
   setRouteParameter(params) {
     this.router.navigate([], {
       queryParams: params,

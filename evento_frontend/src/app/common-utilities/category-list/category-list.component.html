@@ -23,6 +23,7 @@
         <span class="subcategory" [ngClass]="isSubCategoryPicked(subcategory)"
           (click)="selectSubcategory(subcategory)">{{subcategory.name}}</span>
       </div>
+      <span class="reset-subcategory-button" (click)="clearSubcategoryFilters()"> X | Reset</span>
     </div>
   </div>
 </div>
