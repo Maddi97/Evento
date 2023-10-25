@@ -10,7 +10,8 @@ import { map } from "rxjs/operators";
 import { CategoriesService } from "../../categories/categories.service";
 import { FileService } from "../../file.service";
 import { Category, Subcategory } from "../../models/category";
-
+import { clearSearchFilter } from "../logic/search-filter-helper";
+import { SessionStorageService } from "../session-storage/session-storage.service";
 type ID = string;
 
 @Component({
@@ -27,7 +28,7 @@ export class CategoryListComponent implements OnInit {
   @Input() filteredSubcategories: Array<Subcategory>;
 
   public getScreenWidth: any;
-
+  searchString: string = '';
   // filteredSubcategories
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
@@ -39,7 +40,8 @@ export class CategoryListComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private fileService: FileService,
     private sanitizer: DomSanitizer,
-    private router: Router
+    private router: Router,
+    private sessionStorageService: SessionStorageService
   ) { }
 
   ngOnInit(): void {
@@ -59,6 +61,8 @@ export class CategoryListComponent implements OnInit {
         });
       })
     );
+    const searchString$ = this.sessionStorageService.searchStringSubject.subscribe(
+      (searchString: string) => { this.searchString = searchString })
 
     categories$.subscribe(() => {
       this.downloadCategoryIcon();
@@ -154,6 +158,9 @@ export class CategoryListComponent implements OnInit {
         }
       }
     });
+  }
+  clearSearchFilterOnReset() {
+    clearSearchFilter(this.sessionStorageService)
   }
 
   @HostListener("window:resize", ["$event"])

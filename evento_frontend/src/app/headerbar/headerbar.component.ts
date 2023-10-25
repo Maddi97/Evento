@@ -1,7 +1,7 @@
-import { Component, OnInit } from "@angular/core";
 import { Location } from "@angular/common";
+import { Component, HostListener, OnInit } from "@angular/core";
+import { NavigationEnd, Router } from "@angular/router";
 import * as moment from "moment";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { filter } from "rxjs";
 import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
 
@@ -13,6 +13,7 @@ import { SessionStorageService } from "../common-utilities/session-storage/sessi
 export class HeaderbarComponent implements OnInit {
   searchText = "";
   fullEventPage = false;
+  getScreenWidth;
   filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({
     hour: 0,
     minute: 0,
@@ -27,6 +28,7 @@ export class HeaderbarComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.getScreenWidth = window.innerWidth;
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -53,6 +55,10 @@ export class HeaderbarComponent implements OnInit {
       return 'fullevent'
     }
     else return ''
+  }
+  @HostListener("window:resize", ["$event"])
+  getScreenSize(event?) {
+    this.getScreenWidth = window.innerWidth;
   }
 }
 

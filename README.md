@@ -1,4 +1,4 @@
-# 3vents51
+# Evento
 
 This repository will implement an website/app for an event organizes. There are four components:
 
@@ -6,6 +6,9 @@ This repository will implement an website/app for an event organizes. There are 
 2. Frontend
 3. Frontend - Insert
 4. Mongo DB
+
+## Design of Icons, Brandings, SVGs
+Adobe Creative Cloud https://creativecloud.adobe.com/cc/?locale=en
 
 ## Running Production
 

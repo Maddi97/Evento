@@ -38,6 +38,9 @@ export class EventsComponent implements OnInit {
 
   subcategoryList: Subcategory[] = [];
   hot = { name: "hot" };
+
+  searchString: string = ''
+
   loadMore = false;
 
   isLoadMoreClicked = false
@@ -87,14 +90,38 @@ export class EventsComponent implements OnInit {
 
     //this.setupPositionService();
     this.setupCategoriesService();
+    this.setupSearchFilterSubscription();
 
+  }
+
+  private setupSearchFilterSubscription() {
+    this.sessionStorageService.searchStringSubject.subscribe(
+      (searchString: string) => {
+        this.searchString = searchString;
+        const req = { searchString: searchString, limit: this.actualLoadEventLimit, categories: this.categoryList.map(cat => cat._id) }
+        this.eventService.getEventsBySearchString(req).subscribe(
+          {
+            next: (events) => {
+              if (!searchString) {
+                this.applyFilters()
+              }
+              else { this.handlyEventListLoaded(events) }
+            },
+            error: (error) => { console.log(error) },
+            complete: () => { this.onFetchEventsCompleted() }
+          });
+      }
+    )
   }
 
   private setupPositionService(): void {
     this.sessionStorageService.getLocation().pipe(
     ).subscribe(position => {
-      this.currentPosition = position;
-      this.applyFilters()
+      if (!this.searchString) {
+
+        this.currentPosition = position;
+        this.applyFilters()
+      }
     });
     this.sessionStorageService.searchNewCenterSubject.subscribe(
       (mapCenterPosition) => {

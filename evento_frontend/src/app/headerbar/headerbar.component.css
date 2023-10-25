@@ -24,7 +24,7 @@
 }
 
 .header-fullevent {
-  justify-content: space-between !important;
+  justify-content: space-between;
 }
 
 .logo-container {
@@ -36,21 +36,23 @@
 }
 
 .logo-fullevent {
-  min-width: 14% !important;
+  min-width: 90px !important;
+  width: 20% !important;
   margin-left: 44.5vw;
 }
 
 .date-picker {
   display: flex;
   justify-content: center;
-  width: 50%;
+  width: 55%;
+  margin-right: 80px;
+  margin-left: 40px;
 }
 
 .menu-container {
   display: flex;
-  justify-content: center;
+  justify-content: end;
   margin: 5px;
-  width: 10%;
 }
 
 .menu-fullevent {
@@ -64,8 +66,44 @@
   height: auto;
 }
 
+.search-container {
+  width: 8%;
+  margin-right: 12px;
+}
+
+.search-container-fullevent {
+  display: none;
+}
+
+.logo-small {
+  width: 50px;
+  height: 100%;
+}
+
+@media screen and (max-width: 600px) {
+  .logo-small {
+    width: 40px;
+    height: 100%;
+  }
+
+  .date-picker {
+    width: 60%;
+  }
+}
+
+/* @media screen and (max-width: 350px) {
+  .logo-small {
+    width: 35px;
+    height: 100%;
+  }
+} */
+
 @media screen and (max-width: 800px) {
   .header {
+    align-items: center;
+  }
+
+  .header-fullevent {
     justify-content: center !important;
   }
 
@@ -75,11 +113,11 @@
 
   .logo-container {
     display: flex;
-    justify-content: center;
-    margin: 8px;
-    width: 20%;
-    min-width: 20%;
+    width: 55px;
+    min-width: 55px;
     align-items: center;
+    margin: unset;
+    padding: 5px;
   }
 
   .logo-fullevent {
@@ -89,7 +127,7 @@
 
   .date-picker {
 
-    width: 70%;
+    margin: unset !important;
   }
 
   .button-container {
@@ -100,7 +138,11 @@
     display: none
   }
 
-  .logo {
-    min-width: 5.5rem;
+  .search-container- {
+    width: 55px;
+    min-width: 55px;
+    padding: 5px;
+    margin: unset;
+    margin-top: 2px;
   }
 }

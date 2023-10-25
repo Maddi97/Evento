@@ -170,3 +170,27 @@ img {
   color: rgba(255, 255, 255, 0.828);
   background-color: rgb(125, 125, 125);
 }
+
+.category-list-container {
+  display: flex;
+}
+
+.search-category-replacement {
+  padding: 6px;
+  margin-top: 12px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-category-replacement>* {
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+}
+
+.reset-search {
+  font-size: 12px !important
+}

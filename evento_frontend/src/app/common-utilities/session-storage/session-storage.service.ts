@@ -1,8 +1,7 @@
 // map-view-storage.service.ts
 
 import { Injectable } from "@angular/core";
-import { Subject, Observable, BehaviorSubject } from "rxjs";
-import { PositionService } from "../map-view/position.service";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -12,6 +11,7 @@ export class SessionStorageService {
 
   public searchNewCenterSubject = new Subject<Array<number>>()
   public draggedMapCenterSubject = new Subject<Array<number>>();
+  public searchStringSubject = new Subject<string>();
   private mapViewSubject = new Subject<boolean>(); // Change the type to boolean
   private locationSubject = new BehaviorSubject<Array<number>>(this.getLocationFromStorage());
 
@@ -77,5 +77,13 @@ export class SessionStorageService {
   }
   emitSearchOnNewCenter() {
     this.searchNewCenterSubject.next(JSON.parse(sessionStorage.getItem('mapCenter')))
+  }
+  setSearchString(searchString: string) {
+    sessionStorage.setItem('searchString', JSON.stringify(searchString))
+    this.searchStringSubject.next(searchString)
+  }
+  clearSearchFilter() {
+    sessionStorage.setItem('searchString', JSON.stringify(''));
+    this.searchStringSubject.next('');
   }
 }

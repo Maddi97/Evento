@@ -46,3 +46,8 @@
   text-decoration: unset !important;
   background-color: unset !important;
 }
+
+.event-tile-margin {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}

@@ -6,9 +6,10 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import * as L from "leaflet";
-import { PositionService } from "./position.service";
+import { skip, switchMap, timer } from "rxjs";
+import { clearSearchFilter } from "../logic/search-filter-helper";
 import { SessionStorageService } from "../session-storage/session-storage.service";
-import { skip, switchMap, takeUntil, timer } from "rxjs";
+import { PositionService } from "./position.service";
 @Component({
   selector: "map-view",
   templateUrl: "./map-view.component.html",
@@ -88,7 +89,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   searchForLocationInput() {
-
+    clearSearchFilter(this.sessionStorageService)
     const address = this.sanitizeInput(this.address);
     this.positionService.getPositionByInput(address)
   }
@@ -213,7 +214,9 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
   searchEventsInNewArea() {
     this.isMapDragged = false;
+    clearSearchFilter(this.sessionStorageService)
     this.sessionStorageService.emitSearchOnNewCenter()
+
   }
 
   private setMarkers(markerData: any[]): void {

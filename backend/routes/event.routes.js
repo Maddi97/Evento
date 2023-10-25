@@ -160,6 +160,55 @@ router.post('/upcomingEvents', limiter, (req, res) => {
             res.status(500).json({ error: 'Internal Server Error' }); // Send an error response with status code 500 (Internal Server Error)
         });
 });
+
+router.post('/getEventsBySearchString', limiter, (req, res) => {
+    const searchString = String(escape(req.body.req.searchString)); // Get the searchString from the request body
+    const limit = Number(req.body.req.limit)
+    const categories = req.body.req.categories;
+    const date = new Date()
+
+    Event.find({
+        $and: [
+            {
+                $or: [
+                    {
+                        $and:
+                            [
+                                {
+                                    'date.start': { $lte: date }  //-1 um den heutigen Tag mit zu finden
+                                },
+                                {
+                                    'date.end': { $gte: date }
+                                },
+                            ],
+                    },
+                    {
+                        permanent: { $eq: true }
+                    },
+                ]
+            },
+
+            {
+                $or: [
+                    {
+                        'name': { $regex: searchString, $options: 'i' } // Case-insensitive search for event name
+                    },
+                    {
+                        'organizerName': { $regex: searchString, $options: 'i' } // Case-insensitive search for organizer name
+                    }
+                ]
+            },
+            { 'category._id': { $in: categories } }
+        ]
+
+    })
+        .then((events) => res.send(events.slice(0, limit)))
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        });
+});
+
 router.post('/outdatedEvents', limiter, (req, res) => {
     let date = new Date()
     Event.find(

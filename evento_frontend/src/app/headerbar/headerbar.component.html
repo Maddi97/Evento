@@ -15,15 +15,23 @@
   <!--         value="" placeholder="Search...">-->
   <!--  </div>-->
 
-  <div class="logo-container logo-{{getClassOnFullEvent()}}" routerLink="/" [queryParamsHandling]="'merge'"
+  <div *ngIf="fullEventPage" class="logo-container logo-fullevent" routerLink="/" [queryParamsHandling]="'merge'"
     (click)="changeMapView()">
     <img class="logo" src="assets/branding/logo_name.png" alt="logo name">
+  </div>
+  <div *ngIf="!fullEventPage" class="logo-container" routerLink="/" [queryParamsHandling]="'merge'"
+    (click)="changeMapView()">
+    <img *ngIf="getScreenWidth<=1000" class="logo-small" src="assets/icon/icon.png" alt="logo name">
+    <img *ngIf="getScreenWidth>1000" class="logo" src="assets/branding/logo_name.png" alt="logo name">
   </div>
 
   <app-date-picker *ngIf="!fullEventPage" class="date-picker" (clickedDate)="searchForDay($event)"></app-date-picker>
 
   <div class="menu-container menu-{{getClassOnFullEvent()}}">
     <app-hamburger-menu></app-hamburger-menu>
+  </div>
+  <div class="search-container-{{getClassOnFullEvent()}}">
+    <app-search-filter></app-search-filter>
   </div>
 
 

@@ -1,8 +1,6 @@
 .event-tile {
   display: flex;
   flex-direction: column;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   box-shadow: none;
@@ -104,15 +102,40 @@
 }
 
 @media screen and (min-width: 1500px) {
+  mat-card {
+    width: 90% !important;
+    padding: unset;
+
+  }
+
   .event-tile {
     flex-direction: row;
+    width: 92%;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 0.65rem !important;
+    margin-bottom: 0.65rem !important;
   }
 
   .event-tile-picture {
-    min-width: unset !important;
-    max-width: unset !important;
-    width: 250px !important;
+    min-width: 45%;
+    max-width: 45%;
+  }
 
+  .event-tile-information {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 52%;
+    margin-left: 10px;
+  }
+
+  .event-tile-information-name-date {
+    max-width: 100%;
+  }
+
+  .event-name {
+    max-width: 100% !important;
   }
 }
 

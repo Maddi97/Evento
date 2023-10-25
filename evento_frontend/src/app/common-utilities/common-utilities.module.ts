@@ -25,6 +25,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { SearchFilterComponent } from './search-filter/search-filter.component';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     EventTileListComponent,
     CategoryListComponent,
     HamburgerMenuComponent,
+    SearchFilterComponent,
 
   ],
   imports: [
@@ -67,7 +69,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     DigitalClockComponent,
     EventTileListComponent,
     CategoryListComponent,
-    HamburgerMenuComponent
+    HamburgerMenuComponent,
+    SearchFilterComponent
   ]
 })
 export class CommonUtilitiesModule {

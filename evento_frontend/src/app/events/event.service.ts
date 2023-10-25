@@ -92,6 +92,24 @@ export class EventService {
     );
   }
 
+  getEventsBySearchString(req: any): Observable<Event[]> {
+    const cacheKey = JSON.stringify(req);
+    if (this.cachedEvents.has(cacheKey)) {
+      return of(this.cachedEvents.get(cacheKey)!);
+    }
+    return this.webService.post('getEventsBySearchString', { req }).pipe(
+      map((response: any) => {
+        this.cachedEvents.set(cacheKey, response);
+        return response as Event[]; // Return the response array
+      }),
+      catchError((error: any) => {
+        console.error('An error occurred', error);
+        return throwError(error.error.message || error);
+      }),
+      share()
+    );
+  }
+
   getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
     const cacheKey = JSON.stringify(fil);
     if (this.cachedEvents.has(cacheKey)) {
