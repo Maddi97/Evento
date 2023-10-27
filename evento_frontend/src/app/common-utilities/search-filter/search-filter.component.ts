@@ -45,6 +45,15 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   getScreenSize() {
     this.getScreenWidth = window.innerWidth;
   }
+  @HostListener("document:scroll")
+  hideSearchOnScroll() {
+    const inputElement = document.getElementById("searchright");
+    console.log(inputElement)
+    inputElement.classList.remove('focus');
+    inputElement.blur()
+    this.isFocused = false
+  }
+
   @HostListener("document:mousedown", ["$event"])
   public onMouseDownTrigger(event: any) {
     const inputElement: HTMLInputElement = event.srcElement
