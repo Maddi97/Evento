@@ -166,7 +166,7 @@ img {
   white-space: nowrap;
 }
 
-.reset-subcategory-button:hover {
+.reset-subcategory-button:active {
   color: rgba(255, 255, 255, 0.828);
   background-color: rgb(125, 125, 125);
 }

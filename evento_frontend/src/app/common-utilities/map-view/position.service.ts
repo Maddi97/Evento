@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { NominatimGeoService } from '../../nominatim-geo.service';
-import { map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { from, Observable } from "rxjs";
+import { NgxSpinnerService } from 'ngx-spinner';
+import { NominatimGeoService } from '../../nominatim-geo.service';
 import { SessionStorageService } from '../session-storage/session-storage.service';
-import { addAriaReferencedId } from '@angular/cdk/a11y';
-import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +45,7 @@ export class PositionService {
     this.spinner.show()
     this.closeSpinnerAfterTimeout()
     if (this.disableCallLocation || (!forcePositionCall && this.sessionStorageService.getDefaultLocationValue())) {
+      console.log("hallo")
       this.spinner.hide()
       return
     }

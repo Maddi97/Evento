@@ -38,7 +38,6 @@ export class AppComponent implements OnInit {
         href: window.location.href + '/settings'
       }
     });
-    this.positionService.getPositionByLocation()
   }
 }
 

@@ -45,14 +45,16 @@
   display: flex;
   justify-content: center;
   width: 55%;
-  margin-right: 80px;
+  margin-right: 50px;
   margin-left: 40px;
 }
 
 .menu-container {
   display: flex;
-  justify-content: end;
-  margin: 5px;
+  justify-content: flex-end;
+  margin-right: 24px;
+  margin-left: 12px;
+  margin-top: 7px;
 }
 
 .menu-fullevent {
@@ -66,9 +68,8 @@
   height: auto;
 }
 
-.search-container {
-  width: 8%;
-  margin-right: 12px;
+.search-container- {
+  margin-top: 8px !important;
 }
 
 .search-container-fullevent {
@@ -112,21 +113,25 @@
   }
 
   .logo-container {
+    z-index: 10;
     display: flex;
-    width: 55px;
-    min-width: 55px;
     align-items: center;
+    justify-content: flex-start;
     margin: unset;
-    padding: 5px;
+    margin-left: 4px;
+    min-width: 44px;
+    margin-bottom: 2px;
   }
 
   .logo-fullevent {
     min-width: unset;
     margin-left: unset;
+    margin-top: 4px;
+    margin-bottom: 6px;
   }
 
   .date-picker {
-
+    width: 70%;
     margin: unset !important;
   }
 
@@ -139,10 +144,10 @@
   }
 
   .search-container- {
-    width: 55px;
-    min-width: 55px;
-    padding: 5px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
     margin: unset;
-    margin-top: 2px;
+    margin-bottom: 6px;
   }
 }

@@ -26,12 +26,11 @@
   </div>
 
   <app-date-picker *ngIf="!fullEventPage" class="date-picker" (clickedDate)="searchForDay($event)"></app-date-picker>
-
-  <div class="menu-container menu-{{getClassOnFullEvent()}}">
-    <app-hamburger-menu></app-hamburger-menu>
-  </div>
   <div class="search-container-{{getClassOnFullEvent()}}">
     <app-search-filter></app-search-filter>
+  </div>
+  <div class="menu-container menu-{{getClassOnFullEvent()}}">
+    <app-hamburger-menu></app-hamburger-menu>
   </div>
 
 

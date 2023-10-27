@@ -1,6 +1,6 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { clearSearchFilter } from '../logic/search-filter-helper';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 
@@ -9,20 +9,25 @@ import { SessionStorageService } from '../session-storage/session-storage.servic
   templateUrl: './search-filter.component.html',
   styleUrls: ['./search-filter.component.css']
 })
-export class SearchFilterComponent implements OnInit {
+export class SearchFilterComponent implements OnInit, OnDestroy {
   searchString = ''
   timeout = null;
   delay = 300;
   getScreenWidth;
   isFocused = false;
+  event$: Subscription;
   constructor(
     private sessionStorageService: SessionStorageService,
     private router: Router,
   ) { }
+  ngOnDestroy(): void {
+    clearTimeout(this.timeout);
+    this.event$.unsubscribe();
+  }
 
   ngOnInit() {
     this.getScreenWidth = window.innerWidth;
-    this.router.events.pipe(
+    this.event$ = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       clearTimeout(this.timeout);
@@ -55,7 +60,6 @@ export class SearchFilterComponent implements OnInit {
         }
       }
       else {
-        console.log(inputElement.value)
         if (this.isFocused && !inputElement.value) {
           inputBar.classList.remove("focus")
         }

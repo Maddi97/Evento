@@ -34,7 +34,7 @@
 .button {
     display: inline-block;
     margin: 4px 2px;
-    background-color: #444;
+    background-color: white;
     border-radius: 30px;
     font-size: 14px;
     padding-left: 20px;
@@ -43,7 +43,7 @@
     width: 100%;
     line-height: 40px;
     text-align: center;
-    color: white;
+    color: black;
     text-decoration: none;
     cursor: pointer;
     -moz-user-select: none;
@@ -51,7 +51,11 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    box-shadow: 0 0px 18px 2px #068da3;
+    /* box-shadow: 0 0px 18px 2px #cccccc; */
+}
+
+.button:active {
+    color: #1e8890;
 }
 
 .button:focus {
@@ -82,10 +86,11 @@
 
 .searchbutton {
     position: absolute;
-    font-size: 22px;
+    font-size: 40px;
     width: 100%;
     margin: 0;
     padding: 0;
+    margin-top: 2px;
 }
 
 .search.focus+.searchbutton {
@@ -130,7 +135,7 @@
     width: 235px;
     /* Bar width+1px */
     padding: 0 16px 0 0;
-    box-shadow: 0 0px 45px 3px #a3a3a3;
+    box-shadow: -23px 2px 40px 18px #a3a3a3;
     border-radius: 14px;
     border: 1px solid #808284a1;
 }

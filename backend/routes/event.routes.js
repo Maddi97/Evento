@@ -195,6 +195,12 @@ router.post('/getEventsBySearchString', limiter, (req, res) => {
                     },
                     {
                         'organizerName': { $regex: searchString, $options: 'i' } // Case-insensitive search for organizer name
+                    },
+                    {
+                        'address.street': { $regex: searchString, $options: 'i' }
+                    },
+                    {
+                        'category.name': { $regex: searchString, $options: 'i' }
                     }
                 ]
             },

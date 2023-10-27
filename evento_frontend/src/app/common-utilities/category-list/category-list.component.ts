@@ -2,10 +2,12 @@ import {
   Component,
   HostListener,
   Input,
+  OnDestroy,
   OnInit
 } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { CategoriesService } from "../../categories/categories.service";
 import { FileService } from "../../file.service";
@@ -19,13 +21,14 @@ type ID = string;
   templateUrl: "./category-list.component.html",
   styleUrls: ["./category-list.component.css"],
 })
-export class CategoryListComponent implements OnInit {
-  // List of all Categories
-  categoryList: Category[] = [];
-
-  subcategoryList: Subcategory[] = [];
+export class CategoryListComponent implements OnInit, OnDestroy {
   @Input() filteredCategory: any;
   @Input() filteredSubcategories: Array<Subcategory>;
+
+  // List of all Categories
+  categoryList: Category[] = [];
+  subscriptions$: Subscription[] = [];
+  subcategoryList: Subcategory[] = [];
 
   public getScreenWidth: any;
   searchString: string = '';
@@ -43,6 +46,13 @@ export class CategoryListComponent implements OnInit {
     private router: Router,
     private sessionStorageService: SessionStorageService
   ) { }
+  ngOnDestroy(): void {
+    this.subscriptions$.forEach((subscription$: Subscription) => {
+      if (subscription$) {
+        subscription$.unsubscribe()
+      }
+    })
+  }
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
@@ -60,14 +70,16 @@ export class CategoryListComponent implements OnInit {
           });
         });
       })
-    );
-    const searchString$ = this.sessionStorageService.searchStringSubject.subscribe(
-      (searchString: string) => { this.searchString = searchString })
-
-    categories$.subscribe(() => {
+    ).subscribe(() => {
       this.downloadCategoryIcon();
       this.scrollToClicked();
     });
+
+    const searchString$ = this.sessionStorageService.searchStringSubject.subscribe(
+      (searchString: string) => { this.searchString = searchString })
+
+
+    this.subscriptions$.push(categories$, searchString$)
     // this.applyFilters()
     // request categories
     if (this.categoryList.length < 1) {
@@ -147,7 +159,7 @@ export class CategoryListComponent implements OnInit {
     this.categoryList.forEach((category) => {
       if (category.iconPath !== undefined) {
         if (category.iconTemporaryURL === undefined) {
-          this.fileService
+          const fileDownload$ = this.fileService
             .downloadFile(category.iconPath)
             .subscribe((imageData) => {
               // create temporary Url for the downloaded image and bypass security
@@ -155,6 +167,7 @@ export class CategoryListComponent implements OnInit {
               category.iconTemporaryURL =
                 this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
             });
+          this.subscriptions$.push(fileDownload$)
         }
       }
     });
