@@ -239,7 +239,7 @@ export class MapViewComponent implements OnInit, OnChanges {
             `<div>${marker.name}</div>` +
             //`<div *ngIf="false" class="popup-org-name">${marker.organizerName}</div>` +
             `<div>${marker.address?.street} ${marker.address?.streetNumber}</div>` +
-            `<a href="full-event/${marker._id}">Zum Event!</a>` +
+            `<a href="full-event/${marker._id}">Zur Location</a>` +
             `<hr>` +
             `<a target="_blank" rel="noopener noreferrer" href=${gmapsUrl} >Google Maps</a>`
           );

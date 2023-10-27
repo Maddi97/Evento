@@ -24,7 +24,7 @@
 }
 
 .header-fullevent {
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .logo-container {
@@ -36,9 +36,8 @@
 }
 
 .logo-fullevent {
-  min-width: 90px !important;
-  width: 20% !important;
-  margin-left: 44.5vw;
+  display: flex;
+  flex-basis: 100%;
 }
 
 .date-picker {
@@ -58,12 +57,15 @@
 }
 
 .menu-fullevent {
-  margin: 16px
+  position: absolute;
+  right: 0;
+  margin-right: 64px;
 }
 
 /* Additional styling for the logo and button */
 .logo {
-  max-width: 100%;
+  margin-left: 3px;
+  max-width: 150px;
   min-width: 4rem;
   height: auto;
 }
@@ -124,10 +126,9 @@
   }
 
   .logo-fullevent {
-    min-width: unset;
-    margin-left: unset;
-    margin-top: 4px;
-    margin-bottom: 6px;
+    max-width: 120px;
+    margin-top: 6px;
+    margin-bottom: 8px;
   }
 
   .date-picker {
