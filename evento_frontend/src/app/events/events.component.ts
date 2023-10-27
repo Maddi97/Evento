@@ -95,7 +95,6 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.positionService.getPositionByLocation()
     this.getScreenWidth = window.innerWidth;
     this.spinner.show();
     this.closeSpinnerAfterTimeout();
@@ -130,10 +129,12 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   private setupPositionService(): void {
+    if (!this.sessionStorageService.getUserLocationFromStorage()) {
+      this.positionService.getPositionByLocation()
+    }
     const storageLocationObservation$ = this.sessionStorageService.getLocation().pipe(
     ).subscribe(position => {
       if (!this.searchString) {
-
         this.currentPosition = position;
         this.applyFilters()
       }

@@ -71,6 +71,10 @@ export class SessionStorageService {
     return storedLocation || this.defaultCenterPosition;
   }
 
+  getUserLocationFromStorage() {
+    return JSON.parse(sessionStorage.getItem('location')) || undefined;
+  }
+
   setMapCenter(mapCenter: [number, number]) {
     sessionStorage.setItem('mapCenter', JSON.stringify(mapCenter))
     this.draggedMapCenterSubject.next(mapCenter);

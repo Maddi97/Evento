@@ -1,14 +1,12 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { CategoryService } from 'src/app/services/category.service';
-import { Category, Subcategory } from 'src/app/models/category';
-import { FileUploadService } from 'src/app/services/file-upload.service';
-import { concatMap, map, switchMap, tap } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatSnackBar } from '@angular/material/snack-bar'
-import { ViewChild } from '@angular/core';
-import * as log from 'loglevel';
 import { Observable, forkJoin, of } from 'rxjs';
+import { concatMap, map } from 'rxjs/operators';
+import { Category, Subcategory } from 'src/app/models/category';
+import { CategoryService } from 'src/app/services/category.service';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 
 
 // constants
@@ -305,7 +303,6 @@ export class CategoryViewComponent implements OnInit {
             })
         }
         if (this.icon && this.stockImage) {
-            console.log("Hallo")
             forkJoin([this.uploadIconUpdateSubcategory$(category, subcategory),
             this.uploadStockFotoUpdateSubcategory$(category, subcategory)])
                 .subscribe({

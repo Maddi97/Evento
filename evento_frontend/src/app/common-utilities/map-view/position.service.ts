@@ -45,7 +45,6 @@ export class PositionService {
     this.spinner.show()
     this.closeSpinnerAfterTimeout()
     if (this.disableCallLocation || (!forcePositionCall && this.sessionStorageService.getDefaultLocationValue())) {
-      console.log("hallo")
       this.spinner.hide()
       return
     }
