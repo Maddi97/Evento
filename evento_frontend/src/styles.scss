@@ -2,6 +2,10 @@
 @import '~leaflet/dist/leaflet.css';
 @import 'assets/fonts/fonts.css';
 
+:root {
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+}
+
 html {}
 
 html,
@@ -11,11 +15,7 @@ body {
 
 
 body {
-  margin: 0;
-  padding-top: constant(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-top);
-  padding-top: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
+  //margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 

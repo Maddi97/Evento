@@ -10,6 +10,8 @@ const mongoose = require("./config/mongoose");
 const mongoSanitize = require("express-mongo-sanitize");
 //const xss = require("xss-clean")
 const allowedOrigins = [
+  "http://192.168.1.149",
+  "http://192.168.1.149:4200",
   "capacitor://localhost",
   "ionic://localhost",
   "http://localhost",

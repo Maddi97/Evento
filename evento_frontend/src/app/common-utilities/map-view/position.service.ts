@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Geolocation } from '@capacitor/geolocation';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NominatimGeoService } from '../../nominatim-geo.service';
 import { SessionStorageService } from '../session-storage/session-storage.service';
@@ -41,7 +42,7 @@ export class PositionService {
       });;
   }
 
-  getPositionByLocation(forcePositionCall = false) {
+  async getPositionByLocation(forcePositionCall = false) {
     this.spinner.show()
     this.closeSpinnerAfterTimeout()
     if (this.disableCallLocation || (!forcePositionCall && this.sessionStorageService.getDefaultLocationValue())) {
@@ -51,31 +52,32 @@ export class PositionService {
     this.disableCallLocation = true
     // Simple geolocation API check provides values to publish
     // unfortunately needs some seconds sometimes
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-        const { latitude, longitude } = position.coords;
-        if (latitude && longitude) {
-          this.searchedCenter = [latitude, longitude];
-          this.sessionStorageService.setLocation(this.searchedCenter)
-          console.log("Callback from geo API")
-        }
-        else {
-          this.sessionStorageService.setDefaultLocation()
-          this.openErrorSnackBar('Standort konnte nicht ermittelt werden und wird auf Leipzig Zentrum gesetzt.');
-        }
-      }, (error: GeolocationPositionError) => {
-        let message = 'Standort konnte nicht ermittelt werden';
-        if (error.code === 1) {
-          message = 'Deine Privatspähreeinstellungen verhinderen die Standortermittlung. \nStandort wird zu Leipzig Zentrum gesetzt.'
-          this.sessionStorageService.setDefaultLocation()
-          this.openErrorSnackBar(message)
-        }
-      });
-    }
-    else {
-      this.sessionStorageService.setDefaultLocation()
-      this.openErrorSnackBar('Standort konnte nicht ermittelt werden und wird auf Leipzig Zentrum gesetzt');
-    }
+    Geolocation.getCurrentPosition().then((position: GeolocationPosition) => {
+      console.log(position.coords)
+      const { latitude, longitude } = position.coords;
+      if (latitude && longitude) {
+        this.searchedCenter = [latitude, longitude];
+        this.sessionStorageService.setLocation(this.searchedCenter)
+        console.log("Callback from geo API")
+      }
+      else {
+        this.sessionStorageService.setDefaultLocation()
+        this.openErrorSnackBar('Standort konnte nicht ermittelt werden und wird auf Leipzig Zentrum gesetzt.');
+      }
+    }).catch((error: GeolocationPositionError) => {
+      let message = 'Standort konnte nicht ermittelt werden';
+      this.spinner.hide()
+      console.log(error)
+      if (error.code === 1) {
+        message = 'Deine Privatspähreeinstellungen verhinderen die Standortermittlung. \nStandort wird zu Leipzig Zentrum gesetzt.'
+        this.sessionStorageService.setDefaultLocation()
+        this.openErrorSnackBar(message)
+      }
+      else {
+        this.sessionStorageService.setDefaultLocation()
+        this.openErrorSnackBar(message)
+      }
+    });
     setTimeout(() => {
       this.disableCallLocation = false;
     }, 3000)

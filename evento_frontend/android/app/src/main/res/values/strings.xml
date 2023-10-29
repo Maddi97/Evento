@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">threeventsfiveone</string>
     <string name="title_activity_main">threeventsfiveone</string>
-    <string name="package_name">com.vents.app</string>
-    <string name="custom_url_scheme">com.vents.app</string>
+    <string name="package_name">com.3vents51.app</string>
+    <string name="custom_url_scheme">com.3vents51.app</string>
 </resources>

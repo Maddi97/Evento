@@ -8,8 +8,8 @@
   background-color: white;
   z-index: 1;
   justify-content: space-around;
-  /*padding-top: constant(safe-area-inset-top);*/
-  /*padding-top: env(safe-area-inset-top);*/
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
 
 }
 

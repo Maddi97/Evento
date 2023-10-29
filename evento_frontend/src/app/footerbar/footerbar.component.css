@@ -8,9 +8,10 @@
   left: 0;
   width: 100%;
   height: 60px;
+  height: calc(var(--safe-area-inset-bottom) + 45px);
   background-color: black;
-  padding-bottom: constant(safe-area-inset-bottom) +10px;
-  padding-bottom: env(safe-area-inset-bottom) +10px;
+  padding-bottom: calc(var(--safe-area-inset-bottom));
+
 }
 
 .picked {
