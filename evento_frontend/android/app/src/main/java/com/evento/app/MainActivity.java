@@ -1,4 +1,4 @@
-package com.3vents51.app;
+package com.evento.app;
 
 import com.getcapacitor.BridgeActivity;
 

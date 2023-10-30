@@ -1,12 +1,18 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.3vents51.app',
-  appName: 'threeventsfiveone',
+  appId: 'com.evento.app',
+  appName: 'Evento',
   webDir: 'dist/threeventsfiveone',
   server: {
-    url: "http://192.168.1.149:4200",
-    cleartext: true
+    url: "http://192.168.0.157:4200",
+    cleartext: true,
+    androidScheme: "http",
+    allowNavigation: [
+      "http://backend.localhost/*",
+      "http://backend.*",
+      "https://backend.*"
+    ]
   },
 };
 

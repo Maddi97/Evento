@@ -10,8 +10,9 @@ const mongoose = require("./config/mongoose");
 const mongoSanitize = require("express-mongo-sanitize");
 //const xss = require("xss-clean")
 const allowedOrigins = [
-  "http://192.168.1.149",
-  "http://192.168.1.149:4200",
+  "http://192.168.0.157",
+  "http://192.168.0.157:3000",
+  "http://192.168.0.157:4200",
   "capacitor://localhost",
   "ionic://localhost",
   "http://localhost",
@@ -36,6 +37,7 @@ const corsOptions = {
     if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
     } else {
+      console.log(origin)
       callback(new Error("Origin not allowed by CORS"));
     }
   },

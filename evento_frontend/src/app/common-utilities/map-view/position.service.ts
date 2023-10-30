@@ -53,21 +53,23 @@ export class PositionService {
     // Simple geolocation API check provides values to publish
     // unfortunately needs some seconds sometimes
     Geolocation.getCurrentPosition().then((position: GeolocationPosition) => {
-      console.log(position.coords)
+      console.log("Coords123", position.coords)
       const { latitude, longitude } = position.coords;
+      console.log(latitude, longitude)
       if (latitude && longitude) {
         this.searchedCenter = [latitude, longitude];
         this.sessionStorageService.setLocation(this.searchedCenter)
         console.log("Callback from geo API")
       }
       else {
+        console.log("uncool")
         this.sessionStorageService.setDefaultLocation()
         this.openErrorSnackBar('Standort konnte nicht ermittelt werden und wird auf Leipzig Zentrum gesetzt.');
       }
     }).catch((error: GeolocationPositionError) => {
       let message = 'Standort konnte nicht ermittelt werden';
       this.spinner.hide()
-      console.log(error)
+      console.log("blablabl", error)
       if (error.code === 1) {
         message = 'Deine Privatspähreeinstellungen verhinderen die Standortermittlung. \nStandort wird zu Leipzig Zentrum gesetzt.'
         this.sessionStorageService.setDefaultLocation()

@@ -84,6 +84,7 @@ export class SessionStorageService {
   }
   setSearchString(searchString: string) {
     sessionStorage.setItem('searchString', JSON.stringify(searchString))
+    console.log(JSON.parse(sessionStorage.getItem('searchString')))
     this.searchStringSubject.next(searchString)
   }
   clearSearchFilter() {
