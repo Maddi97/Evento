@@ -7,10 +7,10 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 70px;
-  height: calc(var(--safe-area-inset-bottom) + 45px);
+  height: 60px;
+  min-height: 50px !important;
+  height: calc(var(--safe-area-inset-bottom) + 20px);
   background-color: white;
-  padding-bottom: calc(var(--safe-area-inset-bottom));
 
 }
 
@@ -18,13 +18,15 @@
   border: 1px solid #108a94;
   border-top: 1px solid #108a94;
   background-color: #108a94;
-  height: 70px;
-  height: calc(var(--safe-area-inset-bottom) + 45px);
+  height: 60px;
+  min-height: 50px !important;
+  height: calc(var(--safe-area-inset-bottom) + 20px);
 }
 
 .not-picked {
-  height: 70px;
-  height: calc(var(--safe-area-inset-bottom) + 45px);
+  height: 60px;
+  min-height: 50px !important;
+  height: calc(var(--safe-area-inset-bottom) + 20px);
   border: 1px solid #108a94;
   border-top: 2px solid #108a94;
 }

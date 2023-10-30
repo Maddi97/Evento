@@ -48,6 +48,7 @@
     "@angular/cli": "^16.2.0",
     "@angular/compiler-cli": "^16.2.0",
     "@angular/language-service": "^16.2.0",
+    "@capacitor/assets": "^3.0.1",
     "@capacitor/cli": "^5.0.0",
     "@types/jasmine": "~3.10.3",
     "@types/jasminewd2": "~2.0.10",

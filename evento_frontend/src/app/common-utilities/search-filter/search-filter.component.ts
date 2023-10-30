@@ -53,14 +53,17 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.isFocused = false
   }
 
+  @HostListener("document:touch", ["$event"])
   @HostListener("document:mousedown", ["$event"])
   public onMouseDownTrigger(event: any) {
     const inputElement: HTMLInputElement = event.srcElement
+    console.log(inputElement)
     if (inputElement.id !== "searchright") {
       const inputBar = document.getElementById("searchright")
       if (inputElement.id === "searchlabel") {
         if (!this.isFocused) {
           inputBar.classList.add("focus")
+
         }
         else {
           clearSearchFilter(this.sessionStorageService)

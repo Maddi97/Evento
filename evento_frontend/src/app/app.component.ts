@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 import { filter, take } from 'rxjs';
 import { PositionService } from './common-utilities/map-view/position.service';
+
 
 export type SubdomainUrl = 'settings' | 'categories' | 'full-event';
 export const subDomainUrls: SubdomainUrl[] = ['settings', 'categories', 'full-event']
@@ -51,26 +53,27 @@ export class AppComponent implements OnInit {
         }
 
       });
-
-    const cc = window as any;
-    cc.cookieconsent.initialise({
-      palette: {
-        popup: {
-          background: '#164969'
+    if (!Capacitor.isNativePlatform) {
+      const cc = window as any;
+      cc.cookieconsent.initialise({
+        palette: {
+          popup: {
+            background: '#164969'
+          },
+          button: {
+            background: '#ffe000',
+            text: '#164969'
+          }
         },
-        button: {
-          background: '#ffe000',
-          text: '#164969'
+        theme: 'classic',
+        content: {
+          message: this.cookieMessage,
+          dismiss: this.cookieDismiss,
+          link: this.cookieLinkText,
+          href: window.location.href + '/settings'
         }
-      },
-      theme: 'classic',
-      content: {
-        message: this.cookieMessage,
-        dismiss: this.cookieDismiss,
-        link: this.cookieLinkText,
-        href: window.location.href + '/settings'
-      }
-    });
+      });
+    }
   }
 }
 
