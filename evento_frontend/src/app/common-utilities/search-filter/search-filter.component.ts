@@ -1,5 +1,6 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { Keyboard } from '@capacitor/keyboard';
 import { Subscription, filter } from 'rxjs';
 import { clearSearchFilter } from '../logic/search-filter-helper';
 import { SessionStorageService } from '../session-storage/session-storage.service';
@@ -68,11 +69,19 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         else {
           clearSearchFilter(this.sessionStorageService)
           inputBar.classList.remove("focus")
+          setTimeout(() => {
+            Keyboard.hide()
+          }, 10)
         }
       }
       else {
         if (this.isFocused && !inputElement.value) {
           inputBar.classList.remove("focus")
+          inputBar.blur()
+          setTimeout(() => {
+            Keyboard.hide()
+          }, 10)
+
         }
       }
       if (this.isFocused || event.srcElement.id === "searchlabel") {

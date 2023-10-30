@@ -9,7 +9,7 @@
   width: 100%;
   height: 60px;
   min-height: 50px !important;
-  height: calc(var(--safe-area-inset-bottom) + 20px);
+  height: calc(var(--safe-area-inset-bottom) + 30px);
   background-color: white;
 
 }
@@ -20,15 +20,20 @@
   background-color: #108a94;
   height: 60px;
   min-height: 50px !important;
-  height: calc(var(--safe-area-inset-bottom) + 20px);
+  height: calc(var(--safe-area-inset-bottom) + 30px);
+  z-index: 10;
 }
 
 .not-picked {
   height: 60px;
   min-height: 50px !important;
-  height: calc(var(--safe-area-inset-bottom) + 20px);
-  border: 1px solid #108a94;
-  border-top: 2px solid #108a94;
+  height: calc(var(--safe-area-inset-bottom) + 30px);
+  border-top: 1px solid black;
+}
+
+.categories {
+  border-right: 1px solid black;
+  border-left: 1px solid black;
 }
 
 .icon {

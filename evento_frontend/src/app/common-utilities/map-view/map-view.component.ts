@@ -1,15 +1,18 @@
 import {
   Component,
+  HostListener,
   Input,
   OnChanges,
   OnInit,
   SimpleChanges,
 } from "@angular/core";
+import { Keyboard } from '@capacitor/keyboard';
 import * as L from "leaflet";
 import { skip, switchMap, timer } from "rxjs";
 import { clearSearchFilter } from "../logic/search-filter-helper";
 import { SessionStorageService } from "../session-storage/session-storage.service";
 import { PositionService } from "./position.service";
+
 @Component({
   selector: "map-view",
   templateUrl: "./map-view.component.html",
@@ -89,6 +92,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   searchForLocationInput() {
+    Keyboard.hide()
     clearSearchFilter(this.sessionStorageService)
     const address = this.sanitizeInput(this.address);
     this.positionService.getPositionByInput(address)
@@ -144,6 +148,10 @@ export class MapViewComponent implements OnInit, OnChanges {
       this.initMap();
       this.mapInitialized = true;
     }
+  }
+  @HostListener('touchmove')
+  private hideKeyboard() {
+    Keyboard.hide()
   }
 
   private updateZIndexPosition(color: 'blue' | 'yellow') {
