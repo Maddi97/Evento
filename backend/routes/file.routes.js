@@ -191,7 +191,6 @@ router.post('/uploadEventImage', upload.array('files'), limiter, function (req, 
 
 router.post('/deleteImage', function (req, res) {
     const filePath = req.body.path;
-    console.log(filePath)
     fs.unlink(filePath, function (err) {
         if (err) {
             console.error(err);

@@ -8,7 +8,7 @@ export const environment = {
   //apiBaseUrl: "http://localhost:3000"
 
   /* Für Android App Testing*/
-  apiBaseUrl: "http://192.168.0.157:3000"
+  apiBaseUrl: "http://172.20.10.3:3000"
 
 };
 

@@ -112,7 +112,6 @@ export class MapViewComponent implements OnInit, OnChanges {
       this.initMapIfNeeded(); // Use the method to initialize the map
 
       if (changes.markerData) {
-        console.log(changes.markerData)
 
         this.setPositionMarker();
 

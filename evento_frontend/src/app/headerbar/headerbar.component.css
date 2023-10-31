@@ -103,9 +103,9 @@
   }
 }
 
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 450px) {
   .arrow-back {
-    height: 52px;
+    height: 48px;
   }
 }
 
@@ -128,7 +128,6 @@
     align-items: center;
     justify-content: flex-start;
     margin: unset;
-    margin-left: 4px;
     min-width: 44px;
     margin-bottom: 2px;
   }
@@ -137,6 +136,7 @@
     max-width: 120px;
     margin-top: 6px;
     margin-bottom: 8px;
+    margin-right: 4px;
   }
 
   .date-picker {

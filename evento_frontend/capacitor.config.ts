@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Evento',
   webDir: 'dist/threeventsfiveone',
   server: {
-    url: "http://192.168.0.157:4200",
+    url: "http://172.20.10.3:4200",
     cleartext: true,
     androidScheme: "http",
     allowNavigation: [

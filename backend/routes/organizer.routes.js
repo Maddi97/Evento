@@ -25,7 +25,6 @@ router.post('/organizer', limiter, auth, (req, res) => {
 });
 router.post('/deleteOrganizer', limiter, auth, (req, res) => {
     const organizerId = String(req.body.id);
-    console.log(organizerId)
     Organizer.findByIdAndDelete({ _id: organizerId })
         .then((organizer) => res.send(organizer))
         .catch((error) => {
