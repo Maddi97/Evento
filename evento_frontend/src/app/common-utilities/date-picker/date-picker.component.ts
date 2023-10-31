@@ -1,18 +1,14 @@
 import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  ViewChild,
-  HostListener,
-  ElementRef,
   AfterViewInit,
-  AfterViewChecked,
+  Component,
+  HostListener,
+  OnInit,
+  ViewChild
 } from "@angular/core";
 import { MatCalendar } from "@angular/material/datepicker";
-import * as moment from "moment";
 import { ActivatedRoute, Router } from "@angular/router";
-import { debounceTime, map, mergeMap, skip, take, tap } from "rxjs/operators";
+import * as moment from "moment";
+import { debounceTime, map, mergeMap, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-date-picker",
@@ -25,8 +21,8 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
   public getScreenWidth: any;
 
   public nextMonth: DateClicked[] = [];
-  public numberOfDates = 10;
-  public displayNumberOfDates = 5;
+  public numberOfDates = 30;
+  public displayNumberOfDates = 30;
   public firstDate = 0;
   startDate = new Date();
   scrollLeftMax: Boolean;
@@ -43,7 +39,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     if (this.getScreenWidth > 700) {
       this.numberOfDates = Number(this.getScreenWidth / 100);
     } else {
-      this.numberOfDates = 7;
+      this.numberOfDates = 30;
     }
     const params$ = this._activatedRoute.queryParams.pipe(
       map((params) => {

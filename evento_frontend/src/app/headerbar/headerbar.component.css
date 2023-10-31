@@ -27,6 +27,15 @@
   justify-content: center;
 }
 
+.arrow-back {
+  position: absolute;
+  align-self: center;
+  height: 64px;
+  width: auto;
+  left: 0;
+  margin: 15px;
+}
+
 .logo-container {
   display: flex;
   justify-content: center;
@@ -94,12 +103,11 @@
   }
 }
 
-/* @media screen and (max-width: 350px) {
-  .logo-small {
-    width: 35px;
-    height: 100%;
+@media screen and (max-width: 350px) {
+  .arrow-back {
+    height: 52px;
   }
-} */
+}
 
 @media screen and (max-width: 800px) {
   .header {

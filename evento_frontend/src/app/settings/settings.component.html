@@ -10,7 +10,10 @@
             Event eintragen
           </span>
         </div>
-        <mat-icon class="material-icons small-icon">
+        <mat-icon class="material-icons small-icon" *ngIf="showInsert">
+          expand_less
+        </mat-icon>
+        <mat-icon class="material-icons small-icon" *ngIf="!showInsert">
           expand_more
         </mat-icon>
       </div>
@@ -25,7 +28,10 @@
             Feedback & Kontakt
           </span>
         </div>
-        <mat-icon class="material-icons small-icon">
+        <mat-icon class="material-icons small-icon" *ngIf="showFeedback">
+          expand_less
+        </mat-icon>
+        <mat-icon class="material-icons small-icon" *ngIf="!showFeedback">
           expand_more
         </mat-icon>
       </div>
@@ -34,13 +40,16 @@
       </div>
     </div>
     <div class="container">
-      <div class="tile" (click)="clickPanel(IMPRESSUM)">
+      <div class="tile" (click)="clickPanel(IMPRESSUM);">
         <div class="tile-name-container">
           <span>
             Impressum
           </span>
         </div>
-        <mat-icon class="material-icons small-icon">
+        <mat-icon class="material-icons small-icon" *ngIf="showImpressum">
+          expand_less
+        </mat-icon>
+        <mat-icon class="material-icons small-icon" *ngIf="!showImpressum">
           expand_more
         </mat-icon>
       </div>
@@ -56,7 +65,10 @@
             Datenschutz
           </span>
         </div>
-        <mat-icon class="material-icons small-icon">
+        <mat-icon class="material-icons small-icon" *ngIf="showDatenschutz">
+          expand_less
+        </mat-icon>
+        <mat-icon class="material-icons small-icon" *ngIf="!showDatenschutz">
           expand_more
         </mat-icon>
       </div>

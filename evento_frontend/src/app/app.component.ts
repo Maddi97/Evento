@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
         }
 
       });
-    if (!Capacitor.isNativePlatform) {
+    if (!Capacitor.isNativePlatform()) {
       const cc = window as any;
       cc.cookieconsent.initialise({
         palette: {

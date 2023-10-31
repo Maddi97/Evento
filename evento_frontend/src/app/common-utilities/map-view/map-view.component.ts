@@ -6,12 +6,14 @@ import {
   OnInit,
   SimpleChanges,
 } from "@angular/core";
+import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import * as L from "leaflet";
 import { skip, switchMap, timer } from "rxjs";
 import { clearSearchFilter } from "../logic/search-filter-helper";
 import { SessionStorageService } from "../session-storage/session-storage.service";
 import { PositionService } from "./position.service";
+
 
 @Component({
   selector: "map-view",
@@ -92,7 +94,9 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   searchForLocationInput() {
-    Keyboard.hide()
+    if (Capacitor.isNativePlatform()) {
+      Keyboard.hide()
+    }
     clearSearchFilter(this.sessionStorageService)
     const address = this.sanitizeInput(this.address);
     this.positionService.getPositionByInput(address)
@@ -108,15 +112,8 @@ export class MapViewComponent implements OnInit, OnChanges {
       this.initMapIfNeeded(); // Use the method to initialize the map
 
       if (changes.markerData) {
-        const tiles = L.tileLayer(
-          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          {
-            maxZoom: 19,
-            attribution:
-              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          }
-        );
-        tiles.addTo(this.map);
+        console.log(changes.markerData)
+
         this.setPositionMarker();
 
         this.setMarkers(this.markerData);
@@ -141,7 +138,7 @@ export class MapViewComponent implements OnInit, OnChanges {
         this.updateZIndexPosition('blue')
         this.loadNewEventsOnDrag()
       })
-    }, 10); // Adjust the delay time in milliseconds
+    }, 200); // Adjust the delay time in milliseconds
   }
   private initMapIfNeeded(): void {
     if (typeof this.map === "undefined") {
@@ -149,9 +146,12 @@ export class MapViewComponent implements OnInit, OnChanges {
       this.mapInitialized = true;
     }
   }
+
   @HostListener('touchmove')
   private hideKeyboard() {
-    Keyboard.hide()
+    if (Capacitor.isNativePlatform()) {
+      Keyboard.hide()
+    }
   }
 
   private updateZIndexPosition(color: 'blue' | 'yellow') {
@@ -175,7 +175,15 @@ export class MapViewComponent implements OnInit, OnChanges {
       center: this.centerMapOnPosition,
       zoom: this.zoomInput,
     });
-
+    const tiles = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }
+    );
+    tiles.addTo(this.map);
     this.positionMarkerGroup = L.layerGroup().addTo(this.map);
 
     this.markerGroup = L.layerGroup().addTo(this.map);

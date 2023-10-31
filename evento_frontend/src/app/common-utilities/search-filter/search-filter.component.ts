@@ -1,5 +1,6 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { Subscription, filter } from 'rxjs';
 import { clearSearchFilter } from '../logic/search-filter-helper';
@@ -58,7 +59,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   @HostListener("document:mousedown", ["$event"])
   public onMouseDownTrigger(event: any) {
     const inputElement: HTMLInputElement = event.srcElement
-    console.log(inputElement)
     if (inputElement.id !== "searchright") {
       const inputBar = document.getElementById("searchright")
       if (inputElement.id === "searchlabel") {
@@ -70,7 +70,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
           clearSearchFilter(this.sessionStorageService)
           inputBar.classList.remove("focus")
           setTimeout(() => {
-            Keyboard.hide()
+            if (Capacitor.isNativePlatform()) {
+              Keyboard.hide()
+            }
           }, 10)
         }
       }
@@ -79,7 +81,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
           inputBar.classList.remove("focus")
           inputBar.blur()
           setTimeout(() => {
-            Keyboard.hide()
+            if (Capacitor.isNativePlatform()) {
+              Keyboard.hide()
+            }
           }, 10)
 
         }
