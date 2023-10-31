@@ -9,6 +9,11 @@
   padding-bottom: 0.5rem;
 }
 
+.category>img {
+  height: 40px;
+  width: auto;
+}
+
 .now {
   white-space: nowrap;
 }
@@ -24,8 +29,9 @@
     padding-right: 0.7rem !important;
   }
 
-  img {
-    width: 1.2rem !important;
+  .category>img {
+    height: 32px;
+    width: auto;
   }
 
   .subcategory-container {
