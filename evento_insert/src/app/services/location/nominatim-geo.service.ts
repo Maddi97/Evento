@@ -23,6 +23,15 @@ export class NominatimGeoService {
 
         return this.http.get(this.ROOT_URL + street + '+' + streetNumber + '+,' + city + '&limit=2&format=json', { headers: { skip: "true" } }).pipe(
             take(1),
+            map(geoData => {
+                if (Object.keys(geoData).length < 1) {
+                    throw new Error('No coordinates found for the given address');
+                }
+                return {
+                    lat: geoData[0].lat,
+                    lon: geoData[0].lon,
+                }
+            })
         )
     }
 

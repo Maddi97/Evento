@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, map } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
+import { Organizer } from '../models/organizer';
 import { createEventFromOrg } from '../pages/organizer/organizer-view/organizer.helpers';
 import { EventsService } from './events.web.service';
 import { FileUploadService } from './files/file-upload.service';
@@ -16,7 +16,6 @@ export class OrganizerObservableService {
   organizerImagePath = 'images/organizerImages/';
 
   constructor(
-    private _snackbar: MatSnackBar,
     private geoService: NominatimGeoService,
     private eventService: EventsService,
     private fileService: FileUploadService,
@@ -24,59 +23,88 @@ export class OrganizerObservableService {
     public dialog: MatDialog
   ) { }
 
-  addNewOrganizer(organizer): Observable<organizer> {
-    // create organizerObject From FormField organizerForm
-    const org = organizer
-    const address = org.address
 
-    // first fetch geo data from osm API and than complete event data type and send to backend
-    this.geoService.get_geo_data(address.city, address.street, address.streetNumber)
-      .pipe(
-        map(
-          geoData => {
-            if (Object.keys(geoData).length < 1) {
-              throw new Error('No coordinates found to given address');
-            }
-            org.geoData.lat = geoData[0].lat;
-            org.geoData.lon = geoData[0].lon;
+  addNewOrganizer(organizer): Promise<Organizer> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const org = organizer;
+        const address = org.address;
 
-            this.organizerService.createOrganizer(org)
-              .pipe(
-                map(
-                  createOrganizerResponse => {
-                    const _id = createOrganizerResponse._id;
-                    // upload image
-                    org._id = createOrganizerResponse._id
-                    const formdata = org.fd
-                    // fd only for passing formdata form input
-                    delete org.fd
-                    if (formdata !== undefined) {
-                      const fullEventImagePath = this.organizerImagePath + createOrganizerResponse._id
-                      formdata.append('organizerImagePath', fullEventImagePath)
-                      this.fileService.uploadOrganizerImage(formdata).subscribe(
-                        uploadImageResponse => {
-                          org.organizerImagePath = uploadImageResponse.organizerImage.path
-                          this.organizerService.updateOrganizer(_id, org).subscribe()
-                        })
-                    }
+        const geoData = await lastValueFrom(this.geoService.get_geo_data(address.city, address.street, address.streetNumber));
+        org.geoData = geoData;
 
-                    if (createOrganizerResponse.isEvent === true) {
-                      // if org is event than create also an event object
-                      const event = createEventFromOrg(org)
-                      event._organizerId = _id
-                      this.eventService.createEvent(event).subscribe(
-                        (eventResponse) => {
-                          org.ifEventId = eventResponse._id
-                          this.organizerService.updateOrganizer(_id, org).subscribe(
-                          )
-                        }
-                      )
-                    }
-                    // spezifisch für crawler
-                    //                    this.organizerIn.push(createOrganizerResponse)
-                  }),
-              )
-          }
-        ))
+        const createOrganizerResponse = await lastValueFrom(this.organizerService.createOrganizer(org))
+        const _id = createOrganizerResponse._id;
+        org._id = createOrganizerResponse._id;
+
+        const formdata = org.fd;
+        delete org.fd;
+
+        if (formdata !== undefined) {
+          const fullOrganizerImagePath = this.organizerImagePath + createOrganizerResponse._id;
+          formdata.append('organizerImagePath', fullOrganizerImagePath);
+          const uploadImageResponse = await lastValueFrom(this.fileService.uploadOrganizerImage(formdata));
+          org.organizerImagePath = uploadImageResponse.organizerImage.path;
+          await lastValueFrom(this.organizerService.updateOrganizer(_id, org));
+        }
+
+        if (createOrganizerResponse.isEvent === true) {
+          const event = createEventFromOrg(org);
+          event._organizerId = _id;
+          const eventResponse = await lastValueFrom(this.eventService.createEvent(event));
+          org.ifEventId = eventResponse._id;
+          await lastValueFrom(this.organizerService.updateOrganizer(_id, org))
+        }
+        resolve(createOrganizerResponse);
+      } catch (error) {
+        console.error('An error occurred', error);
+        reject(error);
+      }
+    }
+    )
   }
+
+  updateOrganizer(organizer): Promise<Organizer> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const org = organizer;
+        const address = org.address;
+        org._id = organizer._id;
+
+        org.geoData = await lastValueFrom(this.geoService.get_geo_data(address.city, address.street, address.streetNumber));
+        const updateOrganizerResponse = await lastValueFrom(this.organizerService.updateOrganizer(org._id, org));
+        const _id = updateOrganizerResponse._id;
+
+        const formdata = org.fd;
+        delete org.fd;
+
+        if (formdata !== undefined) {
+          const fullOrganizerImagePath = this.organizerImagePath + updateOrganizerResponse._id;
+          formdata.append('organizerImagePath', fullOrganizerImagePath);
+          const uploadImageResponse = await lastValueFrom(this.fileService.uploadOrganizerImage(formdata));
+          org.organizerImagePath = uploadImageResponse.organizerImage.path;
+          await lastValueFrom(this.organizerService.updateOrganizer(_id, org));
+        }
+
+        if (org.isEvent.toString() === 'true' && updateOrganizerResponse.isEvent === false) {
+          const event = createEventFromOrg(org);
+          event._organizerId = _id;
+          const eventResponse = await lastValueFrom(this.eventService.createEvent(event));
+          org.ifEventId = eventResponse._id;
+          await lastValueFrom(this.organizerService.updateOrganizer(org._id, org));
+        }
+
+        //delete organizer event if changed to is not event
+        if (org.isEvent.toString() === 'false' && updateOrganizerResponse.isEvent === true) {
+          // TODO: Find the correct event ID
+          await lastValueFrom(this.eventService.deletEvent(org._id, _id));
+        }
+        resolve(updateOrganizerResponse);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+
 }

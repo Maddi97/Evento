@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, concatMap, map } from 'rxjs/operators';
+import { concatMap, map } from 'rxjs/operators';
 import { Category } from 'src/app/models/category';
 import { Organizer } from 'src/app/models/organizer';
 import { OrganizerService } from 'src/app/services/organizer.web.service';
@@ -10,10 +10,8 @@ import { NominatimGeoService } from '../../../services/location/nominatim-geo.se
 
 import { DomSanitizer } from "@angular/platform-browser";
 import { CategoryService } from 'src/app/services/category.service';
+import { OrganizerObservableService } from 'src/app/services/organizer.observable.service';
 import { FileUploadService } from "../../../services/files/file-upload.service";
-import {
-    createEventFromOrg
-} from './organizer.helpers';
 
 @Component({
     selector: 'app-organizer-view',
@@ -52,6 +50,8 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
         private fileService: FileUploadService,
         private sanitizer: DomSanitizer,
         private categoryService: CategoryService,
+        private organizerOnservableService: OrganizerObservableService
+
     ) {
     }
 
@@ -64,130 +64,24 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
         if (this.organizer$) { this.organizer$.unsubscribe(); }
     }
 
-    addNewOrganizer(organizer): void {
-        // create organizerObject From FormField organizerForm
-        const org = organizer
-        const address = org.address
-
-        // first fetch geo data from osm API and than complete event data type and send to backend
-        this.createOrganizer$ = this.geoService.get_geo_data(address.city, address.street, address.streetNumber)
-            .pipe(
-                map(
-                    geoData => {
-                        if (Object.keys(geoData).length < 1) {
-                            throw new Error('No coordinates found to given address');
-                        }
-                        org.geoData.lat = geoData[0].lat;
-                        org.geoData.lon = geoData[0].lon;
-
-                        this.organizerService.createOrganizer(org)
-                            .pipe(
-                                map(
-                                    createOrganizerResponse => {
-                                        const _id = createOrganizerResponse._id;
-                                        // upload image
-                                        org._id = createOrganizerResponse._id
-                                        const formdata = org.fd
-                                        // fd only for passing formdata form input
-                                        delete org.fd
-                                        if (formdata !== undefined) {
-                                            const fullEventImagePath = this.organizerImagePath + createOrganizerResponse._id
-                                            formdata.append('organizerImagePath', fullEventImagePath)
-                                            this.fileService.uploadOrganizerImage(formdata).subscribe(
-                                                uploadImageResponse => {
-                                                    org.organizerImagePath = uploadImageResponse.organizerImage.path
-                                                    this.organizerService.updateOrganizer(_id, org).subscribe()
-                                                })
-                                        }
-
-                                        if (createOrganizerResponse.isEvent === true) {
-                                            // if org is event than create also an event object
-                                            const event = createEventFromOrg(org)
-                                            event._organizerId = _id
-                                            this.eventService.createEvent(event).subscribe(
-                                                (eventResponse) => {
-                                                    org.ifEventId = eventResponse._id
-                                                    this.organizerService.updateOrganizer(_id, org).subscribe(
-                                                    )
-                                                }
-                                            )
-                                        }
-                                        this.openSnackBar('Successfully added: ' + createOrganizerResponse.name, 'success')
-                                    }),
-                            ).subscribe()
-                    }
-                ),
-                catchError(err => {
-                    this.openSnackBar('Error: ' + err, 'error')
-                    throw err
-                })).subscribe()
+    addNewOrganizer(organizer) {
+        this.organizerOnservableService.addNewOrganizer(organizer).then(
+            (organizerResponse) => {
+                this.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
+            }
+        ).catch(
+            (error) => this.openSnackBar(error, 'error')
+        )
     }
 
     updateOrganizer(organizer): void {
-        const org = organizer
-        const address = org.address;
-        org._id = organizer._id;
-        org.ifEventId = this.ifEventId
-
-        // first fetch geo data from osm API and than complete event data type and send to backend
-        this.updateOrganizer$ = this.geoService.get_geo_data(address.city, address.street, address.streetNumber)
-            .pipe(
-                map(
-                    geoData => {
-                        if (Object.keys(geoData).length < 1) {
-                            throw new Error('No coordinates found to given address');
-                        }
-                        org.geoData.lat = geoData[0].lat;
-                        org.geoData.lon = geoData[0].lon;
-                        this.organizerService.updateOrganizer(org._id, org)
-                            .pipe(
-                                map(updateOrganizerResponse => {
-                                    const _id = updateOrganizerResponse._id;
-
-                                    const formdata = org.fd
-                                    // fd only for passing formdata form input
-                                    delete org.fd
-                                    if (formdata !== undefined) {
-                                        const fullEventImagePath = this.organizerImagePath + updateOrganizerResponse._id
-                                        formdata.append('organizerImagePath', fullEventImagePath)
-                                        this.fileService.uploadOrganizerImage(formdata).subscribe(
-                                            uploadImageResponse => {
-                                                org.organizerImagePath = uploadImageResponse.organizerImage.path
-                                                this.organizerService.updateOrganizer(_id, org).subscribe()
-                                            })
-                                    }
-                                    if (org.isEvent.toString() === 'true' && updateOrganizerResponse.isEvent === false) {
-                                        // if org is event than create also an event object
-                                        const event = createEventFromOrg(org)
-                                        event._organizerId = _id
-                                        this.eventService.createEvent(event).subscribe(
-                                            eventResponse => {
-                                                org.ifEventId = eventResponse._id
-                                                this.organizerService.updateOrganizer(org._id, org).subscribe(
-                                                    a => console.log(a)
-                                                )
-                                            }
-                                        )
-                                    }
-
-                                    if (org.isEvent.toString() === 'false' && updateOrganizerResponse.isEvent === true) {
-                                        // TODO somehow find event id (id here is not correct)
-                                        this.eventService.deletEvent(org._id, _id).subscribe(
-                                        )
-                                    }
-                                    this.openSnackBar('Successfully updated: ' + updateOrganizerResponse.name, 'success')
-                                })
-                            ).subscribe()
-                    }
-                ),
-                catchError(err => {
-                    this.openSnackBar('Error: ' + err, 'error')
-                    throw err
-                })
-            ).subscribe()
-
-        // this.updateOrganizer$.subscribe()
-
+        this.organizerOnservableService.updateOrganizer(organizer).then(
+            (organizerResponse) => {
+                this.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
+            }
+        ).catch(
+            (error) => this.openSnackBar(error, 'error')
+        )
     }
 
     deleteOrganizer(organizer: Organizer): void {

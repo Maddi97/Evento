@@ -55,19 +55,13 @@ export class FileUploadService {
 
 
     uploadOrganizerImage(im: any): Observable<any> {
-        const obs = this.webService.post('uploadOrganizerImage', im).pipe(
+        return this.webService.post('uploadOrganizerImage', im).pipe(
             map((r: HttpRequest<any>) => r as unknown as any),
             catchError((error: any) => {
                 console.error('an error occurred', error);
                 return observableThrowError(error.error.message || error);
             }),
             share());
-        obs.toPromise().then(
-            (response: any) => {
-                log.debug(response);
-            }
-        )
-        return obs;
     }
 
     downloadFile(path: string): Observable<Blob> {

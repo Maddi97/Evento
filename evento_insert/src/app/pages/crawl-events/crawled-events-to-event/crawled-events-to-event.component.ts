@@ -7,10 +7,9 @@ import { Event } from 'src/app/models/event';
 import { Organizer } from 'src/app/models/organizer';
 import { EventsService } from 'src/app/services/events.web.service';
 import { FileUploadService } from 'src/app/services/files/file-upload.service';
-import { NominatimGeoService } from 'src/app/services/location/nominatim-geo.service';
-import { OrganizerService } from 'src/app/services/organizer.web.service';
-import { createEventFromOrg } from '../../organizer/organizer-view/organizer.helpers';
+import { OrganizerObservableService } from '../../../services/organizer.observable.service';
 import { createEventForSpecificCrawler } from '../crawl-event.helpers';
+
 @Component({
   selector: 'app-crawled-events-to-event',
   templateUrl: './crawled-events-to-event.component.html',
@@ -39,11 +38,10 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
 
   constructor(
     private _snackbar: MatSnackBar,
-    private geoService: NominatimGeoService,
     private eventService: EventsService,
     private fileService: FileUploadService,
-    private organizerService: OrganizerService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private organizerOnservableService: OrganizerObservableService
 
 
   ) {
@@ -80,67 +78,18 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
   skipThisEvent() {
     this.emitSkipEvent.emit();
   }
-  addNewOrganizer(organizer): void {
-    // create organizerObject From FormField organizerForm
-    const org = organizer
-    const address = org.address
-
-    // first fetch geo data from osm API and than complete event data type and send to backend
-    this.createOrganizer$ = this.geoService.get_geo_data(address.city, address.street, address.streetNumber)
-      .pipe(
-        map(
-          geoData => {
-            if (Object.keys(geoData).length < 1) {
-              throw new Error('No coordinates found to given address');
-            }
-            org.geoData.lat = geoData[0].lat;
-            org.geoData.lon = geoData[0].lon;
-
-            this.organizerService.createOrganizer(org)
-              .pipe(
-                map(
-                  createOrganizerResponse => {
-                    const _id = createOrganizerResponse._id;
-                    // upload image
-                    org._id = createOrganizerResponse._id
-                    const formdata = org.fd
-                    // fd only for passing formdata form input
-                    delete org.fd
-                    if (formdata !== undefined) {
-                      const fullEventImagePath = this.organizerImagePath + createOrganizerResponse._id
-                      formdata.append('organizerImagePath', fullEventImagePath)
-                      this.fileService.uploadOrganizerImage(formdata).subscribe(
-                        uploadImageResponse => {
-                          org.organizerImagePath = uploadImageResponse.organizerImage.path
-                          this.organizerService.updateOrganizer(_id, org).subscribe()
-                        })
-                    }
-
-                    if (createOrganizerResponse.isEvent === true) {
-                      // if org is event than create also an event object
-                      const event = createEventFromOrg(org)
-                      event._organizerId = _id
-                      this.eventService.createEvent(event).subscribe(
-                        (eventResponse) => {
-                          org.ifEventId = eventResponse._id
-                          this.organizerService.updateOrganizer(_id, org).subscribe(
-                          )
-                        }
-                      )
-                    }
-                    // spezifisch für crawler
-                    this.organizerIn.push(createOrganizerResponse)
-                    this.findOrganizer()
-                    this.openSnackBar('Successfully added: ' + createOrganizerResponse.name, 'success')
-                  }),
-              ).subscribe()
-          }
-        ),
-        catchError(err => {
-          this.openSnackBar('Error: ' + err, 'error')
-          throw err
-        })).subscribe()
+  addNewOrganizer(organizer) {
+    this.organizerOnservableService.addNewOrganizer(organizer).then(
+      (organizerResponse) => {
+        this.organizerIn.push(organizerResponse)
+        this.findOrganizer()
+        this.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
+      }
+    ).catch(
+      (error) => this.openSnackBar(error, 'error')
+    )
   }
+
   addEventCheckDuplicate(event) {
     this.eventService
       .checkIfEventsExistsInDB(event)
