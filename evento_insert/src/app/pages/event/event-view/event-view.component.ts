@@ -4,15 +4,15 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { DomSanitizer } from "@angular/platform-browser";
 import * as moment from "moment";
 import { Observable, forkJoin, of } from "rxjs";
-import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
+import { catchError, map, switchMap, tap } from "rxjs/operators";
 import { CustomDialogComponent } from "src/app/custom-dialog/custom-dialog.component";
 import { Category } from "src/app/models/category";
 import { Organizer } from "src/app/models/organizer";
 import { CategoryService } from "src/app/services/category.service";
-import { EventsService } from "src/app/services/events.service";
+import { EventsService } from "src/app/services/events.web.service";
 import { OrganizerService } from "src/app/services/organizer.service";
 import { Event } from "../../../models/event";
-import { FileUploadService } from "../../../services/file-upload.service";
+import { FileUploadService } from "../../../services/files/file-upload.service";
 
 @Component({
   selector: "app-event-view",

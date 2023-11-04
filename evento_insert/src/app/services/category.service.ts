@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { WebService } from './web.service';
-import { Observable, throwError as observableThrowError, BehaviorSubject } from 'rxjs';
 import { HttpRequest } from '@angular/common/http';
-import { filter, map, catchError, share } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, throwError as observableThrowError } from 'rxjs';
+import { catchError, map, share } from 'rxjs/operators';
 import { Category } from '../models/category';
+import { WebService } from './web.service';
 
 @Injectable({
     providedIn: 'root'

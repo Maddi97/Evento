@@ -1,14 +1,13 @@
-import { SafeResourceUrl } from '@angular/platform-browser';
 
 export class Category {
     _id: string;
-    name: string;
-    weight: string;
+    name: string = '';
+    weight: string = '0';
     iconTemporaryURL: string;
     iconPath: string;
     stockImageTemporaryURL: string;
     stockImagePath: string;
-    subcategories: Subcategory[];
+    subcategories: Subcategory[] = [];
 }
 
 export class Subcategory {

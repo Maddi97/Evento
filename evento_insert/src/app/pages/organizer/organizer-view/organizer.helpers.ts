@@ -1,7 +1,7 @@
-import { FormControl, Validator, Validators } from '@angular/forms';
-import { Address, Day, Organizer } from '../../../models/organizer';
-import { Event } from '../../../models/event';
+import { FormControl, Validators } from '@angular/forms';
 import * as moment from 'moment';
+import { Event } from '../../../models/event';
+import { Address, Day, Organizer } from '../../../models/organizer';
 
 
 export function getOrganizerFormTemplate() {
@@ -69,9 +69,8 @@ function createAdressObject(organizerForm) {
     const address = new Address()
     address.plz = organizerForm.get('plz').value;
     address.city = organizerForm.get('city').value;
-
     const adressSplit = organizerForm.get('street').value.split(' ')
-
+    console.log(adressSplit)
     if (adressSplit[0] === '' && adressSplit.length === 2) {
         address.street = adressSplit[1]
         address.streetNumber = ''
@@ -110,3 +109,4 @@ export function createEventFromOrg(org) {
     event.hasUnkownOpeningTimes = true;
     return event
 }
+

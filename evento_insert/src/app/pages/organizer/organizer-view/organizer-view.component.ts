@@ -1,21 +1,19 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { OrganizerService } from 'src/app/services/organizer.service';
-import { Organizer } from 'src/app/models/organizer';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Category } from 'src/app/models/category';
-import { MatSnackBar } from '@angular/material/snack-bar'
-import { NominatimGeoService } from '../../../services/nominatim-geo.service'
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, concatMap, map } from 'rxjs/operators';
-import { EventsService } from '../../../services/events.service';
-import * as log from 'loglevel';
+import { Category } from 'src/app/models/category';
+import { Organizer } from 'src/app/models/organizer';
+import { OrganizerService } from 'src/app/services/organizer.web.service';
+import { EventsService } from '../../../services/events.web.service';
+import { NominatimGeoService } from '../../../services/location/nominatim-geo.service';
 
-import {
-    createEventFromOrg, getOrganizerFormTemplate
-} from './organizer.helpers'
-import { FileUploadService } from "../../../services/file-upload.service";
 import { DomSanitizer } from "@angular/platform-browser";
-import { of, throwError } from "rxjs";
 import { CategoryService } from 'src/app/services/category.service';
+import { FileUploadService } from "../../../services/files/file-upload.service";
+import {
+    createEventFromOrg
+} from './organizer.helpers';
 
 @Component({
     selector: 'app-organizer-view',

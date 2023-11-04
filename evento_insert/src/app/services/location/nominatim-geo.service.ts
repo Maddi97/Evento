@@ -1,9 +1,7 @@
-import {Injectable} from '@angular/core';
-import {Observable, throwError as observableThrowError, BehaviorSubject, throwError, of} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {HttpRequest} from '@angular/common/http';
-import {filter, map, catchError, share, take} from 'rxjs/operators';
-import {Event} from '../models/event';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { throwError } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -23,13 +21,13 @@ export class NominatimGeoService {
 
     get_geo_data(city, street, streetNumber) {
 
-        return this.http.get(this.ROOT_URL + street + '+' + streetNumber + '+,' + city + '&limit=2&format=json', {headers:{skip:"true"}}).pipe(
+        return this.http.get(this.ROOT_URL + street + '+' + streetNumber + '+,' + city + '&limit=2&format=json', { headers: { skip: "true" } }).pipe(
             take(1),
         )
     }
 
     get_geo_data_address(address) {
-        return this.http.get(this.ROOT_URL + address + this.URL_END, {headers:{skip:"true"}}).pipe(
+        return this.http.get(this.ROOT_URL + address + this.URL_END, { headers: { skip: "true" } }).pipe(
             take(1),
             map(geoData => {
                 if (Object.keys(geoData).length < 1) {
@@ -42,15 +40,15 @@ export class NominatimGeoService {
 
     get_address_from_coordinates(coord) {
         return this.http.get('https://nominatim.openstreetmap.org/reverse?lat='
-            + coord.lat + '&lon=' + coord.lon + '&limit=2&format=json', {headers:{skip:"true"}}).pipe(
-            take(1),
-            map(geoData => {
-                if (Object.keys(geoData).length < 1) {
-                    return throwError(() => ('No adress found to given coordinates'));
-                }
-                return geoData
-            }),
-        )
+            + coord.lat + '&lon=' + coord.lon + '&limit=2&format=json', { headers: { skip: "true" } }).pipe(
+                take(1),
+                map(geoData => {
+                    if (Object.keys(geoData).length < 1) {
+                        return throwError(() => ('No adress found to given coordinates'));
+                    }
+                    return geoData
+                }),
+            )
     }
 
 }

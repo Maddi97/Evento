@@ -6,7 +6,7 @@ import { Observable, forkJoin, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import { Category, Subcategory } from 'src/app/models/category';
 import { CategoryService } from 'src/app/services/category.service';
-import { FileUploadService } from 'src/app/services/file-upload.service';
+import { FileUploadService } from 'src/app/services/files/file-upload.service';
 
 
 // constants

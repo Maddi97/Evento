@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { WebService } from './web.service';
-import { Observable, throwError as observableThrowError, BehaviorSubject, of } from 'rxjs';
 import { HttpRequest } from '@angular/common/http';
-import { filter, map, catchError, share } from 'rxjs/operators';
-import { Event } from '../models/event';
-import { Category } from '../models/category';
+import { Injectable } from '@angular/core';
 import * as moment from 'moment';
+import { BehaviorSubject, Observable, throwError as observableThrowError, of } from 'rxjs';
+import { catchError, map, share } from 'rxjs/operators';
+import { Category } from '../models/category';
+import { Event } from '../models/event';
+import { WebService } from './web.service';
 
 
 @Injectable({

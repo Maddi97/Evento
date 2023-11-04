@@ -8,9 +8,9 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
-import { Organizer } from "../../../models/organizer";
+import { FormBuilder } from "@angular/forms";
 import { Category } from "../../../models/category";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { Organizer } from "../../../models/organizer";
 import {
   getGeoDataTemplate,
   getOpeningTimesTemplate,
@@ -97,12 +97,13 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
   }
 
   setOrganizerForm(org: Organizer): void {
+    const streetName = org.address?.street ? org.address.street + " " + org.address?.streetNumber : ''
     this.organizerForm.setValue({
       name: org.name,
       city: org.address.city,
       plz: org.address.plz,
-      street: org.address.street + " " + org.address.streetNumber,
-      streetNumber: "",
+      street: streetName,
+      streetNumber: '',
       country: org.address.country,
       email: org.email,
       telephone: org.telephone,
@@ -117,6 +118,7 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
     this.ifEventId = org.ifEventId;
     this.geoData = org.geoData;
   }
+
 
   nullFormField() {
     this.isOpeningTimesRequired = false;

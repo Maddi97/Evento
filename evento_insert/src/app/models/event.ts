@@ -1,13 +1,13 @@
-import { Category } from './category'
-import { Day } from './organizer';
 import * as moment from 'moment';
+import { Category } from './category';
+import { Day } from './organizer';
 
 export class Event {
     _id: string;
-    name: string;
+    name: string = '';
     _organizerId: string;
     organizerName: string;
-    address: Address
+    address: Address = new Address();
     date: {
         start: moment.Moment;
         end: moment.Moment;
@@ -15,20 +15,26 @@ export class Event {
     times: {
         start: string,
         end: string
-    }
+    } = {
+            start: '',
+            end: ''
+        };
     category: Category;
     openingTimes?: Day[];
     description: string;
-    link: string;
-    price: string;
-    permanent: boolean;
+    link: string = '';
+    price: string = '';
+    permanent: boolean = false;
     hasUnkownOpeningTimes: boolean;
-    hot: boolean;
+    hot: boolean = false;
     promotion: boolean;
     geoData: {
         lat: string,
         lon: string,
-    };
+    } = {
+            lat: '',
+            lon: ''
+        };
     eventImageTemporaryURL: string;
     eventImagePath: string;
 }

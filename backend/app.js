@@ -68,7 +68,13 @@ app.use(emailRouter);
 
 const authRouter = require("./routes/auth.routes");
 app.use(authRouter);
+
+const crawlerRouter = require("./routes/crawler.routes");
+app.use(crawlerRouter);
+
 app.set("trust proxy", 1);
+
+
 
 // startup our app at http://localhost:3000
 

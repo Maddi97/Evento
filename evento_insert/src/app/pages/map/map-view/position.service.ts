@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {NominatimGeoService} from '../../../services/nominatim-geo.service';
-import {map} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { NominatimGeoService } from '../../../services/location/nominatim-geo.service';
 
 @Injectable({
     providedIn: 'root'
@@ -43,7 +43,7 @@ export class PositionService {
         return new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(
                 position => {
-                    const {latitude, longitude} = position.coords;
+                    const { latitude, longitude } = position.coords;
                     this.searchedCenter = [latitude, longitude];
                 });
         })

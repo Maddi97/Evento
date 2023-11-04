@@ -153,9 +153,9 @@
 
     <div class="confirm-buttons">
         <button mat-raised-button color="primary"
-            (click)="updateOrganizerId !== '' ?  this.emitUpdate(organizerForm) : emitAddOrganizer(organizerForm); target.value = ''"
+            (click)="updateOrganizerId  ?  this.emitUpdate(organizerForm) : emitAddOrganizer(organizerForm); target.value = ''"
             [disabled]="checkDisabled()">
-            {{ updateOrganizerId !== '' ? 'Update' : 'Submit'}}
+            {{ updateOrganizerId ? 'Update' : 'Submit'}}
         </button>
         <button mat-raised-button color="accent" (click)="nullFormField()">
             Clear

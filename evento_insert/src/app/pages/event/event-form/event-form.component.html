@@ -174,13 +174,16 @@
     </form>
 
     <div class="confirm-buttons">
-        <button mat-raised-button color="primary" (click)="updateEventId !== '' ? emitUpdateEvent() : emitAddNewEvent()"
+        <button mat-raised-button color="primary" (click)="updateEventId ? emitUpdateEvent() : emitAddNewEvent()"
             [disabled]="checkDisabled()">
-            {{ updateEventId !== '' ? 'Update' : 'Submit'}}
+            {{ updateEventId ? 'Update' : 'Submit'}}
         </button>
         <button mat-raised-button color="accent" (click)="nullFormField()">
             Clear
         </button>
+    </div>
+    <div class="crawl-events">
+
     </div>
 
 </div>

@@ -120,12 +120,14 @@ jobs:
         env:
           auth_secret: ${{secrets.AUTH_SECRET}}
           auth_signupkey: ${{secrets.AUTH_SIGNUPKEY}}
+          browse_ai_api_key: ${{secrets.BROWSE_AI_API_KEY}}
 
         run: |
           touch .env.prod
           echo "DUCKDNSTOKEN=$duckdns_token" >> .env.prod
           echo "SIGNUPKEY=$auth_signupkey" >> .env.prod
           echo "SECRET=$auth_secret" >> .env.prod
+          echo "BROWSE_AI_API_KEY=$browse_ai_api_key" >> .env.prod
 
       - name: Start Docker Containers
         uses: nick-fields/retry@v2

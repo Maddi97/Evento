@@ -41,13 +41,17 @@ export class CategorySelectComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.loadedCategory.currentValue) {
-            this.selectedCategory = this.categories.find(cat => cat._id === changes.loadedCategory.currentValue._id)
-            if (!this.selectedCategory) {
-                console.error('Input categories id not found. Name: ', changes.loadedCategory.currentValue?.name)
-                return;
-            }
-            this.categoryName.setValue(changes.loadedCategory.currentValue?.name)
-            this.selectedSubcategories.setValue(this.loadedCategory?.subcategories)
+            this.categoryService.categories.subscribe(cat => {
+                console.log(changes.loadedCategory.currentValue)
+                this.categories = cat;
+                this.selectedCategory = this.categories.find(cat => cat._id === changes.loadedCategory.currentValue._id)
+                if (!this.selectedCategory) {
+                    console.error('Input categories id not found. Name: ', changes.loadedCategory.currentValue?.name)
+                    return;
+                }
+                this.categoryName.setValue(changes.loadedCategory.currentValue?.name)
+                this.selectedSubcategories.setValue(this.loadedCategory?.subcategories)
+            });
         }
     }
 

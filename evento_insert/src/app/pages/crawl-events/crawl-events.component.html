@@ -1,0 +1,23 @@
+<h4>Select Crawler</h4>
+<mat-form-field>
+    <mat-label>Select an Crawler</mat-label>
+    <mat-select [(value)]="selectedCrawler">
+        <mat-option *ngFor="let crawler of crawlerNames" [value]="crawler">
+            {{crawler}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<p>{{selectedCrawler}}</p>
+
+<div class="buttons-run-task">
+    <button mat-raised-button color="primary" (click)="runTaskOfRobot(selectedCrawler)">
+        Run task of Crawler '{{selectedCrawler}}''
+    </button>
+</div>
+
+<p>Found {{insertEventList.length}} events with crawler {{selectedCrawler}}</p>
+
+<div class="insert-event-container" *ngIf="insertEventList.length > 0">
+    <app-crawled-events-to-event *ngIf="allOrganizer.length > 0" [organizerIn]="allOrganizer" [eventIn]="eventIn"
+        (emitAddEvent)="nextEvent()" (emitSkipEvent)="nextEvent()"></app-crawled-events-to-event>
+</div>

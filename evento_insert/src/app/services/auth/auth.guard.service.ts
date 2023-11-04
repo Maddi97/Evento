@@ -1,9 +1,9 @@
 
-import {TokenStorageService} from './token-storage.service';
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
+import { TokenStorageService } from '../sessionStorage/token-storage.service';
 
 @Injectable()
-export class AuthGuardService  {
+export class AuthGuardService {
     isLoggedIn = false;
 
     constructor(private tokenStorageService: TokenStorageService) {
