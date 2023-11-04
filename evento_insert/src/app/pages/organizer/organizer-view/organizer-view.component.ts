@@ -1,16 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { concatMap, map } from 'rxjs/operators';
 import { Category } from 'src/app/models/category';
 import { Organizer } from 'src/app/models/organizer';
 import { OrganizerService } from 'src/app/services/organizer.web.service';
-import { EventsService } from '../../../services/events.web.service';
-import { NominatimGeoService } from '../../../services/location/nominatim-geo.service';
 
 import { DomSanitizer } from "@angular/platform-browser";
 import { CategoryService } from 'src/app/services/category.service';
 import { OrganizerObservableService } from 'src/app/services/organizer.observable.service';
+import { SnackbarService } from 'src/app/services/utils/snackbar.service';
 import { FileUploadService } from "../../../services/files/file-upload.service";
 
 @Component({
@@ -43,10 +40,7 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
 
     constructor(
         private organizerService: OrganizerService,
-        private fb: FormBuilder,
-        private _snackbar: MatSnackBar,
-        private geoService: NominatimGeoService,
-        private eventService: EventsService,
+        private snackbarService: SnackbarService,
         private fileService: FileUploadService,
         private sanitizer: DomSanitizer,
         private categoryService: CategoryService,
@@ -67,20 +61,20 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
     addNewOrganizer(organizer) {
         this.organizerOnservableService.addNewOrganizer(organizer).then(
             (organizerResponse) => {
-                this.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
+                this.snackbarService.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
             }
         ).catch(
-            (error) => this.openSnackBar(error, 'error')
+            (error) => this.snackbarService.openSnackBar(error, 'error')
         )
     }
 
     updateOrganizer(organizer): void {
         this.organizerOnservableService.updateOrganizer(organizer).then(
             (organizerResponse) => {
-                this.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
+                this.snackbarService.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
             }
         ).catch(
-            (error) => this.openSnackBar(error, 'error')
+            (error) => this.snackbarService.openSnackBar(error, 'error')
         )
     }
 
@@ -127,16 +121,4 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
             this.organizers = organizer
         })
     }
-
-    openSnackBar(message, state) {
-        this._snackbar.open(message, '', {
-            duration: 1000,
-            verticalPosition: 'top',
-            horizontalPosition: 'center',
-            panelClass: [state !== 'error' ? 'green-snackbar' : 'red-snackbar']
-
-        });
-    }
-
-
 }

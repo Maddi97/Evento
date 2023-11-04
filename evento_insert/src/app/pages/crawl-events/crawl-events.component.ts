@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Organizer } from 'src/app/models/organizer';
-import { EventsService } from 'src/app/services/events.web.service';
 import { OrganizerService } from 'src/app/services/organizer.web.service';
+import { SnackbarService } from 'src/app/services/utils/snackbar.service';
 import { crawlerConfig } from '../../../constants/browseAi';
 import { CrawlerApiService } from '../../services/crawler/crawler-api.service';
 import { crawlerMockdata } from '../crawl-events/testdata';
@@ -29,9 +28,8 @@ export class CrawlEventsComponent implements OnInit {
 
   constructor(
     private crawlerService: CrawlerApiService,
-    private _snackbar: MatSnackBar,
+    private snackbar: SnackbarService,
     private organizerService: OrganizerService,
-    private eventService: EventsService
   ) {
 
   }
@@ -63,7 +61,7 @@ export class CrawlEventsComponent implements OnInit {
         },
         error: (error) => {
           // Handle error here
-          this.openSnackBar(error.error, 'error')
+          this.snackbar.openSnackBar(error.error, 'error')
           console.error('An error occurred while fetching categories', error.error);
         },
         complete: () => {
@@ -84,7 +82,7 @@ export class CrawlEventsComponent implements OnInit {
           },
           error: (error) => {
             // Handle error here
-            this.openSnackBar(error.error, 'error')
+            this.snackbar.openSnackBar(error.error, 'error')
             console.error('An error occurred while fetching categories', error.error);
           },
           complete: () => {
@@ -105,15 +103,6 @@ export class CrawlEventsComponent implements OnInit {
       name: eventIn.event_name,
       organizerName: eventIn.organizer_name
     }
-  }
-
-  openSnackBar(message, state) {
-    this._snackbar.open(message, "", {
-      duration: 2000,
-      verticalPosition: "top",
-      horizontalPosition: "center",
-      panelClass: state !== "error" ? "green-snackbar" : "red-snackbar",
-    });
   }
 
 }

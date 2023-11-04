@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { CustomDialogComponent } from 'src/app/custom-dialog/custom-dialog.component';
 import { Event } from 'src/app/models/event';
@@ -8,6 +7,7 @@ import { Organizer } from 'src/app/models/organizer';
 import { EventsService } from 'src/app/services/events.web.service';
 import { FileUploadService } from 'src/app/services/files/file-upload.service';
 import { OrganizerObservableService } from '../../../services/organizer.observable.service';
+import { SnackbarService } from '../../../services/utils/snackbar.service';
 import { createEventForSpecificCrawler } from '../crawl-event.helpers';
 
 @Component({
@@ -37,7 +37,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
 
 
   constructor(
-    private _snackbar: MatSnackBar,
+    private snackbar: SnackbarService,
     private eventService: EventsService,
     private fileService: FileUploadService,
     public dialog: MatDialog,
@@ -83,10 +83,10 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
       (organizerResponse) => {
         this.organizerIn.push(organizerResponse)
         this.findOrganizer()
-        this.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
+        this.snackbar.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
       }
     ).catch(
-      (error) => this.openSnackBar(error, 'error')
+      (error) => this.snackbar.openSnackBar(error, 'error')
     )
   }
 
@@ -104,7 +104,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
         }),
         catchError((error) => {
           console.error('Error checking duplicate', error);
-          this.openSnackBar(error.message, "error")
+          this.snackbar.openSnackBar(error.message, "error")
           return of(null); // Continue with null eventImagePath
         }),
       ).subscribe();
@@ -119,7 +119,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
       if (result) {
         this.addNewEvent(event);
       } else {
-        this.openSnackBar("Event not added " + event.name, "error");
+        this.snackbar.openSnackBar("Event not added " + event.name, "error");
       }
     });
   }
@@ -141,7 +141,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
             return this.fileService.uploadEventImage(formdata).pipe(
               catchError((uploadImageError) => {
                 console.error('Error uploading event image:', uploadImageError);
-                this.openSnackBar(uploadImageError.message, "error")
+                this.snackbar.openSnackBar(uploadImageError.message, "error")
                 return of(null); // Continue with null eventImagePath
               }),
               tap((uploadImageResponse) => {
@@ -161,12 +161,12 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
           ).pipe(
             catchError((updateEventError) => {
               console.error('Error updating event:', updateEventError);
-              this.openSnackBar(updateEventError.message, "error")
+              this.snackbar.openSnackBar(updateEventError.message, "error")
               return of(null); // Continue without showing success message
             }),
             tap(() => {
               this.emitAddEvent.emit(this.eventIn);
-              this.openSnackBar(
+              this.snackbar.openSnackBar(
                 "Successfully added Event: " + event.name,
                 "success"
               );
@@ -180,7 +180,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
         },
         (error) => {
           console.error('Error:', error);
-          this.openSnackBar(error.message, "error")
+          this.snackbar.openSnackBar(error.message, "error")
 
           // Handle error here, e.g., show an error message to the user.
         }
@@ -188,14 +188,5 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
   }
   createInputEvent(): Event {
     return createEventForSpecificCrawler('urbanite', this.eventIn, this.inputOrganizer)
-  }
-
-  openSnackBar(message, state) {
-    this._snackbar.open(message, "", {
-      duration: 2000,
-      verticalPosition: "top",
-      horizontalPosition: "center",
-      panelClass: state !== "error" ? "green-snackbar" : "red-snackbar",
-    });
   }
 }

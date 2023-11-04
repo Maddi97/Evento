@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { DomSanitizer } from "@angular/platform-browser";
 import * as moment from "moment";
 import { Observable, forkJoin, of } from "rxjs";
@@ -10,9 +9,10 @@ import { Category } from "src/app/models/category";
 import { Organizer } from "src/app/models/organizer";
 import { CategoryService } from "src/app/services/category.service";
 import { EventsService } from "src/app/services/events.web.service";
-import { OrganizerService } from "src/app/services/organizer.service";
+import { OrganizerService } from "src/app/services/organizer.web.service";
 import { Event } from "../../../models/event";
 import { FileUploadService } from "../../../services/files/file-upload.service";
+import { SnackbarService } from "../../../services/utils/snackbar.service";
 
 @Component({
   selector: "app-event-view",
@@ -41,7 +41,7 @@ export class EventViewComponent implements OnInit {
     private eventService: EventsService,
     private fileService: FileUploadService,
     private sanitizer: DomSanitizer,
-    private _snackbar: MatSnackBar,
+    private snackbar: SnackbarService,
     public dialog: MatDialog
   ) { }
 
@@ -85,7 +85,7 @@ export class EventViewComponent implements OnInit {
         }),
         catchError((error) => {
           console.error('Error checking duplicate', error);
-          this.openSnackBar(error.message, "error")
+          this.snackbar.openSnackBar(error.message, "error")
           return of(null); // Continue with null eventImagePath
         }),
       ).subscribe();
@@ -109,7 +109,7 @@ export class EventViewComponent implements OnInit {
             return this.fileService.uploadEventImage(formdata).pipe(
               catchError((uploadImageError) => {
                 console.error('Error uploading event image:', uploadImageError);
-                this.openSnackBar(uploadImageError.message, "error")
+                this.snackbar.openSnackBar(uploadImageError.message, "error")
                 return of(null); // Continue with null eventImagePath
               }),
               tap((uploadImageResponse) => {
@@ -129,11 +129,11 @@ export class EventViewComponent implements OnInit {
           ).pipe(
             catchError((updateEventError) => {
               console.error('Error updating event:', updateEventError);
-              this.openSnackBar(updateEventError.message, "error")
+              this.snackbar.openSnackBar(updateEventError.message, "error")
               return of(null); // Continue without showing success message
             }),
             tap(() => {
-              this.openSnackBar(
+              this.snackbar.openSnackBar(
                 "Successfully added Event: " + event.name,
                 "success"
               );
@@ -147,7 +147,7 @@ export class EventViewComponent implements OnInit {
         },
         (error) => {
           console.error('Error:', error);
-          this.openSnackBar(error.message, "error")
+          this.snackbar.openSnackBar(error.message, "error")
 
           // Handle error here, e.g., show an error message to the user.
         }
@@ -179,7 +179,7 @@ export class EventViewComponent implements OnInit {
               )
               .subscribe();
           }
-          this.openSnackBar(
+          this.snackbar.openSnackBar(
             "Successfully updated Event: " + event.name,
             "success"
           );
@@ -276,15 +276,6 @@ export class EventViewComponent implements OnInit {
     this.eventService.getActualEventsOnCategory(category);
   }
 
-  openSnackBar(message, state) {
-    this._snackbar.open(message, "", {
-      duration: 2000,
-      verticalPosition: "top",
-      horizontalPosition: "center",
-      panelClass: state !== "error" ? "green-snackbar" : "red-snackbar",
-    });
-  }
-
   downloadImage() {
     this.allFilteredEvents.forEach((event) => {
       let imageURL = null;
@@ -312,7 +303,7 @@ export class EventViewComponent implements OnInit {
       if (result) {
         this.addNewEvent(event);
       } else {
-        this.openSnackBar("Event not added " + event.name, "error");
+        this.snackbar.openSnackBar("Event not added " + event.name, "error");
       }
     });
   }
