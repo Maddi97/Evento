@@ -3,15 +3,16 @@ import { MatDialog } from "@angular/material/dialog";
 import { DomSanitizer } from "@angular/platform-browser";
 import * as moment from "moment";
 import { Observable, forkJoin, of } from "rxjs";
-import { catchError, map, switchMap, tap } from "rxjs/operators";
+import { catchError, map, switchMap } from "rxjs/operators";
 import { CustomDialogComponent } from "src/app/custom-dialog/custom-dialog.component";
 import { Category } from "src/app/models/category";
 import { Organizer } from "src/app/models/organizer";
 import { CategoryService } from "src/app/services/category.service";
 import { EventsService } from "src/app/services/events.web.service";
+import { FileUploadService } from "src/app/services/files/file-upload.service";
 import { OrganizerService } from "src/app/services/organizer.web.service";
 import { Event } from "../../../models/event";
-import { FileUploadService } from "../../../services/files/file-upload.service";
+import { EventsObservableService } from '../../../services/events.observable.service';
 import { SnackbarService } from "../../../services/utils/snackbar.service";
 
 @Component({
@@ -32,17 +33,19 @@ export class EventViewComponent implements OnInit {
   category$: Observable<Category[]>;
   organizer$: Observable<Organizer[]>;
   event$: Observable<Event[]>;
-
   eventImagePath = "images/eventImages/";
 
   constructor(
     private categoryService: CategoryService,
     private organizerService: OrganizerService,
     private eventService: EventsService,
+    private eventObservableService: EventsObservableService,
+    private snackbar: SnackbarService,
+    public dialog: MatDialog,
     private fileService: FileUploadService,
     private sanitizer: DomSanitizer,
-    private snackbar: SnackbarService,
-    public dialog: MatDialog
+
+
   ) { }
 
   ngOnInit(): void {
@@ -92,66 +95,15 @@ export class EventViewComponent implements OnInit {
   }
 
   addNewEvent(event) {
-    // set _id undefined otherwise error occurs
-    event._id = undefined;
-
-    this.eventService
-      .createEvent(event)
-      .pipe(
-        switchMap((createEventResponse) => {
-          event._id = createEventResponse._id;
-          const formdata = event.fd;
-          delete event.fd;
-          if (formdata !== undefined) {
-            const fullEventImagePath =
-              this.eventImagePath + createEventResponse._id;
-            formdata.append("eventImagePath", fullEventImagePath);
-            return this.fileService.uploadEventImage(formdata).pipe(
-              catchError((uploadImageError) => {
-                console.error('Error uploading event image:', uploadImageError);
-                this.snackbar.openSnackBar(uploadImageError.message, "error")
-                return of(null); // Continue with null eventImagePath
-              }),
-              tap((uploadImageResponse) => {
-                if (uploadImageResponse) {
-                  event.eventImagePath = uploadImageResponse.eventImage.path;
-                }
-              })
-            );
-          }
-          return of(null); // Continue with null eventImagePath
-        }),
-        switchMap((eventWithImagePath) => {
-          return this.eventService.updateEvent(
-            event._organizerId,
-            event._id,
-            event
-          ).pipe(
-            catchError((updateEventError) => {
-              console.error('Error updating event:', updateEventError);
-              this.snackbar.openSnackBar(updateEventError.message, "error")
-              return of(null); // Continue without showing success message
-            }),
-            tap(() => {
-              this.snackbar.openSnackBar(
-                "Successfully added Event: " + event.name,
-                "success"
-              );
-            })
-          );
-        })
+    this.eventObservableService.addNewEvent(event).then((event) => {
+      this.snackbar.openSnackBar(
+        "Successfully added Event: " + event.name,
+        "success"
       )
-      .subscribe(
-        () => {
-          // Success
-        },
-        (error) => {
-          console.error('Error:', error);
-          this.snackbar.openSnackBar(error.message, "error")
+    }).catch((error) => {
+      this.snackbar.openSnackBar(error.message, "error")
 
-          // Handle error here, e.g., show an error message to the user.
-        }
-      );
+    })
   }
 
   updateEvent(event) {

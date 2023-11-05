@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 import { Event } from '../../models/event';
 export type Crawler = 'urbanite';
+
 export function createEventForSpecificCrawler(crawlerName: Crawler, event, organizer): Event {
     switch (crawlerName) {
         case 'urbanite':
@@ -17,14 +18,38 @@ function createEventUrbanite(event, organizer) {
     e.category = organizer.category
     e.description = organizer.description
     // TODO assign correct values
-    e.times.start = event.times.start
+    if (event.times.start === 'ganztägig') {
+        e.times.start = '00:00'
+        e.times.end = '00:00'
+    }
+    else {
+        e.times.start = event.times.start
+        e.times.end = endTimeUrbanite(event.times.start)
+    }
     const date = { start: undefined, end: undefined }
-    date.start = moment(new Date(parseEventDate(event.date.start)))
+    date.start = moment(new Date(parseEventDateUrbanite(event.date.start)))
+    date.end = endDateUrbanite(date.start, event.times.start)
     e.date = date
+
     e.permanent = false;
     return e
 }
-function parseEventDate(dateString: string): Date | null {
+
+function endTimeUrbanite(startTime: string) {
+    const startHour = Number(startTime.split(':')[0])
+    const endTimeHour = startHour >= 20 ? '04:00' : '00:00'
+    return endTimeHour
+}
+
+function endDateUrbanite(startDate, startTime) {
+    const startHour = Number(startTime.split(':')[0])
+    //if event is longer than midnight add one day
+    let endDate = moment(startDate);
+    endDate = startHour >= 20 ? endDate.add(1, 'days') : endDate
+    return endDate;
+}
+
+function parseEventDateUrbanite(dateString: string): Date | null {
     const months: { [key: string]: number } = {
         JAN: 0,
         FEB: 1,

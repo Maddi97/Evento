@@ -15,9 +15,17 @@
     </button>
 </div>
 
-<p>Found {{insertEventList.length}} events with crawler {{selectedCrawler}}</p>
+<div>
+    <p>Found {{insertEventList.length}} events with crawler {{selectedCrawler}}</p>
+    <label>Search Event of index</label>
+    <input class="input-index" (keydown.enter)="setIndex($event.target.value)" />
+    <p>Event of index: {{index}}</p>
+    <button (click)="previousEvent()">Previous Event</button>
+    <button (click)="nextEvent()">Next Event</button>
+</div>
 
 <div class="insert-event-container" *ngIf="insertEventList.length > 0">
     <app-crawled-events-to-event *ngIf="allOrganizer.length > 0" [organizerIn]="allOrganizer" [eventIn]="eventIn"
-        (emitAddEvent)="nextEvent()" (emitSkipEvent)="nextEvent()"></app-crawled-events-to-event>
+        (emitAddEvent)="nextEvent()" (emitNextEvent)="nextEvent()"
+        (emitPreviousEvent)="previousEvent()"></app-crawled-events-to-event>
 </div>

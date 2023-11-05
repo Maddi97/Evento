@@ -1,7 +1,7 @@
 import { FormControl, Validators } from '@angular/forms';
+import * as moment from 'moment';
 import { Event } from '../../models/event';
 import { Address } from '../../models/organizer';
-import * as moment from 'moment';
 
 export function getEventFromForm(eventForm, organizer, category, times, updateEventId, hot, promotion, hasUnkownOpeningTimes) {
     const event = new Event()
@@ -70,7 +70,6 @@ export function getEventFormTemplate() {
         start: new FormControl('', [Validators.required]),
         end: new FormControl('', [Validators.required]),
         coord: new FormControl('', []),
-
     }
 }
 

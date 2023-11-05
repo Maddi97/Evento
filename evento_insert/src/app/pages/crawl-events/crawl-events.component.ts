@@ -25,6 +25,7 @@ export class CrawlEventsComponent implements OnInit {
   allOrganizer: Organizer[] = []
   eventIn: any;
   organizer$
+  index = 0;
 
   constructor(
     private crawlerService: CrawlerApiService,
@@ -34,7 +35,7 @@ export class CrawlEventsComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    this.eventIn = this.hilfsFunktionMapProperties(this.insertEventList[0])
+    this.eventIn = this.hilfsFunktionMapProperties(this.insertEventList[this.index])
     this.organizerService.getOrganizer().subscribe(
       (org) => {
         this.allOrganizer = org;
@@ -42,13 +43,40 @@ export class CrawlEventsComponent implements OnInit {
     )
   }
   nextEvent() {
-    this.insertEventList.shift()
-    this.eventIn = this.hilfsFunktionMapProperties(this.insertEventList[0])
+    if (this.index === this.insertEventList.length - 1) {
+      console.error("Index too big. Not that many Elements in the list.")
+    }
+    else {
+      this.index++;
+      this.eventIn = this.hilfsFunktionMapProperties(this.insertEventList[this.index])
+    }
+  }
+  previousEvent() {
+    if (this.index === 0) {
+      console.error("Index smaller than 0.")
+    }
+    else {
+      this.index--;
+      this.eventIn = this.hilfsFunktionMapProperties(this.insertEventList[this.index])
+    }
   }
   getRobots() {
     this.crawlerService.getRobots().subscribe(res => {
       this.message = res['messageCode']
     })
+  }
+  setIndex(index) {
+    this.index = Number(index);
+    if (index > this.insertEventList.length) {
+      console.error("Index too big. Not that many Elements in the list.")
+    }
+    else if (index < 0) {
+      console.error("Index smaller than 0.")
+    }
+    else {
+      this.eventIn = this.hilfsFunktionMapProperties(this.insertEventList[this.index])
+    }
+
   }
 
   getResultsOfRobot(crawler, taskId) {

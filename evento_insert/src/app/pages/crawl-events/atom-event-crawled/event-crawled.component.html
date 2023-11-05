@@ -1,5 +1,50 @@
-<div class="crawled-event">
-    <p *ngFor="let key of eventProperties">
-        {{key}}: {{eventIn[key]}}
-    </p>
+<div class="event-details">
+    <h2>Event Details</h2>
+    <div class="property-list" *ngIf="eventIn">
+        <span class="event-property" *ngIf="eventIn.name">
+            Name: {{ eventIn.name }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.organizerName">
+            Organizer Name: {{ eventIn.organizerName }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.address">
+            Address: {{ eventIn.address | json }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.date">
+            Date: {{ eventIn.date | json }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.times">
+            Times: {{ eventIn.times | json }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.category">
+            Category: {{ eventIn.category.name | json }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.openingTimes">
+            Opening Times: {{ eventIn.openingTimes | json }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.description">
+            Description: {{ eventIn.description }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.link">
+            Link: {{ eventIn.link }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.price">
+            Price: {{ eventIn.price }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.permanent">
+            Permanent: {{ eventIn.permanent }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.hasUnkownOpeningTimes">
+            Unknown Opening Times: {{ eventIn.hasUnkownOpeningTimes }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.hot">
+            Hot: {{ eventIn.hot }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.promotion">
+            Promotion: {{ eventIn.promotion }}
+        </span>
+        <span class="event-property" *ngIf="eventIn.geoData.lat || eventIn.geoData.lon">
+            Geo Data: {{ eventIn.geoData | json }}
+        </span>
+    </div>
 </div>

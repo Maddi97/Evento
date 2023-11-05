@@ -1,5 +1,4 @@
-<app-event-crawled [eventIn]="eventIn"></app-event-crawled>
-<button (click)="skipThisEvent()">Skip</button>
+<app-event-crawled [eventIn]="inputEvent"></app-event-crawled>
 <app-event-form *ngIf="shouldInputEvent" [organizersIn]="organizerIn" (addNewEvent)="addEventCheckDuplicate($event)"
     [eventIn]=" inputEvent"></app-event-form>
 <app-organizer-form *ngIf=" shouldInputOrganizer" [organizerIn]="inputOrganizer"

@@ -85,7 +85,7 @@ export class EventFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    if (this.eventIn._id !== undefined) {
+    if (this.eventIn !== undefined) {
       this.setEventForm();
     }
   }
@@ -120,11 +120,7 @@ export class EventFormComponent implements OnInit, OnChanges {
         .get_geo_data(address.city, address.street, address.streetNumber)
         .pipe(
           map((geoData) => {
-            if (Object.keys(geoData).length < 1) {
-              throw new Error("No coordinates found to given address");
-            }
-            event.geoData.lat = geoData[0].lat;
-            event.geoData.lon = geoData[0].lon;
+            event.geoData = geoData
             this.addNewEvent.emit(event);
           }),
           catchError((err) => {
@@ -192,11 +188,7 @@ export class EventFormComponent implements OnInit, OnChanges {
         .get_geo_data(address.city, address.street, address.streetNumber)
         .pipe(
           map((geoData) => {
-            if (Object.keys(geoData).length < 1) {
-              throw new Error("No coordinates found to given address");
-            }
-            event.geoData.lat = geoData[0].lat;
-            event.geoData.lon = geoData[0].lon;
+            event.geoData = geoData;
             this.updateEvent.emit(event);
           }),
           catchError((err) => {
@@ -268,6 +260,9 @@ export class EventFormComponent implements OnInit, OnChanges {
       this.eventForm.removeControl("start");
       this.eventForm.removeControl("end");
     }
+    this.times.start.setValue(this.eventIn.times.start)
+    this.times.end.setValue(this.eventIn.times.end)
+
     this.eventForm.setValue(eventFormValues);
     this.category = this.eventIn.category;
     this.isHot = this.eventIn.hot

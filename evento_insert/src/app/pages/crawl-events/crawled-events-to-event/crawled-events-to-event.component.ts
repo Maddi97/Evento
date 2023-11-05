@@ -19,7 +19,8 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
   @Input() eventIn: Partial<Event>;
   @Input() organizerIn: Organizer[];
   @Output() emitAddEvent: EventEmitter<any> = new EventEmitter<any>();
-  @Output() emitSkipEvent: EventEmitter<void> = new EventEmitter<void>();
+  @Output() emitNextEvent: EventEmitter<void> = new EventEmitter<void>();
+  @Output() emitPreviousEvent: EventEmitter<void> = new EventEmitter<void>();
 
   shouldInputOrganizer = false;
   inputOrganizer: Organizer;
@@ -70,14 +71,19 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
 
       this.inputOrganizer = filteredOrganizer[0]
       //todo Event befüllen
+      this.inputEvent = new Event();
       this.inputEvent = this.createInputEvent()
       this.shouldInputEvent = true
       this.shouldInputOrganizer = false
     }
   }
-  skipThisEvent() {
-    this.emitSkipEvent.emit();
+  nextEvent() {
+    this.emitNextEvent.emit();
   }
+  previousEvent() {
+    this.emitPreviousEvent.emit();
+  }
+
   addNewOrganizer(organizer) {
     this.organizerOnservableService.addNewOrganizer(organizer).then(
       (organizerResponse) => {
@@ -97,7 +103,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
         map((existingEvents) => {
           if (existingEvents.length > 0) {
             this.openDialogIfDuplicate(existingEvents, event);
-            this.emitSkipEvent.emit()
+            this.emitNextEvent.emit()
           } else {
             this.addNewEvent(event);
           }

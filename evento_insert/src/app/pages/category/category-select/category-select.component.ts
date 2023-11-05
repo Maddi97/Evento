@@ -42,7 +42,6 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         if (changes.loadedCategory.currentValue) {
             this.categoryService.categories.subscribe(cat => {
-                console.log(changes.loadedCategory.currentValue)
                 this.categories = cat;
                 this.selectedCategory = this.categories.find(cat => cat._id === changes.loadedCategory.currentValue._id)
                 if (!this.selectedCategory) {
