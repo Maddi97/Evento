@@ -1,0 +1,7 @@
+<ul>
+    <span>{{listTitle}}: </span>
+    <li *ngFor="let name of namesList">
+        <span>{{ name }}</span>
+        <span class="delete-icon" (click)="deleteName(name)">X</span>
+    </li>
+</ul>

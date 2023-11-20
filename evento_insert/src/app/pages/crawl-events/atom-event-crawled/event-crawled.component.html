@@ -1,4 +1,4 @@
-<div class="event-details">
+<div *ngIf="eventIn" class="event-details">
     <h2>Event Details</h2>
     <div class="property-list" *ngIf="eventIn">
         <span class="event-property" *ngIf="eventIn.name">
@@ -45,6 +45,29 @@
         </span>
         <span class="event-property" *ngIf="eventIn.geoData.lat || eventIn.geoData.lon">
             Geo Data: {{ eventIn.geoData | json }}
+        </span>
+    </div>
+</div>
+
+<div *ngIf="organizerIn" class="organizer-details">
+    <h2>Organizer Details</h2>
+    <div class="property-list" *ngIf="organizerIn">
+        <span class="event-property" *ngIf="organizerIn.name">
+            Name: {{ organizerIn.name }}
+        </span>
+        <span class="event-property" *ngIf="organizerIn.address">
+            Address: {{ organizerIn.address | json }}
+        </span>
+
+        <span class="event-property" *ngIf="organizerIn.category">
+            Category: {{ organizerIn.category.name | json }}
+        </span>
+
+        <span class="event-property" *ngIf="organizerIn.description">
+            Description: {{ organizerIn.description }}
+        </span>
+        <span class="event-property" *ngIf="organizerIn.link">
+            Link: {{ organizerIn.link }}
         </span>
     </div>
 </div>

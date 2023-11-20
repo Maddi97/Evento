@@ -18,7 +18,8 @@ export function getOrganizerFormTemplate() {
         description: new FormControl('test description', [Validators.required, Validators.minLength(3)]),
         link: new FormControl('', []),
         frequency: new FormControl(7, []),
-        isEvent: new FormControl('false', [])
+        isEvent: new FormControl('false', []),
+        isOrganizerAlias: new FormControl('false', []),
     }
 }
 

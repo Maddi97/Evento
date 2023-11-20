@@ -6,6 +6,7 @@ import { crawlerConfig } from '../../../constants/browseAi';
 import { CrawlerApiService } from '../../services/crawler/crawler-api.service';
 import { crawlerMockdata } from '../crawl-events/testdata';
 
+export type PossibleCrawlerNames = keyof typeof crawlerConfig;
 
 @Component({
   selector: 'app-crawl-events',
@@ -16,7 +17,6 @@ export class CrawlEventsComponent implements OnInit {
   //TODO remove test
 
   testTaskId = '37b74596-318a-4715-97e0-c8d5e1cac719'
-
   message;
   crawlerConfig = crawlerConfig;
   crawlerNames = Object.keys(crawlerConfig)
@@ -65,6 +65,7 @@ export class CrawlEventsComponent implements OnInit {
       this.message = res['messageCode']
     })
   }
+
   setIndex(index) {
     this.index = Number(index);
     if (index > this.insertEventList.length) {
@@ -97,11 +98,11 @@ export class CrawlEventsComponent implements OnInit {
       }
     )
   }
-
-  runTaskOfRobot(crawlerKey: string) {
+  runTaskOfRobot(crawlerKey: PossibleCrawlerNames) {
     const crawler = crawlerConfig[crawlerKey];
+    const url = this.getUrlForCrawler(crawlerKey, crawler)
     if (!true) {
-      this.crawlerService.runTaskOfRobot(crawler.robotId, crawler.inputUrl).subscribe(
+      this.crawlerService.runTaskOfRobot(crawler.robotId, url).subscribe(
         {
           next: (res) => {
             console.log(res)
@@ -120,6 +121,12 @@ export class CrawlEventsComponent implements OnInit {
     }
     else {
       this.getResultsOfRobot(crawler, '')
+    }
+  }
+
+  getUrlForCrawler(crawlerName: PossibleCrawlerNames, crawler) {
+    if (crawlerName === 'urbanite') {
+      return crawler.inputUrl + new Date(crawler.inputValue).toISOString().split('T')[0];
     }
   }
 

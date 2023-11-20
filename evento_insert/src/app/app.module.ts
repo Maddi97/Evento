@@ -47,6 +47,8 @@ import { EventFormComponent } from './pages/event/event-form/event-form.componen
 import { MapViewComponent } from './pages/map/map-view/map-view.component';
 import { OrganizerFormComponent } from './pages/organizer/organizer-form/organizer-form.component';
 import { AuthGuardService } from './services/auth/auth.guard.service';
+import { AutocompleteOrganizerComponent } from './atoms/autocomplete-organizer/autocomplete-organizer.component';
+import { SelectionListComponent } from './atoms/selection-list/selection-list.component';
 
 
 @NgModule({
@@ -64,7 +66,9 @@ import { AuthGuardService } from './services/auth/auth.guard.service';
         CustomDialogComponent,
         CrawlEventsComponent,
         EventCrawledComponent,
-        CrawledEventsToEventComponent
+        CrawledEventsToEventComponent,
+        AutocompleteOrganizerComponent,
+        SelectionListComponent
     ],
     imports: [
         MatSnackBarModule,

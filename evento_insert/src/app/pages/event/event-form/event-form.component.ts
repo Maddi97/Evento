@@ -62,6 +62,7 @@ export class EventFormComponent implements OnInit, OnChanges {
 
   organizerName = new FormControl("", [Validators.required]);
   filteredOrganizers: Organizer[];
+
   image: any;
   eventForm;
   constructor(

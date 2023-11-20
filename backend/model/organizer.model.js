@@ -5,6 +5,11 @@ const OrganizerSchema = new mongoose.Schema({
         type: String,
         minlength: 3,
     },
+    alias:
+    {
+        type: [String],
+    },
+
     address: {
         plz: {
             type: String,

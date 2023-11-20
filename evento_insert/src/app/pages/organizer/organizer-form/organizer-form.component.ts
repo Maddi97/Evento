@@ -24,7 +24,8 @@ import {
   styleUrls: ["./organizer-form.component.css"],
 })
 export class OrganizerFormComponent implements OnInit, OnChanges {
-  @Input() organizerIn: Organizer;
+  @Input() organizerIn: Organizer = new Organizer();
+  @Input() allOrganizerIn: Organizer[] = [];
   @Output() updateOrganizer: EventEmitter<Organizer> =
     new EventEmitter<Organizer>();
   @Output() addNewOrganizer: EventEmitter<Organizer> =
@@ -38,7 +39,6 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
   updateOrganizerId = "";
   ifEventId;
   isOpeningTimesRequired = false;
-
   image: any;
   organizerForm
   constructor(private fb: FormBuilder) {
@@ -50,6 +50,7 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.organizerIn !== undefined) this.setOrganizerForm(this.organizerIn);
+
   }
 
   emitUpdate(organizerForm) {
@@ -61,7 +62,7 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
       this.updateOrganizerId
     );
     const formdata: FormData = new FormData();
-
+    organizer.alias = this.organizerIn.alias;
     if (this.image !== undefined) {
       formdata.append("files", this.image);
       organizer["fd"] = formdata;
@@ -90,13 +91,31 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
     this.addNewOrganizer.emit(organizer);
   }
 
+  setOrganizerFromSelection(organizer: Organizer) {
+    const organizerAsAlias = this.organizerIn;
+    this.organizerIn = organizer;
+    this.addAlias(organizerAsAlias.name)
+    this.setOrganizerForm(this.organizerIn, 'true')
+
+  }
+
   iconChosen(event: any) {
     if (event.target.value) {
       this.image = event.target.files[0] as File;
     }
   }
 
-  setOrganizerForm(org: Organizer): void {
+  addAlias(alias: string) {
+    if (!this.organizerIn.alias) { this.organizerIn.alias = [alias] }
+    else {
+      if (this.organizerIn.alias.find((name) => name === alias)) {
+        this.organizerIn.alias = this.organizerIn.alias.filter((name) => name !== alias)
+      }
+      else this.organizerIn.alias.push(alias)
+    }
+  }
+
+  setOrganizerForm(org: Organizer, isOrganizerAlias = 'false'): void {
     const streetName = org.address?.street ? org.address.street + " " + org.address?.streetNumber : ''
     this.organizerForm.setValue({
       name: org.name,
@@ -111,6 +130,7 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
       link: org.link,
       frequency: org.frequency,
       isEvent: String(org.isEvent),
+      isOrganizerAlias: isOrganizerAlias
     });
     this.category = org.category;
     this.openingTimes = org.openingTimes;

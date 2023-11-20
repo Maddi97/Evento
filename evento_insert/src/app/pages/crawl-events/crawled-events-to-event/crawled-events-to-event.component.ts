@@ -38,7 +38,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
 
 
   constructor(
-    private snackbar: SnackbarService,
+    private snackbarService: SnackbarService,
     private eventService: EventsService,
     private fileService: FileUploadService,
     public dialog: MatDialog,
@@ -58,8 +58,9 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
 
   findOrganizer() {
     const filteredOrganizer = this.organizerIn.filter((organizer) =>
-      organizer.name.toLowerCase() === this.eventIn.organizerName.toLowerCase()
-    );
+      organizer.name.toLowerCase() === this.eventIn.organizerName.toLowerCase() ||
+      organizer.alias.some(aliasName => aliasName.toLowerCase() === this.eventIn.organizerName.toLowerCase()))
+
     if (filteredOrganizer.length < 1) {
       this.inputOrganizer = new Organizer()
       this.inputOrganizer.name = this.eventIn.organizerName
@@ -89,10 +90,20 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
       (organizerResponse) => {
         this.organizerIn.push(organizerResponse)
         this.findOrganizer()
-        this.snackbar.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
+        this.snackbarService.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
       }
     ).catch(
-      (error) => this.snackbar.openSnackBar(error, 'error')
+      (error) => this.snackbarService.openSnackBar(error, 'error')
+    )
+  }
+  updateOrganizer(organizer): void {
+    this.organizerOnservableService.updateOrganizer(organizer).then(
+      (organizerResponse) => {
+        this.nextEvent()
+        this.snackbarService.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
+      }
+    ).catch(
+      (error) => this.snackbarService.openSnackBar(error, 'error')
     )
   }
 
@@ -110,7 +121,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
         }),
         catchError((error) => {
           console.error('Error checking duplicate', error);
-          this.snackbar.openSnackBar(error.message, "error")
+          this.snackbarService.openSnackBar(error.message, "error")
           return of(null); // Continue with null eventImagePath
         }),
       ).subscribe();
@@ -125,7 +136,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
       if (result) {
         this.addNewEvent(event);
       } else {
-        this.snackbar.openSnackBar("Event not added " + event.name, "error");
+        this.snackbarService.openSnackBar("Event not added " + event.name, "error");
       }
     });
   }
@@ -147,7 +158,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
             return this.fileService.uploadEventImage(formdata).pipe(
               catchError((uploadImageError) => {
                 console.error('Error uploading event image:', uploadImageError);
-                this.snackbar.openSnackBar(uploadImageError.message, "error")
+                this.snackbarService.openSnackBar(uploadImageError.message, "error")
                 return of(null); // Continue with null eventImagePath
               }),
               tap((uploadImageResponse) => {
@@ -167,12 +178,12 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
           ).pipe(
             catchError((updateEventError) => {
               console.error('Error updating event:', updateEventError);
-              this.snackbar.openSnackBar(updateEventError.message, "error")
+              this.snackbarService.openSnackBar(updateEventError.message, "error")
               return of(null); // Continue without showing success message
             }),
             tap(() => {
               this.emitAddEvent.emit(this.eventIn);
-              this.snackbar.openSnackBar(
+              this.snackbarService.openSnackBar(
                 "Successfully added Event: " + event.name,
                 "success"
               );
@@ -186,7 +197,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
         },
         (error) => {
           console.error('Error:', error);
-          this.snackbar.openSnackBar(error.message, "error")
+          this.snackbarService.openSnackBar(error.message, "error")
 
           // Handle error here, e.g., show an error message to the user.
         }
