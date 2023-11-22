@@ -181,7 +181,6 @@ export class EventsComponent implements OnInit, OnDestroy {
         next: (params) => {
           this.fetchEventsCompleted = false;
           this.filteredDate = moment(params.date).tz('Europe/Berlin');
-
           const category = params.category;
           this.filteredCategory = category
             ? this.categoryList.find(c => c._id === category)

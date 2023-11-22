@@ -31,6 +31,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.1.0",
     "@fortawesome/free-brands-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.1.0",
+    "angular-google-tag-manager": "^1.8.0",
     "css.gg": "^2.0.0",
     "leaflet": "^1.7.1",
     "loglevel": "^1.8.0",

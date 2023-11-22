@@ -7,6 +7,7 @@ import {
 } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
+import { GoogleTagManagerService } from "angular-google-tag-manager";
 import { Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { CategoriesService } from "../../categories/categories.service";
@@ -44,7 +45,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     private fileService: FileService,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private sessionStorageService: SessionStorageService
+    private sessionStorageService: SessionStorageService,
+    private gtmService: GoogleTagManagerService
   ) { }
   ngOnDestroy(): void {
     this.subscriptions$.forEach((subscription$: Subscription) => {
@@ -90,6 +92,11 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   selectCategory(category) {
     this.filteredCategory = category;
     this.filteredSubcategories = []
+    const gtmTag = {
+                    event: 'selectedCategory',
+                    categoryName: this.filteredCategory.name,
+                  };
+    this.gtmService.pushTag(gtmTag);
     this.setRouteParameter({
       subcategory: this.filteredSubcategories.map((subcategory) => subcategory._id),
       category: this.filteredCategory._id,
@@ -103,6 +110,12 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     else {
       this.filteredSubcategories.push(subcategory)
     }
+    const gtmTag = {
+                event: 'selectedSubcategory',
+                categoryName: this.filteredCategory.name,
+                subcategoryName: subcategory.name,
+              };
+    this.gtmService.pushTag(gtmTag);
     this.setRouteParameter({
       subcategory: this.filteredSubcategories.map((subcategory) => subcategory._id),
       category: this.filteredCategory._id,
