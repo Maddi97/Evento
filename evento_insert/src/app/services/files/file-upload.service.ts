@@ -82,7 +82,7 @@ export class FileUploadService {
 
     deleteFile(path: string): Observable<any> {
         const deleteEndpoint = `deleteImage`; // Update this with the actual endpoint URL
-
+        console.log("file-upload.service.ts: deleteFile: path: ", path)
         // Send a DELETE request to delete the file
         return this.webService.post(deleteEndpoint, { path: path })
             .pipe(

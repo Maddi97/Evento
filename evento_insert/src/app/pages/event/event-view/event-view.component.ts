@@ -3,7 +3,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { DomSanitizer } from "@angular/platform-browser";
 import * as moment from "moment";
 import { Observable, forkJoin, of } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { catchError, concatMap, map, switchMap } from "rxjs/operators";
 import { CustomDialogComponent } from "src/app/custom-dialog/custom-dialog.component";
 import { Category } from "src/app/models/category";
 import { Organizer } from "src/app/models/organizer";
@@ -34,7 +34,7 @@ export class EventViewComponent implements OnInit {
   organizer$: Observable<Organizer[]>;
   event$: Observable<Event[]>;
   eventImagePath = "images/eventImages/";
-
+  deleteEvent$;
   constructor(
     private categoryService: CategoryService,
     private organizerService: OrganizerService,
@@ -163,8 +163,15 @@ export class EventViewComponent implements OnInit {
     this.eventService.getEventsOnDate(date);
   }
 
-  deleteEvent(organizerId: string, eventId: string) {
-    this.eventService.deletEvent(organizerId, eventId).subscribe();
+  deleteEvent(event: Event) {
+     if (confirm('Are you sure to delete ' + event.name + ' ?')) {
+            this.deleteEvent$ = this.eventService.deletEvent(event._organizerId, event._id)
+            this.deleteEvent$.pipe(
+                concatMap(
+                    () => this.fileService.deleteFile(event.eventImagePath)
+                )
+            ).subscribe();
+        }
   }
 
   timeSince(date) {

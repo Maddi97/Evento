@@ -320,7 +320,6 @@ router.post('/getActualEventsOnCategory', limiter, (req, res) => {
         }
     )
         .then((events) => {
-            console.log(events)
             res.send(events);
         })
         .catch((error) => {
