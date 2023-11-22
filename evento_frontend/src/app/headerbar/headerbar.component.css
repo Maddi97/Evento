@@ -8,8 +8,8 @@
   background-color: white;
   z-index: 1;
   justify-content: space-around;
-  /*padding-top: constant(safe-area-inset-top);*/
-  /*padding-top: env(safe-area-inset-top);*/
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
 
 }
 
@@ -24,7 +24,17 @@
 }
 
 .header-fullevent {
-  justify-content: space-between !important;
+  justify-content: center;
+}
+
+.arrow-back {
+  position: absolute;
+  align-self: center;
+  height: 64px;
+  width: auto;
+  left: 0;
+  margin: 15px;
+  cursor: pointer;
 }
 
 .logo-container {
@@ -36,36 +46,76 @@
 }
 
 .logo-fullevent {
-  min-width: 14% !important;
-  margin-left: 44.5vw;
+  display: flex;
+  flex-basis: 100%;
 }
 
 .date-picker {
   display: flex;
   justify-content: center;
-  width: 50%;
+  width: 55%;
+  margin-right: 50px;
+  margin-left: 40px;
 }
 
 .menu-container {
   display: flex;
-  justify-content: center;
-  margin: 5px;
-  width: 10%;
+  justify-content: flex-end;
+  margin-right: 24px;
+  margin-left: 12px;
+  margin-top: 7px;
 }
 
 .menu-fullevent {
-  margin: 16px
+  position: absolute;
+  right: 0;
+  margin-right: 64px;
 }
 
 /* Additional styling for the logo and button */
 .logo {
-  max-width: 100%;
+  margin-left: 3px;
+  max-width: 150px;
   min-width: 4rem;
   height: auto;
 }
 
+.search-container- {
+  margin-top: 8px !important;
+}
+
+.search-container-fullevent {
+  display: none;
+}
+
+.logo-small {
+  width: 50px;
+  height: 100%;
+}
+
+@media screen and (max-width: 600px) {
+  .logo-small {
+    width: 40px;
+    height: 100%;
+  }
+
+  .date-picker {
+    width: 60%;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .arrow-back {
+    height: 48px;
+  }
+}
+
 @media screen and (max-width: 800px) {
   .header {
+    align-items: center;
+  }
+
+  .header-fullevent {
     justify-content: center !important;
   }
 
@@ -74,22 +124,25 @@
   }
 
   .logo-container {
+    z-index: 10;
     display: flex;
-    justify-content: center;
-    margin: 8px;
-    width: 20%;
-    min-width: 20%;
     align-items: center;
+    justify-content: flex-start;
+    margin: unset;
+    min-width: 44px;
+    margin-bottom: 2px;
   }
 
   .logo-fullevent {
-    min-width: unset;
-    margin-left: unset;
+    max-width: 120px;
+    margin-top: 6px;
+    margin-bottom: 8px;
+    margin-right: 4px;
   }
 
   .date-picker {
-
     width: 70%;
+    margin: unset !important;
   }
 
   .button-container {
@@ -100,7 +153,13 @@
     display: none
   }
 
-  .logo {
-    min-width: 5.5rem;
+  .search-container- {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin: unset;
+    margin-bottom: 6px;
+    margin-right: 8px;
+    margin-left: 2px;
   }
 }

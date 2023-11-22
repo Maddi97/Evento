@@ -20,9 +20,7 @@
 
 .coordinates {}
 
-.category {
-    margin: 1rem;
-}
+.category {}
 
 .description {}
 
@@ -36,12 +34,19 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    margin-bottom: 28px;
+    margin-bottom: 8px;
+    align-items: baseline;
 }
 
-.start {}
+.start {
+    display: flex;
+    flex-direction: row;
+}
 
-.end {}
+.end {
+    display: flex;
+    flex-direction: row;
+}
 
 .confirm-buttons {
     display: flex;

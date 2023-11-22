@@ -1,0 +1,7 @@
+.select-crawler {
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}

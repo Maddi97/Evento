@@ -4,7 +4,12 @@
 
 export const environment = {
   production: false,
+  //apiBaseUrl: 'https://backend.staging.evento-leipzig.de'
   apiBaseUrl: "http://localhost:3000"
+
+  /* Für Android App Testing*/
+  //apiBaseUrl: "http://172.20.10.3:3000"
+
 };
 
 /*

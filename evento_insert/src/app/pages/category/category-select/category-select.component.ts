@@ -1,9 +1,9 @@
-import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { CategoryService } from 'src/app/services/category.service';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Category } from 'src/app/models/category';
 import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
+import { Category } from 'src/app/models/category';
+import { CategoryService } from 'src/app/services/category.service';
 
 @Component({
     selector: 'app-category-select',
@@ -41,14 +41,16 @@ export class CategorySelectComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.loadedCategory.currentValue) {
-            this.selectedCategory = this.categories.find(cat => cat._id === changes.loadedCategory.currentValue._id)
-            console.log(this.selectedCategory)
-            if (!this.selectedCategory) {
-                console.error('Input categories id not found. Name: ', changes.loadedCategory.currentValue?.name)
-                return;
-            }
-            this.categoryName.setValue(changes.loadedCategory.currentValue?.name)
-            this.selectedSubcategories.setValue(this.loadedCategory?.subcategories)
+            this.categoryService.categories.subscribe(cat => {
+                this.categories = cat;
+                this.selectedCategory = this.categories.find(cat => cat._id === changes.loadedCategory.currentValue._id)
+                if (!this.selectedCategory) {
+                    console.error('Input categories id not found. Name: ', changes.loadedCategory.currentValue?.name)
+                    return;
+                }
+                this.categoryName.setValue(changes.loadedCategory.currentValue?.name)
+                this.selectedSubcategories.setValue(this.loadedCategory?.subcategories)
+            });
         }
     }
 
@@ -78,7 +80,6 @@ export class CategorySelectComponent implements OnInit, OnChanges {
     }
 
     emitCategory() {
-        console.log(this.selectedSubcategories)
         const cat = {
             _id: this.selectedCategory._id,
             name: this.selectedCategory.name,

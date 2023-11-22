@@ -12,6 +12,8 @@
     </div>
   </div>
   <div class="map-frame">
+    <button *ngIf="isMapDragged" (click)="searchEventsInNewArea()" class="address-search map-dragged-button"> In diesem
+      Bereich suchen</button>
     <div id="map"></div>
   </div>
 </div>

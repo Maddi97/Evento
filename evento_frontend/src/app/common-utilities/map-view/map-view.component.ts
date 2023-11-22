@@ -1,12 +1,20 @@
 import {
   Component,
+  HostListener,
   Input,
   OnChanges,
   OnInit,
   SimpleChanges,
 } from "@angular/core";
+import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
 import * as L from "leaflet";
+import { skip, switchMap, timer } from "rxjs";
+import { clearSearchFilter } from "../logic/search-filter-helper";
+import { SessionStorageService } from "../session-storage/session-storage.service";
 import { PositionService } from "./position.service";
+
+
 @Component({
   selector: "map-view",
   templateUrl: "./map-view.component.html",
@@ -19,6 +27,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Input() currentPosition: Array<Number>;
   @Input() centerMapOnPosition: Array<Number>;
 
+  isMapDragged = false;
   private map;
   private mapInitialized;
   private markerGroup;
@@ -51,7 +60,8 @@ export class MapViewComponent implements OnInit, OnChanges {
   });
 
   constructor(
-    private positionService: PositionService) { }
+    private positionService: PositionService,
+    private sessionStorageService: SessionStorageService) { }
 
   sanitizeInput(value) {
     return value.replace(/ /g, "+");
@@ -62,6 +72,16 @@ export class MapViewComponent implements OnInit, OnChanges {
     //   this.resetCenter();
     // })
     // this.updatePosition(this.positionService.getDefaultLocation());
+    this.sessionStorageService.draggedMapCenterSubject.pipe(
+      skip(1),
+      switchMap(() => {
+        this.isMapDragged = true;
+        // Set the timeout to reset the variable
+        return timer(5000); // 5000 milliseconds (adjust as needed)
+      })
+    ).subscribe(() => {
+      this.isMapDragged = false; // Reset the variable after the timeout
+    });
     this.initMapIfNeeded(); // Use the method to initialize the map
   }
 
@@ -74,7 +94,10 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   searchForLocationInput() {
-
+    if (Capacitor.isNativePlatform()) {
+      Keyboard.hide()
+    }
+    clearSearchFilter(this.sessionStorageService)
     const address = this.sanitizeInput(this.address);
     this.positionService.getPositionByInput(address)
   }
@@ -89,15 +112,7 @@ export class MapViewComponent implements OnInit, OnChanges {
       this.initMapIfNeeded(); // Use the method to initialize the map
 
       if (changes.markerData) {
-        const tiles = L.tileLayer(
-          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          {
-            maxZoom: 19,
-            attribution:
-              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          }
-        );
-        tiles.addTo(this.map);
+
         this.setPositionMarker();
 
         this.setMarkers(this.markerData);
@@ -116,17 +131,25 @@ export class MapViewComponent implements OnInit, OnChanges {
       }
 
       // set blue position marker always to top
+
       this.updateZIndexPosition('blue')
       this.map.on('moveend', (e) => {
-        console.log("zoomed")
         this.updateZIndexPosition('blue')
+        this.loadNewEventsOnDrag()
       })
-    }, 10); // Adjust the delay time in milliseconds
+    }, 200); // Adjust the delay time in milliseconds
   }
   private initMapIfNeeded(): void {
     if (typeof this.map === "undefined") {
       this.initMap();
       this.mapInitialized = true;
+    }
+  }
+
+  @HostListener('touchmove')
+  private hideKeyboard() {
+    if (Capacitor.isNativePlatform()) {
+      Keyboard.hide()
     }
   }
 
@@ -151,13 +174,25 @@ export class MapViewComponent implements OnInit, OnChanges {
       center: this.centerMapOnPosition,
       zoom: this.zoomInput,
     });
-
+    const tiles = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }
+    );
+    tiles.addTo(this.map);
     this.positionMarkerGroup = L.layerGroup().addTo(this.map);
 
     this.markerGroup = L.layerGroup().addTo(this.map);
     this.hoverMarkerGroup = L.layerGroup().addTo(this.map);
 
     this.map.invalidateSize();
+  }
+
+  loadNewEventsOnDrag() {
+    this.sessionStorageService.setMapCenter(this.map.getCenter())
   }
 
   private setHoverMarker(lat, lon): void {
@@ -192,6 +227,12 @@ export class MapViewComponent implements OnInit, OnChanges {
 
     positionMarker.zIndexOffset = this.map.getSize().y * 10000;
   }
+  searchEventsInNewArea() {
+    this.isMapDragged = false;
+    clearSearchFilter(this.sessionStorageService)
+    this.sessionStorageService.emitSearchOnNewCenter()
+
+  }
 
   private setMarkers(markerData: any[]): void {
     this.markerGroup.clearLayers();
@@ -213,7 +254,7 @@ export class MapViewComponent implements OnInit, OnChanges {
             `<div>${marker.name}</div>` +
             //`<div *ngIf="false" class="popup-org-name">${marker.organizerName}</div>` +
             `<div>${marker.address?.street} ${marker.address?.streetNumber}</div>` +
-            `<a href="full-event/${marker._id}">Zum Event!</a>` +
+            `<a href="full-event/${marker._id}">Zur Location</a>` +
             `<hr>` +
             `<a target="_blank" rel="noopener noreferrer" href=${gmapsUrl} >Google Maps</a>`
           );
@@ -221,3 +262,4 @@ export class MapViewComponent implements OnInit, OnChanges {
     });
   }
 }
+

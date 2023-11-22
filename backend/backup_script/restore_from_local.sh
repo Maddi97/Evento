@@ -1,7 +1,7 @@
 ##########################
 USER='root'
-#HOST='h2970439.stratoserver.net'
-HOST='v2202310207729240622.luckysrv.de'
+HOST='h2970439.stratoserver.net'
+#HOST='v2202310207729240622.luckysrv.de'
 ##########################
 
 BACKEND_CONTAINER_LOCAL='evento_backend_container'
@@ -29,6 +29,11 @@ scp -r ../backup_local_dev/db_backup/. ${USER}@${HOST}:${DB_BACKUP_PATH}/${BACKU
 # COPY DB INTO MONGO DB DOCKER ON SERVER
 ssh "${USER}@${HOST}" "docker exec mongodb bash -c 'mkdir -p backup/${BACKUP_PATH_MONGO}/${DB_NAME}'"
 ssh "${USER}@${HOST}" ""docker cp ${DB_BACKUP_PATH}/${BACKUP_PATH_MONGO}/${DB_NAME}/. mongodb:/backup/${BACKUP_PATH_MONGO}/""
+
+# migrate backup to db
+ssh "${USER}@${HOST}" "docker exec mongodb bash -c 'mongorestore --gzip --uri mongodb://mongodb:27017/db_evento /backup/${BACKUP_PATH_MONGO}/db_evento'"
+ssh "${USER}@${HOST}" "docker exec mongodb bash -c 'rm -f -r /backup/${BACKUP_PATH_MONGO}/'"
+
 
 #########
 # IMAGES

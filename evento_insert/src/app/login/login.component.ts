@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { WebService } from "../services/web.service";
-import { TokenStorageService } from "../services/token-storage.service";
-import { NgxSpinnerService } from "ngx-spinner";
 import { Router } from "@angular/router";
+import { NgxSpinnerService } from "ngx-spinner";
+import { TokenStorageService } from "../services/sessionStorage/token-storage.service";
+import { WebService } from "../services/web.service";
 
 @Component({
   selector: "app-login",
@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
     private tokenStorage: TokenStorageService,
     private spinner: NgxSpinnerService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     if (this.tokenStorage.getToken()) {

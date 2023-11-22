@@ -10,6 +10,9 @@ const mongoose = require("./config/mongoose");
 const mongoSanitize = require("express-mongo-sanitize");
 //const xss = require("xss-clean")
 const allowedOrigins = [
+  "http://172.20.10.3",
+  "http://172.20.10.3:3000",
+  "http://172.20.10.3:4200",
   "capacitor://localhost",
   "ionic://localhost",
   "http://localhost",
@@ -34,6 +37,7 @@ const corsOptions = {
     if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
     } else {
+      console.log(origin)
       callback(new Error("Origin not allowed by CORS"));
     }
   },
@@ -64,7 +68,13 @@ app.use(emailRouter);
 
 const authRouter = require("./routes/auth.routes");
 app.use(authRouter);
+
+const crawlerRouter = require("./routes/crawler.routes");
+app.use(crawlerRouter);
+
 app.set("trust proxy", 1);
+
+
 
 // startup our app at http://localhost:3000
 

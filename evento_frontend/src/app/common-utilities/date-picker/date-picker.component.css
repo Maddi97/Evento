@@ -9,7 +9,7 @@
   flex-direction: row;
   align-items: center;
   scroll-behavior: smooth;
-      /* Add smooth scroll behavior */
+  /* Add smooth scroll behavior */
   /* transition: transform 1s linear; */
   padding-top: 10px;
 }
@@ -21,8 +21,10 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .scroll {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .icon {
@@ -44,8 +46,13 @@
   .icon-left {
     display: none;
   }
+
   .icon-right {
     display: none;
+  }
+
+  .scroll {
+    padding: unset;
   }
 }
 
@@ -61,9 +68,9 @@
     margin: 0.7rem;
   }
 
-.view-more-icon {
-  width: 1.5rem !important;
-}
+  .view-more-icon {
+    width: 1.5rem !important;
+  }
 }
 
 .add-text {
@@ -83,9 +90,9 @@
 
 @media screen and (min-width: 640px) {
   .view-more-icon:hover {
-      cursor: pointer;
-      background-color: rgb(65 180 233 / 81%);
-    }    
+    cursor: pointer;
+    background-color: rgb(65 180 233 / 81%);
+  }
 }
 
 .events-day-date {

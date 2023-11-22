@@ -14,8 +14,8 @@ import { SettingsModule } from './settings/settings.module';
 
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { GoogleTagManagerModule } from 'angular-google-tag-manager';
 import { CommonUtilitiesModule } from './common-utilities/common-utilities.module';
-
 
 @NgModule({
   declarations: [
@@ -39,10 +39,11 @@ import { CommonUtilitiesModule } from './common-utilities/common-utilities.modul
     CategoriesModule,
     SettingsModule,
     CommonUtilitiesModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    GoogleTagManagerModule
 
   ],
-  providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }],
+  providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }, {provide: 'googleTagManagerId', useValue: 'GTM-KHTB234N'}],
   schemas: [],
   exports: [],
   bootstrap: [AppComponent]

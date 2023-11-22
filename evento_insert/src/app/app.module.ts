@@ -1,49 +1,54 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EventViewComponent } from './pages/event/event-view/event-view.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { SelectionViewComponent } from './pages/selection-view/selection-view.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { MatDialogModule } from '@angular/material/dialog';
+import { SelectionViewComponent } from './pages/selection-view/selection-view.component';
 
 
 
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { authInterceptorProviders } from './services/auth.interceptor';
+import { HttpClientModule } from '@angular/common/http';
+import { authInterceptorProviders } from './services/auth/auth.interceptor';
 
 import { OrganizerViewComponent } from './pages/organizer/organizer-view/organizer-view.component';
 
-import { MatNativeDateModule } from '@angular/material/core';
+import { CommonModule, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material/core';
+import { CustomDialogComponent } from './custom-dialog/custom-dialog.component';
+import { LoginComponent } from './login/login.component';
 import { CategorySelectComponent } from './pages/category/category-select/category-select.component';
 import { CategoryViewComponent } from './pages/category/category-view/category-view.component';
-import { MapViewComponent } from './pages/map/map-view/map-view.component'
-import { CommonModule, HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { OrganizerFormComponent } from './pages/organizer/organizer-form/organizer-form.component';
+import { EventCrawledComponent } from './pages/crawl-events/atom-event-crawled/event-crawled.component';
+import { CrawlEventsComponent } from './pages/crawl-events/crawl-events.component';
+import { CrawledEventsToEventComponent } from './pages/crawl-events/crawled-events-to-event/crawled-events-to-event.component';
 import { EventFormComponent } from './pages/event/event-form/event-form.component';
-import { LoginComponent } from './login/login.component';
-import { AuthGuardService } from './services/auth.guard.service';
-import { CustomDialogComponent } from './custom-dialog/custom-dialog.component';
+import { MapViewComponent } from './pages/map/map-view/map-view.component';
+import { OrganizerFormComponent } from './pages/organizer/organizer-form/organizer-form.component';
+import { AuthGuardService } from './services/auth/auth.guard.service';
+import { AutocompleteOrganizerComponent } from './atoms/autocomplete-organizer/autocomplete-organizer.component';
+import { SelectionListComponent } from './atoms/selection-list/selection-list.component';
 
 
 @NgModule({
@@ -58,7 +63,12 @@ import { CustomDialogComponent } from './custom-dialog/custom-dialog.component';
         OrganizerFormComponent,
         EventFormComponent,
         LoginComponent,
-        CustomDialogComponent
+        CustomDialogComponent,
+        CrawlEventsComponent,
+        EventCrawledComponent,
+        CrawledEventsToEventComponent,
+        AutocompleteOrganizerComponent,
+        SelectionListComponent
     ],
     imports: [
         MatSnackBarModule,

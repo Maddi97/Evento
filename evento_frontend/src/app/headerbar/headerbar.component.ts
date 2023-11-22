@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core";
 import { Location } from "@angular/common";
+import { Component, HostListener, OnInit } from "@angular/core";
+import { NavigationEnd, Router } from "@angular/router";
 import * as moment from "moment";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { filter } from "rxjs";
+import { subDomainUrls } from "../app.component";
 import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
 
 @Component({
@@ -12,7 +13,8 @@ import { SessionStorageService } from "../common-utilities/session-storage/sessi
 })
 export class HeaderbarComponent implements OnInit {
   searchText = "";
-  fullEventPage = false;
+  isNotEventsPage = false;
+  getScreenWidth;
   filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({
     hour: 0,
     minute: 0,
@@ -27,15 +29,27 @@ export class HeaderbarComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.getScreenWidth = window.innerWidth;
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        if (event.url.includes("full-event")) {
-          this.fullEventPage = true;
-        } else {
-          this.fullEventPage = false;
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+      )
+      .subscribe({
+        next: (event: NavigationEnd) => {
+          this.isNotEventsPage = false;
+          subDomainUrls.forEach(subdomain => {
+            if (event.url.includes(subdomain)) {
+              this.isNotEventsPage = true;
+            }
+          })
+        },
+        error: (error) => {
+          // Handle error here
+          console.error('An error occurred while fetching categories', error);
+        },
+        complete: () => {
         }
-      });
+      })
   }
 
   navBack() {
@@ -49,10 +63,14 @@ export class HeaderbarComponent implements OnInit {
     this.sessionStorageService.setMapViewData(false);
   }
   getClassOnFullEvent() {
-    if (this.fullEventPage) {
+    if (this.isNotEventsPage) {
       return 'fullevent'
     }
     else return ''
+  }
+  @HostListener("window:resize", ["$event"])
+  getScreenSize(event?) {
+    this.getScreenWidth = window.innerWidth;
   }
 }
 

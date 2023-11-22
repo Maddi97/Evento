@@ -3,6 +3,28 @@ button:focus {
 }
 
 .menu-button {
-    box-shadow: 0 0px 16px -5px #1eabb7;
-    border-radius: 7px;
+    width: 29px;
+    height: 28px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.menu-button:active {
+    background-color: black;
+}
+
+
+
+.mat-mdc-button>.mat-icon {
+    margin-right: unset !important;
+}
+
+.menu-icon {
+    font-size: 30px !important;
+    height: unset !important;
+    width: unset !important;
+}
+
+.menu-icon:active {
+    color: white;
 }

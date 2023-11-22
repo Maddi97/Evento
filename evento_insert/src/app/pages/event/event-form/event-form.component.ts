@@ -9,23 +9,22 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
-import { FormControl, FormBuilder, Validators } from "@angular/forms";
-import { catchError, map, share } from "rxjs/operators";
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import * as moment from "moment";
+import { catchError, map } from "rxjs/operators";
 
 // import models
-import { Organizer } from "../../../models/organizer";
-import { Category, Subcategory } from "../../../models/category";
+import { Category } from "../../../models/category";
 import { Event } from "../../../models/event";
+import { Organizer } from "../../../models/organizer";
 
 // import services
-import { NominatimGeoService } from "../../../services/nominatim-geo.service";
-import { OrganizerService } from "../../../services/organizer.service";
+import { NominatimGeoService } from "../../../services/location/nominatim-geo.service";
+import { OrganizerService } from "../../../services/organizer.web.service";
 
 // import helper functions
-import { getEventFormTemplate, getEventFromForm } from "../event.helpers";
-import * as log from "loglevel";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { getEventFormTemplate, getEventFromForm } from "../event.helpers";
 
 @Component({
   selector: "app-event-form",
@@ -35,7 +34,6 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 export class EventFormComponent implements OnInit, OnChanges {
   @Input() eventIn: Event;
   @Input() organizersIn: Organizer[];
-
   @Output() updateEvent: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() addNewEvent: EventEmitter<Event> = new EventEmitter<Event>();
 
@@ -58,11 +56,13 @@ export class EventFormComponent implements OnInit, OnChanges {
     lon: "",
   };
   isHot = false
+  hasUnkownOpeningTimes = false;
   isPromotion = false;
   isPermanent = "false";
 
   organizerName = new FormControl("", [Validators.required]);
   filteredOrganizers: Organizer[];
+
   image: any;
   eventForm;
   constructor(
@@ -80,6 +80,9 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.organizerName.valueChanges.subscribe((oNameStart) =>
       this.filterOrganizerByName(oNameStart)
     );
+    if (this.eventIn !== undefined) {
+      this.setEventForm();
+    }
   }
 
   ngOnChanges(): void {
@@ -99,7 +102,8 @@ export class EventFormComponent implements OnInit, OnChanges {
       this.times,
       this.updateEventId,
       this.isHot,
-      this.isPromotion
+      this.isPromotion,
+      this.hasUnkownOpeningTimes,
     );
     const address = event.address;
     const formdata: FormData = new FormData();
@@ -117,11 +121,7 @@ export class EventFormComponent implements OnInit, OnChanges {
         .get_geo_data(address.city, address.street, address.streetNumber)
         .pipe(
           map((geoData) => {
-            if (Object.keys(geoData).length < 1) {
-              throw new Error("No coordinates found to given address");
-            }
-            event.geoData.lat = geoData[0].lat;
-            event.geoData.lon = geoData[0].lon;
+            event.geoData = geoData
             this.addNewEvent.emit(event);
           }),
           catchError((err) => {
@@ -169,7 +169,9 @@ export class EventFormComponent implements OnInit, OnChanges {
       this.times,
       this.updateEventId,
       this.isHot,
-      this.isPromotion
+      this.isPromotion,
+      this.hasUnkownOpeningTimes,
+
     );
     const address = event.address;
 
@@ -187,11 +189,7 @@ export class EventFormComponent implements OnInit, OnChanges {
         .get_geo_data(address.city, address.street, address.streetNumber)
         .pipe(
           map((geoData) => {
-            if (Object.keys(geoData).length < 1) {
-              throw new Error("No coordinates found to given address");
-            }
-            event.geoData.lat = geoData[0].lat;
-            event.geoData.lon = geoData[0].lon;
+            event.geoData = geoData;
             this.updateEvent.emit(event);
           }),
           catchError((err) => {
@@ -232,28 +230,28 @@ export class EventFormComponent implements OnInit, OnChanges {
   setEventForm(): void {
     // prepare dates
     this.updateEventId = this.eventIn._id;
-
-    const start: any = moment(this.eventIn.date.start).toDate();
-    const end: any = moment(this.eventIn.date.end).toDate();
+    const start: any = this.eventIn?.date?.start ? moment(this.eventIn.date.start).toDate() : '';
+    const end: any = this.eventIn?.date?.end ? moment(this.eventIn.date.end).toDate() : '';
     const organizer = this.organizersIn.find(
       (org) => org._id === this.eventIn._organizerId
     );
     this.organizerName.setValue(organizer.name);
     this.updateOrganizerId = organizer._id;
+    const streetName = this.eventIn.address?.street ? this.eventIn.address.street + " " + this.eventIn.address?.streetNumber : ''
 
     const eventFormValues = {
-      name: this.eventIn.name,
-      city: this.eventIn.address.city,
-      plz: this.eventIn.address.plz,
+      name: this.eventIn.name || '',
+      city: this.eventIn.address.city || '',
+      plz: this.eventIn.address.plz || '',
       street:
-        this.eventIn.address.street + " " + this.eventIn.address.streetNumber,
-      streetNumber: this.eventIn.address.streetNumber,
-      country: this.eventIn.address.country,
-      description: this.eventIn.description,
-      link: this.eventIn.link,
+        streetName,
+      streetNumber: this.eventIn.address.streetNumber || '',
+      country: this.eventIn.address.country || '',
+      description: this.eventIn.description || '',
+      link: this.eventIn.link || '',
       permanent: String(this.eventIn.permanent),
-      price: this.eventIn.price,
-      coord: this.eventIn.geoData.lat + ", " + this.eventIn.geoData.lon,
+      price: this.eventIn.price || '',
+      coord: this.eventIn.geoData.lat || '' + ", " + this.eventIn.geoData.lon || '',
     }
     if (!this.eventIn.permanent) {
       eventFormValues['start'] = start;
@@ -263,13 +261,14 @@ export class EventFormComponent implements OnInit, OnChanges {
       this.eventForm.removeControl("start");
       this.eventForm.removeControl("end");
     }
-    console.log(eventFormValues)
+    this.times.start.setValue(this.eventIn.times.start)
+    this.times.end.setValue(this.eventIn.times.end)
 
     this.eventForm.setValue(eventFormValues);
     this.category = this.eventIn.category;
     this.isHot = this.eventIn.hot
+    this.hasUnkownOpeningTimes = this.eventIn.hasUnkownOpeningTimes;
     this.isPromotion = this.eventIn.promotion;
-
   }
 
   insertOrgInfo(org: Organizer) {
@@ -279,6 +278,7 @@ export class EventFormComponent implements OnInit, OnChanges {
       .get("street")
       .setValue(org.address.street + " " + org.address.streetNumber);
     // set category to organizers category but leave subcat empty
+    this.eventForm.get("description").setValue(org.description)
     const cat = org.category;
     cat.subcategories = [];
     this.category = cat;
@@ -301,6 +301,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.times.end.setValue("00:00");
     this.inputImage.nativeElement.value = "";
     this.isHot = false;
+    this.hasUnkownOpeningTimes = false;
     this.isPromotion = false;
   }
 

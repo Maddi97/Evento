@@ -146,6 +146,7 @@ app-event-tile-list {
   padding-right: 20px;
   padding-left: 20px;
   margin-bottom: 1rem;
+  margin-bottom: calc(var(--safe-area-inset-bottom));
   width: fit-content;
   align-self: center;
   background-color: black;

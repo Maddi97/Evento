@@ -19,12 +19,13 @@
 /*}*/
 
 .container {
-  width: 80%;
+  width: 90%;
 }
 
 @media screen and (max-width: 800px) {
   .container {
     width: 90%;
+    padding: unset;
   }
 }
 

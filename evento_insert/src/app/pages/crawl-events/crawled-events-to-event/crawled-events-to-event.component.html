@@ -1,0 +1,10 @@
+<div *ngIf="shouldInputEvent" class="event-input">
+    <app-event-crawled [eventIn]="inputEvent"></app-event-crawled>
+    <app-event-form [organizersIn]="organizerIn" (addNewEvent)="addEventCheckDuplicate($event)"
+        [eventIn]=" inputEvent"></app-event-form>
+</div>
+<div *ngIf="shouldInputOrganizer" class="organizer-input">
+    <app-event-crawled [organizerIn]="inputOrganizer"></app-event-crawled>
+    <app-organizer-form [organizerIn]="inputOrganizer" [allOrganizerIn]="organizerIn"
+        (addNewOrganizer)="addNewOrganizer($event)" (updateOrganizer)="updateOrganizer($event)"></app-organizer-form>
+</div>

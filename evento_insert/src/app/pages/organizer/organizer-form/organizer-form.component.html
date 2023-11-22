@@ -1,7 +1,14 @@
 <div class="form-container">
     <form [formGroup]="organizerForm">
+        <div class="radio-group-organizer-is-alias">
+            <label id="permanent-radio-group-label">Is Organizer new or an alias?</label>
+            <mat-radio-group formControlName="isOrganizerAlias">
+                <mat-radio-button value="true">Alias</mat-radio-button>
+                <mat-radio-button value="false">New Organizer</mat-radio-button>
+            </mat-radio-group>
+        </div>
 
-        <div class="organizer-name">
+        <div class="organizer-name" *ngIf="organizerForm.get('isOrganizerAlias').value === 'false'">
             <mat-form-field appearance="fill">
                 <mat-label>Organizer</mat-label>
                 <input matInput #target required formControlName="name"
@@ -11,8 +18,19 @@
                     *ngIf="organizerForm.get('name').hasError('minlength') && !organizerForm.get('name').hasError('required')">
                     Organizer minlength is 3
                 </mat-error>
-
             </mat-form-field>
+            <div><app-selection-list [listTitle]="'Alias'" [namesList]="organizerIn?.alias"
+                    (updatedNamesList)="organizerIn.alias = $event"></app-selection-list></div>
+        </div>
+
+        <div class="organizer-alias" *ngIf="organizerForm.get('isOrganizerAlias').value === 'true'">
+            <app-autocomplete-organizer [organizersIn]="allOrganizerIn"
+                (emitOrganizer)="setOrganizerFromSelection($event)"></app-autocomplete-organizer>
+            <p *ngIf="organizerIn">Current Name: {{organizerIn.name}} </p>
+            <p *ngIf="organizerIn && organizerIn.alias && organizerIn.alias.length > 0">
+                <app-selection-list [listTitle]="'Alias'" [namesList]="organizerIn?.alias"
+                    (updatedNamesList)="organizerIn.alias = $event"></app-selection-list>
+            </p>
         </div>
 
         <div class="address">
@@ -147,15 +165,14 @@
             <div class="image-upload text">Select event image: <input class="image-upload input" type='file'
                     #imageUpload (input)=iconChosen($event)></div>
         </div>
-
     </form>
 
 
     <div class="confirm-buttons">
         <button mat-raised-button color="primary"
-            (click)="updateOrganizerId !== '' ?  this.emitUpdate(organizerForm) : emitAddOrganizer(organizerForm); target.value = ''"
+            (click)="updateOrganizerId  ?  this.emitUpdate(organizerForm) : emitAddOrganizer(organizerForm); target.value = ''"
             [disabled]="checkDisabled()">
-            {{ updateOrganizerId !== '' ? 'Update' : 'Submit'}}
+            {{ updateOrganizerId ? 'Update' : 'Submit'}}
         </button>
         <button mat-raised-button color="accent" (click)="nullFormField()">
             Clear

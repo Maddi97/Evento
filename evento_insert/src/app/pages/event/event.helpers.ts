@@ -1,9 +1,9 @@
 import { FormControl, Validators } from '@angular/forms';
+import * as moment from 'moment';
 import { Event } from '../../models/event';
 import { Address } from '../../models/organizer';
-import * as moment from 'moment';
 
-export function getEventFromForm(eventForm, organizer, category, times, updateEventId, hot, promotion) {
+export function getEventFromForm(eventForm, organizer, category, times, updateEventId, hot, promotion, hasUnkownOpeningTimes) {
     const event = new Event()
     const address = new Address()
     event._organizerId = organizer._id
@@ -32,6 +32,7 @@ export function getEventFromForm(eventForm, organizer, category, times, updateEv
     event.permanent = eventForm.get('permanent').value;
     event.hot = hot;
     event.promotion = promotion;
+    event.hasUnkownOpeningTimes = hasUnkownOpeningTimes;
 
     event.category = category;
     event.date = {
@@ -69,7 +70,6 @@ export function getEventFormTemplate() {
         start: new FormControl('', [Validators.required]),
         end: new FormControl('', [Validators.required]),
         coord: new FormControl('', []),
-
     }
 }
 

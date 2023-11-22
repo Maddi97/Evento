@@ -1,18 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { DomSanitizer } from "@angular/platform-browser";
 import * as moment from "moment";
 import { Observable, forkJoin, of } from "rxjs";
-import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
+import { catchError, concatMap, map, switchMap } from "rxjs/operators";
 import { CustomDialogComponent } from "src/app/custom-dialog/custom-dialog.component";
 import { Category } from "src/app/models/category";
 import { Organizer } from "src/app/models/organizer";
 import { CategoryService } from "src/app/services/category.service";
-import { EventsService } from "src/app/services/events.service";
-import { OrganizerService } from "src/app/services/organizer.service";
+import { EventsService } from "src/app/services/events.web.service";
+import { FileUploadService } from "src/app/services/files/file-upload.service";
+import { OrganizerService } from "src/app/services/organizer.web.service";
 import { Event } from "../../../models/event";
-import { FileUploadService } from "../../../services/file-upload.service";
+import { EventsObservableService } from '../../../services/events.observable.service';
+import { SnackbarService } from "../../../services/utils/snackbar.service";
 
 @Component({
   selector: "app-event-view",
@@ -32,17 +33,19 @@ export class EventViewComponent implements OnInit {
   category$: Observable<Category[]>;
   organizer$: Observable<Organizer[]>;
   event$: Observable<Event[]>;
-
   eventImagePath = "images/eventImages/";
-
+  deleteEvent$;
   constructor(
     private categoryService: CategoryService,
     private organizerService: OrganizerService,
     private eventService: EventsService,
+    private eventObservableService: EventsObservableService,
+    private snackbar: SnackbarService,
+    public dialog: MatDialog,
     private fileService: FileUploadService,
     private sanitizer: DomSanitizer,
-    private _snackbar: MatSnackBar,
-    public dialog: MatDialog
+
+
   ) { }
 
   ngOnInit(): void {
@@ -85,73 +88,22 @@ export class EventViewComponent implements OnInit {
         }),
         catchError((error) => {
           console.error('Error checking duplicate', error);
-          this.openSnackBar(error.message, "error")
+          this.snackbar.openSnackBar(error.message, "error")
           return of(null); // Continue with null eventImagePath
         }),
       ).subscribe();
   }
 
   addNewEvent(event) {
-    // set _id undefined otherwise error occurs
-    event._id = undefined;
-
-    this.eventService
-      .createEvent(event)
-      .pipe(
-        switchMap((createEventResponse) => {
-          event._id = createEventResponse._id;
-          const formdata = event.fd;
-          delete event.fd;
-          if (formdata !== undefined) {
-            const fullEventImagePath =
-              this.eventImagePath + createEventResponse._id;
-            formdata.append("eventImagePath", fullEventImagePath);
-            return this.fileService.uploadEventImage(formdata).pipe(
-              catchError((uploadImageError) => {
-                console.error('Error uploading event image:', uploadImageError);
-                this.openSnackBar(uploadImageError.message, "error")
-                return of(null); // Continue with null eventImagePath
-              }),
-              tap((uploadImageResponse) => {
-                if (uploadImageResponse) {
-                  event.eventImagePath = uploadImageResponse.eventImage.path;
-                }
-              })
-            );
-          }
-          return of(null); // Continue with null eventImagePath
-        }),
-        switchMap((eventWithImagePath) => {
-          return this.eventService.updateEvent(
-            event._organizerId,
-            event._id,
-            event
-          ).pipe(
-            catchError((updateEventError) => {
-              console.error('Error updating event:', updateEventError);
-              this.openSnackBar(updateEventError.message, "error")
-              return of(null); // Continue without showing success message
-            }),
-            tap(() => {
-              this.openSnackBar(
-                "Successfully added Event: " + event.name,
-                "success"
-              );
-            })
-          );
-        })
+    this.eventObservableService.addNewEvent(event).then((event) => {
+      this.snackbar.openSnackBar(
+        "Successfully added Event: " + event.name,
+        "success"
       )
-      .subscribe(
-        () => {
-          // Success
-        },
-        (error) => {
-          console.error('Error:', error);
-          this.openSnackBar(error.message, "error")
+    }).catch((error) => {
+      this.snackbar.openSnackBar(error.message, "error")
 
-          // Handle error here, e.g., show an error message to the user.
-        }
-      );
+    })
   }
 
   updateEvent(event) {
@@ -179,7 +131,7 @@ export class EventViewComponent implements OnInit {
               )
               .subscribe();
           }
-          this.openSnackBar(
+          this.snackbar.openSnackBar(
             "Successfully updated Event: " + event.name,
             "success"
           );
@@ -211,8 +163,15 @@ export class EventViewComponent implements OnInit {
     this.eventService.getEventsOnDate(date);
   }
 
-  deleteEvent(organizerId: string, eventId: string) {
-    this.eventService.deletEvent(organizerId, eventId).subscribe();
+  deleteEvent(event: Event) {
+     if (confirm('Are you sure to delete ' + event.name + ' ?')) {
+            this.deleteEvent$ = this.eventService.deletEvent(event._organizerId, event._id)
+            this.deleteEvent$.pipe(
+                concatMap(
+                    () => this.fileService.deleteFile(event.eventImagePath)
+                )
+            ).subscribe();
+        }
   }
 
   timeSince(date) {
@@ -276,15 +235,6 @@ export class EventViewComponent implements OnInit {
     this.eventService.getActualEventsOnCategory(category);
   }
 
-  openSnackBar(message, state) {
-    this._snackbar.open(message, "", {
-      duration: 2000,
-      verticalPosition: "top",
-      horizontalPosition: "center",
-      panelClass: state !== "error" ? "green-snackbar" : "red-snackbar",
-    });
-  }
-
   downloadImage() {
     this.allFilteredEvents.forEach((event) => {
       let imageURL = null;
@@ -312,7 +262,7 @@ export class EventViewComponent implements OnInit {
       if (result) {
         this.addNewEvent(event);
       } else {
-        this.openSnackBar("Event not added " + event.name, "error");
+        this.snackbar.openSnackBar("Event not added " + event.name, "error");
       }
     });
   }

@@ -12,9 +12,10 @@
             </mat-autocomplete>
             <mat-error *ngIf="organizerName.hasError('required')">Organizer is required</mat-error>
         </mat-form-field>
+        <div><app-selection-list [listTitle]="'Alias'" [namesList]="filteredOrganizers[0]?.alias"
+                (updatedNamesList)="filteredOrganizers[0].alias = $event"></app-selection-list></div>
+
     </div>
-
-
     <form class="form-container" [formGroup]="eventForm">
 
         <div class="event-name">
@@ -115,6 +116,12 @@
                 <mat-radio-button value="true">Yes</mat-radio-button>
                 <mat-radio-button value="false">No</mat-radio-button>
             </mat-radio-group>
+            <div *ngIf="this.isPermanent === 'true'">
+                Permanent, but not 24/open?
+                <mat-checkbox [checked]="hasUnkownOpeningTimes"
+                    (change)="hasUnkownOpeningTimes = !hasUnkownOpeningTimes">
+                </mat-checkbox>
+            </div>
         </div>
 
         <div class="is-permanent" *ngIf="isPermanent === 'false'">
@@ -136,7 +143,7 @@
 
         <div class="time">
             <div class="start">
-                <p>Start :</p>
+                <span>Start :</span>
                 <div class="ngx-timepicker-field-example">
 
                     <ngx-timepicker-field #startTime [formControl]="times.start" [format]="24" [defaultTime]="'00:00'">
@@ -144,7 +151,7 @@
                 </div>
             </div>
             <div class="end">
-                <p>Ende:</p>
+                <span>Ende:</span>
                 <div class="ngx-timepicker-field-example">
                     <ngx-timepicker-field #endTime [formControl]="times.end" [format]="24" [defaultTime]="'00:00'">
                     </ngx-timepicker-field>
@@ -168,13 +175,16 @@
     </form>
 
     <div class="confirm-buttons">
-        <button mat-raised-button color="primary" (click)="updateEventId !== '' ? emitUpdateEvent() : emitAddNewEvent()"
+        <button mat-raised-button color="primary" (click)="updateEventId ? emitUpdateEvent() : emitAddNewEvent()"
             [disabled]="checkDisabled()">
-            {{ updateEventId !== '' ? 'Update' : 'Submit'}}
+            {{ updateEventId ? 'Update' : 'Submit'}}
         </button>
         <button mat-raised-button color="accent" (click)="nullFormField()">
             Clear
         </button>
+    </div>
+    <div class="crawl-events">
+
     </div>
 
 </div>

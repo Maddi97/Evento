@@ -1,14 +1,13 @@
-
 .bg-image-1 {
   position: fixed;
   overflow: hidden;
   z-index: -1;
-  height: 20rem;
-  width: 20rem;
+  height: 27rem;
+  width: 31rem;
   top: -108px;
-  right: -30px;
+  right: -60px;
   background: url("../assets/design-elements/pattern1-pink-ink.png") 0 0 no-repeat;
-  background-size: 20rem;
+  background-size: 32rem;
   transform: rotate(150deg);
   opacity: 0.9;
 }
@@ -16,10 +15,10 @@
 @media screen and (max-width: 800px) {
   .bg-image-1 {
     z-index: -1;
-    height: 20rem;
-    width: 20rem;
-    background-size: 12rem;
-    right: 0;
+    height: 28rem;
+    width: 38rem;
+    background-size: 25rem;
+    right: -40px;
   }
 }
 
@@ -46,4 +45,3 @@
     bottom: -9rem;
   }
 }
-

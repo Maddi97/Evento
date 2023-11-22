@@ -1,9 +1,10 @@
-import { Component, HostListener, OnInit } from "@angular/core";
+import { Component, HostListener, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import * as moment from 'moment-timezone';
 import { NgxSpinnerService } from "ngx-spinner";
-import { delay, tap } from "rxjs";
+import { Subscription, delay, tap } from "rxjs";
 import { CategoriesService } from "../categories/categories.service";
+import { PositionService } from "../common-utilities/map-view/position.service";
 import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
 import { Category, Subcategory } from "../models/category";
 import { Event } from "../models/event";
@@ -15,16 +16,16 @@ import { EventService } from "./event.service";
   templateUrl: "./events.component.html",
   styleUrls: ["./events.component.css"],
 })
-export class EventsComponent implements OnInit {
+export class EventsComponent implements OnInit, OnDestroy {
   public isDropdown = false;
 
   //Observables
-  private events$: Array<any> = [];
-  private categories$;
+  private subscriptions$: Array<Subscription> = [];
+
   // equal limit at start == start limit
   actualLoadEventLimit;
-  startLoadEventLimit = 24;
-  offset = 19;
+  startLoadEventLimit = 16;
+  offset = 14;
 
   fetchEventsCompleted = false;
   fetchParamsCompleted = false;
@@ -38,6 +39,9 @@ export class EventsComponent implements OnInit {
 
   subcategoryList: Subcategory[] = [];
   hot = { name: "hot" };
+
+  searchString: string = ''
+
   loadMore = false;
 
   isLoadMoreClicked = false
@@ -64,7 +68,8 @@ export class EventsComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private geoService: NominatimGeoService,
     private categoriesService: CategoriesService,
-    private sessionStorageService: SessionStorageService
+    private sessionStorageService: SessionStorageService,
+    private positionService: PositionService
   ) {
     this.actualLoadEventLimit = this.startLoadEventLimit;
     this.mapView = this.sessionStorageService.getMapViewData();
@@ -73,13 +78,22 @@ export class EventsComponent implements OnInit {
       this.mapView = false;
     }
 
-    this.mapView$ = this.sessionStorageService
+    const mapView$ = this.sessionStorageService
       .mapViewChanges()
       .subscribe((data) => {
         this.mapView = data;
       });
+    this.subscriptions$.push(mapView$)
     this.spinner.show()
   }
+  ngOnDestroy(): void {
+    this.subscriptions$.forEach((subscription$) => {
+      if (subscription$) {
+        subscription$.unsubscribe();
+      }
+    })
+  }
+
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
     this.spinner.show();
@@ -87,19 +101,55 @@ export class EventsComponent implements OnInit {
 
     //this.setupPositionService();
     this.setupCategoriesService();
+    this.setupSearchFilterSubscription();
 
+  }
+
+  private setupSearchFilterSubscription() {
+    const search$ = this.sessionStorageService.searchStringSubject.subscribe(
+      (searchString: string) => {
+        this.spinner.show();
+        this.searchString = searchString;
+        const req = { searchString: searchString, limit: this.actualLoadEventLimit, categories: this.categoryList.map(cat => cat._id) }
+        const event$ = this.eventService.getEventsBySearchString(req).subscribe(
+          {
+            next: (events) => {
+              if (!searchString) {
+                this.applyFilters()
+              }
+              else { this.handlyEventListLoaded(events) }
+            },
+            error: (error) => { console.log(error) },
+            complete: () => { this.onFetchEventsCompleted() }
+          });
+        this.subscriptions$.push(event$)
+      }
+    )
+    this.subscriptions$.push(search$);
   }
 
   private setupPositionService(): void {
-    this.sessionStorageService.getLocation().pipe(
+    if (!this.sessionStorageService.getUserLocationFromStorage()) {
+      this.positionService.getPositionByLocation()
+    }
+    const storageLocationObservation$ = this.sessionStorageService.getLocation().pipe(
     ).subscribe(position => {
-      this.currentPosition = position;
-      this.applyFilters()
+      if (!this.searchString) {
+        this.currentPosition = position;
+        this.applyFilters()
+      }
     });
+    const newCenter$ = this.sessionStorageService.searchNewCenterSubject.subscribe(
+      (mapCenterPosition) => {
+        this.loadMoreEvents(mapCenterPosition)
+      }
+    )
+    this.subscriptions$.push(storageLocationObservation$, newCenter$)
+
   }
 
   private setupCategoriesService(): void {
-    this.categoriesService.getAllCategories().subscribe(
+    const categories$ = this.categoriesService.getAllCategories().subscribe(
       {
         next: (categories) => {
           this.categoryList = categories;
@@ -117,10 +167,11 @@ export class EventsComponent implements OnInit {
         }
       }
     )
+    this.subscriptions$.push(categories$);
   }
 
   private setupQueryParams(): void {
-    this._activatedRoute.queryParams.pipe(
+    const params$ = this._activatedRoute.queryParams.pipe(
       tap(() => {
         this.spinner.show();
       }),
@@ -130,7 +181,6 @@ export class EventsComponent implements OnInit {
         next: (params) => {
           this.fetchEventsCompleted = false;
           this.filteredDate = moment(params.date).tz('Europe/Berlin');
-
           const category = params.category;
           this.filteredCategory = category
             ? this.categoryList.find(c => c._id === category)
@@ -148,9 +198,10 @@ export class EventsComponent implements OnInit {
         },
         error: (error) => { console.log(error) },
       });
+    this.subscriptions$.push(params$);
   }
 
-  applyFilters() {
+  applyFilters(mapCenter = undefined) {
     // Request backend for date, category and subcategory filter
     // filter object
     //format date because in post request it is stringified and formatted, this could change the date
@@ -159,7 +210,7 @@ export class EventsComponent implements OnInit {
       cat: [this.filteredCategory],
       subcat: this.filteredSubcategories,
       limit: this.actualLoadEventLimit,
-      currentPosition: this.currentPosition,
+      currentPosition: mapCenter ? mapCenter : this.currentPosition,
     };
     let event$;
     // if category is not hot
@@ -183,7 +234,7 @@ export class EventsComponent implements OnInit {
           complete: () => { this.onFetchEventsCompleted() }
         });
     }
-    this.events$.push(event$)
+    this.subscriptions$.push(event$)
   }
   get_distance_to_current_position(event) {
     // get distance
@@ -194,12 +245,12 @@ export class EventsComponent implements OnInit {
     return dist;
   }
 
-  loadMoreEvents() {
+  loadMoreEvents(mapCenter = undefined) {
     this.spinner.show()
     this.closeSpinnerAfterTimeout();
-    this.isLoadMoreClicked = true
+    this.isLoadMoreClicked = mapCenter ? false : true;
     this.actualLoadEventLimit += this.offset;
-    this.applyFilters()
+    this.applyFilters(mapCenter)
 
   }
 

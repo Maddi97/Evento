@@ -2,15 +2,19 @@ import {
   Component,
   HostListener,
   Input,
+  OnDestroy,
   OnInit
 } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
+import { GoogleTagManagerService } from "angular-google-tag-manager";
+import { Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { CategoriesService } from "../../categories/categories.service";
 import { FileService } from "../../file.service";
 import { Category, Subcategory } from "../../models/category";
-
+import { clearSearchFilter } from "../logic/search-filter-helper";
+import { SessionStorageService } from "../session-storage/session-storage.service";
 type ID = string;
 
 @Component({
@@ -18,16 +22,17 @@ type ID = string;
   templateUrl: "./category-list.component.html",
   styleUrls: ["./category-list.component.css"],
 })
-export class CategoryListComponent implements OnInit {
-  // List of all Categories
-  categoryList: Category[] = [];
-
-  subcategoryList: Subcategory[] = [];
+export class CategoryListComponent implements OnInit, OnDestroy {
   @Input() filteredCategory: any;
   @Input() filteredSubcategories: Array<Subcategory>;
 
-  public getScreenWidth: any;
+  // List of all Categories
+  categoryList: Category[] = [];
+  subscriptions$: Subscription[] = [];
+  subcategoryList: Subcategory[] = [];
 
+  public getScreenWidth: any;
+  searchString: string = '';
   // filteredSubcategories
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
@@ -39,8 +44,17 @@ export class CategoryListComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private fileService: FileService,
     private sanitizer: DomSanitizer,
-    private router: Router
+    private router: Router,
+    private sessionStorageService: SessionStorageService,
+    private gtmService: GoogleTagManagerService
   ) { }
+  ngOnDestroy(): void {
+    this.subscriptions$.forEach((subscription$: Subscription) => {
+      if (subscription$) {
+        subscription$.unsubscribe()
+      }
+    })
+  }
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
@@ -58,12 +72,16 @@ export class CategoryListComponent implements OnInit {
           });
         });
       })
-    );
-
-    categories$.subscribe(() => {
+    ).subscribe(() => {
       this.downloadCategoryIcon();
       this.scrollToClicked();
     });
+
+    const searchString$ = this.sessionStorageService.searchStringSubject.subscribe(
+      (searchString: string) => { this.searchString = searchString })
+
+
+    this.subscriptions$.push(categories$, searchString$)
     // this.applyFilters()
     // request categories
     if (this.categoryList.length < 1) {
@@ -74,6 +92,11 @@ export class CategoryListComponent implements OnInit {
   selectCategory(category) {
     this.filteredCategory = category;
     this.filteredSubcategories = []
+    const gtmTag = {
+                    event: 'selectedCategory',
+                    categoryName: this.filteredCategory.name,
+                  };
+    this.gtmService.pushTag(gtmTag);
     this.setRouteParameter({
       subcategory: this.filteredSubcategories.map((subcategory) => subcategory._id),
       category: this.filteredCategory._id,
@@ -87,6 +110,12 @@ export class CategoryListComponent implements OnInit {
     else {
       this.filteredSubcategories.push(subcategory)
     }
+    const gtmTag = {
+                event: 'selectedSubcategory',
+                categoryName: this.filteredCategory.name,
+                subcategoryName: subcategory.name,
+              };
+    this.gtmService.pushTag(gtmTag);
     this.setRouteParameter({
       subcategory: this.filteredSubcategories.map((subcategory) => subcategory._id),
       category: this.filteredCategory._id,
@@ -114,6 +143,14 @@ export class CategoryListComponent implements OnInit {
     this.filteredSubcategories = [];
   }
 
+  clearSubcategoryFilters() {
+    this.filteredSubcategories = [];
+    this.setRouteParameter({
+      subcategory: [],
+      category: this.filteredCategory._id,
+    });
+  }
+
   setRouteParameter(params) {
     this.router.navigate([], {
       queryParams: params,
@@ -135,7 +172,7 @@ export class CategoryListComponent implements OnInit {
     this.categoryList.forEach((category) => {
       if (category.iconPath !== undefined) {
         if (category.iconTemporaryURL === undefined) {
-          this.fileService
+          const fileDownload$ = this.fileService
             .downloadFile(category.iconPath)
             .subscribe((imageData) => {
               // create temporary Url for the downloaded image and bypass security
@@ -143,9 +180,13 @@ export class CategoryListComponent implements OnInit {
               category.iconTemporaryURL =
                 this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
             });
+          this.subscriptions$.push(fileDownload$)
         }
       }
     });
+  }
+  clearSearchFilterOnReset() {
+    clearSearchFilter(this.sessionStorageService)
   }
 
   @HostListener("window:resize", ["$event"])

@@ -1,4 +1,8 @@
-<button class="menu-button" mat-button [matMenuTriggerFor]="menu">Menu</button>
+<div class="menu-button" mat-button [matMenuTriggerFor]="menu">
+    <mat-icon class="material-icons small-icon menu-icon">
+        menu
+    </mat-icon>
+</div>
 <mat-menu #menu="matMenu">
     <button mat-menu-item routerLink="/" [queryParams]="queryParams" [queryParamsHandling]="'merge'">
         <mat-icon class="icon">

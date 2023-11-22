@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {TokenStorageService} from "./services/token-storage.service";
+import { Component, OnInit } from '@angular/core';
+import { TokenStorageService } from "./services/sessionStorage/token-storage.service";
 
 
 @Component({

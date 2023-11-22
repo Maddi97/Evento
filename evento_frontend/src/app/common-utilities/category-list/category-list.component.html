@@ -1,33 +1,44 @@
-<div *ngIf="getScreenWidth>700"
-  [ngStyle]="{ 'display': scrollLeftMax ? 'none' : 'flex', 'cursor': scrollLeftMax ? 'unset' : 'pointer' }"
-  class="icon icon-left" (click)="scrollLeft()">
-  <mat-icon>arrow_back_ios_new</mat-icon>
-</div>
+<div class="category-list-container" *ngIf="!searchString">
+  <div *ngIf="getScreenWidth>700"
+    [ngStyle]="{ 'display': scrollLeftMax ? 'none' : 'flex', 'cursor': scrollLeftMax ? 'unset' : 'pointer' }"
+    class="icon icon-left" (click)="scrollLeft()">
+    <mat-icon>arrow_back_ios_new</mat-icon>
+  </div>
 
-<span class="category now" [ngClass]="isCategoryPicked({name: 'hot'})" (click)="selectCategory({name: 'hot'})">
-  <img src="assets/static-icons/icons8-flame-60.png" />
-  Jetzt Gerade
-</span>
-
-<div *ngFor="let category of categoryList" class="category-list">
-  <span class="category" id="{{isCategoryPicked(category)}}" [ngClass]="isCategoryPicked(category)"
-    (click)="selectCategory(category)">
-    <img [src]="category.iconTemporaryURL" />
-    {{ category.name }}
+  <span class="category now" [ngClass]="isCategoryPicked({name: 'hot'})" (click)="selectCategory({name: 'hot'})">
+    <img src="assets/static-icons/icons8-flame-60.png" />
+    Jetzt Gerade
   </span>
-  <div class="subcategory-placeholder">
-    <div class="subcategory-container" id="subcategory-container"
-      *ngIf="category?.subcategories?.length > 0 && isCategoryPicked(category) == 'category-picked'">
-      <span class="filter-tag">Filter |</span>
-      <div *ngFor="let subcategory of category.subcategories">
-        <span class="subcategory" [ngClass]="isSubCategoryPicked(subcategory)"
-          (click)="selectSubcategory(subcategory)">{{subcategory.name}}</span>
+
+  <div *ngFor="let category of categoryList" class="category-list">
+    <span class="category" id="{{isCategoryPicked(category)}}" [ngClass]="isCategoryPicked(category)"
+      (click)="selectCategory(category)">
+      <img [src]="category.iconTemporaryURL" />
+      {{ category.name }}
+    </span>
+    <div class="subcategory-placeholder">
+      <div class="subcategory-container" id="subcategory-container"
+        *ngIf="category?.subcategories?.length > 0 && isCategoryPicked(category) == 'category-picked'">
+        <span class="filter-tag">Filter |</span>
+        <div *ngFor="let subcategory of category.subcategories">
+          <span class="subcategory" [ngClass]="isSubCategoryPicked(subcategory)"
+            (click)="selectSubcategory(subcategory)">{{subcategory.name}}</span>
+        </div>
+        <span class="reset-subcategory-button" (click)="clearSubcategoryFilters()"> X |
+          Reset</span>
       </div>
+      <span *ngIf="searchString" class="subcategory subcategory-picked">Suche: {{searchString}}</span>
     </div>
   </div>
+  <div *ngIf="getScreenWidth>700"
+    [ngStyle]="{ 'display': scrollRightMax ? 'none' : 'flex', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
+    class="icon icon-right" (click)="scrollRight()">
+    <mat-icon>arrow_forward_ios</mat-icon>
+  </div>
 </div>
-<div *ngIf="getScreenWidth>700"
-  [ngStyle]="{ 'display': scrollRightMax ? 'none' : 'flex', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
-  class="icon icon-right" (click)="scrollRight()">
-  <mat-icon>arrow_forward_ios</mat-icon>
+
+<div *ngIf="searchString" class="search-category-replacement">
+  <span class="subcategory subcategory-picked"> Suche: {{searchString}}</span>
+  <span class="reset-subcategory-button reset-search" style="margin-left: 4px;" (click)="clearSearchFilterOnReset()">X |
+    Reset</span>
 </div>

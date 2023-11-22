@@ -120,7 +120,9 @@ const EventSchema = new mongoose.Schema({
     permanent: {
         type: Boolean,
     },
-
+    hasUnkownOpeningTimes: {
+        type: Boolean,
+    },
     hot: {
         type: Boolean,
     },
