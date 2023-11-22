@@ -1,1 +1,9 @@
-{}
+{
+    "name": "evento",
+    "version": "1.0.0",
+    "description": "Event supply chain",
+        "scripts": {
+            "build": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build"
+           },
+    "author": "Maximilian Schaller"
+  }

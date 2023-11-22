@@ -27,3 +27,4 @@ backup_local_dev
 .vscode
 .vscode/start_local_docker.json
 .vscode/tasks.json
+.DS_Store
