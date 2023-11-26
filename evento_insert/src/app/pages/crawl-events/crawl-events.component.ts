@@ -1,143 +1,123 @@
-import { Component, OnInit } from '@angular/core';
-import { Organizer } from 'src/app/models/organizer';
-import { OrganizerService } from 'src/app/services/organizer.web.service';
-import { SnackbarService } from 'src/app/services/utils/snackbar.service';
-import { crawlerConfig } from '../../../constants/browseAi';
-import { CrawlerApiService } from '../../services/crawler/crawler-api.service';
-import { crawlerMockdata } from '../crawl-events/testdata';
+import { Component, OnInit } from "@angular/core";
+import { NgxSpinnerService } from "ngx-spinner";
+import { Organizer } from "src/app/models/organizer";
+import { OrganizerService } from "src/app/services/organizer.web.service";
+import { SnackbarService } from "src/app/services/utils/snackbar.service";
+import { crawlerConfig } from "../../../constants/browseAi";
+import { CrawlerApiService } from "../../services/crawler/crawler-api.service";
+import { crawlerMockdata } from "../crawl-events/testdata";
+import { mapUrbaniteToEvents } from "./specific-crawler/urbanite-helper";
+import { crawlUrbanite } from "./specific-crawler/urbanite-supscription";
 
 export type PossibleCrawlerNames = keyof typeof crawlerConfig;
 
 @Component({
-  selector: 'app-crawl-events',
-  templateUrl: './crawl-events.component.html',
-  styleUrls: ['./crawl-events.component.css']
+  selector: "app-crawl-events",
+  templateUrl: "./crawl-events.component.html",
+  styleUrls: ["./crawl-events.component.css"],
 })
 export class CrawlEventsComponent implements OnInit {
-  //TODO remove test
-
-  testTaskId = '37b74596-318a-4715-97e0-c8d5e1cac719'
   message;
   crawlerConfig = crawlerConfig;
-  crawlerNames = Object.keys(crawlerConfig)
-  selectedCrawler: keyof typeof crawlerConfig = 'urbanite';
-  insertEventList: any[] = crawlerMockdata;
-  allOrganizer: Organizer[] = []
+  crawlerNames = Object.keys(crawlerConfig);
+  selectedCrawler: keyof typeof crawlerConfig = "urbanite";
+  crawledEventList: any[] = mapUrbaniteToEvents(crawlerMockdata);
+  allOrganizer: Organizer[] = [];
   eventIn: any;
-  organizer$
+  organizer$;
   index = 0;
+  linkList = [];
 
   constructor(
     private crawlerService: CrawlerApiService,
     private snackbar: SnackbarService,
     private organizerService: OrganizerService,
-  ) {
-
-  }
+    private spinner: NgxSpinnerService
+  ) {}
   ngOnInit(): void {
-    this.eventIn = this.hilfsFunktionMapProperties(this.insertEventList[this.index])
-    this.organizerService.getOrganizer().subscribe(
-      (org) => {
-        this.allOrganizer = org;
-      }
-    )
+    this.eventIn = this.crawledEventList[this.index];
+    this.organizerService.getOrganizer().subscribe((org) => {
+      this.allOrganizer = org;
+    });
   }
   nextEvent() {
-    if (this.index === this.insertEventList.length - 1) {
-      console.error("Index too big. Not that many Elements in the list.")
-    }
-    else {
+    if (this.index === this.crawledEventList.length - 1) {
+      console.error("Index too big. Not that many Elements in the list.");
+    } else {
       this.index++;
-      this.eventIn = this.hilfsFunktionMapProperties(this.insertEventList[this.index])
+      this.eventIn = this.crawledEventList[this.index];
     }
   }
   previousEvent() {
     if (this.index === 0) {
-      console.error("Index smaller than 0.")
-    }
-    else {
+      console.error("Index smaller than 0.");
+    } else {
       this.index--;
-      this.eventIn = this.hilfsFunktionMapProperties(this.insertEventList[this.index])
+      this.eventIn = this.crawledEventList[this.index];
     }
   }
   getRobots() {
-    this.crawlerService.getRobots().subscribe(res => {
-      this.message = res['messageCode']
-    })
+    this.crawlerService.getRobots().subscribe((res) => {
+      this.message = res["messageCode"];
+    });
   }
 
   setIndex(index) {
     this.index = Number(index);
-    if (index > this.insertEventList.length) {
-      console.error("Index too big. Not that many Elements in the list.")
+    if (index > this.crawledEventList.length) {
+      console.error("Index too big. Not that many Elements in the list.");
+    } else if (index < 0) {
+      console.error("Index smaller than 0.");
+    } else {
+      this.eventIn = this.crawledEventList[this.index];
     }
-    else if (index < 0) {
-      console.error("Index smaller than 0.")
-    }
-    else {
-      this.eventIn = this.hilfsFunktionMapProperties(this.insertEventList[this.index])
-    }
-
   }
 
-  getResultsOfRobot(crawler, taskId) {
-    //TODO setIntervall until task is done
-    this.crawlerService.getResultOfRobot(crawler.robotId, this.testTaskId).pipe(
-    ).subscribe(
-      {
-        next: (res) => {
-          this.insertEventList = res;
-        },
-        error: (error) => {
-          // Handle error here
-          this.snackbar.openSnackBar(error.error, 'error')
-          console.error('An error occurred while fetching categories', error.error);
-        },
-        complete: () => {
-        }
-      }
-    )
-  }
-  runTaskOfRobot(crawlerKey: PossibleCrawlerNames) {
+  startCrawling(crawlerKey: PossibleCrawlerNames) {
     const crawler = crawlerConfig[crawlerKey];
-    const url = this.getUrlForCrawler(crawlerKey, crawler)
-    if (!true) {
-      this.crawlerService.runTaskOfRobot(crawler.robotId, url).subscribe(
-        {
-          next: (res) => {
-            console.log(res)
-            // getTaskId
-            this.getResultsOfRobot(crawler, res['data'].taskId)
-          },
-          error: (error) => {
-            // Handle error here
-            this.snackbar.openSnackBar(error.error, 'error')
-            console.error('An error occurred while fetching categories', error.error);
-          },
-          complete: () => {
-          }
-        }
-      )
-    }
-    else {
-      this.getResultsOfRobot(crawler, '')
-    }
+    this.crawlEventsOfSpecificCrawler(crawlerKey, crawler);
   }
 
   getUrlForCrawler(crawlerName: PossibleCrawlerNames, crawler) {
-    if (crawlerName === 'urbanite') {
-      return crawler.inputUrl + new Date(crawler.inputValue).toISOString().split('T')[0];
+    if (crawlerName === "urbanite") {
+      return (
+        crawler.inputUrl +
+        new Date(crawler.inputValue).toISOString().split("T")[0]
+      );
     }
   }
 
-  hilfsFunktionMapProperties(eventIn) {
-    return {
-      date: { start: eventIn.date },
-      times: { start: eventIn.start_time },
-      category: eventIn.category,
-      name: eventIn.event_name,
-      organizerName: eventIn.organizer_name
-    }
-  }
+  crawlEventsOfSpecificCrawler(crawlerName: PossibleCrawlerNames, crawler) {
+    this.spinner.show();
+    let url = this.getUrlForCrawler(crawlerName, crawler);
+    let crawling$;
 
+    switch (crawlerName) {
+      case "urbanite":
+        crawling$ = crawlUrbanite(crawler, url, this.crawlerService);
+    }
+
+    crawling$.subscribe({
+      next: (eventList) => {
+        console.log("Final crawled events: ", eventList);
+        this.spinner.hide();
+        crawling$.unsubscribe();
+        this.crawledEventList = eventList;
+      },
+      error: (error) => {
+        // Handle error here
+        this.snackbar.openSnackBar(
+          error.error.text || error.error || error,
+          "error",
+          2000
+        );
+        console.error("An error occurred while fetching", error.error);
+        this.spinner.hide();
+      },
+      complete: () => {
+        console.log("complete");
+        this.spinner.hide();
+      },
+    });
+  }
 }
