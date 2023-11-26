@@ -1,26 +1,24 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Organizer } from 'src/app/models/organizer';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { Organizer } from "src/app/models/organizer";
 
 @Component({
-  selector: 'app-autocomplete-organizer',
-  templateUrl: './autocomplete-organizer.component.html',
-  styleUrls: ['./autocomplete-organizer.component.css']
+  selector: "app-autocomplete-organizer",
+  templateUrl: "./autocomplete-organizer.component.html",
+  styleUrls: ["./autocomplete-organizer.component.css"],
 })
 export class AutocompleteOrganizerComponent implements OnInit {
-
   @Input() organizersIn: Organizer[] = [];
-  @Output() emitOrganizer: EventEmitter<Organizer> = new EventEmitter<Organizer>();
+  @Output() emitOrganizer: EventEmitter<Organizer> =
+    new EventEmitter<Organizer>();
 
-  organizerName = new FormControl('')
-  filteredOrganizers: Organizer[]
+  organizerName = new FormControl("");
+  filteredOrganizers: Organizer[];
   ngOnInit(): void {
-    console.log(this.organizersIn)
     this.filteredOrganizers = this.organizersIn;
     this.organizerName.valueChanges.subscribe((oNameStart) => {
-      this.filteredOrganizers = this.filterOrganizerByNameAndAlias(oNameStart)
-    }
-    );
+      this.filteredOrganizers = this.filterOrganizerByNameAndAlias(oNameStart);
+    });
   }
 
   filterOrganizerByName(oNameStart): Organizer[] {
@@ -30,9 +28,12 @@ export class AutocompleteOrganizerComponent implements OnInit {
   }
 
   filterOrganizerByNameAndAlias(oNameStart): Organizer[] {
-    return this.organizersIn.filter((organizer) =>
-      organizer.name.toLowerCase().startsWith(oNameStart.toLowerCase()) ||
-      organizer.alias.some(aliasName => aliasName.toLowerCase().startsWith(oNameStart.toLowerCase()))
+    return this.organizersIn.filter(
+      (organizer) =>
+        organizer.name.toLowerCase().startsWith(oNameStart.toLowerCase()) ||
+        organizer.alias.some((aliasName) =>
+          aliasName.toLowerCase().startsWith(oNameStart.toLowerCase())
+        )
     );
   }
 
