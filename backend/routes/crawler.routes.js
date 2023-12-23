@@ -26,7 +26,7 @@ router.get('/robots', limiter, auth, async (req, res) => {
 
 router.post('/getTaskResultsOfRobot', limiter, auth, async (req, res) => {
     try {
-        const { robotId, taskId } = req.body;
+                const { robotId, taskId } = req.body;
         const options = {
             method: 'GET',
             url: `https://api.browse.ai/v2/robots/${robotId}/tasks/${taskId}`,
@@ -38,7 +38,7 @@ router.post('/getTaskResultsOfRobot', limiter, auth, async (req, res) => {
         res.status(response.data.statusCode).send(response.data.result);
     } catch (error) {
         console.log(error)
-        const { messageCode } = error?.response?.data
+        const  messageCode  = error?.response?.data || error || 'Unkown Error occured on server'
         res.send(messageCode)
         }    
 });
@@ -55,7 +55,7 @@ router.post('/getTasksOfRobot', limiter, auth, async (req, res) => {
         const response = await axios(options);
         res.status(response.data.statusCode).send(response.data.result);
     } catch (error) {
-        const { messageCode } = error?.response?.data
+        const  messageCode  = error?.response?.data || error || 'Unkown Error occured on server'
         res.send(messageCode)
         }    
 });
@@ -73,7 +73,7 @@ router.post('/getBulkRunsOfRobot', limiter, auth, async (req, res) => {
         const response = await axios(options);
         res.status(response.data.statusCode).send(response.data.result);
     } catch (error) {
-        const { messageCode } = error?.response?.data
+        const  messageCode  = error?.response?.data || error || 'Unkown Error occured on server'
         res.send(messageCode)
         }    
 });
@@ -91,13 +91,13 @@ router.post('/getBulkTaskOfRobot', limiter, auth, async (req, res) => {
         const response = await axios(options);
         res.status(response.data.statusCode).send(response.data.result);
     } catch (error) {
-        const { messageCode } = error?.response?.data
+        const  messageCode  = error?.response?.data || error || 'Unkown Error occured on server'
         res.send(messageCode)
         }    
 });
 
 router.post('/runTaskOfRobot', limiter, auth, async (req, res) => {
-    try {
+        try {
         const { robotId, originUrl } = req.body;
         const data = JSON.stringify({
         "recordVideo": false,
@@ -116,7 +116,7 @@ router.post('/runTaskOfRobot', limiter, auth, async (req, res) => {
         const response = await axios(options);
         res.status(response.data.statusCode).send(response.data);
     } catch (error) {
-        const { messageCode } = error?.response?.data
+        const  messageCode  = error?.response?.data || error || 'Unkown Error occured on server'
             res.send(messageCode)
     }
 });
@@ -139,7 +139,7 @@ router.post('/runBulkTaskOfRobot', limiter, auth, async (req, res) => {
         const response = await axios(options);
         res.status(response.data.statusCode).send(response.data);
     } catch (error) {
-        const { messageCode } = error?.response?.data
+        const  messageCode  = error?.response?.data || error || 'Unkown Error occured on server'
             res.send(messageCode)
     }
 });

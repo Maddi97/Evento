@@ -44,6 +44,6 @@ export class Address {
     plz: string;
     street: string;
     streetNumber: string;
-    country: string;
+    country: string = 'Deutschland';
 }
 

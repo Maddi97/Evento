@@ -9,6 +9,7 @@ import { FileUploadService } from 'src/app/services/files/file-upload.service';
 import { OrganizerObservableService } from '../../../services/organizer.observable.service';
 import { SnackbarService } from '../../../services/utils/snackbar.service';
 import { createEventForSpecificCrawler } from '../crawl-event.helpers';
+import { PossibleCrawlerNames } from '../crawl-events.component';
 
 @Component({
   selector: 'app-crawled-events-to-event',
@@ -18,6 +19,7 @@ import { createEventForSpecificCrawler } from '../crawl-event.helpers';
 export class CrawledEventsToEventComponent implements OnInit, OnChanges {
   @Input() eventIn: Partial<Event>;
   @Input() organizerIn: Organizer[];
+  @Input() crawlerName: PossibleCrawlerNames;
   @Output() emitAddEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() emitNextEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() emitPreviousEvent: EventEmitter<void> = new EventEmitter<void>();
@@ -57,6 +59,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
   }
 
   findOrganizer() {
+    console.log(this.eventIn)
     const filteredOrganizer = this.organizerIn.filter((organizer) =>
       organizer.name.toLowerCase() === this.eventIn.organizerName.toLowerCase() ||
       organizer.alias.some(aliasName => aliasName.toLowerCase() === this.eventIn.organizerName.toLowerCase()))
@@ -64,6 +67,13 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
     if (filteredOrganizer.length < 1) {
       this.inputOrganizer = new Organizer()
       this.inputOrganizer.name = this.eventIn.organizerName
+      this.inputOrganizer.category = this.eventIn.category ? this.eventIn.category : undefined
+      this.inputOrganizer.address.city = this.eventIn.address?.city ? this.eventIn.address.city : ''
+      this.inputOrganizer.address.plz = this.eventIn.address?.plz ?  this.eventIn.address.plz : ''
+      this.inputOrganizer.address.street = this.eventIn.address?.street ? this.eventIn.address.street : ''
+      this.inputOrganizer.address.streetNumber = this.eventIn.address?.streetNumber ? this.eventIn.address.streetNumber : ''
+      this.inputOrganizer.address.country = this.eventIn.address?.country ? this.eventIn.address.country : 'Deutschland'
+
       this.shouldInputOrganizer = true
       this.shouldInputEvent = false
 
@@ -204,6 +214,6 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
       );
   }
   createInputEvent(): Event {
-    return createEventForSpecificCrawler('urbanite', this.eventIn, this.inputOrganizer)
+    return createEventForSpecificCrawler(this.crawlerName, this.eventIn, this.inputOrganizer)
   }
 }

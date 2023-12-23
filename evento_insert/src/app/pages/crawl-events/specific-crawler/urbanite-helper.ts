@@ -1,29 +1,51 @@
 import * as moment from "moment";
-import { Event } from "../../../models/event";
+import { Address, Event } from "../../../models/event";
 
-export function mapUrbaniteToEvents(events: any[]) {
+export type UrbaniteEvent = {
+  date: string;
+  start_time: string;
+  category: string;
+  event_name: string;
+  organizer_name: string;
+  street: string;
+  city: string;
+  plz: string;
+  description: string;
+};
+
+export function mapUrbaniteToEvents(events: UrbaniteEvent[]) {
   return events.map((event) => {
     return mapPropertiesOfCrawledEvent(event);
   });
 }
-function mapPropertiesOfCrawledEvent(eventIn) {
+function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent) {
   return {
     date: { start: eventIn.date },
     times: { start: eventIn.start_time },
     category: eventIn.category,
     name: eventIn.event_name,
     organizerName: eventIn.organizer_name,
+    description: eventIn.description,
+    address: {
+    city: eventIn.city,
+    plz: eventIn.plz,
+    street: eventIn.street,
+    country: 'Deutschland'
+}}
   };
-}
+
 
 export function createEventUrbanite(event, organizer) {
   const e = new Event();
+  const address = createAddressFromInput(event.address);
+
   e._organizerId = organizer._id;
   e.name = event.name;
   e.organizerName = organizer.name;
-  e.address = organizer.address;
+  e.address = address;
   e.category = organizer.category;
-  e.description = organizer.description;
+  e.description = event.description;
+
   // TODO assign correct values
   if (event.times.start === "ganztägig") {
     e.times.start = "00:00";
@@ -41,6 +63,17 @@ export function createEventUrbanite(event, organizer) {
   return e;
 }
 
+function createAddressFromInput(address: any): Address {
+  const a = new Address();
+  a.city = address.city;
+  a.plz = address.plz;
+  //divide street and street number from street input
+  a.street = address.street.split(" ")[0];
+  a.streetNumber = address.street.split(" ")[1] || '';
+  a.country = address.country;
+  return a;
+}
+
 function endTimeUrbanite(startTime: string) {
   const startHour = Number(startTime.split(":")[0]);
   const endTimeHour = startHour >= 20 ? "04:00" : "00:00";
@@ -56,43 +89,10 @@ function endDateUrbanite(startDate, startTime) {
 }
 
 function parseEventDateUrbanite(dateString: string): Date | null {
-  const months: { [key: string]: number } = {
-    JAN: 0,
-    FEB: 1,
-    MAR: 2,
-    APR: 3,
-    MAY: 4,
-    JUN: 5,
-    JUL: 6,
-    AUG: 7,
-    SEP: 8,
-    OCT: 9,
-    NOV: 10,
-    DEC: 11,
-  };
-
   // Split the input string into parts
-  const parts = dateString.split(".\n");
-
-  if (parts.length !== 2) {
-    // Invalid format
-    return null;
-  }
-
-  const day = parseInt(parts[0], 10);
-  const monthAbbreviation = parts[1];
-
-  if (isNaN(day) || !months[monthAbbreviation]) {
-    // Invalid day or month
-    return null;
-  }
-
-  const year = new Date().getFullYear(); // You can set a specific year here
-  const eventDate = new Date(year, months[monthAbbreviation], day);
-
-  if (isNaN(eventDate.getTime())) {
-    // Invalid date
-    return null;
-  }
-  return eventDate;
-}
+  let date = dateString.split(" ")[1];
+  // parse the date string whicch is in german time format to a date object
+let momentDate = moment(date, "DD.MM.YYYY");
+// Convert Moment.js object to a JavaScript Date object
+return momentDate.toDate(); 
+ }
