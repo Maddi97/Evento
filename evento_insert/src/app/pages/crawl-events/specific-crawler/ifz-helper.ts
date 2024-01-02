@@ -6,6 +6,8 @@ export type IFZEvent = {
   date: string;	
   time: string;	
   description: string;
+  link: string;
+  crawlerName: string;
 };
 
 export function mapIfzToEvents(events: IFZEvent[]) {
@@ -15,12 +17,16 @@ export function mapIfzToEvents(events: IFZEvent[]) {
   });
 }
 function mapPropertiesOfCrawledEvent(eventIn: IFZEvent) {
+    console.log("hallo", eventIn.link)
   return {
     name: eventIn.name,
     date: parseDate(eventIn.date),
     time: parseTime(eventIn.time),
     organizerName: 'Institut für Zukunft',
     description: eventIn.description,
+    link: eventIn.link,
+    crawlerName: eventIn.crawlerName,
+
   }
 }
 
@@ -33,6 +39,7 @@ export function createEventIfz(event, organizer) {
   e.address = organizer.address;
   e.category = organizer.category;
   e.description = event.description;
+  e.link = event.link;
   e.times = {
     start: event.time,
     end: '9:00'

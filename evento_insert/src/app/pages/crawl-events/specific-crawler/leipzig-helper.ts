@@ -11,6 +11,7 @@ export type LeipzigEvent = {
   price: string;
   address: string;	
   phone: string;
+  link: string;
 };
 
 export function mapLeipzigToEvents(events: LeipzigEvent[]) {
@@ -25,7 +26,9 @@ function mapPropertiesOfCrawledEvent(eventIn: LeipzigEvent) {
     name: eventIn.name,
     organizerName: parseOrganizerName(eventIn.organizerName),
     description: eventIn.description,
-    address: parseAddress(eventIn.address)
+    address: parseAddress(eventIn.address),
+    link: eventIn.link,
+
   }
 }
 

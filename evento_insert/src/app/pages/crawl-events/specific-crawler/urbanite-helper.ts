@@ -11,6 +11,8 @@ export type UrbaniteEvent = {
   city: string;
   plz: string;
   description: string;
+  link: string;
+  crawlerName: string;
 };
 
 export function mapUrbaniteToEvents(events: UrbaniteEvent[]) {
@@ -26,12 +28,15 @@ function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent) {
     name: eventIn.event_name,
     organizerName: eventIn.organizer_name,
     description: eventIn.description,
+    link: eventIn.link,
     address: {
     city: eventIn.city,
     plz: eventIn.plz,
     street: eventIn.street,
-    country: 'Deutschland'
-}}
+    country: 'Deutschland',
+    },
+      crawlerName: eventIn.crawlerName,
+}
   };
 
 
@@ -45,6 +50,7 @@ export function createEventUrbanite(event, organizer) {
   e.address = address;
   e.category = organizer.category;
   e.description = event.description;
+  e.link = event.link;
 
   // TODO assign correct values
   if (event.times.start === "ganztägig") {

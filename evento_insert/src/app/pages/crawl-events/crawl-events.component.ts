@@ -27,6 +27,7 @@ export class CrawlEventsComponent implements OnInit {
   selectedInputDate = new Date()
   crawledEventList: any[] = [];
   allOrganizer: Organizer[] = [];
+  inputNumberOfDays: number = 1;
   eventIn: any;
   organizer$;
   index = 0;
@@ -89,9 +90,10 @@ export class CrawlEventsComponent implements OnInit {
           const [crawling$, mapCrawledEventsFunction ] = this.crawlEventsOfSpecificCrawler(crawlerKey, crawler);
           crawling$.subscribe({
               next: (eventList) => {
-                console.log("Final crawled events: ", eventList);
+                console.log("Final crawled events: ", eventList.flat());
                 this.spinner.hide();
-                this.crawledEventList = mapCrawledEventsFunction(eventList);
+                this.crawledEventList = mapCrawledEventsFunction(eventList.flat());
+                this.index = 0
                 this.eventIn = this.crawledEventList[this.index];
               },
               error: (error) => {
@@ -112,17 +114,17 @@ export class CrawlEventsComponent implements OnInit {
       }
   }
   crawlAllCrawler() {
-   const collectResults = []
    const observables = this.crawlerNames.map((crawlerName: PossibleCrawlerNames) => {
     if (crawlerName !== 'All' && crawlerName !== 'leipzig') {
       const crawler = crawlerConfig[crawlerName];
-      const url = this.getUrlForCrawler(crawlerName, crawler);
 
       const [crawling$, mapCrawledEventsFunction] = this.crawlEventsOfSpecificCrawler(crawlerName, crawler);
 
       return crawling$.pipe(
         // Map the result using mapCrawledEventsFunction
-        map((eventList) =>{return mapCrawledEventsFunction(eventList)}),
+        map((eventList: any) =>{
+          console.log(eventList.flat())
+          return mapCrawledEventsFunction(eventList.flat())}),
         // Handle errors and completion for each observable
         catchError((error) => {
           this.spinner.hide();
@@ -146,8 +148,11 @@ export class CrawlEventsComponent implements OnInit {
     next: (results) => {
       let filteredResult = results.filter((result) => result !== null && Object.keys(result).length > 0).flat();
       filteredResult = filteredResult.filter((event, index, array) => {
-      return array.findIndex((e) => e.name === event.name) === index;
+      return array.findIndex((e) => e.name === event.name && e.date.start === event.date.start) === index;
       });
+      this.crawledEventList = filteredResult
+      this.index = 0
+      this.eventIn = this.crawledEventList[this.index];
       console.log('Collected results after each subscription completes:', filteredResult);
     },
     error: (error) => {
@@ -164,16 +169,16 @@ export class CrawlEventsComponent implements OnInit {
 
   
 
-  getUrlForCrawler(crawlerName: PossibleCrawlerNames, crawler) {
+  getUrlForCrawler(crawlerName: PossibleCrawlerNames, crawler, inputDate) {
     if (crawlerName === "urbanite") {
 
       return (
         crawler.inputUrl +
-          moment(this.selectedInputDate).format('YYYY-MM-DD')
+          moment(inputDate).format('YYYY-MM-DD')
       );
     }
     if (crawlerName === "leipzig") {
-        const customDate = new Date(this.selectedInputDate)
+        const customDate = new Date(inputDate)
         const customDateObj = new Date(customDate);
 
         // Extract day, month, and year components from the custom date
@@ -194,24 +199,30 @@ export class CrawlEventsComponent implements OnInit {
 
   crawlEventsOfSpecificCrawler(crawlerName: PossibleCrawlerNames, crawler) {
     this.spinner.show();
-    let url = this.getUrlForCrawler(crawlerName, crawler);
-    let crawling$;
+
+    let urls = []
+    for (let i = 0; i <= this.inputNumberOfDays; i++) {
+      urls.push(this.getUrlForCrawler(crawlerName, crawler, moment(this.selectedInputDate).add(i, 'days').toDate()))
+    }
+    let crawlings$;
     let mapCrawledEventsFunction: Function;
 
     switch (crawlerName) {
       case "urbanite":
-        crawling$ = crawlBrowseAi(crawler, url, this.crawlerService);
+        crawlings$ = forkJoin(urls.map(url => crawlBrowseAi(crawler, url, this.crawlerService, crawlerName)))
         mapCrawledEventsFunction = mapUrbaniteToEvents;
         break;
       case "leipzig": 
-        crawling$ = crawlBrowseAi(crawler, url, this.crawlerService);   
-                mapCrawledEventsFunction = mapLeipzigToEvents;
+        crawlings$ = forkJoin(urls.map(url => {
+          return crawlBrowseAi(crawler, url, this.crawlerService, crawlerName)
+        }))                
+        mapCrawledEventsFunction = mapLeipzigToEvents;
       case "ifz":
-        crawling$ = crawlBrowseAi(crawler, url, this.crawlerService);   
+        crawlings$ = crawlBrowseAi(crawler, urls[0], this.crawlerService, crawlerName);   
                 mapCrawledEventsFunction = mapIfzToEvents;
      
     }
-    return [crawling$, mapCrawledEventsFunction];
+    return [crawlings$, mapCrawledEventsFunction];
 
 }
   onDateChange(date: any): void {

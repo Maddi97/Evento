@@ -17,7 +17,7 @@ import { PossibleCrawlerNames } from '../crawl-events.component';
   styleUrls: ['./crawled-events-to-event.component.css']
 })
 export class CrawledEventsToEventComponent implements OnInit, OnChanges {
-  @Input() eventIn: Partial<Event>;
+  @Input() eventIn;
   @Input() organizerIn: Organizer[];
   @Input() crawlerName: PossibleCrawlerNames;
   @Output() emitAddEvent: EventEmitter<any> = new EventEmitter<any>();
@@ -59,7 +59,6 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
   }
 
   findOrganizer() {
-    console.log(this.eventIn)
     const filteredOrganizer = this.organizerIn.filter((organizer) =>
       organizer.name.toLowerCase() === this.eventIn.organizerName.toLowerCase() ||
       organizer.alias.some(aliasName => aliasName.toLowerCase() === this.eventIn.organizerName.toLowerCase()))
@@ -214,6 +213,7 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
       );
   }
   createInputEvent(): Event {
-    return createEventForSpecificCrawler(this.crawlerName, this.eventIn, this.inputOrganizer)
+
+    return createEventForSpecificCrawler(this.eventIn.crawlerName, this.eventIn, this.inputOrganizer)
   }
 }

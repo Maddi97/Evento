@@ -1,8 +1,9 @@
-import { of } from "rxjs";
-import { first, map, mergeMap, repeat } from "rxjs/operators";
+import { of, throwError } from "rxjs";
+import { catchError, first, map, mergeMap, repeat } from "rxjs/operators";
 import { InputParameter } from "../../../services/crawler/crawler-api.service";
 
-export function crawlBrowseAi(crawler, url, crawlerService) {
+export function crawlBrowseAi(crawler, url, crawlerService, crawlerName) {
+  console.log("URL: ", url);
   const storedValue = sessionStorage.getItem(url);
 
   if (storedValue) {
@@ -54,7 +55,7 @@ export function crawlBrowseAi(crawler, url, crawlerService) {
         // map the task ids as list
         map((events: any) => {
           events = events["robotTasks"].items.map((item) => {
-            return item.capturedTexts;
+            return {...item.capturedTexts, link: item.inputParameters.originUrl, crawlerName};
           });
           sessionStorage.setItem(url, JSON.stringify(events));
           return events;
@@ -72,13 +73,26 @@ function waitForRobotToFinish(
 ) {
   if (taskOrBulk === "task") {
     return crawlerService.getResultOfRobotList(robotId, taskId).pipe(
-      map(res => {console.log(res); return res}),
+      map(res => {
+        console.log(res)
+          if (res["status"] === "failed") {
+              throw new Error("Task failed");
+          }
+         return res}),
       repeat({ delay: 5000 }),
-      first((res: any) => res["status"] === "successful"),
-    );
+      first((res: any) => {
+        return res["status"] === "successful"}),
+        catchError(error => {
+        // Handle the error or rethrow it to be caught by subscribers
+        return throwError(error);
+      })
+    ); 
   } else if (taskOrBulk === "bulk") {
     return crawlerService.getBulkResultOfRobot(robotId, taskId).pipe(
       map((res) => {
+        if (res["robotTasks"].items.some(task => task["status"] === "failed")) {
+             throw new Error("Bulk task failed");
+        }
         console.log("Waiting for robot to complete the task ");
         return res;
       }),
@@ -91,6 +105,10 @@ function waitForRobotToFinish(
         });
         return allTasksFinished;
       }),
-    );
+      catchError(error => {
+        // Handle the error or rethrow it to be caught by subscribers
+        return throwError(error);
+      })
+  );
   }
 }

@@ -11,13 +11,17 @@
             </mat-select>
         </mat-form-field>
 
-        <div class="input-urbanite">
+        <div class="input">
             <mat-form-field>
                 <mat-label>Crawl date</mat-label>
                 <input matInput [matDatepicker]="picker3" [(ngModel)]="selectedInputDate" (ngModelChange)="onDateChange($event)">
                 <mat-hint>MM/DD/YYYY</mat-hint>
                 <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
                 <mat-datepicker #picker3></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field class="days input">
+                <mat-label>Number of days</mat-label>
+                <input matInput placeholder="number ..." [(ngModel)]="inputNumberOfDays">
             </mat-form-field>
         </div>
 
