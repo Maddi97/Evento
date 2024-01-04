@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import * as moment from "moment";
 import { NgxSpinnerService } from "ngx-spinner";
 import { catchError, finalize, forkJoin, map, of } from "rxjs";
+import { Event } from "src/app/models/event";
 import { Organizer } from "src/app/models/organizer";
 import { OrganizerService } from "src/app/services/organizer.web.service";
 import { SnackbarService } from "src/app/services/utils/snackbar.service";
@@ -11,7 +12,6 @@ import { crawlBrowseAi } from "./specific-crawler/browseAI.subscription";
 import { mapIfzToEvents } from "./specific-crawler/ifz-helper";
 import { mapLeipzigToEvents } from "./specific-crawler/leipzig-helper";
 import { mapUrbaniteToEvents } from "./specific-crawler/urbanite-helper";
-
 
 export type PossibleCrawlerNames = (keyof typeof crawlerConfig) | 'All';
 
@@ -25,10 +25,11 @@ export class CrawlEventsComponent implements OnInit {
   crawlerConfig = crawlerConfig;
   crawlerNames = [...Object.keys(crawlerConfig), 'All'];
   selectedInputDate = new Date()
-  crawledEventList: any[] = [];
+  crawledEventList: Event[] = [];
   allOrganizer: Organizer[] = [];
   inputNumberOfDays: number = 1;
-  eventIn: any;
+  organizerIn: Organizer
+  eventIn: Event;
   organizer$;
   index = 0;
   linkList = [];
@@ -41,17 +42,18 @@ export class CrawlEventsComponent implements OnInit {
     private spinner: NgxSpinnerService
   ) {}
   ngOnInit(): void {
-    this.eventIn = this.crawledEventList[this.index];
     this.organizerService.getOrganizer().subscribe((org) => {
       this.allOrganizer = org;
     });
   }
+  
   nextEvent() {
     if (this.index === this.crawledEventList.length - 1) {
       console.error("Index too big. Not that many Elements in the list.");
     } else {
       this.index++;
       this.eventIn = this.crawledEventList[this.index];
+      this.findOrganizer()
     }
   }
   previousEvent() {
@@ -59,7 +61,8 @@ export class CrawlEventsComponent implements OnInit {
       console.error("Index smaller than 0.");
     } else {
       this.index--;
-      this.eventIn = this.crawledEventList[this.index];
+      this.eventIn = this.crawledEventList[this.index]
+      this.findOrganizer()
     }
   }
   getRobots() {
@@ -95,6 +98,7 @@ export class CrawlEventsComponent implements OnInit {
                 this.crawledEventList = mapCrawledEventsFunction(eventList.flat());
                 this.index = 0
                 this.eventIn = this.crawledEventList[this.index];
+                this.findOrganizer();
               },
               error: (error) => {
                 // Handle error here
@@ -123,7 +127,6 @@ export class CrawlEventsComponent implements OnInit {
       return crawling$.pipe(
         // Map the result using mapCrawledEventsFunction
         map((eventList: any) =>{
-          console.log(eventList.flat())
           return mapCrawledEventsFunction(eventList.flat())}),
         // Handle errors and completion for each observable
         catchError((error) => {
@@ -225,8 +228,37 @@ export class CrawlEventsComponent implements OnInit {
     return [crawlings$, mapCrawledEventsFunction];
 
 }
+  findOrganizer() {
+    const filteredOrganizer = this.allOrganizer.filter((organizer) =>
+      organizer.name.toLowerCase() === this.eventIn.organizerName?.toLowerCase() ||
+      organizer.alias.some(aliasName => aliasName.toLowerCase() === this.eventIn?.organizerName.toLowerCase()))
+
+    if (filteredOrganizer.length < 1) {
+      this.organizerIn = new Organizer()
+      this.organizerIn.name = this.eventIn.organizerName
+      this.organizerIn.category = this.eventIn.category ? this.eventIn.category : undefined
+      this.organizerIn.address.city = this.eventIn.address?.city ? this.eventIn.address.city : ''
+      this.organizerIn.address.plz = this.eventIn.address?.plz ?  this.eventIn.address.plz : ''
+      this.organizerIn.address.street = this.eventIn.address?.street ? this.eventIn.address.street : ''
+      this.organizerIn.address.streetNumber = this.eventIn.address?.streetNumber ? this.eventIn.address.streetNumber : ''
+      this.organizerIn.address.country = this.eventIn.address?.country ? this.eventIn.address.country : 'Deutschland'
+
+    }
+    else {
+      //wenn es organizer gibt dann baue direkt das event
+      this.organizerIn = filteredOrganizer[0];
+      console.log(filteredOrganizer[0])
+      //todo Event befüllen
+
+      const e = this.eventIn
+      e._organizerId = this.organizerIn._id;
+      e.organizerName = this.organizerIn.name;
+      e.category = this.organizerIn.category;
+      this.eventIn = e;
+    }
+  }
   onDateChange(date: any): void {
-    this.selectedInputDate =new Date(date)
+    this.selectedInputDate = new Date(date)
   }
 
 }

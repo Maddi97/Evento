@@ -20,54 +20,35 @@ export function mapUrbaniteToEvents(events: UrbaniteEvent[]) {
     return mapPropertiesOfCrawledEvent(event);
   });
 }
-function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent) {
-  return {
-    date: { start: eventIn.date },
-    times: { start: eventIn.start_time },
-    category: eventIn.category,
-    name: eventIn.event_name,
-    organizerName: eventIn.organizer_name,
-    description: eventIn.description,
-    link: eventIn.link,
-    address: {
+function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
+  const e = new Event();
+  e.organizerName = eventIn.organizer_name
+
+  const address = {
     city: eventIn.city,
     plz: eventIn.plz,
     street: eventIn.street,
     country: 'Deutschland',
-    },
-      crawlerName: eventIn.crawlerName,
-}
-  };
-
-
-export function createEventUrbanite(event, organizer) {
-  const e = new Event();
-  const address = createAddressFromInput(event.address);
-
-  e._organizerId = organizer._id;
-  e.name = event.name;
-  e.organizerName = organizer.name;
-  e.address = address;
-  e.category = organizer.category;
-  e.description = event.description;
-  e.link = event.link;
-
-  // TODO assign correct values
-  if (event.times.start === "ganztägig") {
+    };
+  e.address = createAddressFromInput(address);
+  e.description = eventIn.description;
+  e.link = eventIn.link;
+if (eventIn.start_time === "ganztägig") {
     e.times.start = "00:00";
     e.times.end = "00:00";
   } else {
-    e.times.start = event.times.start;
-    e.times.end = endTimeUrbanite(event.times.start);
+    e.times.start = eventIn.start_time;
+    e.times.end = endTimeUrbanite(eventIn.start_time);
   }
   const date = { start: undefined, end: undefined };
-  date.start = moment(new Date(parseEventDateUrbanite(event.date.start)));
-  date.end = endDateUrbanite(date.start, event.times.start);
+  date.start = moment(new Date(parseEventDateUrbanite(eventIn.date)));
+  date.end = endDateUrbanite(date.start, eventIn.start_time);
   e.date = date;
 
   e.permanent = false;
   return e;
-}
+
+  };
 
 function createAddressFromInput(address: any): Address {
   const a = new Address();

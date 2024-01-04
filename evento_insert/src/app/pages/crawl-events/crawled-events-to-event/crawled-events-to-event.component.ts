@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { CustomDialogComponent } from 'src/app/custom-dialog/custom-dialog.component';
@@ -8,26 +8,20 @@ import { EventsService } from 'src/app/services/events.web.service';
 import { FileUploadService } from 'src/app/services/files/file-upload.service';
 import { OrganizerObservableService } from '../../../services/organizer.observable.service';
 import { SnackbarService } from '../../../services/utils/snackbar.service';
-import { createEventForSpecificCrawler } from '../crawl-event.helpers';
-import { PossibleCrawlerNames } from '../crawl-events.component';
 
 @Component({
   selector: 'app-crawled-events-to-event',
   templateUrl: './crawled-events-to-event.component.html',
   styleUrls: ['./crawled-events-to-event.component.css']
 })
-export class CrawledEventsToEventComponent implements OnInit, OnChanges {
+export class CrawledEventsToEventComponent implements OnChanges {
   @Input() eventIn;
-  @Input() organizerIn: Organizer[];
-  @Input() crawlerName: PossibleCrawlerNames;
+  @Input() organizerIn: Organizer;
+  @Input() allOrganizer: Organizer[];
   @Output() emitAddEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() emitNextEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() emitPreviousEvent: EventEmitter<void> = new EventEmitter<void>();
 
-  shouldInputOrganizer = false;
-  inputOrganizer: Organizer;
-  inputEvent: Event = new Event();
-  shouldInputEvent = false;
 
   // subscriptions
   category$
@@ -50,43 +44,11 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
   ) {
 
   }
-
-  ngOnInit(): void {
-    this.findOrganizer()
-  }
   ngOnChanges(changes: SimpleChanges): void {
-    this.findOrganizer()
+    console.log("Organizer: ", this.organizerIn)
+    console.log("Event: ", this.eventIn)
   }
 
-  findOrganizer() {
-    const filteredOrganizer = this.organizerIn.filter((organizer) =>
-      organizer.name.toLowerCase() === this.eventIn.organizerName.toLowerCase() ||
-      organizer.alias.some(aliasName => aliasName.toLowerCase() === this.eventIn.organizerName.toLowerCase()))
-
-    if (filteredOrganizer.length < 1) {
-      this.inputOrganizer = new Organizer()
-      this.inputOrganizer.name = this.eventIn.organizerName
-      this.inputOrganizer.category = this.eventIn.category ? this.eventIn.category : undefined
-      this.inputOrganizer.address.city = this.eventIn.address?.city ? this.eventIn.address.city : ''
-      this.inputOrganizer.address.plz = this.eventIn.address?.plz ?  this.eventIn.address.plz : ''
-      this.inputOrganizer.address.street = this.eventIn.address?.street ? this.eventIn.address.street : ''
-      this.inputOrganizer.address.streetNumber = this.eventIn.address?.streetNumber ? this.eventIn.address.streetNumber : ''
-      this.inputOrganizer.address.country = this.eventIn.address?.country ? this.eventIn.address.country : 'Deutschland'
-
-      this.shouldInputOrganizer = true
-      this.shouldInputEvent = false
-
-    }
-    else {
-
-      this.inputOrganizer = filteredOrganizer[0]
-      //todo Event befüllen
-      this.inputEvent = new Event();
-      this.inputEvent = this.createInputEvent()
-      this.shouldInputEvent = true
-      this.shouldInputOrganizer = false
-    }
-  }
   nextEvent() {
     this.emitNextEvent.emit();
   }
@@ -97,8 +59,8 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
   addNewOrganizer(organizer) {
     this.organizerOnservableService.addNewOrganizer(organizer).then(
       (organizerResponse) => {
-        this.organizerIn.push(organizerResponse)
-        this.findOrganizer()
+        this.organizerIn = (organizerResponse)
+        // TODO his.findOrganizer()
         this.snackbarService.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
       }
     ).catch(
@@ -212,8 +174,5 @@ export class CrawledEventsToEventComponent implements OnInit, OnChanges {
         }
       );
   }
-  createInputEvent(): Event {
 
-    return createEventForSpecificCrawler(this.eventIn.crawlerName, this.eventIn, this.inputOrganizer)
-  }
 }

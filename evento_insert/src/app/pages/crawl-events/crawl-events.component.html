@@ -42,7 +42,7 @@
     </div>
 </div>
 <div class="insert-event-container" *ngIf="crawledEventList.length > 0">
-    <app-crawled-events-to-event *ngIf="allOrganizer.length > 0" [organizerIn]="allOrganizer" [eventIn]="eventIn" [crawlerName]="actualCrawler"
+    <app-crawled-events-to-event *ngIf="allOrganizer.length > 0" [allOrganizer]="allOrganizer" [organizerIn]="organizerIn" [eventIn]="eventIn"
         (emitAddEvent)="nextEvent()" (emitNextEvent)="nextEvent()"
         (emitPreviousEvent)="previousEvent()"></app-crawled-events-to-event>
 </div>
