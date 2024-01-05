@@ -21,6 +21,7 @@ export class CrawledEventsToEventComponent{
   @Output() emitAddEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() emitNextEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() emitPreviousEvent: EventEmitter<void> = new EventEmitter<void>();
+  @Output() emitOrganizer: EventEmitter<Organizer> = new EventEmitter<Organizer>();
 
 
   // subscriptions
@@ -55,7 +56,7 @@ export class CrawledEventsToEventComponent{
   addNewOrganizer(organizer) {
     this.organizerOnservableService.addNewOrganizer(organizer).then(
       (organizerResponse) => {
-        this.organizerIn = (organizerResponse)
+        this.emitOrganizer.emit(organizerResponse)
         // TODO his.findOrganizer()
         this.snackbarService.openSnackBar('Successfully added: ' + organizerResponse.name, 'success')
       }

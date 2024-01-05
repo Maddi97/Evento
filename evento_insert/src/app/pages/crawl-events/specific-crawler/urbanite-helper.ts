@@ -12,7 +12,6 @@ export type UrbaniteEvent = {
   plz: string;
   description: string;
   link: string;
-  crawlerName: string;
 };
 
 export function mapUrbaniteToEvents(events: UrbaniteEvent[]) {
@@ -22,6 +21,7 @@ export function mapUrbaniteToEvents(events: UrbaniteEvent[]) {
 }
 function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
   const e = new Event();
+  e.name = eventIn.event_name;
   e.organizerName = eventIn.organizer_name
 
   const address = {

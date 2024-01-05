@@ -255,10 +255,13 @@ export class CrawlEventsComponent implements OnInit {
       if(!e.category)
       e.category = this.organizerIn.category;
       if(!e.address) e.address = this.organizerIn.address;
-      console.log(e.address, this.organizerIn)
-
       this.eventIn = e;
     }
+  }
+  newOrganizer(organizer)
+  {
+    this.allOrganizer.push(organizer);
+    this.findOrganizer()
   }
   onDateChange(date: any): void {
     this.selectedInputDate = new Date(date)
