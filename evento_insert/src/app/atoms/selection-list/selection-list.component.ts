@@ -10,10 +10,6 @@ export class SelectionListComponent {
   @Input() listTitle: string = '';
   @Output() updatedNamesList = new EventEmitter<string[]>();
 
-  ngOnChanges() {
-    console.log(this.namesList)
-  }
-
   deleteName(name: string): void {
     this.namesList = this.namesList.filter(item => item !== name);
     this.updatedNamesList.emit(this.namesList);
