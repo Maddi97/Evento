@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { CustomDialogComponent } from 'src/app/custom-dialog/custom-dialog.component';
@@ -14,7 +14,7 @@ import { SnackbarService } from '../../../services/utils/snackbar.service';
   templateUrl: './crawled-events-to-event.component.html',
   styleUrls: ['./crawled-events-to-event.component.css']
 })
-export class CrawledEventsToEventComponent implements OnChanges {
+export class CrawledEventsToEventComponent{
   @Input() eventIn;
   @Input() organizerIn: Organizer;
   @Input() allOrganizer: Organizer[];
@@ -43,10 +43,6 @@ export class CrawledEventsToEventComponent implements OnChanges {
 
   ) {
 
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log("Organizer: ", this.organizerIn)
-    console.log("Event: ", this.eventIn)
   }
 
   nextEvent() {

@@ -3,7 +3,6 @@ import { catchError, first, map, mergeMap, repeat } from "rxjs/operators";
 import { InputParameter } from "../../../services/crawler/crawler-api.service";
 
 export function crawlBrowseAi(crawler, url, crawlerService, crawlerName) {
-  console.log("URL: ", url);
   const storedValue = sessionStorage.getItem(url);
 
   if (storedValue) {

@@ -247,13 +247,16 @@ export class CrawlEventsComponent implements OnInit {
     else {
       //wenn es organizer gibt dann baue direkt das event
       this.organizerIn = filteredOrganizer[0];
-      console.log(filteredOrganizer[0])
       //todo Event befüllen
 
       const e = this.eventIn
       e._organizerId = this.organizerIn._id;
       e.organizerName = this.organizerIn.name;
+      if(!e.category)
       e.category = this.organizerIn.category;
+      if(!e.address) e.address = this.organizerIn.address;
+      console.log(e.address, this.organizerIn)
+
       this.eventIn = e;
     }
   }

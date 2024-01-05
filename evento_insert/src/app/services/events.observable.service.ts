@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
 import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
 import { Event } from '../models/event';
-import { CategoryService } from './category.service';
 import { EventsService } from './events.web.service';
 import { FileUploadService } from './files/file-upload.service';
-import { OrganizerService } from './organizer.web.service';
-import { SnackbarService } from './utils/snackbar.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,12 +11,8 @@ export class EventsObservableService {
   eventImagePath = "images/eventImages/";
 
   constructor(
-    private categoryService: CategoryService,
-    private organizerService: OrganizerService,
     private eventService: EventsService,
     private fileService: FileUploadService,
-    private sanitizer: DomSanitizer,
-    private snackbar: SnackbarService,
     public dialog: MatDialog
   ) { }
 

@@ -17,38 +17,29 @@ export function mapIfzToEvents(events: IFZEvent[]) {
   });
 }
 function mapPropertiesOfCrawledEvent(eventIn: IFZEvent) {
-    console.log("hallo", eventIn.link)
-  return {
-    name: eventIn.name,
-    date: parseDate(eventIn.date),
-    time: parseTime(eventIn.time),
-    organizerName: 'Institut für Zukunft',
-    description: eventIn.description,
-    link: eventIn.link,
-    crawlerName: eventIn.crawlerName,
-
-  }
-}
-
-
-export function createEventIfz(event, organizer) {
   const e = new Event();
-  e._organizerId = organizer._id;
-  e.name = event.name;
-  e.organizerName = organizer.name;
-  e.address = organizer.address;
-  e.category = organizer.category;
-  e.description = event.description;
-  e.link = event.link;
+  e._organizerId = undefined;
+  e.address = {
+    street: 'An den Tierkliniken',
+    streetNumber: '38-40',
+    city: 'Leipzig',
+    plz: '04103',
+    country: 'Deutschland'
+  }
+  e.name = eventIn.name;
+  e.organizerName = 'Institut für Zukunft';
+  e.description = eventIn.description;
+  e.link = eventIn.link;
   e.times = {
-    start: event.time,
+    start: parseTime(eventIn.time),
     end: '9:00'
   }
   e.date = {
-    start: event.date,
-    end: moment(event.date).add(1, 'days')
+    start: moment(parseDate(eventIn.date)),
+    end: moment(parseDate(eventIn.date)).add(1, 'days')
   }
-  return e;
+
+return e
 }
 
 function parseDate(date: string): Date {
@@ -58,9 +49,16 @@ function parseDate(date: string): Date {
 }
 
 function parseTime(time: string) {
-    const timeObject = new Date("2000-01-01 " + time);
+    // Split the time string into hours and AM/PM
+    const [hoursStr, period] = time.split(' ');
 
-    // Format the time object in 24-hour format
-    const time24hFormat = timeObject.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-    return time24hFormat;
+    // Convert hours to 24-hour format
+    let hours = parseInt(hoursStr, 10);
+
+    if (period.toLowerCase() === 'pm' && hours < 12) {
+      hours += 12;
+    }
+
+    // Format the hours and return the result
+    return `${hours.toString().padStart(2, '0')}:00`;
 }
