@@ -209,8 +209,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   scrollRight() {
     const element = document.getElementById("main-category-container");
     const subcatEl = document.getElementById("subcategory-container");
-    element.scrollLeft += 160;
-    subcatEl.scrollLeft += 160;
+
+    if(element) element.scrollLeft += 160;
+    if(subcatEl) subcatEl.scrollLeft += 160;
+    
     this.setScrollMaxBool();
     // if max scrolled true then true
   }
@@ -219,8 +221,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     const element = document.getElementById("main-category-container");
     const subcatEl = document.getElementById("subcategory-container");
 
-    element.scrollLeft -= 160;
-    subcatEl.scrollLeft -= 160;
+    if(element) element.scrollLeft -= 160;
+    if(subcatEl) subcatEl.scrollLeft -= 160;
 
     this.setScrollMaxBool();
   }
