@@ -66,7 +66,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     this.scrollToClicked();
   }
 
-  safeDate(day: moment.Moment, str = "bla") {
+  safeDate(day: moment.Moment) {
     this.nextMonth.map((m) => {
       if (m.date === day) {
         m.isClicked = true;
@@ -139,7 +139,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     date = moment(date.toISOString()).utcOffset(0, false);
     date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
     // date.toISOString()
-    return moment(date);
+    return date;
   }
 
   async scrollRight() {

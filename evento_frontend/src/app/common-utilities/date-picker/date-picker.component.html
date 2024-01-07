@@ -6,7 +6,7 @@
       <mat-icon>arrow_back_ios_new</mat-icon>
     </div>
     <app-day-date class="events-day-date" *ngFor="let day of nextMonth" [date]="day.date" [isClicked]="day.isClicked"
-      (click)="safeDate(day.date, day.date);" [ngClass]="{'clicked' : day.isClicked}">
+      (click)="safeDate(day.date);" [ngClass]="{'clicked' : day.isClicked}">
       >
     </app-day-date>
     <div class="add-dates">

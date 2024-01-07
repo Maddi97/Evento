@@ -110,7 +110,14 @@ export class EventsComponent implements OnInit, OnDestroy {
       (searchString: string) => {
         this.spinner.show();
         this.searchString = searchString;
-        const req = { searchString: searchString, limit: this.actualLoadEventLimit, categories: this.categoryList.map(cat => cat._id) }
+        const date = moment(new Date()).utcOffset(0, false).set({
+    hour: 0,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+  });
+
+        const req = { searchString: searchString, limit: this.actualLoadEventLimit, date: date, categories: this.categoryList.map(cat => cat._id) }
         const event$ = this.eventService.getEventsBySearchString(req).subscribe(
           {
             next: (events) => {
@@ -180,7 +187,10 @@ export class EventsComponent implements OnInit, OnDestroy {
       {
         next: (params) => {
           this.fetchEventsCompleted = false;
-          this.filteredDate = moment(params.date).tz('Europe/Berlin');
+          this.filteredDate = moment(params.date);
+          // append the hours of the current time zone because the post request will automatically 
+          // change to time with time zone an this could change the date
+          this.filteredDate.add(moment(new Date()).utcOffset() / 60, 'hours')
           const category = params.category;
           this.filteredCategory = category
             ? this.categoryList.find(c => c._id === category)
@@ -205,8 +215,11 @@ export class EventsComponent implements OnInit, OnDestroy {
     // Request backend for date, category and subcategory filter
     // filter object
     //format date because in post request it is stringified and formatted, this could change the date
+    const germanyTime = new Date().toLocaleTimeString('en-DE', { timeZone: 'Europe/Berlin' });
+
     const fil = {
-      date: this.filteredDate.format('YYYY-MM-DDTHH:mm:ss'),
+      date: this.filteredDate,
+      time: germanyTime,
       cat: [this.filteredCategory],
       subcat: this.filteredSubcategories,
       limit: this.actualLoadEventLimit,
@@ -225,7 +238,8 @@ export class EventsComponent implements OnInit, OnDestroy {
         });
     } else {
       // if hot filter by date
-      event$ = this.eventService.getEventsOnDate(this.filteredDate).subscribe(
+
+        event$ = this.eventService.getEventsOnDate(this.filteredDate, germanyTime).subscribe(
         {
           next: (events) => {
             this.handlyEventListLoaded(events)

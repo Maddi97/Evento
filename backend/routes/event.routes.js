@@ -3,8 +3,7 @@ var router = express.Router();
 const auth = require("../middleware/authJWT");
 const limiter = require("../middleware/rateLimiter")
 const Event = require("../model/event.model")
-
-
+const timeHelper = require('../helpers/timeAndDate.helper')
 router.get('/events', limiter, (req, res) => {
     Event.find({})
         .then((events) => res.send(events))
@@ -35,6 +34,8 @@ router.get('/organizer/:organizerId/events', limiter, (req, res) => {
 
 router.post('/eventOnDate', limiter, (req, res) => {
     let date = req.body.date
+    let time = req.body.time
+    console.log(date)
     Event.find(
         {
             $and: [
@@ -48,6 +49,20 @@ router.post('/eventOnDate', limiter, (req, res) => {
         }
     )
         .then((events) => {
+            events = events.filter((event) => {
+                if(timeHelper.isDateEqual(event.date.start, date) && !timeHelper.isTimeLater(event.times.start, time)) {
+                    return true
+                }
+                else if( timeHelper.isDateEqual(event.date.end, date) && timeHelper.isTimeLater(event.times.end, time)) {
+                    return true
+                }
+                else if( new Date(event.date.start).getTime() < new Date(date).getTime() && new Date(event.date.end).getTime() > new Date(date).getTime()){
+                    return true
+                }
+                else {
+                    return false
+                }
+            })
             res.send(events);
         })
         .catch((error) => {
@@ -57,7 +72,8 @@ router.post('/eventOnDate', limiter, (req, res) => {
 });
 
 router.post('/eventOnDateCatAndSubcat', limiter, (req, res) => {
-    let date = new Date(req.body.fil.date)
+    let date = req.body.fil.date
+    let time = req.body.fil.time
     let categories = req.body.fil.cat
     let limit = req.body.fil.limit
     let userPosition = req.body.fil.currentPosition
@@ -72,6 +88,7 @@ router.post('/eventOnDateCatAndSubcat', limiter, (req, res) => {
     if (date == "Invalid Date") {
         res.status(500).json({ error: 'Invalid Date Error' }); // Send an error response with status code 500 (Internal Server Error)
     }
+    console.log(date)
     Event.find(
         {
             $and: [
@@ -103,6 +120,15 @@ router.post('/eventOnDateCatAndSubcat', limiter, (req, res) => {
         events = events.filter(event => {
             return subcatIds.every((subcat) => event.category.subcategories.map((subcategory) => subcategory._id).includes(subcat))
         })
+        //filter events of end day that are already over
+        events = events.filter((event) => 
+            {   
+                if(timeHelper.isDateEqual(event.date.end, date) && !timeHelper.isTimeLater(event.times.end, time))
+                {
+                    return false
+                }
+                else return true;
+            })
 
         //sort events by distance
         events.sort((ev1, ev2) => {
@@ -165,8 +191,9 @@ router.post('/getEventsBySearchString', limiter, (req, res) => {
     const searchString = String(escape(req.body.req.searchString)); // Get the searchString from the request body
     const limit = Number(req.body.req.limit)
     const categories = req.body.req.categories;
-    const date = new Date()
-
+    const date = req.body.req.date
+    console.log(date)
+    console.log(searchString)
     Event.find({
         $and: [
             {
@@ -201,6 +228,11 @@ router.post('/getEventsBySearchString', limiter, (req, res) => {
                     },
                     {
                         'category.name': { $regex: searchString, $options: 'i' }
+                    },
+                    {
+                        'alias': {
+                            $elemMatch: { $regex: searchString, $options: 'i' }
+                        }
                     }
                 ]
             },
@@ -208,7 +240,9 @@ router.post('/getEventsBySearchString', limiter, (req, res) => {
         ]
 
     })
-        .then((events) => res.send(events.slice(0, limit)))
+        .then((events) => {
+            console.log(events)
+            res.send(events.slice(0, limit))})
         .catch((error) => {
             console.error(error);
             res.status(500).json({ error: 'Internal Server Error' });
