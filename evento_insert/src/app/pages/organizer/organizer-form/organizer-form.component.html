@@ -1,6 +1,6 @@
 <div class="form-container">
     <form [formGroup]="organizerForm">
-        <div class="radio-group-organizer-is-alias">
+        <div *ngIf="organizerIn?.name" class="radio-group-organizer-is-alias">
             <label id="permanent-radio-group-label">Is Organizer new or an alias?</label>
             <mat-radio-group formControlName="isOrganizerAlias">
                 <mat-radio-button value="true">Alias</mat-radio-button>
@@ -24,9 +24,14 @@
         </div>
 
         <div class="organizer-alias" *ngIf="organizerForm.get('isOrganizerAlias').value === 'true'">
-            <app-autocomplete-organizer [organizersIn]="allOrganizerIn"
+            <app-autocomplete-organizer *ngIf="!organizerIn?.name" [organizersIn]="allOrganizerIn"
                 (emitOrganizer)="setOrganizerFromSelection($event)"></app-autocomplete-organizer>
-            <p *ngIf="organizerIn">Current Name: {{organizerIn.name}} </p>
+            <p *ngIf="organizerIn?.name">Current Name: {{organizerIn.name}} </p>
+             <mat-form-field appearance="fill">
+                    <mat-label>Alias..</mat-label>
+                    <input id="alias" name="alias" matInput #target
+                        (keydown.enter)="addAlias(target.value); target.value = ''">
+                </mat-form-field>
             <p *ngIf="organizerIn && organizerIn.alias && organizerIn.alias.length > 0">
                 <app-selection-list [listTitle]="'Alias'" [namesList]="organizerIn?.alias"
                     (updatedNamesList)="organizerIn.alias = $event"></app-selection-list>

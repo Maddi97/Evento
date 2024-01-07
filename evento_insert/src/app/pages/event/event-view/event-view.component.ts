@@ -53,17 +53,6 @@ export class EventViewComponent implements OnInit {
     this.organizer$ = this.organizerService.organizers;
     this.event$ = this.eventService.event;
 
-    this.eventService
-      .getEventsOnDate(
-        moment(new Date()).utcOffset(0, false).set({
-          hour: 0,
-          minute: 0,
-          second: 0,
-          millisecond: 0,
-        })
-      )
-      .subscribe();
-
     this.category$.subscribe((cat) => (this.categories = cat));
     this.organizer$.subscribe((org) => (this.organizers = org));
     this.event$.subscribe((event) => {
@@ -160,7 +149,7 @@ export class EventViewComponent implements OnInit {
     const date = moment(new Date())
       .utcOffset(0, false)
       .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-    this.eventService.getEventsOnDate(date);
+    this.eventService.getEventsOnDate(date, '00:00');
   }
 
   deleteEvent(event: Event) {

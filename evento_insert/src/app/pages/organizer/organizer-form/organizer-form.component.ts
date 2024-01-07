@@ -105,7 +105,8 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
     }
   }
 
-  addAlias(alias: string) {
+  addAlias(alias: any) {
+    console.log(alias)
     if (!this.organizerIn.alias) { this.organizerIn.alias = [alias] }
     else {
       if (this.organizerIn.alias.find((name) => name === alias)) {
@@ -149,6 +150,7 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
     this.updateOrganizerId = "";
     this.ifEventId = "";
     this.inputImage.nativeElement.value = "";
+    this.organizerIn = undefined;
   }
 
   checkDisabled() {

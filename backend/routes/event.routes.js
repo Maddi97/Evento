@@ -88,7 +88,9 @@ router.post('/eventOnDateCatAndSubcat', limiter, (req, res) => {
     if (date == "Invalid Date") {
         res.status(500).json({ error: 'Invalid Date Error' }); // Send an error response with status code 500 (Internal Server Error)
     }
-    console.log(date)
+    if (!time) {
+        res.status(500).json({ error: 'Invalid Time Error' }); // Send an error response with status code 500 (Internal Server Error)
+    }
     Event.find(
         {
             $and: [
