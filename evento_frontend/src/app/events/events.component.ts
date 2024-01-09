@@ -4,6 +4,7 @@ import * as moment from 'moment-timezone';
 import { NgxSpinnerService } from "ngx-spinner";
 import { Subscription, delay, tap } from "rxjs";
 import { CategoriesService } from "../categories/categories.service";
+import { SharedObservableService } from "../common-utilities/logic/shared-observables.service";
 import { PositionService } from "../common-utilities/map-view/position.service";
 import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
 import { Category, Subcategory } from "../models/category";
@@ -11,7 +12,6 @@ import { Event } from "../models/event";
 import { NominatimGeoService } from "../nominatim-geo.service";
 import { EventService } from "./event.service";
 
-const START_LOADING_LIMIT = 16
 @Component({
   selector: "app-events",
   templateUrl: "./events.component.html",
@@ -27,7 +27,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   // equal limit at start == start limit
   actualLoadEventLimit;
-  startLoadEventLimit = START_LOADING_LIMIT;
+  startLoadEventLimit = 16;
   offset = 14;
 
   fetchEventsCompleted = false;
@@ -51,6 +51,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   eventToScrollId = undefined
   hoveredEventId = null;
   filteredCategory = this.hot;
+  lastEventListLength = 0;
+  hasMoreEventsToLoad = true;
   // filteredSubcategories
   filteredSubcategories = [];
   scrollLeftMax: Boolean;
@@ -72,7 +74,8 @@ export class EventsComponent implements OnInit, OnDestroy {
     private geoService: NominatimGeoService,
     private categoriesService: CategoriesService,
     private sessionStorageService: SessionStorageService,
-    private positionService: PositionService
+    private positionService: PositionService,
+    private sharedObservables: SharedObservableService,
   ) {
     this.actualLoadEventLimit = this.startLoadEventLimit;
     this.mapView = this.sessionStorageService.getMapViewData();
@@ -189,7 +192,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     ).subscribe(
       {
         next: (params) => {
-          this.resetLoadingLimit
+          this.resetLoadingLimit()
           this.fetchEventsCompleted = false;
           this.filteredDate = moment(params.date);
           // append the hours of the current time zone because the post request will automatically 
@@ -264,9 +267,12 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   loadMoreEvents(mapCenter = undefined) {
-    this.isLoadMoreClicked = mapCenter ? false : true;
-    this.actualLoadEventLimit += this.offset;
-    this.applyFilters(mapCenter)
+      if(this.loadMore){
+
+        this.isLoadMoreClicked = mapCenter ? false : true;
+          this.actualLoadEventLimit += this.offset;
+        this.applyFilters(mapCenter)
+  }
 
   }
 
@@ -289,6 +295,10 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   onFetchEventsCompleted() {
     this.fetchEventsCompleted = true;
+    if(this.lastEventListLength <= this.eventList.length){
+      this.hasMoreEventsToLoad = false;
+    }
+    this.lastEventListLength = this.eventList.length
     this.spinner.hide()
   }
 
@@ -340,10 +350,10 @@ export class EventsComponent implements OnInit, OnDestroy {
 onScroll(event): void {
   const element = event.target;
   if(this.isScrollingDown(element)){
-    console.log('down')
+    this.sharedObservables.notifyScrolling("down")
   }
   else {
-    console.log('up')
+    this.sharedObservables.notifyScrolling("up")
   }
   // Check if the div is scrolled to the bottom
   if (this.isScrolledToBottom(element) && !this.isLoadingMoreEvents) {
@@ -352,7 +362,7 @@ onScroll(event): void {
       this.loadMoreEvents()
       setTimeout(() => {
         this.isLoadingMoreEvents = false;
-      }, 500)
+      }, 750)
   }
 }
 
@@ -378,7 +388,7 @@ isScrollingDown(element: HTMLElement){
 }
 
 private resetLoadingLimit(){
-  this.startLoadEventLimit = START_LOADING_LIMIT;
+  this.actualLoadEventLimit = this.startLoadEventLimit;
 }
   closeSpinnerAfterTimeout() {
     setTimeout(() => {

@@ -4,6 +4,7 @@ import { NavigationEnd, Router } from "@angular/router";
 import * as moment from "moment";
 import { filter } from "rxjs";
 import { subDomainUrls } from "../app.component";
+import { SharedObservableService } from "../common-utilities/logic/shared-observables.service";
 import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
 
 @Component({
@@ -15,6 +16,9 @@ export class HeaderbarComponent implements OnInit {
   searchText = "";
   isNotEventsPage = false;
   getScreenWidth;
+    scrollUp = 0;
+  scrollDown = 0;
+  scrollDirection = undefined
   filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({
     hour: 0,
     minute: 0,
@@ -25,7 +29,9 @@ export class HeaderbarComponent implements OnInit {
   constructor(
     private location: Location,
     private router: Router,
-    private sessionStorageService: SessionStorageService
+    private sessionStorageService: SessionStorageService,
+    private sharedObservables: SharedObservableService,
+
   ) { }
 
   ngOnInit(): void {
@@ -50,6 +56,24 @@ export class HeaderbarComponent implements OnInit {
         complete: () => {
         }
       })
+          this.sharedObservables.scrollObservable.subscribe((scrollDirection) => {
+      if(scrollDirection==="up"){
+        this.scrollDown = 0
+        if(this.scrollUp > 5){
+          this.scrollDirection = scrollDirection;
+          this.scrollUp = 0;
+        }
+        this.scrollUp++;
+      }
+      else {
+        this.scrollUp = 0;
+        if(this.scrollDown > 5) {
+            this.scrollDirection = scrollDirection;
+            this.scrollDown = 0;
+        }
+        this.scrollDown++
+      }
+    });
   }
 
   navBack() {

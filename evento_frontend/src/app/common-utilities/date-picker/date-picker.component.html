@@ -1,5 +1,5 @@
 <div class="date-picker">
-  <div class="scroll" id="scroll-date-picker">
+  <div class="scroll" id="scroll-date-picker" (scroll)="onScroll($event)">
     <div *ngIf="getScreenWidth>700"
       [ngStyle]="{ 'color': scrollLeftMax ? 'lightgrey' : 'black', 'cursor': scrollLeftMax ? 'unset' : 'pointer' }"
       class="icon icon-left" (click)="scrollLeft()">
@@ -9,11 +9,6 @@
       (click)="safeDate(day.date);" [ngClass]="{'clicked' : day.isClicked}">
       >
     </app-day-date>
-    <div class="add-dates">
-      <div (click)="addDates()" class="add-text">
-        <img class="view-more-icon" src="assets/static-icons/view-more.png" />
-      </div>
-    </div>
     <div *ngIf="getScreenWidth>700"
       [ngStyle]="{ 'color': scrollRightMax ? 'lightgrey' : 'black', 'cursor': scrollRightMax ? 'unset' : 'pointer' }"
       class="icon icon-right" (click)="scrollRight(); setScrollMaxBool()

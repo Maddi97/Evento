@@ -33,7 +33,7 @@
 
           <app-event-tile-list [fetchEventsCompleted]="fetchEventsCompleted" [eventList]="eventList"
             [eventToScrollId]="eventToScrollId" (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
-          <div *ngIf="isLoadingMoreEvents">
+          <div *ngIf="isLoadingMoreEvents && loadMore">
               <img class='pic' [src]="'assets/design-elements/loading-image.svg'">
           </div>
       </div>

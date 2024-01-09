@@ -108,8 +108,14 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     }
   }
 
-  @HostListener("scroll") onScroll(e: Event): void {
-    this.getYPosition(e);
+  onScroll(e: Event): void {
+  const targetElement = e.target as HTMLElement;
+
+  // Check if the target element has scrolled horizontally to the end
+  const isScrolledToRightEnd = targetElement.scrollLeft + targetElement.clientWidth >= targetElement.scrollWidth -5;
+  if (isScrolledToRightEnd) {
+    this.addDates()
+  }
   }
 
   scrollToClicked() {
@@ -126,13 +132,12 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     }, 200);
   }
 
-  getYPosition(e: Event): void { }
-
   addDates() {
     // TODO maybe try to add number of dates dynamically
     this.numberOfDates += this.displayNumberOfDates;
-    this.firstDate += this.displayNumberOfDates;
     this.createDateList(true);
+    this.firstDate += this.displayNumberOfDates;
+
   }
 
   transformDateFormat(date) {

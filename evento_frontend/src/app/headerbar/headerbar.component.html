@@ -1,4 +1,4 @@
-<div class="header header-{{getClassOnFullEvent()}}">
+<div class="header header-{{getClassOnFullEvent()}}" [class.animate-off-screen]="scrollDirection==='down' && getScreenWidth<1000">
   <img src="assets/static-icons/icon-back.png" *ngIf="isNotEventsPage" alt="arrow back" class="arrow-back"
     routerLink="/" [queryParamsHandling]="'merge'" (click)="changeMapView()" />
 

@@ -23,10 +23,10 @@ import { EventTileListComponent } from './event-tile-list/event-tile-list.compon
 import { EventTileComponent } from './event-tile/event-tile.component';
 import { FullEventComponent } from './full-event/full-event.component';
 import { HamburgerMenuComponent } from './hamburger-menu/hamburger-menu.component';
+import { SharedObservableService } from './logic/shared-observables.service';
 import { MapViewComponent } from './map-view/map-view.component';
 import { SearchFilterComponent } from './search-filter/search-filter.component';
 import { SocialMediaShareComponent } from './social-media-share/social-media-share.component';
-
 
 @NgModule({
   declarations: [
@@ -70,8 +70,11 @@ import { SocialMediaShareComponent } from './social-media-share/social-media-sha
     EventTileListComponent,
     CategoryListComponent,
     HamburgerMenuComponent,
-    SearchFilterComponent
+    SearchFilterComponent,
   ],
+  providers: [
+    SharedObservableService
+  ]
 })
 export class CommonUtilitiesModule {
 }

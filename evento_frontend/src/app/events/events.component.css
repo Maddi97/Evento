@@ -3,6 +3,7 @@
   width: 100%;
   justify-content: center;
   align-items: center;
+  position:fixed;
 }
 
 .filter-container {
@@ -35,8 +36,6 @@
   /* Add smooth scroll behavior */
   transition: transform 3s linear;
   /* Adjust the duration (3s) for slower or faster scrolling */
-  margin-top: 0.5rem;
-  margin-bottom: 20px;
 }
 
 .category-list .ng-star-inserted {
@@ -86,12 +85,11 @@
   align-items: center;
   padding-top: 1rem;
   margin-bottom: 64px;
-  height: 80vh;
+  height: 90vh;
 }
 
 @media screen and (max-width: 1000px) {
   .main-category-container {
-    margin-top: 0.5rem !important;
     margin-bottom: 0px !important;
   }
 

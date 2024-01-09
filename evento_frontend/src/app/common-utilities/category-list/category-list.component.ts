@@ -14,6 +14,7 @@ import { CategoriesService } from "../../categories/categories.service";
 import { FileService } from "../../file.service";
 import { Category, Subcategory } from "../../models/category";
 import { clearSearchFilter } from "../logic/search-filter-helper";
+import { SharedObservableService } from "../logic/shared-observables.service";
 import { SessionStorageService } from "../session-storage/session-storage.service";
 type ID = string;
 
@@ -30,13 +31,14 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   categoryList: Category[] = [];
   subscriptions$: Subscription[] = [];
   subcategoryList: Subcategory[] = [];
-
+  scrollUp = 0;
+  scrollDown = 0;
+  scrollDirection = undefined
   public getScreenWidth: any;
   searchString: string = '';
   // filteredSubcategories
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
-
   // clicked date
 
   constructor(
@@ -46,7 +48,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private router: Router,
     private sessionStorageService: SessionStorageService,
-    private gtmService: GoogleTagManagerService
+    private gtmService: GoogleTagManagerService,
+    private sharedObservables: SharedObservableService,
+
   ) { }
   ngOnDestroy(): void {
     this.subscriptions$.forEach((subscription$: Subscription) => {
@@ -60,7 +64,24 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.getScreenWidth = window.innerWidth;
     //document.getElementById('main-category-container').scrollLeft = 0;
     this.setScrollMaxBool();
-
+    this.sharedObservables.scrollObservable.subscribe((scrollDirection) => {
+      if(scrollDirection==="up"){
+        this.scrollDown = 0
+        if(this.scrollUp > 5){
+          this.scrollDirection = scrollDirection;
+          this.scrollUp = 0;
+        }
+        this.scrollUp++;
+      }
+      else {
+        this.scrollUp = 0;
+        if(this.scrollDown > 5) {
+            this.scrollDirection = scrollDirection;
+            this.scrollDown = 0;
+        }
+        this.scrollDown++
+      }
+    });
     const categories$ = this.categoriesService.getAllCategories().pipe(
       map((categories: Category[]) => {
         this.categoryList = categories;

@@ -179,6 +179,14 @@ img {
 
 .category-list-container {
   display: flex;
+  margin-top: 150pxrem;
+  transition: margin-top 300ms ease-out;
+  margin-bottom: 20px
+}
+.animate-off-screen {
+  margin-top:-150px;
+  transition: margin-top 200ms ease-out;
+
 }
 
 .search-category-replacement {
