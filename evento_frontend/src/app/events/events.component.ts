@@ -11,6 +11,7 @@ import { Event } from "../models/event";
 import { NominatimGeoService } from "../nominatim-geo.service";
 import { EventService } from "./event.service";
 
+const START_LOADING_LIMIT = 16
 @Component({
   selector: "app-events",
   templateUrl: "./events.component.html",
@@ -21,10 +22,12 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   //Observables
   private subscriptions$: Array<Subscription> = [];
+  isLoadingMoreEvents = false;
+  private lastScrollPosition = 0;
 
   // equal limit at start == start limit
   actualLoadEventLimit;
-  startLoadEventLimit = 16;
+  startLoadEventLimit = START_LOADING_LIMIT;
   offset = 14;
 
   fetchEventsCompleted = false;
@@ -186,6 +189,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     ).subscribe(
       {
         next: (params) => {
+          this.resetLoadingLimit
           this.fetchEventsCompleted = false;
           this.filteredDate = moment(params.date);
           // append the hours of the current time zone because the post request will automatically 
@@ -260,8 +264,6 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   loadMoreEvents(mapCenter = undefined) {
-    this.spinner.show()
-    this.closeSpinnerAfterTimeout();
     this.isLoadMoreClicked = mapCenter ? false : true;
     this.actualLoadEventLimit += this.offset;
     this.applyFilters(mapCenter)
@@ -334,6 +336,50 @@ export class EventsComponent implements OnInit, OnDestroy {
     }
 
   }
+
+onScroll(event): void {
+  const element = event.target;
+  if(this.isScrollingDown(element)){
+    console.log('down')
+  }
+  else {
+    console.log('up')
+  }
+  // Check if the div is scrolled to the bottom
+  if (this.isScrolledToBottom(element) && !this.isLoadingMoreEvents) {
+      this.isLoadingMoreEvents = true;
+      console.log("Loading more events")
+      this.loadMoreEvents()
+      setTimeout(() => {
+        this.isLoadingMoreEvents = false;
+      }, 500)
+  }
+}
+
+isScrolledToBottom(element: HTMLElement): boolean {
+  const atBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - 5; 
+  return atBottom;
+}
+
+// return true if scrolling down, false if scrolling up
+isScrollingDown(element: HTMLElement){
+    const currentScrollPosition = element.scrollTop;
+
+    if (currentScrollPosition > this.lastScrollPosition) {
+        this.lastScrollPosition = currentScrollPosition;
+        return true
+      }
+    // Check if scrolling up
+    else if (currentScrollPosition < this.lastScrollPosition) {
+        this.lastScrollPosition = currentScrollPosition;
+        return false
+    }
+
+}
+
+private resetLoadingLimit(){
+  this.startLoadEventLimit = START_LOADING_LIMIT;
+}
   closeSpinnerAfterTimeout() {
     setTimeout(() => {
       this.spinner.hide()

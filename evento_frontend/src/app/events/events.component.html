@@ -8,17 +8,15 @@
 
     <div class="event-map-container" *ngIf="getScreenWidth>1000">
 
-      <div class="event-container" id="event-container">
+      <div class="event-container" id="event-container" (scroll)="onScroll($event)">
         <app-event-tile-list [fetchEventsCompleted]="fetchEventsCompleted" [eventList]=eventList
           [userPosition]="currentPosition" [eventToScrollId]="eventToScrollId"
           (hoverEventEmitter)="hoveredEventId = $event">
 
         </app-event-tile-list>
-        <div *ngIf="fetchEventsCompleted && loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
-          <mat-icon>autorenew</mat-icon>
-          <p>Lade mehr ...</p>
-        </div>
-
+          <div *ngIf="isLoadingMoreEvents">
+              <img class='pic' [src]="'assets/design-elements/loading-image.svg'">
+          </div>
       </div>
 
       <div class="map-container">
@@ -27,20 +25,17 @@
       </div>
     </div>
     <div class="event-map-container" *ngIf="getScreenWidth<1000">
-      <div class="event-container" *ngIf="!mapView">
         <div class="switchViewButton" (click)="changeToMapView()">
           <p> Zur Karte </p>
           <mat-icon class="change-view-icon">map</mat-icon>
         </div>
-        <div class="event-container" id="event-container">
+        <div class="event-container" id="event-container" (scroll)="onScroll($event)">
 
           <app-event-tile-list [fetchEventsCompleted]="fetchEventsCompleted" [eventList]="eventList"
             [eventToScrollId]="eventToScrollId" (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
-          <div *ngIf="fetchEventsCompleted && loadMore" class="load-more-events-button" (click)="loadMoreEvents()">
-            <mat-icon>autorenew</mat-icon>
-            <p>Lade mehr ...</p>
+          <div *ngIf="isLoadingMoreEvents">
+              <img class='pic' [src]="'assets/design-elements/loading-image.svg'">
           </div>
-        </div>
       </div>
 
       <div class="map-container" *ngIf="mapView">
