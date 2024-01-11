@@ -1,26 +1,25 @@
 ul {
-    display: flex;
-    flex-direction: row;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    align-items: baseline;
+  display: flex;
+  flex-direction: row;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  align-items: baseline;
 }
 
 li {
-    display: flex;
-    margin: 6px;
-    margin-bottom: 8px;
-    max-width: 120px;
-    border-radius: 10px;
-    padding: 2px;
-    padding-left: 8px;
-    padding-right: 8px;
-    border: 1px solid black;
+  display: flex;
+  margin: 6px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  padding: 2px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border: 1px solid black;
 }
 
 .delete-icon {
-    cursor: pointer;
-    color: red;
-    margin-left: 8px;
+  cursor: pointer;
+  color: red;
+  margin-left: 8px;
 }

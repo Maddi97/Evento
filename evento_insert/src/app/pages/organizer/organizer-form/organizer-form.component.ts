@@ -40,17 +40,16 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
   ifEventId;
   isOpeningTimesRequired = false;
   image: any;
-  organizerForm
+  organizerForm;
   constructor(private fb: FormBuilder) {
     this.organizerForm = this.fb.group(getOrganizerFormTemplate());
-
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   ngOnChanges() {
     if (this.organizerIn !== undefined) this.setOrganizerForm(this.organizerIn);
-
+    console.log(this.organizerIn);
   }
 
   emitUpdate(organizerForm) {
@@ -94,9 +93,8 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
   setOrganizerFromSelection(organizer: Organizer) {
     const organizerAsAlias = this.organizerIn;
     this.organizerIn = organizer;
-    this.addAlias(organizerAsAlias.name)
-    this.setOrganizerForm(this.organizerIn, 'true')
-
+    this.addAlias(organizerAsAlias.name);
+    this.setOrganizerForm(this.organizerIn, "true");
   }
 
   iconChosen(event: any) {
@@ -106,24 +104,28 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
   }
 
   addAlias(alias: any) {
-    console.log(alias)
-    if (!this.organizerIn.alias) { this.organizerIn.alias = [alias] }
-    else {
+    console.log(alias);
+    if (!this.organizerIn.alias) {
+      this.organizerIn.alias = [alias];
+    } else {
       if (this.organizerIn.alias.find((name) => name === alias)) {
-        this.organizerIn.alias = this.organizerIn.alias.filter((name) => name !== alias)
-      }
-      else this.organizerIn.alias.push(alias)
+        this.organizerIn.alias = this.organizerIn.alias.filter(
+          (name) => name !== alias
+        );
+      } else this.organizerIn.alias.push(alias);
     }
   }
 
-  setOrganizerForm(org: Organizer, isOrganizerAlias = 'false'): void {
-    const streetName = org.address?.street ? org.address.street + " " + org.address?.streetNumber : ''
+  setOrganizerForm(org: Organizer, isOrganizerAlias = "false"): void {
+    const streetName = org.address?.street
+      ? org.address.street + " " + org.address?.streetNumber
+      : "";
     this.organizerForm.setValue({
       name: org.name,
       city: org.address.city,
       plz: org.address.plz,
       street: streetName,
-      streetNumber: '',
+      streetNumber: "",
       country: org.address.country,
       email: org.email,
       telephone: org.telephone,
@@ -131,7 +133,7 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
       link: org.link,
       frequency: org.frequency,
       isEvent: String(org.isEvent),
-      isOrganizerAlias: isOrganizerAlias
+      isOrganizerAlias: isOrganizerAlias,
     });
     this.category = org.category;
     this.openingTimes = org.openingTimes;
@@ -139,7 +141,6 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
     this.ifEventId = org.ifEventId;
     this.geoData = org.geoData;
   }
-
 
   nullFormField() {
     this.isOpeningTimesRequired = false;
