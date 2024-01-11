@@ -49,7 +49,6 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.organizerIn !== undefined) this.setOrganizerForm(this.organizerIn);
-    console.log(this.organizerIn);
   }
 
   emitUpdate(organizerForm) {
