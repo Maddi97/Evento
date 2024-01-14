@@ -282,7 +282,9 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.isHot = this.eventIn.hot;
     this.hasUnkownOpeningTimes = this.eventIn.hasUnkownOpeningTimes;
     this.isPromotion = this.eventIn.promotion;
+    this.isFrequent = !!this.eventIn.frequency;
     this.frequency = this.eventIn.frequency;
+    console.log(this.frequency);
   }
 
   insertOrgInfo(org: Organizer) {
@@ -318,6 +320,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.isHot = false;
     this.hasUnkownOpeningTimes = false;
     this.isPromotion = false;
+    this.isFrequent = false;
     this.frequency = undefined;
   }
 
