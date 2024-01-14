@@ -1,0 +1,25 @@
+<mat-form-field>
+  <mat-label>Frequency</mat-label>
+  <mat-select [(value)]="frequency">
+    <mat-option value="weekly">Weekly</mat-option>
+    <mat-option value="monthly">Monthly</mat-option>
+    <mat-option value="yearly">Yearly</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field class="weekly-form" *ngIf="frequency === 'weekly'">
+  <mat-label>Frequency</mat-label>
+  <mat-select
+    [(value)]="selectedDaysInWeekly"
+    multiple
+    (valueChange)="emitValue()"
+  >
+    <mat-option value="1">Monday</mat-option>
+    <mat-option value="2">Tuesday</mat-option>
+    <mat-option value="3">Wednesday</mat-option>
+    <mat-option value="4">Thursday</mat-option>
+    <mat-option value="5">Friday</mat-option>
+    <mat-option value="6">Saturday</mat-option>
+    <mat-option value="0">Sunday</mat-option>
+  </mat-select>
+</mat-form-field>
