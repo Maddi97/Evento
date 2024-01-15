@@ -22,18 +22,18 @@ export function mapUrbaniteToEvents(events: UrbaniteEvent[]) {
 function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
   const e = new Event();
   e.name = eventIn.event_name;
-  e.organizerName = eventIn.organizer_name
+  e.organizerName = eventIn.organizer_name;
 
   const address = {
     city: eventIn.city,
     plz: eventIn.plz,
     street: eventIn.street,
-    country: 'Deutschland',
-    };
+    country: "Deutschland",
+  };
   e.address = createAddressFromInput(address);
   e.description = eventIn.description;
   e.link = eventIn.link;
-if (eventIn.start_time === "ganztägig") {
+  if (eventIn.start_time === "ganztägig") {
     e.times.start = "00:00";
     e.times.end = "00:00";
   } else {
@@ -42,13 +42,12 @@ if (eventIn.start_time === "ganztägig") {
   }
   const date = { start: undefined, end: undefined };
   date.start = moment(new Date(parseEventDateUrbanite(eventIn.date)));
-  date.end = endDateUrbanite(date.start, eventIn.start_time);
+  date.end = date.start;
   e.date = date;
 
   e.permanent = false;
   return e;
-
-  };
+}
 
 function createAddressFromInput(address: any): Address {
   const a = new Address();
@@ -56,7 +55,7 @@ function createAddressFromInput(address: any): Address {
   a.plz = address.plz;
   //divide street and street number from street input
   a.street = address.street.split(" ")[0];
-  a.streetNumber = address.street.split(" ")[1] || '';
+  a.streetNumber = address.street.split(" ")[1] || "";
   a.country = address.country;
   return a;
 }
@@ -67,19 +66,11 @@ function endTimeUrbanite(startTime: string) {
   return endTimeHour;
 }
 
-function endDateUrbanite(startDate, startTime) {
-  const startHour = Number(startTime.split(":")[0]);
-  //if event is longer than midnight add one day
-  let endDate = moment(startDate);
-  endDate = startHour >= 20 ? endDate.add(1, "days") : endDate;
-  return endDate;
-}
-
 function parseEventDateUrbanite(dateString: string): Date | null {
   // Split the input string into parts
   let date = dateString.split(" ")[1];
   // parse the date string whicch is in german time format to a date object
-let momentDate = moment(date, "DD.MM.YYYY");
-// Convert Moment.js object to a JavaScript Date object
-return momentDate.toDate(); 
- }
+  let momentDate = moment(date, "DD.MM.YYYY");
+  // Convert Moment.js object to a JavaScript Date object
+  return momentDate.toDate();
+}

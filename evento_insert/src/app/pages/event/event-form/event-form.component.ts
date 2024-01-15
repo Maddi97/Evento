@@ -61,7 +61,7 @@ export class EventFormComponent implements OnInit, OnChanges {
   hasUnkownOpeningTimes = false;
   isPromotion = false;
   isFrequent = false;
-
+  isEndTime = true;
   isPermanent = "false";
 
   organizerName = new FormControl("", [Validators.required]);
@@ -283,6 +283,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.hasUnkownOpeningTimes = this.eventIn.hasUnkownOpeningTimes;
     this.isPromotion = this.eventIn.promotion;
     this.isFrequent = !!this.eventIn.frequency;
+    this.isEndTime = !!this.eventIn.times.end;
     this.frequency = this.eventIn.frequency;
     console.log(this.frequency);
   }
@@ -308,6 +309,10 @@ export class EventFormComponent implements OnInit, OnChanges {
   emitFrequency(frequency) {
     this.frequency = frequency;
   }
+  emitEndTime(endTime) {
+    this.times.end.setValue(endTime);
+  }
+
   nullFormField() {
     this.updateEventId = "";
     this.organizerName.setValue("");
@@ -321,6 +326,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.hasUnkownOpeningTimes = false;
     this.isPromotion = false;
     this.isFrequent = false;
+    this.isEndTime = true;
     this.frequency = undefined;
   }
 

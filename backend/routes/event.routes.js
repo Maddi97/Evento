@@ -145,14 +145,10 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
       });
       //filter events of end day that are already over
       events = events.filter((event) => {
-        if (event.permanent) {
-          return true;
-        }
         if (event.frequency) {
           return timeHelper.isFrequencyToday(event.frequency, date);
-        } else {
-          return timeHelper.isEventTodayAndStartTimeLater(event, date, time);
         }
+        return true;
       });
 
       //sort events by distance

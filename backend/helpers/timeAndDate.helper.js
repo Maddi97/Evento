@@ -16,6 +16,16 @@ function isDateEqual(date1, date2) {
   return parsedDate1.getTime() === parsedDate2.getTime();
 }
 
+function isDateInBetween(date, startDate, endDate) {
+  // Convert date strings to Date objects for easy comparison
+  const parsedDate = new Date(date).getTime();
+  const parsedStartDate = new Date(startDate).getTime();
+  const parsedEndDate = new Date(endDate).getTime();
+
+  // Compare the dates
+  return parsedDate >= parsedStartDate && parsedDate <= parsedEndDate;
+}
+
 function formatTime(time) {
   const components = time.split(":");
 
@@ -29,43 +39,44 @@ function formatTime(time) {
   return formattedTime;
 }
 
-exports.isEventTodayAndStartTimeLater = (event, date, time) => {
+isEventTodayAndStartTimeLater = (event, date, time) => {
+  //if date is today than start date of event should be later than now
+  if (isDateEqual(date, new Date())) {
+    return isTimeLater(event.times.start, time);
+  }
   return (
-    isDateEqual(event.date.end, date) && !isTimeLater(event.times.end, time)
+    isDateInBetween(date, event.date.start, event.date.end) &&
+    !isTimeLater(event.times.end, time)
   );
 };
 
-exports.isEventOnActualDateAndTime = (event, date, time) => {
+isEventOnActualDateAndTime = (event, date, time) => {
   if (
-    isDateEqual(event.date.start, date) &&
-    !isTimeLater(event.times.start, time)
-  ) {
-    return true;
-  } else if (
     isDateEqual(event.date.end, date) &&
-    isTimeLater(event.times.end, time)
+    !isTimeLater(event.times.end, time)
   ) {
-    return true;
-  } else if (
-    new Date(event.date.start).getTime() < new Date(date).getTime() &&
-    new Date(event.date.end).getTime() > new Date(date).getTime()
-  ) {
-    return true;
-  } else {
     return false;
   }
+
+  return (
+    isDateEqual(date, new Date()) &&
+    !isTimeLater(event.times.start, time) &&
+    !isDateEqual(event.date.end) &&
+    isTimeLater(event.times.end, time)
+  );
 };
 
-exports.isFrequencyToday = (frequency, date) => {
+function isFrequencyToday(frequency, date) {
   if (frequency["weekly"]) {
     return frequency.weekly.includes(new Date(date).getDay().toString());
   } else {
     return false;
   }
-};
+}
 
-exports.isFrequencyRightNow = (event, date, time) => {
+isFrequencyRightNow = (event, date, time) => {
   if (event.frequency["weekly"]) {
+    // is today in the weekly frequency
     if (event.frequency.weekly.includes(new Date(date).getDay().toString())) {
       return (
         (!isTimeLater(event.times.start, time) &&
@@ -79,4 +90,16 @@ exports.isFrequencyRightNow = (event, date, time) => {
   } else {
     return false;
   }
+};
+function isEventOnDate(event, date) {}
+
+module.exports = {
+  isTimeLater,
+  isDateEqual,
+  formatTime,
+  isEventOnDate,
+  isEventTodayAndStartTimeLater,
+  isEventOnActualDateAndTime,
+  isFrequencyToday,
+  isFrequencyRightNow,
 };

@@ -242,7 +242,7 @@
           </ngx-timepicker-field>
         </div>
       </div>
-      <div class="end">
+      <div class="end" *ngIf="isEndTime">
         <span>Ende:</span>
         <div class="ngx-timepicker-field-example">
           <ngx-timepicker-field
@@ -253,6 +253,15 @@
           >
           </ngx-timepicker-field>
         </div>
+      </div>
+      <div class="has-event-end-time">
+        <mat-checkbox
+          [checked]="isEndTime"
+          (change)="
+            isEndTime = !isEndTime; !isEndTime ? emitEndTime(undefined) : null
+          "
+        >
+        </mat-checkbox>
       </div>
     </div>
     <div class="image-upload">
