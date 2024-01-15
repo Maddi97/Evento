@@ -46,8 +46,9 @@ export class EventsComponent implements OnInit, OnDestroy {
   searchString: string = "";
 
   loadMore = false;
-
   isLoadMoreClicked = false;
+  hasLoadedMore = true;
+
   eventToScrollId = undefined;
   hoveredEventId = null;
   filteredCategory = this.hot;
@@ -296,6 +297,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   loadMoreEvents(mapCenter = undefined) {
     if (this.loadMore) {
+      console.log("Loading more events");
       this.isLoadMoreClicked = mapCenter ? false : true;
       this.actualLoadEventLimit += this.offset;
       this.applyFilters(mapCenter);
@@ -333,7 +335,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
     if (this.isLoadMoreClicked) {
       this.isLoadMoreClicked = false;
-      this.eventToScrollId = this.eventList[indexLastEvent - 3]._id;
+      this.eventToScrollId = this.eventList[indexLastEvent - 3]?._id;
     }
   }
 
@@ -372,15 +374,33 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   onScroll(event): void {
     const element = event.target;
+    const distanceToTop: number = element.scrollTop;
+    const distanceToBottom =
+      element.scrollHeight - element.clientHeight - element.scrollTop;
     if (this.isScrollingDown(element)) {
-      this.sharedObservables.notifyScrolling("down");
+      //this.sharedObservables.notifyScrolling("down");
+      const scroll = {
+        direction: "down" as any,
+        distanceTop: distanceToTop,
+        distanceBottom: distanceToBottom,
+      };
+      this.sharedObservables.notifyScrollOutInOfScreen(scroll);
     } else {
-      this.sharedObservables.notifyScrolling("up");
+      const scroll = {
+        direction: "up" as any,
+        distanceTop: distanceToTop,
+        distanceBottom: distanceToBottom,
+      };
+      this.sharedObservables.notifyScrollOutInOfScreen(scroll);
+      // this.sharedObservables.notifyScrolling("up");
     }
     // Check if the div is scrolled to the bottom
-    if (this.isScrolledToBottom(element) && !this.isLoadingMoreEvents) {
+    if (
+      this.isScrolledToBottom(element) &&
+      !this.isLoadingMoreEvents &&
+      this.loadMore
+    ) {
       this.isLoadingMoreEvents = true;
-      console.log("Loading more events");
       this.loadMoreEvents();
       setTimeout(() => {
         this.isLoadingMoreEvents = false;

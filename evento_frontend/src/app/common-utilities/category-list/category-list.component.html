@@ -1,9 +1,7 @@
 <div
   class="category-list-container"
   *ngIf="!searchString"
-  [class.animate-off-screen]="
-    scrollDirection === 'down' && getScreenWidth < 1000
-  "
+  [class.animate-off-screen]="scrollOut && getScreenWidth < 1000"
 >
   <div
     *ngIf="getScreenWidth > 700"

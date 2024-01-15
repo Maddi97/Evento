@@ -8,12 +8,11 @@
   color: #9e9e9e;
 }
 
-.nothing-found>mat-icon {
+.nothing-found > mat-icon {
   font-size: 3rem;
   height: 100% !important;
   margin: 1rem;
   padding-right: 50px;
-
 }
 
 @media screen and (min-width: 1000px) {

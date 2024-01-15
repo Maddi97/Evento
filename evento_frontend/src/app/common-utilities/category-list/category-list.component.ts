@@ -31,9 +31,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   categoryList: Category[] = [];
   subscriptions$: Subscription[] = [];
   subcategoryList: Subcategory[] = [];
-  scrollUp = 0;
-  scrollDown = 0;
-  scrollDirection = undefined;
+  scrollOut: Boolean = false;
+  timesScrollOut = 0;
   public getScreenWidth: any;
   searchString: string = "";
   // filteredSubcategories
@@ -63,23 +62,11 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.getScreenWidth = window.innerWidth;
     //document.getElementById('main-category-container').scrollLeft = 0;
     this.setScrollMaxBool();
-    this.sharedObservables.scrollObservable.subscribe((scrollDirection) => {
-      if (scrollDirection === "up") {
-        this.scrollDown = 0;
-        if (this.scrollUp > 5) {
-          this.scrollDirection = scrollDirection;
-          this.scrollUp = 0;
-        }
-        this.scrollUp++;
-      } else {
-        this.scrollUp = 0;
-        if (this.scrollDown > 5) {
-          this.scrollDirection = scrollDirection;
-          this.scrollDown = 0;
-        }
-        this.scrollDown++;
+    this.sharedObservables.scrollOutInOfScreenObservable.subscribe(
+      (scrollOut) => {
+        this.scrollOut = scrollOut;
       }
-    });
+    );
     const categories$ = this.categoriesService
       .getAllCategories()
       .pipe(

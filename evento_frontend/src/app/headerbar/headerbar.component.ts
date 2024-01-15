@@ -16,9 +16,7 @@ export class HeaderbarComponent implements OnInit {
   searchText = "";
   isNotEventsPage = false;
   getScreenWidth;
-    scrollUp = 0;
-  scrollDown = 0;
-  scrollDirection = undefined
+  scrollOut: Boolean = false;
   filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({
     hour: 0,
     minute: 0,
@@ -30,50 +28,33 @@ export class HeaderbarComponent implements OnInit {
     private location: Location,
     private router: Router,
     private sessionStorageService: SessionStorageService,
-    private sharedObservables: SharedObservableService,
-
-  ) { }
+    private sharedObservables: SharedObservableService
+  ) {}
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
     this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-      )
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe({
         next: (event: NavigationEnd) => {
           this.isNotEventsPage = false;
-          subDomainUrls.forEach(subdomain => {
+          subDomainUrls.forEach((subdomain) => {
             if (event.url.includes(subdomain)) {
               this.isNotEventsPage = true;
             }
-          })
+          });
         },
         error: (error) => {
           // Handle error here
-          console.error('An error occurred while fetching categories', error);
+          console.error("An error occurred while fetching categories", error);
         },
-        complete: () => {
-        }
-      })
-          this.sharedObservables.scrollObservable.subscribe((scrollDirection) => {
-      if(scrollDirection==="up"){
-        this.scrollDown = 0
-        if(this.scrollUp > 5){
-          this.scrollDirection = scrollDirection;
-          this.scrollUp = 0;
-        }
-        this.scrollUp++;
+        complete: () => {},
+      });
+    this.sharedObservables.scrollOutInOfScreenObservable.subscribe(
+      (scrollOut) => {
+        this.scrollOut = scrollOut;
       }
-      else {
-        this.scrollUp = 0;
-        if(this.scrollDown > 5) {
-            this.scrollDirection = scrollDirection;
-            this.scrollDown = 0;
-        }
-        this.scrollDown++
-      }
-    });
+    );
   }
 
   navBack() {
@@ -88,9 +69,8 @@ export class HeaderbarComponent implements OnInit {
   }
   getClassOnFullEvent() {
     if (this.isNotEventsPage) {
-      return 'fullevent'
-    }
-    else return ''
+      return "fullevent";
+    } else return "";
   }
   @HostListener("window:resize", ["$event"])
   getScreenSize(event?) {
