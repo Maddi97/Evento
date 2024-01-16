@@ -29,6 +29,9 @@
     overflow: hidden;
     flex-basis: unset !important;
   }
+  .information-container {
+    width: 100%;
+  }
 }
 
 .column-container-1 {
@@ -59,7 +62,7 @@
   width: 92%;
   height: 1px;
   background-color: rgba(193, 190, 190, 0.727);
-  margin-top: 12px
+  margin-top: 12px;
 }
 
 .column-container-4 {
@@ -68,7 +71,8 @@
   flex-basis: 30%;
 }
 
-.event-tile {}
+.event-tile {
+}
 
 .event-tile {
   display: flex;
@@ -131,7 +135,6 @@
   margin-bottom: 15px;
   justify-content: flex-start;
   align-items: baseline;
-  width: 100%;
   margin-left: 2rem;
 }
 

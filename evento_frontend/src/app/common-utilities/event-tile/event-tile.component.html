@@ -28,7 +28,7 @@
       </mat-card-subtitle>
       <div class="date" *ngIf="isScreenMinWidth(1000)">
         <p>{{ openingTimesFormatter(event) }}</p>
-        <p>{{ dateTimesFormater(event) }}</p>
+        <p *ngIf="!event.frequency">{{ dateTimesFormater(event) }}</p>
       </div>
 
       <!--      <div class="category">-->
@@ -38,6 +38,6 @@
   </div>
   <div class="date" *ngIf="!isScreenMinWidth(1000)">
     <div>{{ openingTimesFormatter(event) }}</div>
-    <div>{{ dateTimesFormater(event) }}</div>
+    <div *ngIf="!event.frequency">{{ dateTimesFormater(event) }}</div>
   </div>
 </mat-card>

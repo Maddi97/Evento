@@ -16,13 +16,27 @@
 /*  margin-top: -1.5rem;*/
 /*}*/
 
-
 .day {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1rem;
-  height: 1.9rem;
+  font-size: 0.9rem;
+  height: 1.8rem;
+}
+.today {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+  height: 1.8rem;
+}
+
+.yesterday {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.6rem;
+  height: 1.3rem;
 }
 
 .date {
@@ -44,6 +58,14 @@
 
 .day-date-clicked .day {
   font-size: 1.5rem;
+}
+
+.day-date-clicked .today {
+  font-size: 1.1rem;
+}
+
+.day-date-clicked .yesterday {
+  font-size: 0.9rem;
 }
 
 .day-date-clicked .date {
@@ -78,7 +100,6 @@
     font-size: 0.7rem;
   }
 }
-
 
 @media screen and (min-width: 400px) and (max-width: 800px) {
   .day-date {

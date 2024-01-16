@@ -3,7 +3,7 @@ import {
   Component,
   HostListener,
   OnInit,
-  ViewChild
+  ViewChild,
 } from "@angular/core";
 import { MatCalendar } from "@angular/material/datepicker";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -20,18 +20,19 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
 
   public getScreenWidth: any;
 
-  public nextMonth: DateClicked[] = [];
+  public listOfDisplayedDates: DateClicked[] = [];
   public numberOfDates = 30;
   public displayNumberOfDates = 30;
   public firstDate = 0;
-  startDate = new Date();
+  selectedDate = this.removeTimezoneAndTimeFromDate(new Date());
+
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
 
   constructor(
     private _activatedRoute: ActivatedRoute,
     private router: Router
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.getScreenWidth = window.innerWidth;
@@ -44,8 +45,10 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     const params$ = this._activatedRoute.queryParams.pipe(
       map((params) => {
         const date = params.date;
-        if (date !== undefined) {
-          this.startDate = new Date(date);
+        if (date) {
+          this.selectedDate = this.removeTimezoneAndTimeFromDate(
+            new Date(date)
+          );
         }
       }),
       tap()
@@ -54,10 +57,10 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     params$
       .pipe(
         debounceTime(1),
-        mergeMap(() => this.createDateList()),
+        mergeMap(() => this.createDateList())
       )
       .subscribe(() => {
-        this.scrollToClicked()
+        this.scrollToClicked();
       });
     this.setScrollMaxBool();
   }
@@ -66,56 +69,54 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     this.scrollToClicked();
   }
 
-  safeDate(day: moment.Moment) {
-    this.nextMonth.map((m) => {
-      if (m.date === day) {
-        m.isClicked = true;
-      } else {
-        m.isClicked = false;
-      }
-    });
-    const emitDate = this.nextMonth.find((m) => m.date === day);
+  safeDate(emitDate: DateClicked) {
+    emitDate.isClicked = true;
     this.setRouteParameter({
-      date: emitDate.date.clone().format("YYYY-MM-DD"),
+      date: emitDate.date.format("YYYY-MM-DD"),
     });
   }
 
   async createDateList(dontClick = false) {
-    const thisDay = moment(
-      this.nextMonth[this.firstDate - 1]
-        ? this.transformDateFormat(new Date())
-        : this.transformDateFormat(new Date())
-    );
-    let differencesParamDateTodayDays = this.transformDateFormat(this.startDate).diff(
-      this.transformDateFormat(thisDay),
-      "days"
-    );
-    if (differencesParamDateTodayDays < 0) {
-      differencesParamDateTodayDays = 0;
+    const differenceOfDays = this.selectedDate.diff(moment(new Date()), "days");
+    if (
+      this.selectedDate.diff(
+        moment(new Date()).add(this.numberOfDates, "days"),
+        "days"
+      ) > this.numberOfDates
+    ) {
+      this.numberOfDates =
+        differenceOfDays < 0
+          ? this.numberOfDates
+          : differenceOfDays + this.numberOfDates;
     }
-    if (differencesParamDateTodayDays > this.numberOfDates)
-      this.numberOfDates = differencesParamDateTodayDays + this.numberOfDates;
-    for (let i = this.firstDate; i < this.numberOfDates; i++) {
-      const day = thisDay.clone().add(i, "days");
-      this.nextMonth[i] = new DateClicked();
-      this.nextMonth[i].date = day;
-
-      if (i === differencesParamDateTodayDays) {
-        this.safeDate(this.nextMonth[i].date);
+    const yesterday = this.removeTimezoneAndTimeFromDate(
+      moment(new Date()).subtract(1, "days")
+    );
+    //create a day from yesterday until the number of dates
+    for (let i = 0; i < this.numberOfDates; i++) {
+      const day = this.removeTimezoneAndTimeFromDate(
+        yesterday.clone().add(i, "days")
+      );
+      this.listOfDisplayedDates[i] = new DateClicked();
+      this.listOfDisplayedDates[i].date = day;
+      if (day.isSame(this.selectedDate)) {
+        this.safeDate(this.listOfDisplayedDates[i]);
       } else {
-        this.nextMonth[i].isClicked = false;
+        this.listOfDisplayedDates[i].isClicked = false;
       }
     }
   }
 
   onScroll(e: Event): void {
-  const targetElement = e.target as HTMLElement;
+    const targetElement = e.target as HTMLElement;
 
-  // Check if the target element has scrolled horizontally to the end
-  const isScrolledToRightEnd = targetElement.scrollLeft + targetElement.clientWidth >= targetElement.scrollWidth -5;
-  if (isScrolledToRightEnd) {
-    this.addDates()
-  }
+    // Check if the target element has scrolled horizontally to the end
+    const isScrolledToRightEnd =
+      targetElement.scrollLeft + targetElement.clientWidth >=
+      targetElement.scrollWidth - 5;
+    if (isScrolledToRightEnd) {
+      this.addDates();
+    }
   }
 
   scrollToClicked() {
@@ -125,11 +126,10 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
       const container: HTMLElement = document.querySelector(".scroll");
 
       if (!container) return;
-
       // Apply the calculated scroll position
       //container.scrollLeft = scrollPosition;
       element.scrollIntoView({ block: "end", inline: "center" });
-    }, 200);
+    }, 100);
   }
 
   addDates() {
@@ -137,10 +137,9 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     this.numberOfDates += this.displayNumberOfDates;
     this.createDateList(true);
     this.firstDate += this.displayNumberOfDates;
-
   }
 
-  transformDateFormat(date) {
+  removeTimezoneAndTimeFromDate(date) {
     date = moment(date.toISOString()).utcOffset(0, false);
     date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
     // date.toISOString()
