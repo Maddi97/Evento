@@ -51,7 +51,9 @@
       </mat-form-field>
     </div>
 
-    <mat-slide-toggle [formControl]="toggleIsChecked"
+    <mat-slide-toggle
+      [formControl]="toggleIsChecked"
+      (change)="switchAddressCoords()"
       >Address or coordinates?</mat-slide-toggle
     >
 
@@ -116,13 +118,9 @@
         <input
           matInput
           #target
-          required
           formControlName="coord"
           (keydown.enter)="emitAddNewEvent(); target.value = ''"
         />
-        <mat-error *ngIf="eventForm.get('coord').hasError('required')"
-          >Coords are required if no Address is given
-        </mat-error>
       </mat-form-field>
     </div>
 

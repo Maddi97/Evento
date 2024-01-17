@@ -189,12 +189,8 @@ export class EventFormComponent implements OnInit, OnChanges {
 
     if (this.toggleIsChecked.value) {
       event.geoData = this.geoData;
-      this.geoService;
-      //.get_geo_data(address.city, address.street, address.streetNumber)
-      of({
-        lat: "10",
-        lon: "10",
-      })
+      this.geoService
+        .get_geo_data(address.city, address.street, address.streetNumber)
         .pipe(
           map((geoData) => {
             event.geoData = geoData;
@@ -265,7 +261,9 @@ export class EventFormComponent implements OnInit, OnChanges {
       permanent: String(this.eventIn.permanent),
       price: this.eventIn.price || "",
       coord:
-        this.eventIn.geoData.lat || "" + ", " + this.eventIn.geoData.lon || "",
+        (this.eventIn.geoData?.lat || "") +
+        ", " +
+        (this.eventIn.geoData?.lon || ""),
     };
     if (!this.eventIn.permanent) {
       eventFormValues["start"] = start;
@@ -285,7 +283,6 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.isFrequent = !!this.eventIn.frequency;
     this.isEndTime = !!this.eventIn.times.end;
     this.frequency = this.eventIn.frequency;
-    console.log(this.frequency);
   }
 
   insertOrgInfo(org: Organizer) {
@@ -311,6 +308,16 @@ export class EventFormComponent implements OnInit, OnChanges {
   }
   emitEndTime(endTime) {
     this.times.end.setValue(endTime);
+  }
+
+  switchAddressCoords() {
+    if (this.toggleIsChecked.value) {
+      this.eventForm.get("coord").setValue("");
+    } else {
+      this.insertOrgInfo(
+        this.organizersIn.find((org) => org._id === this.updateOrganizerId)
+      );
+    }
   }
 
   nullFormField() {

@@ -41,7 +41,6 @@ router.get("/organizer/:organizerId/events", limiter, (req, res) => {
 
 router.post("/eventOnDate", limiter, (req, res) => {
   let date = req.body.date;
-  let time = req.body.time;
   Event.find({
     $or: [
       {
@@ -66,13 +65,13 @@ router.post("/eventOnDate", limiter, (req, res) => {
   })
     .then((events) => {
       events = events.filter((event) => {
-        if (!event.frequency) {
-          timeHelper.isEventOnActualDateAndTime(event, date, time);
-        } else {
+        if (event.frequency) {
           return (
             // frequency has always to go until the next day
-            timeHelper.isFrequencyRightNow(event, date, time)
+            timeHelper.isFrequencyToday(event.frequency, date)
           );
+        } else {
+          return true;
         }
       });
       res.send(events);
