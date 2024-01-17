@@ -8,6 +8,7 @@ This repository will implement an website/app for an event organizes. There are 
 4. Mongo DB
 
 ## Design of Icons, Brandings, SVGs
+
 Adobe Creative Cloud https://creativecloud.adobe.com/cc/?locale=en
 
 ## Running Production
@@ -21,16 +22,16 @@ docker-compose --env-file .env.prod -f docker-compose-deploy-dev.yml up -d --bui
 ### production:
 
 ```shell
-docker-compose -f  docker-compose-prod-cd.yml up -d
+docker compose -f  docker-compose-prod.yml up -d
 ```
 
 ```shell
- docker-compose -f docker-compose-prod-cd.yml up  -d --force-recreate --no-deps --build mongodb
+ docker compose -f docker-compose-prod.yml up  -d --force-recreate --no-deps --build mongodb
 
 ```
 
 ```shell
- docker-compose -f docker-compose-prod-cd.yml up  -d --force-recreate --no-deps --build threeventsfiveone
+ docker compose --env-file .env.prod -f docker-compose-prod.yml up  -d --force-recreate --no-deps --build threeventsfiveone
 
 ```
 
@@ -76,7 +77,7 @@ Here only http is supported.
 
 Rebuild only one container of the docker compose
 
-``` 
+```
 docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up  -d --build mongo
 ```
 
@@ -107,8 +108,8 @@ aktualisieren
 
 ## TechStack
 
-* node 16.13.2
-* angular 13.1.3
+- node 16.13.2
+- angular 13.1.3
 
 ## Backup
 
@@ -117,4 +118,3 @@ by backup script images are restored in /home/event/backup/mongodb_back/IMAGE_BA
 container (docker cp)
 
 Right now backend and mongo db are never pushed or recreated
-

@@ -9,7 +9,7 @@ BACKUP_PATH_MONGO="instant_dump"
 DOCKER_CONTAINER='evento_backend_container'
 DB_BACKUP_PATH='/home/evento/backup/mongodb_instant_backup'
 IMAGE_PATH='app/images'
-DATE='12Oct2023'
+DATE='12Jan2024'
 
 MONGO_HOST='0.0.0.0'
 MONGO_PORT='27017'
