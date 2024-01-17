@@ -63,6 +63,8 @@ services:
     environment:
       - SIGNUPKEY=${SIGNUPKEY}
       - SECRET=${SECRET}
+      - BROWSE_AI_API_KEY={$BROWSE_AI_API_KEY}
+
     # depends_on:
     #   - letsencrypt
     # mongodb:
