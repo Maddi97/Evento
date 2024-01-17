@@ -1,8 +1,13 @@
-<div [ngClass]="{'day-date': !isClicked, 'day-date-clicked': isClicked}" id="{{isDateClicked()}}">
+<div
+  [ngClass]="{ 'day-date': !isClicked, 'day-date-clicked': isClicked }"
+  id="{{ isDateClicked() }}"
+>
   <div class="date-container">
-    <div class="day">
+    <div *ngIf="!isYesterday && !isToday" class="day">
       {{ dayToString() }}
     </div>
+    <div *ngIf="isYesterday" class="yesterday">Gestern</div>
+    <div *ngIf="isToday" class="today">Heute</div>
     <div class="date">
       {{ dateToString() }}
     </div>

@@ -49,6 +49,7 @@ import { OrganizerFormComponent } from './pages/organizer/organizer-form/organiz
 import { AuthGuardService } from './services/auth/auth.guard.service';
 import { AutocompleteOrganizerComponent } from './atoms/autocomplete-organizer/autocomplete-organizer.component';
 import { SelectionListComponent } from './atoms/selection-list/selection-list.component';
+import { EventFrequencyFormComponent } from './atoms/event-frequency-form/event-frequency-form.component';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { SelectionListComponent } from './atoms/selection-list/selection-list.co
         EventCrawledComponent,
         CrawledEventsToEventComponent,
         AutocompleteOrganizerComponent,
-        SelectionListComponent
+        SelectionListComponent,
+        EventFrequencyFormComponent
     ],
     imports: [
         MatSnackBarModule,

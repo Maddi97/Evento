@@ -12,7 +12,7 @@ import { EventsService } from "src/app/services/events.web.service";
 import { FileUploadService } from "src/app/services/files/file-upload.service";
 import { OrganizerService } from "src/app/services/organizer.web.service";
 import { Event } from "../../../models/event";
-import { EventsObservableService } from '../../../services/events.observable.service';
+import { EventsObservableService } from "../../../services/events.observable.service";
 import { SnackbarService } from "../../../services/utils/snackbar.service";
 
 @Component({
@@ -43,26 +43,13 @@ export class EventViewComponent implements OnInit {
     private snackbar: SnackbarService,
     public dialog: MatDialog,
     private fileService: FileUploadService,
-    private sanitizer: DomSanitizer,
-
-
-  ) { }
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
     this.category$ = this.categoryService.categories;
     this.organizer$ = this.organizerService.organizers;
     this.event$ = this.eventService.event;
-
-    this.eventService
-      .getEventsOnDate(
-        moment(new Date()).utcOffset(0, false).set({
-          hour: 0,
-          minute: 0,
-          second: 0,
-          millisecond: 0,
-        })
-      )
-      .subscribe();
 
     this.category$.subscribe((cat) => (this.categories = cat));
     this.organizer$.subscribe((org) => (this.organizers = org));
@@ -87,23 +74,26 @@ export class EventViewComponent implements OnInit {
           }
         }),
         catchError((error) => {
-          console.error('Error checking duplicate', error);
-          this.snackbar.openSnackBar(error.message, "error")
+          console.error("Error checking duplicate", error);
+          this.snackbar.openSnackBar(error.message, "error");
           return of(null); // Continue with null eventImagePath
-        }),
-      ).subscribe();
+        })
+      )
+      .subscribe();
   }
 
   addNewEvent(event) {
-    this.eventObservableService.addNewEvent(event).then((event) => {
-      this.snackbar.openSnackBar(
-        "Successfully added Event: " + event.name,
-        "success"
-      )
-    }).catch((error) => {
-      this.snackbar.openSnackBar(error.message, "error")
-
-    })
+    this.eventObservableService
+      .addNewEvent(event)
+      .then((event) => {
+        this.snackbar.openSnackBar(
+          "Successfully added Event: " + event.name,
+          "success"
+        );
+      })
+      .catch((error) => {
+        this.snackbar.openSnackBar(error.message, "error");
+      });
   }
 
   updateEvent(event) {
@@ -160,18 +150,24 @@ export class EventViewComponent implements OnInit {
     const date = moment(new Date())
       .utcOffset(0, false)
       .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-    this.eventService.getEventsOnDate(date);
+    this.eventService.getEventsOnDate(date, "00:00");
   }
+  getFrequentEvents = () => {
+    this.eventService.getFrequentEvents();
+  };
 
   deleteEvent(event: Event) {
-     if (confirm('Are you sure to delete ' + event.name + ' ?')) {
-            this.deleteEvent$ = this.eventService.deletEvent(event._organizerId, event._id)
-            this.deleteEvent$.pipe(
-                concatMap(
-                    () => this.fileService.deleteFile(event.eventImagePath)
-                )
-            ).subscribe();
-        }
+    if (confirm("Are you sure to delete " + event.name + " ?")) {
+      this.deleteEvent$ = this.eventService.deletEvent(
+        event._organizerId,
+        event._id
+      );
+      this.deleteEvent$
+        .pipe(
+          concatMap(() => this.fileService.deleteFile(event.eventImagePath))
+        )
+        .subscribe();
+    }
   }
 
   timeSince(date) {
@@ -270,22 +266,26 @@ export class EventViewComponent implements OnInit {
     this.eventService.getOutdatedEvents().subscribe();
   }
   getAllEvents() {
-    this.eventService.getAllEvents().subscribe()
+    this.eventService.getAllEvents().subscribe();
   }
   deleteOutdatedEvents() {
-    if (confirm('Are you sure to delete all events older than 30 days')
-    ) {
-      this.eventService.deleteOutdatedEvents().pipe(
-        switchMap((response: any) => {
-          const deletedEvents = response.outdatedEvents
-          const deleteObservables: Observable<void>[] = deletedEvents.map(event => {
-            return this.fileService.deleteFile(event.eventImagePath);
-          });
+    if (confirm("Are you sure to delete all events older than 30 days")) {
+      this.eventService
+        .deleteOutdatedEvents()
+        .pipe(
+          switchMap((response: any) => {
+            const deletedEvents = response.outdatedEvents;
+            const deleteObservables: Observable<void>[] = deletedEvents.map(
+              (event) => {
+                return this.fileService.deleteFile(event.eventImagePath);
+              }
+            );
 
-          // Execute all delete observables in parallel and wait for all to complete
-          return forkJoin(deleteObservables);
-        }),
-      ).subscribe()
+            // Execute all delete observables in parallel and wait for all to complete
+            return forkJoin(deleteObservables);
+          })
+        )
+        .subscribe();
     }
   }
 }

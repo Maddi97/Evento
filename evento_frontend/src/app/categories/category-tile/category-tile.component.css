@@ -57,6 +57,7 @@
   .category-icon {
     height: auto !important;
     width: 10% !important;
-
+    max-height: 4rem;
+    max-width: 2.5rem;
   }
 }

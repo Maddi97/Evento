@@ -1,5 +1,5 @@
-import { Category } from './category'
-import { Day } from './organizer';
+import { Category } from "./category";
+import { Day } from "./organizer";
 
 export class Event {
   _id: string;
@@ -8,14 +8,15 @@ export class Event {
   organizerName: string;
   address: Address;
   date: {
-    start: Date,
-    end: Date,
+    start: Date;
+    end: Date;
   };
+  frequency;
   permanent: boolean;
   hasUnkownOpeningTimes: boolean;
   times: {
-    start: string,
-    end: string
+    start: string;
+    end: string;
   };
   openingTimes?: Day[];
 
@@ -24,8 +25,8 @@ export class Event {
   link: string;
   price: string;
   geoData: {
-    lat: string,
-    lon: string,
+    lat: string;
+    lon: string;
   };
   hot: boolean;
   promotion: boolean;
@@ -40,4 +41,3 @@ export class Address {
   streetNumber: string;
   country: string;
 }
-

@@ -1,26 +1,59 @@
-<div class="header header-{{getClassOnFullEvent()}}">
-  <img src="assets/static-icons/icon-back.png" *ngIf="isNotEventsPage" alt="arrow back" class="arrow-back"
-    routerLink="/" [queryParamsHandling]="'merge'" (click)="changeMapView()" />
+<div
+  class="header header-{{ getClassOnFullEvent() }}"
+  [class.animate-off-screen]="scrollOut && getScreenWidth < 1000"
+>
+  <img
+    src="assets/static-icons/icon-back.png"
+    *ngIf="isNotEventsPage"
+    alt="arrow back"
+    class="arrow-back"
+    routerLink="/"
+    [queryParamsHandling]="'merge'"
+    (click)="changeMapView()"
+  />
 
   <div *ngIf="isNotEventsPage" class="logo-container logo-fullevent">
-    <img class="logo" src="assets/branding/logo_name.png" alt="logo name" routerLink="/" [queryParamsHandling]="'merge'"
-      (click)="changeMapView()">
+    <img
+      class="logo"
+      src="assets/branding/logo_name.png"
+      alt="logo name"
+      routerLink="/"
+      [queryParamsHandling]="'merge'"
+      (click)="changeMapView()"
+    />
   </div>
   <div *ngIf="!isNotEventsPage" class="logo-container">
-    <img *ngIf="getScreenWidth<=1000" class="logo-small" src="assets/icon/icon.png" alt="logo name" routerLink="/"
-      [queryParamsHandling]="'merge'" (click)="changeMapView()">
-    <img *ngIf="getScreenWidth>1000" class="logo" src="assets/branding/logo_name.png" alt="logo name" routerLink="/"
-      [queryParamsHandling]="'merge'" (click)="changeMapView()">
+    <img
+      *ngIf="getScreenWidth <= 1000"
+      class="logo-small"
+      src="assets/icon/icon.png"
+      alt="logo name"
+      routerLink="/"
+      [queryParamsHandling]="'merge'"
+      (click)="changeMapView()"
+    />
+    <img
+      *ngIf="getScreenWidth > 1000"
+      class="logo"
+      src="assets/branding/logo_name.png"
+      alt="logo name"
+      routerLink="/"
+      [queryParamsHandling]="'merge'"
+      (click)="changeMapView()"
+    />
   </div>
 
-  <app-date-picker *ngIf="!isNotEventsPage" class="date-picker" (clickedDate)="searchForDay($event)"></app-date-picker>
-  <div class="search-container-{{getClassOnFullEvent()}}">
+  <app-date-picker
+    *ngIf="!isNotEventsPage"
+    class="date-picker"
+    (clickedDate)="searchForDay($event)"
+  ></app-date-picker>
+  <div class="search-container-{{ getClassOnFullEvent() }}">
     <app-search-filter></app-search-filter>
   </div>
-  <div class="menu-container menu-{{getClassOnFullEvent()}}">
+  <div class="menu-container menu-{{ getClassOnFullEvent() }}">
     <app-hamburger-menu></app-hamburger-menu>
   </div>
-
 
   <!-- <div class="clock-container">
     <app-digital-clock></app-digital-clock>

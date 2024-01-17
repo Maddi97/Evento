@@ -1,6 +1,7 @@
 <div class="organizer-view-container">
     <div class="organizer-page">
         <app-organizer-form class="organizer-form" [organizerIn]="organizerInformation"
+            [allOrganizerIn]="allOrganizer"
             (addNewOrganizer)="addNewOrganizer($event)"
             (updateOrganizer)="updateOrganizer($event)"></app-organizer-form>
 

@@ -9,6 +9,15 @@
                 (keydown.enter)="!update ? addNewCategory() :  updateCategory(); target.value = ''">
             <mat-error *ngIf="categoryName.invalid">Category name minimum length is 2</mat-error>
         </mat-form-field>
+         <div class="weight">
+            <mat-form-field appearance="fill">
+                <mat-label>Add Category Alias</mat-label>
+                <input matInput #target [formControl]="currentAlias"
+                    (keydown.enter)="addAlias(currentAlias.value)">
+            </mat-form-field>
+             <app-selection-list [listTitle]="'Alias'" [namesList]="alias" 
+                    (updatedNamesList)="alias = $event"></app-selection-list>
+        </div>
         <div class="weight">
             <mat-form-field appearance="fill">
                 <mat-label>Weight: 0 - 100</mat-label>

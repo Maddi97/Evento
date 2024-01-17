@@ -23,6 +23,12 @@
   background-color: rgba(128, 128, 128, 0.5);
 }
 
+.animate-off-screen {
+  position: fixed;
+  margin-top: -150px;
+  transition: margin-top 200ms ease-out;
+}
+
 .header-fullevent {
   justify-content: center;
 }

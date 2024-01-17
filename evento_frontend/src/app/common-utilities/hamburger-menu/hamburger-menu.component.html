@@ -1,23 +1,31 @@
 <div class="menu-button" mat-button [matMenuTriggerFor]="menu">
-    <mat-icon class="material-icons small-icon menu-icon">
-        menu
-    </mat-icon>
+  <mat-icon class="material-icons small-icon menu-icon"> menu </mat-icon>
 </div>
 <mat-menu #menu="matMenu">
-    <button mat-menu-item routerLink="/" [queryParams]="queryParams" [queryParamsHandling]="'merge'">
-        <mat-icon class="icon">
-            calendar_today
-        </mat-icon>
-        Events
-    </button>
-    <button mat-menu-item [routerLink]="['/categories']" [queryParams]="queryParams"
-        [queryParamsHandling]="'merge'"><mat-icon class="icon">
-            format_list_bulleted
-        </mat-icon>Kategorien</button>
-    <button mat-menu-item routerLink="settings" [queryParams]="queryParams" [queryParamsHandling]="'merge'">
-        <mat-icon class="icon">
-            settings
-        </mat-icon>
-        Settings & Impressum
-    </button>
+  <button
+    mat-menu-item
+    routerLink="/"
+    [queryParams]="queryParams"
+    [queryParamsHandling]="'merge'"
+  >
+    <mat-icon class="icon"> calendar_today </mat-icon>
+    Events
+  </button>
+  <button
+    mat-menu-item
+    [routerLink]="['/categories']"
+    [queryParams]="queryParams"
+    [queryParamsHandling]="'merge'"
+  >
+    <mat-icon class="icon"> format_list_bulleted </mat-icon>Kategorien
+  </button>
+  <button
+    mat-menu-item
+    routerLink="settings"
+    [queryParams]="queryParams"
+    [queryParamsHandling]="'merge'"
+  >
+    <mat-icon class="icon"> edit_calendar </mat-icon>
+    Event eintragens & Impressum
+  </button>
 </mat-menu>

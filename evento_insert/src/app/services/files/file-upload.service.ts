@@ -81,6 +81,10 @@ export class FileUploadService {
     }
 
     deleteFile(path: string): Observable<any> {
+        if(!path) {
+            console.log("No specific path to delete provide. Path: ", path)
+            return of(false)
+        }
         const deleteEndpoint = `deleteImage`; // Update this with the actual endpoint URL
         console.log("file-upload.service.ts: deleteFile: path: ", path)
         // Send a DELETE request to delete the file

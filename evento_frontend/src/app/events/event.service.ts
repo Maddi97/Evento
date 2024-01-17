@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Observable, combineLatest, of, throwError } from 'rxjs';
-import { map, catchError, share } from 'rxjs/operators';
 import { HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import * as moment from 'moment';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map, share } from 'rxjs/operators';
 import { Event } from '../models/event';
 import { Organizer } from '../models/organizer';
-import * as moment from 'moment';
 import { WebService } from '../web.service';
 
 @Injectable({
@@ -81,8 +81,8 @@ export class EventService {
     return obs;
   }
 
-  getEventsOnDate(date: moment.Moment): Observable<Event[]> {
-    return this.webService.post('eventOnDate', { date }).pipe(
+  getEventsOnDate(date: moment.Moment, time): Observable<Event[]> {
+    return this.webService.post('eventOnDate', { date, time }).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
         console.error('an error occurred', error);

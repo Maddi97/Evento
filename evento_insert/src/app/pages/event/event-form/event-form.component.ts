@@ -25,6 +25,7 @@ import { OrganizerService } from "../../../services/organizer.web.service";
 // import helper functions
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { getEventFormTemplate, getEventFromForm } from "../event.helpers";
+import { of } from "rxjs";
 
 @Component({
   selector: "app-event-form",
@@ -45,6 +46,7 @@ export class EventFormComponent implements OnInit, OnChanges {
   date = new FormControl(new Date());
   category: Category;
   toggleIsChecked = new FormControl(true);
+  frequency = undefined;
 
   times = {
     start: new FormControl("00:00"),
@@ -55,9 +57,11 @@ export class EventFormComponent implements OnInit, OnChanges {
     lat: "",
     lon: "",
   };
-  isHot = false
+  isHot = false;
   hasUnkownOpeningTimes = false;
   isPromotion = false;
+  isFrequent = false;
+  isEndTime = true;
   isPermanent = "false";
 
   organizerName = new FormControl("", [Validators.required]);
@@ -72,7 +76,6 @@ export class EventFormComponent implements OnInit, OnChanges {
     private _snackbar: MatSnackBar
   ) {
     this.eventForm = this.fb.group(getEventFormTemplate());
-
   }
 
   ngOnInit(): void {
@@ -103,8 +106,9 @@ export class EventFormComponent implements OnInit, OnChanges {
       this.updateEventId,
       this.isHot,
       this.isPromotion,
-      this.hasUnkownOpeningTimes,
+      this.hasUnkownOpeningTimes
     );
+    event.frequency = this.frequency;
     const address = event.address;
     const formdata: FormData = new FormData();
     if (this.image !== undefined) {
@@ -121,7 +125,7 @@ export class EventFormComponent implements OnInit, OnChanges {
         .get_geo_data(address.city, address.street, address.streetNumber)
         .pipe(
           map((geoData) => {
-            event.geoData = geoData
+            event.geoData = geoData;
             this.addNewEvent.emit(event);
           }),
           catchError((err) => {
@@ -170,9 +174,9 @@ export class EventFormComponent implements OnInit, OnChanges {
       this.updateEventId,
       this.isHot,
       this.isPromotion,
-      this.hasUnkownOpeningTimes,
-
+      this.hasUnkownOpeningTimes
     );
+    event.frequency = this.frequency;
     const address = event.address;
 
     const formdata: FormData = new FormData();
@@ -230,45 +234,55 @@ export class EventFormComponent implements OnInit, OnChanges {
   setEventForm(): void {
     // prepare dates
     this.updateEventId = this.eventIn._id;
-    const start: any = this.eventIn?.date?.start ? moment(this.eventIn.date.start).toDate() : '';
-    const end: any = this.eventIn?.date?.end ? moment(this.eventIn.date.end).toDate() : '';
+    const start: any = this.eventIn?.date?.start
+      ? moment(this.eventIn.date.start).toDate()
+      : "";
+    const end: any = this.eventIn?.date?.end
+      ? moment(this.eventIn.date.end).toDate()
+      : "";
     const organizer = this.organizersIn.find(
       (org) => org._id === this.eventIn._organizerId
     );
     this.organizerName.setValue(organizer.name);
     this.updateOrganizerId = organizer._id;
-    const streetName = this.eventIn.address?.street ? this.eventIn.address.street + " " + this.eventIn.address?.streetNumber : ''
+    const streetName = this.eventIn.address?.street
+      ? this.eventIn.address.street + " " + this.eventIn.address?.streetNumber
+      : "";
 
     const eventFormValues = {
-      name: this.eventIn.name || '',
-      city: this.eventIn.address.city || '',
-      plz: this.eventIn.address.plz || '',
-      street:
-        streetName,
-      streetNumber: this.eventIn.address.streetNumber || '',
-      country: this.eventIn.address.country || '',
-      description: this.eventIn.description || '',
-      link: this.eventIn.link || '',
+      name: this.eventIn.name || "",
+      city: this.eventIn.address.city || "",
+      plz: this.eventIn.address.plz || "",
+      street: streetName,
+      streetNumber: this.eventIn.address.streetNumber || "",
+      country: this.eventIn.address.country || "",
+      description: this.eventIn.description || "",
+      link: this.eventIn.link || "",
       permanent: String(this.eventIn.permanent),
-      price: this.eventIn.price || '',
-      coord: this.eventIn.geoData.lat || '' + ", " + this.eventIn.geoData.lon || '',
-    }
+      price: this.eventIn.price || "",
+      coord:
+        (this.eventIn.geoData?.lat || "") +
+        ", " +
+        (this.eventIn.geoData?.lon || ""),
+    };
     if (!this.eventIn.permanent) {
-      eventFormValues['start'] = start;
-      eventFormValues['end'] = end;
-    }
-    else {
+      eventFormValues["start"] = start;
+      eventFormValues["end"] = end;
+    } else {
       this.eventForm.removeControl("start");
       this.eventForm.removeControl("end");
     }
-    this.times.start.setValue(this.eventIn.times.start)
-    this.times.end.setValue(this.eventIn.times.end)
+    this.times.start.setValue(this.eventIn.times.start);
+    this.times.end.setValue(this.eventIn.times.end);
 
     this.eventForm.setValue(eventFormValues);
     this.category = this.eventIn.category;
-    this.isHot = this.eventIn.hot
+    this.isHot = this.eventIn.hot;
     this.hasUnkownOpeningTimes = this.eventIn.hasUnkownOpeningTimes;
     this.isPromotion = this.eventIn.promotion;
+    this.isFrequent = !!this.eventIn.frequency;
+    this.isEndTime = !!this.eventIn.times.end;
+    this.frequency = this.eventIn.frequency;
   }
 
   insertOrgInfo(org: Organizer) {
@@ -278,16 +292,31 @@ export class EventFormComponent implements OnInit, OnChanges {
       .get("street")
       .setValue(org.address.street + " " + org.address.streetNumber);
     // set category to organizers category but leave subcat empty
-    this.eventForm.get("description").setValue(org.description)
+    this.eventForm.get("description").setValue(org.description);
     const cat = org.category;
     cat.subcategories = [];
     this.category = cat;
-
   }
 
   iconChosen(event: any) {
     if (event.target.value) {
       this.image = event.target.files[0] as File;
+    }
+  }
+  emitFrequency(frequency) {
+    this.frequency = frequency;
+  }
+  emitEndTime(endTime) {
+    this.times.end.setValue(endTime);
+  }
+
+  switchAddressCoords() {
+    if (this.toggleIsChecked.value) {
+      this.eventForm.get("coord").setValue("");
+    } else {
+      this.insertOrgInfo(
+        this.organizersIn.find((org) => org._id === this.updateOrganizerId)
+      );
     }
   }
 
@@ -303,6 +332,9 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.isHot = false;
     this.hasUnkownOpeningTimes = false;
     this.isPromotion = false;
+    this.isFrequent = false;
+    this.isEndTime = true;
+    this.frequency = undefined;
   }
 
   setCategory(value) {
@@ -322,11 +354,12 @@ export class EventFormComponent implements OnInit, OnChanges {
     if (this.isPermanent === "true") {
       this.eventForm.removeControl("start");
       this.eventForm.removeControl("end");
-
-    }
-    else {
-      this.eventForm.addControl('start', this.fb.control('', [Validators.required]))
-      this.eventForm.addControl('end', this.fb.control('', [Validators.required]))
+    } else {
+      this.eventForm.addControl(
+        "start",
+        this.fb.control("", [Validators.required])
+      );
+      this.eventForm.addControl("end", this.fb.control("", []));
     }
   }
 

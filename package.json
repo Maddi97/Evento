@@ -1,1 +1,13 @@
-{}
+{
+    "name": "evento",
+    "version": "1.0.0",
+    "description": "Event supply chain",
+        "scripts": {
+            "build": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build",
+            "build:backend": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build backend",
+            "build:mongodb": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build mongodb",
+            "build:frontend": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build evento_frontend",
+            "build:insert": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build evento_insert"
+           },
+    "author": "Maximilian Schaller"
+  }

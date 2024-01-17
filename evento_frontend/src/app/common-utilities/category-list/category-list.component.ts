@@ -3,7 +3,7 @@ import {
   HostListener,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -14,6 +14,7 @@ import { CategoriesService } from "../../categories/categories.service";
 import { FileService } from "../../file.service";
 import { Category, Subcategory } from "../../models/category";
 import { clearSearchFilter } from "../logic/search-filter-helper";
+import { SharedObservableService } from "../logic/shared-observables.service";
 import { SessionStorageService } from "../session-storage/session-storage.service";
 type ID = string;
 
@@ -30,13 +31,13 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   categoryList: Category[] = [];
   subscriptions$: Subscription[] = [];
   subcategoryList: Subcategory[] = [];
-
+  scrollOut: Boolean = false;
+  timesScrollOut = 0;
   public getScreenWidth: any;
-  searchString: string = '';
+  searchString: string = "";
   // filteredSubcategories
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
-
   // clicked date
 
   constructor(
@@ -46,42 +47,55 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private router: Router,
     private sessionStorageService: SessionStorageService,
-    private gtmService: GoogleTagManagerService
-  ) { }
+    private gtmService: GoogleTagManagerService,
+    private sharedObservables: SharedObservableService
+  ) {}
   ngOnDestroy(): void {
     this.subscriptions$.forEach((subscription$: Subscription) => {
       if (subscription$) {
-        subscription$.unsubscribe()
+        subscription$.unsubscribe();
       }
-    })
+    });
   }
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
     //document.getElementById('main-category-container').scrollLeft = 0;
     this.setScrollMaxBool();
-
-    const categories$ = this.categoriesService.getAllCategories().pipe(
-      map((categories: Category[]) => {
-        this.categoryList = categories;
-        this.sortCategoriesByWeight(this.categoryList)
-        categories.forEach((category: Category) => {
-          this.sortCategoriesByWeight(category.subcategories)
-          category.subcategories.forEach((subcategory) => {
-            this.subcategoryList.push(subcategory);
+    this.sharedObservables.scrollOutInOfScreenObservable.subscribe(
+      (scrollOut) => {
+        this.scrollOut = scrollOut;
+      }
+    );
+    const categories$ = this.categoriesService
+      .getAllCategories()
+      .pipe(
+        map((categories: Category[]) => {
+          this.categoryList = categories;
+          this.categoryList = this.sortCategoriesByWeight(this.categoryList);
+          categories.forEach((category: Category) => {
+            category.subcategories = this.sortCategoriesByWeight(
+              category.subcategories
+            );
+            category.subcategories.forEach((subcategory) => {
+              this.subcategoryList.push(subcategory);
+            });
           });
-        });
-      })
-    ).subscribe(() => {
-      this.downloadCategoryIcon();
-      this.scrollToClicked();
-    });
+        })
+      )
+      .subscribe(() => {
+        this.downloadCategoryIcon();
+        this.scrollToClicked();
+      });
 
-    const searchString$ = this.sessionStorageService.searchStringSubject.subscribe(
-      (searchString: string) => { this.searchString = searchString })
+    const searchString$ =
+      this.sessionStorageService.searchStringSubject.subscribe(
+        (searchString: string) => {
+          this.searchString = searchString;
+        }
+      );
 
-
-    this.subscriptions$.push(categories$, searchString$)
+    this.subscriptions$.push(categories$, searchString$);
     // this.applyFilters()
     // request categories
     if (this.categoryList.length < 1) {
@@ -91,33 +105,42 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   selectCategory(category) {
     this.filteredCategory = category;
-    this.filteredSubcategories = []
+    this.filteredSubcategories = [];
     const gtmTag = {
-                    event: 'selectedCategory',
-                    categoryName: this.filteredCategory.name,
-                  };
+      event: "selectedCategory",
+      categoryName: this.filteredCategory.name,
+    };
     this.gtmService.pushTag(gtmTag);
     this.setRouteParameter({
-      subcategory: this.filteredSubcategories.map((subcategory) => subcategory._id),
+      subcategory: this.filteredSubcategories.map(
+        (subcategory) => subcategory._id
+      ),
       category: this.filteredCategory._id,
     });
   }
 
   selectSubcategory(subcategory) {
-    if (this.filteredSubcategories.map(subcat => subcat._id).includes(subcategory._id)) {
-      this.filteredSubcategories = this.filteredSubcategories.filter(subcat => subcat._id !== subcategory._id)
-    }
-    else {
-      this.filteredSubcategories.push(subcategory)
+    if (
+      this.filteredSubcategories
+        .map((subcat) => subcat._id)
+        .includes(subcategory._id)
+    ) {
+      this.filteredSubcategories = this.filteredSubcategories.filter(
+        (subcat) => subcat._id !== subcategory._id
+      );
+    } else {
+      this.filteredSubcategories.push(subcategory);
     }
     const gtmTag = {
-                event: 'selectedSubcategory',
-                categoryName: this.filteredCategory.name,
-                subcategoryName: subcategory.name,
-              };
+      event: "selectedSubcategory",
+      categoryName: this.filteredCategory.name,
+      subcategoryName: subcategory.name,
+    };
     this.gtmService.pushTag(gtmTag);
     this.setRouteParameter({
-      subcategory: this.filteredSubcategories.map((subcategory) => subcategory._id),
+      subcategory: this.filteredSubcategories.map(
+        (subcategory) => subcategory._id
+      ),
       category: this.filteredCategory._id,
     });
   }
@@ -131,7 +154,11 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
 
   isSubCategoryPicked(subcat: Subcategory) {
-    if (this.filteredSubcategories.map((subcat) => subcat._id).includes(subcat._id)) {
+    if (
+      this.filteredSubcategories
+        .map((subcat) => subcat._id)
+        .includes(subcat._id)
+    ) {
       return "subcategory-picked";
     } else {
       return "subcategory-non-picked";
@@ -161,7 +188,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   // sort highest weight to the front
   sortCategoriesByWeight(categoryList) {
-    categoryList.sort((a, b) => {
+    return categoryList.sort((a, b) => {
       const weightA = a.weight ? parseFloat(a.weight) : 0;
       const weightB = b.weight ? parseFloat(b.weight) : 0;
       return weightB - weightA;
@@ -180,13 +207,13 @@ export class CategoryListComponent implements OnInit, OnDestroy {
               category.iconTemporaryURL =
                 this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
             });
-          this.subscriptions$.push(fileDownload$)
+          this.subscriptions$.push(fileDownload$);
         }
       }
     });
   }
   clearSearchFilterOnReset() {
-    clearSearchFilter(this.sessionStorageService)
+    clearSearchFilter(this.sessionStorageService);
   }
 
   @HostListener("window:resize", ["$event"])
@@ -209,8 +236,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   scrollRight() {
     const element = document.getElementById("main-category-container");
     const subcatEl = document.getElementById("subcategory-container");
-    element.scrollLeft += 160;
-    subcatEl.scrollLeft += 160;
+
+    if (element) element.scrollLeft += 160;
+    if (subcatEl) subcatEl.scrollLeft += 160;
+
     this.setScrollMaxBool();
     // if max scrolled true then true
   }
@@ -219,8 +248,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     const element = document.getElementById("main-category-container");
     const subcatEl = document.getElementById("subcategory-container");
 
-    element.scrollLeft -= 160;
-    subcatEl.scrollLeft -= 160;
+    if (element) element.scrollLeft -= 160;
+    if (subcatEl) subcatEl.scrollLeft -= 160;
 
     this.setScrollMaxBool();
   }
