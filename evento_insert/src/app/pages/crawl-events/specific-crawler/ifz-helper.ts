@@ -48,15 +48,14 @@ function parseTime(time: string) {
   console.log(time);
   // Split the time string into hours and AM/PM
   const [hoursStr, period] = time.split(" ");
-  console.log(hoursStr, period);
+
   // Convert hours to 24-hour format
-  let hours = parseInt(hoursStr, 10);
+  const [hours, min] = hoursStr.split(":");
+  let hoursInt = parseInt(hoursStr, 10);
 
-  if (period.toLowerCase() === "pm" && hours < 12) {
-    hours += 12;
+  if (period.toLowerCase() === "pm" && hoursInt < 12) {
+    hoursInt += 12;
   }
-  console.log(hours);
-
   // Format the hours and return the result
-  return `${hours.toString().padStart(2, "0")}:00`;
+  return `${hoursInt.toString().padStart(2, "0")}:${min}`;
 }
