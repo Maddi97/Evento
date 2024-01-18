@@ -148,9 +148,9 @@ export class EventsService {
     return obs;
   }
 
-  getActualEventsOnCategory(category: Category): Observable<Event[]> {
+  getUpcomingventsOnCategory(category: Category): Observable<Event[]> {
     const obs = this.webService
-      .post("getActualEventsOnCategory", { category })
+      .post("getUpcomingventsOnCategory", { category })
       .pipe(
         map((res: HttpRequest<any>) => res as unknown as Event[]),
         catchError((error: any) => {

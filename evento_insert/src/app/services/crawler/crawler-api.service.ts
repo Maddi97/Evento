@@ -110,10 +110,11 @@ export class CrawlerApiService {
       share()
     );
   }
-  getBulkResultOfRobot(robotId, taskId) {
+  getBulkResultOfRobot(robotId, taskId, pageNumber) {
     const body = {
       robotId: robotId,
       taskId: taskId,
+      page: pageNumber,
     };
     return this.webService.post("getBulkTaskOfRobot/", body).pipe(
       map((response) => {

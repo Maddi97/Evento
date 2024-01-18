@@ -29,14 +29,11 @@ function mapPropertiesOfCrawledEvent(eventIn: IFZEvent) {
   e.organizerName = "Institut für Zukunft";
   e.description = eventIn.description;
   e.link = eventIn.link;
-  e.times = {
-    start: parseTime(eventIn.time),
-    end: "9:00",
-  };
-  e.date = {
-    start: moment(parseDate(eventIn.date)),
-    end: moment(parseDate(eventIn.date)),
-  };
+  (e.times.start = parseTime(eventIn.time)),
+    (e.date = {
+      start: moment(parseDate(eventIn.date)),
+      end: moment(parseDate(eventIn.date)),
+    });
 
   return e;
 }
@@ -48,15 +45,17 @@ function parseDate(date: string): Date {
 }
 
 function parseTime(time: string) {
+  console.log(time);
   // Split the time string into hours and AM/PM
   const [hoursStr, period] = time.split(" ");
-
+  console.log(hoursStr, period);
   // Convert hours to 24-hour format
   let hours = parseInt(hoursStr, 10);
 
   if (period.toLowerCase() === "pm" && hours < 12) {
     hours += 12;
   }
+  console.log(hours);
 
   // Format the hours and return the result
   return `${hours.toString().padStart(2, "0")}:00`;

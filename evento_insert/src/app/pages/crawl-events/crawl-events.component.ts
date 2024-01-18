@@ -8,7 +8,10 @@ import { OrganizerService } from "src/app/services/organizer.web.service";
 import { SnackbarService } from "src/app/services/utils/snackbar.service";
 import { crawlerConfig } from "../../../constants/browseAi";
 import { CrawlerApiService } from "../../services/crawler/crawler-api.service";
-import { crawlBrowseAi } from "./specific-crawler/browseAI.subscription";
+import {
+  crawlBrowseAi,
+  getResultsOfBulkrun,
+} from "./specific-crawler/browseAI.subscription";
 import { mapIfzToEvents } from "./specific-crawler/ifz-helper";
 import { mapLeipzigToEvents } from "./specific-crawler/leipzig-helper";
 import { mapUrbaniteToEvents } from "./specific-crawler/urbanite-helper";
@@ -215,7 +218,7 @@ export class CrawlEventsComponent implements OnInit {
     this.spinner.show();
 
     let urls = [];
-    for (let i = 0; i <= this.inputNumberOfDays; i++) {
+    for (let i = 0; i < this.inputNumberOfDays; i++) {
       urls.push(
         this.getUrlForCrawler(
           crawlerName,
