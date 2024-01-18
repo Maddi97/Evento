@@ -160,6 +160,9 @@ export class EventsComponent implements OnInit, OnDestroy {
       .getLocation()
       .pipe()
       .subscribe((position) => {
+        if (position) {
+          this.eventList = [];
+        }
         if (!this.searchString) {
           this.currentPosition = position;
           this.applyFilters();
@@ -206,6 +209,9 @@ export class EventsComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (params) => {
+          if (params.date || params.categories) {
+            this.eventList = [];
+          }
           this.resetLoadingLimit();
           this.fetchEventsCompleted = false;
           this.filteredDate = moment(params.date);
