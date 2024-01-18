@@ -276,7 +276,7 @@ export class CrawlEventsComponent implements OnInit {
 
     if (filteredOrganizer.length < 1) {
       this.organizerIn = new Organizer();
-      this.organizerIn.name = this.eventIn.organizerName;
+      this.organizerIn.name = this.eventIn.organizerName || "NO ORGANIZER NAME";
       this.organizerIn.category = this.eventIn.category
         ? this.eventIn.category
         : undefined;
@@ -295,6 +295,9 @@ export class CrawlEventsComponent implements OnInit {
       this.organizerIn.address.country = this.eventIn.address?.country
         ? this.eventIn.address.country
         : "Deutschland";
+      this.organizerIn.link = this.eventIn.organizerName
+        ? ""
+        : this.eventIn?.link;
     } else {
       //wenn es organizer gibt dann baue direkt das event
       this.organizerIn = filteredOrganizer[0];

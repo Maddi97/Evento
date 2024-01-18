@@ -45,7 +45,6 @@ function parseDate(date: string): Date {
 }
 
 function parseTime(time: string) {
-  console.log(time);
   // Split the time string into hours and AM/PM
   const [hoursStr, period] = time.split(" ");
 
