@@ -1,0 +1,16 @@
+/* settings-form.component.css */
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Adjust the styling for Material checkboxes */
+mat-checkbox {
+  display: block;
+}
+
+button {
+  margin-top: 16px;
+}

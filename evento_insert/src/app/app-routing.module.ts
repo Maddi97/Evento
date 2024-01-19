@@ -6,6 +6,7 @@ import { CrawlEventsComponent } from "./pages/crawl-events/crawl-events.componen
 import { EventViewComponent } from "./pages/event/event-view/event-view.component";
 import { OrganizerViewComponent } from "./pages/organizer/organizer-view/organizer-view.component";
 import { AuthGuardService } from "./services/auth/auth.guard.service";
+import { GlobalSettingsComponent } from "./pages/settings/global-settings/global-settings.component";
 
 const routes: Routes = [
   {
@@ -28,6 +29,11 @@ const routes: Routes = [
     component: CrawlEventsComponent,
     canActivate: [AuthGuardService],
   },
+  {
+    path: "settings",
+    component: GlobalSettingsComponent,
+    canActivate: [AuthGuardService],
+  },
   { path: "login", component: LoginComponent },
   { path: "**", component: LoginComponent },
 ];
@@ -36,4 +42,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

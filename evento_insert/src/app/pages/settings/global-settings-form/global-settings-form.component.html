@@ -1,0 +1,23 @@
+<form [formGroup]="settingsForm">
+  <mat-checkbox formControlName="isAdsActivated">Ads Activated</mat-checkbox>
+  <mat-checkbox formControlName="isPromotionActivated"
+    >Promotion Activated</mat-checkbox
+  >
+
+  <button
+    type="button"
+    mat-raised-button
+    color="warn"
+    (click)="clearSettings()"
+  >
+    Clear
+  </button>
+  <button
+    type="button"
+    mat-raised-button
+    color="primary"
+    (click)="applySettingsAndEmit()"
+  >
+    Apply
+  </button>
+</form>

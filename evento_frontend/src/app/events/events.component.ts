@@ -11,6 +11,7 @@ import { Category, Subcategory } from "../models/category";
 import { Event } from "../models/event";
 import { NominatimGeoService } from "../nominatim-geo.service";
 import { EventService } from "./event.service";
+import { Settings } from "../models/settings";
 
 @Component({
   selector: "app-events",
@@ -67,7 +68,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   });
 
   public getScreenWidth: number;
-
+  public settings: Settings;
   constructor(
     private eventService: EventService,
     private spinner: NgxSpinnerService,
@@ -102,6 +103,14 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const settings$ = this.sharedObservables.settingsObservable.subscribe(
+      (settings) => {
+        if (settings) {
+          this.settings = settings;
+        }
+      }
+    );
+    this.subscriptions$.push(settings$);
     this.getScreenWidth = window.innerWidth;
     this.spinner.show();
     this.closeSpinnerAfterTimeout();
