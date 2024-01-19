@@ -50,6 +50,8 @@ import { AuthGuardService } from './services/auth/auth.guard.service';
 import { AutocompleteOrganizerComponent } from './atoms/autocomplete-organizer/autocomplete-organizer.component';
 import { SelectionListComponent } from './atoms/selection-list/selection-list.component';
 import { EventFrequencyFormComponent } from './atoms/event-frequency-form/event-frequency-form.component';
+import { GlobalSettingsComponent } from './pages/settings/global-settings/global-settings.component';
+import { GlobalSettingsFormComponent } from './pages/settings/global-settings-form/global-settings-form.component';
 
 
 @NgModule({
@@ -70,7 +72,9 @@ import { EventFrequencyFormComponent } from './atoms/event-frequency-form/event-
         CrawledEventsToEventComponent,
         AutocompleteOrganizerComponent,
         SelectionListComponent,
-        EventFrequencyFormComponent
+        EventFrequencyFormComponent,
+        GlobalSettingsComponent,
+        GlobalSettingsFormComponent
     ],
     imports: [
         MatSnackBarModule,

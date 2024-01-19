@@ -1,0 +1,6 @@
+<h2>Global Settings</h2>
+<app-global-settings-form
+  *ngIf="settings"
+  [settings]="settings"
+  (applySettings)="applySettings($event)"
+></app-global-settings-form>

@@ -232,6 +232,7 @@ export class EventFormComponent implements OnInit, OnChanges {
   }
 
   setEventForm(): void {
+    console.log(this.eventIn);
     // prepare dates
     this.updateEventId = this.eventIn._id;
     const start: any = this.eventIn?.date?.start

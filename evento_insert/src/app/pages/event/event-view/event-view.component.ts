@@ -156,6 +156,10 @@ export class EventViewComponent implements OnInit {
     this.eventService.getFrequentEvents();
   };
 
+  loadActualEventsByCategory(category: Category) {
+    this.eventService.getUpcomingventsOnCategory(category);
+  }
+
   deleteEvent(event: Event) {
     if (confirm("Are you sure to delete " + event.name + " ?")) {
       this.deleteEvent$ = this.eventService.deletEvent(
@@ -225,10 +229,6 @@ export class EventViewComponent implements OnInit {
     ) {
       return "lightgreen";
     }
-  }
-
-  loadActualEventsByCategory(category: Category) {
-    this.eventService.getActualEventsOnCategory(category);
   }
 
   downloadImage() {

@@ -28,7 +28,6 @@ const allowedOrigins = [
   "https://www.staging.evento-leipzig.de",
   "https://backend.evento-leipzig.de",
   "https://backend.staging.evento-leipzig.de",
-
 ];
 
 // Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)
@@ -37,7 +36,7 @@ const corsOptions = {
     if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
     } else {
-      console.log(origin)
+      console.log(origin);
       callback(new Error("Origin not allowed by CORS"));
     }
   },
@@ -72,9 +71,10 @@ app.use(authRouter);
 const crawlerRouter = require("./routes/crawler.routes");
 app.use(crawlerRouter);
 
+const settingsRouter = require("./routes/settings.routes");
+app.use(settingsRouter);
+
 app.set("trust proxy", 1);
-
-
 
 // startup our app at http://localhost:3000
 

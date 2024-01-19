@@ -37,8 +37,7 @@ function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
     e.times.start = "00:00";
     e.times.end = "00:00";
   } else {
-    e.times.start = eventIn.start_time;
-    e.times.end = endTimeUrbanite(eventIn.start_time);
+    e.times.start = parseTimeFormat(eventIn.start_time);
   }
   const date = { start: undefined, end: undefined };
   date.start = moment(new Date(parseEventDateUrbanite(eventIn.date)));
@@ -54,23 +53,21 @@ function createAddressFromInput(address: any): Address {
   a.city = address.city;
   a.plz = address.plz;
   //divide street and street number from street input
-  a.street = address.street.split(" ")[0];
-  a.streetNumber = address.street.split(" ")[1] || "";
+  a.street = address.street?.split(" ")[0];
+  a.streetNumber = address.street?.split(" ")[1] || "";
   a.country = address.country;
   return a;
 }
 
-function endTimeUrbanite(startTime: string) {
-  const startHour = Number(startTime.split(":")[0]);
-  const endTimeHour = startHour >= 20 ? "04:00" : "00:00";
-  return endTimeHour;
-}
-
 function parseEventDateUrbanite(dateString: string): Date | null {
   // Split the input string into parts
-  let date = dateString.split(" ")[1];
+  let date = dateString?.split(" ")[1];
   // parse the date string whicch is in german time format to a date object
   let momentDate = moment(date, "DD.MM.YYYY");
   // Convert Moment.js object to a JavaScript Date object
-  return momentDate.toDate();
+  return date ? momentDate.toDate() : null;
+}
+
+function parseTimeFormat(time: string) {
+  return time?.split(" ")[0];
 }

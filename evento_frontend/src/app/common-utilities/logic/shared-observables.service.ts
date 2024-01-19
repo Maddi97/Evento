@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Settings } from "src/app/models/settings";
 
 type ScrollingDirection = "up" | "down";
 type ScrollOutIn = {
@@ -12,14 +13,20 @@ type ScrollOutIn = {
   providedIn: "root",
 })
 export class SharedObservableService {
+  private settingsSubject = new BehaviorSubject<Settings>(null);
+  public settingsObservable: Observable<Settings> =
+    this.settingsSubject.asObservable();
+
   private numberOfScrolls = 0;
-  private actualScrollDirection: ScrollingDirection = undefined;
   private scrollSubject = new Subject<ScrollingDirection>();
   private scrollOutInSubscject = new Subject<Boolean>();
   public scrollObservable = this.scrollSubject.asObservable();
   public scrollOutInOfScreenObservable =
     this.scrollOutInSubscject.asObservable();
 
+  public setSettings(settings: Settings): void {
+    this.settingsSubject.next(settings);
+  }
   public notifyScrolling(scrollingDirection: ScrollingDirection): void {
     this.scrollSubject.next(scrollingDirection);
   }

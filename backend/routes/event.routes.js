@@ -337,7 +337,7 @@ router.post("/getEventsOnCategory", limiter, (req, res) => {
     });
 });
 
-router.post("/getActualEventsOnCategory", limiter, (req, res) => {
+router.post("/getUpcomingventsOnCategory", limiter, (req, res) => {
   let date = new Date();
   const id = String(req.body.category._id);
   Event.find({
@@ -348,12 +348,12 @@ router.post("/getActualEventsOnCategory", limiter, (req, res) => {
       {
         $or: [
           {
-            "date.start": { $gte: date }, //-1 um den heutigen Tag mit zu finden
+            "date.start": { $gte: date },
           },
           {
             $and: [
               {
-                "date.start": { $lte: date }, //-1 um den heutigen Tag mit zu finden
+                "date.start": { $lte: date },
               },
               {
                 "date.end": { $gte: date },
@@ -363,11 +363,26 @@ router.post("/getActualEventsOnCategory", limiter, (req, res) => {
           {
             permanent: { $eq: true },
           },
+          {
+            $and: [
+              { frequency: { $exists: true } },
+              {
+                "date.start": { $lte: date },
+              },
+            ],
+          },
         ],
       },
     ],
   })
     .then((events) => {
+      events = events.filter((event) => {
+        if (event.frequency) {
+          return timeHelper.isFrequencyToday(event.frequency, date);
+        }
+        return true;
+      });
+
       res.send(events);
     })
     .catch((error) => {
