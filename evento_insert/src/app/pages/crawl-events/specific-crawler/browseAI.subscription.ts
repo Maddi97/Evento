@@ -79,13 +79,13 @@ function waitForRobotToFinish(
       map((res) => {
         console.log(res);
         if (res["status"] === "failed") {
-          throw new Error("Task failed");
+          console.error("A task failed", res);
         }
         return res;
       }),
       repeat({ delay: 2000 }),
       first((res: any) => {
-        return res["status"] === "successful";
+        return res["status"] === "successful" || res["status"] === "failed";
       }),
       catchError((error) => {
         // Handle the error or rethrow it to be caught by subscribers
