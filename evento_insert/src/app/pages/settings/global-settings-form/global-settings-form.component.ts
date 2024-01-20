@@ -30,8 +30,8 @@ export class GlobalSettingsFormComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     // Initialize form with input settings
     this.settingsForm = this.formBuilder.group({
-      isAdsActivated: this.settings.isAdsActivated || false,
-      isPromotionActivated: this.settings.isPromotionActivated || false,
+      isAdsActivated: this.settings?.isAdsActivated || false,
+      isPromotionActivated: this.settings?.isPromotionActivated || false,
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -52,7 +52,7 @@ export class GlobalSettingsFormComponent implements OnInit, OnChanges {
     // Emit event with current form values
     const settings: Settings = {
       ...this.settingsForm.value,
-      _id: this.settings._id,
+      _id: this.settings?._id || null,
     };
     this.applySettings.emit(settings);
   }
