@@ -6,14 +6,13 @@ import {
   OnInit,
   SimpleChanges,
 } from "@angular/core";
-import { Capacitor } from '@capacitor/core';
-import { Keyboard } from '@capacitor/keyboard';
+import { Capacitor } from "@capacitor/core";
+import { Keyboard } from "@capacitor/keyboard";
 import * as L from "leaflet";
 import { skip, switchMap, timer } from "rxjs";
 import { clearSearchFilter } from "../logic/search-filter-helper";
 import { SessionStorageService } from "../session-storage/session-storage.service";
 import { PositionService } from "./position.service";
-
 
 @Component({
   selector: "map-view",
@@ -61,7 +60,8 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   constructor(
     private positionService: PositionService,
-    private sessionStorageService: SessionStorageService) { }
+    private sessionStorageService: SessionStorageService
+  ) {}
 
   sanitizeInput(value) {
     return value.replace(/ /g, "+");
@@ -72,39 +72,44 @@ export class MapViewComponent implements OnInit, OnChanges {
     //   this.resetCenter();
     // })
     // this.updatePosition(this.positionService.getDefaultLocation());
-    this.sessionStorageService.draggedMapCenterSubject.pipe(
-      skip(1),
-      switchMap(() => {
-        this.isMapDragged = true;
-        // Set the timeout to reset the variable
-        return timer(5000); // 5000 milliseconds (adjust as needed)
-      })
-    ).subscribe(() => {
-      this.isMapDragged = false; // Reset the variable after the timeout
-    });
-    this.initMapIfNeeded(); // Use the method to initialize the map
+    this.sessionStorageService.draggedMapCenterSubject
+      .pipe(
+        skip(1),
+        switchMap(() => {
+          this.isMapDragged = true;
+          // Set the timeout to reset the variable
+          return timer(5000); // 5000 milliseconds (adjust as needed)
+        })
+      )
+      .subscribe(() => {
+        this.isMapDragged = false; // Reset the variable after the timeout
+      });
+    // this.initMapIfNeeded(); // Use the method to initialize the map
   }
 
   resetCenter() {
     this.setPositionMarker();
     this.map.panTo(
-      new L.LatLng(String(this.centerMapOnPosition[0]), String(this.centerMapOnPosition[1]))
+      new L.LatLng(
+        String(this.centerMapOnPosition[0]),
+        String(this.centerMapOnPosition[1])
+      )
     );
     //this.router.navigate(['/', 'events'], {queryParams: {positionUpdate: true}});
   }
 
   searchForLocationInput() {
     if (Capacitor.isNativePlatform()) {
-      Keyboard.hide()
+      Keyboard.hide();
     }
-    clearSearchFilter(this.sessionStorageService)
+    clearSearchFilter(this.sessionStorageService);
     const address = this.sanitizeInput(this.address);
-    this.positionService.getPositionByInput(address)
+    this.positionService.getPositionByInput(address);
   }
 
   async setCurrentPositionOfUserToStorage() {
     const forcePositionCall = true;
-    this.positionService.getPositionByLocation(forcePositionCall)
+    this.positionService.getPositionByLocation(forcePositionCall);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -112,7 +117,6 @@ export class MapViewComponent implements OnInit, OnChanges {
       this.initMapIfNeeded(); // Use the method to initialize the map
 
       if (changes.markerData) {
-
         this.setPositionMarker();
 
         this.setMarkers(this.markerData);
@@ -127,49 +131,47 @@ export class MapViewComponent implements OnInit, OnChanges {
         }
       }
       if (changes.currentPosition) {
-        this.resetCenter()
+        this.resetCenter();
       }
 
       // set blue position marker always to top
 
-      this.updateZIndexPosition('blue')
-      this.map.on('moveend', (e) => {
-        this.updateZIndexPosition('blue')
-        this.loadNewEventsOnDrag()
-      })
+      this.updateZIndexPosition("blue");
+      this.map.on("moveend", (e) => {
+        this.updateZIndexPosition("blue");
+        this.loadNewEventsOnDrag();
+      });
     }, 200); // Adjust the delay time in milliseconds
   }
   private initMapIfNeeded(): void {
-    if (typeof this.map === "undefined") {
+    if (typeof this.map === "undefined" && this.centerMapOnPosition) {
       this.initMap();
       this.mapInitialized = true;
     }
   }
 
-  @HostListener('touchmove')
+  @HostListener("touchmove")
   private hideKeyboard() {
     if (Capacitor.isNativePlatform()) {
-      Keyboard.hide()
+      Keyboard.hide();
     }
   }
 
-  private updateZIndexPosition(color: 'blue' | 'yellow') {
-    const markerElement = document.querySelectorAll('img');
+  private updateZIndexPosition(color: "blue" | "yellow") {
+    const markerElement = document.querySelectorAll("img");
     markerElement.forEach((element) => {
       if (String(element.src).includes(color)) {
-        element.style.zIndex = '99999'
-        if (color === 'blue') {
-          element.style.marginLeft = '-2px'
-          element.style.marginTop = '-15px'
-          element.style.width = '16px'
-          element.style.height = '16px'
+        element.style.zIndex = "99999";
+        if (color === "blue") {
+          element.style.marginLeft = "-2px";
+          element.style.marginTop = "-15px";
+          element.style.width = "16px";
+          element.style.height = "16px";
         }
-
       }
-    })
+    });
   }
   private initMap(): void {
-
     this.map = L.map("map", {
       center: this.centerMapOnPosition,
       zoom: this.zoomInput,
@@ -192,7 +194,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   loadNewEventsOnDrag() {
-    this.sessionStorageService.setMapCenter(this.map.getCenter())
+    this.sessionStorageService.setMapCenter(this.map.getCenter());
   }
 
   private setHoverMarker(lat, lon): void {
@@ -205,8 +207,7 @@ export class MapViewComponent implements OnInit, OnChanges {
         })
       )
       .addTo(this.hoverMarkerGroup);
-    this.updateZIndexPosition('yellow')
-
+    this.updateZIndexPosition("yellow");
   }
   private clearHoverMarker(): void {
     this.hoverMarkerGroup.clearLayers();
@@ -214,9 +215,7 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private setPositionMarker(): void {
     this.positionMarkerGroup.clearLayers();
-    const positionMarker = L.marker(
-      this.currentPosition
-    ).setIcon(
+    const positionMarker = L.marker(this.currentPosition).setIcon(
       new this.LeafIcon({
         iconUrl: this.locationIcon,
         iconRetinaUrl: this.locationIconRetina,
@@ -229,9 +228,8 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
   searchEventsInNewArea() {
     this.isMapDragged = false;
-    clearSearchFilter(this.sessionStorageService)
-    this.sessionStorageService.emitSearchOnNewCenter()
-
+    clearSearchFilter(this.sessionStorageService);
+    this.sessionStorageService.emitSearchOnNewCenter();
   }
 
   private setMarkers(markerData: any[]): void {
@@ -252,14 +250,13 @@ export class MapViewComponent implements OnInit, OnChanges {
           .addTo(this.markerGroup)
           .bindPopup(
             `<div>${marker.name}</div>` +
-            //`<div *ngIf="false" class="popup-org-name">${marker.organizerName}</div>` +
-            `<div>${marker.address?.street} ${marker.address?.streetNumber}</div>` +
-            `<a href="full-event/${marker._id}">Zur Location</a>` +
-            `<hr>` +
-            `<a target="_blank" rel="noopener noreferrer" href=${gmapsUrl} >Google Maps</a>`
+              //`<div *ngIf="false" class="popup-org-name">${marker.organizerName}</div>` +
+              `<div>${marker.address?.street} ${marker.address?.streetNumber}</div>` +
+              `<a href="full-event/${marker._id}">Zur Location</a>` +
+              `<hr>` +
+              `<a target="_blank" rel="noopener noreferrer" href=${gmapsUrl} >Google Maps</a>`
           );
       }
     });
   }
 }
-

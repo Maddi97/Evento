@@ -15,7 +15,10 @@ import { FileService } from "../../file.service";
 import { Category, Subcategory } from "../../models/category";
 import { clearSearchFilter } from "../logic/search-filter-helper";
 import { SharedObservableService } from "../logic/shared-observables.service";
-import { SessionStorageService } from "../session-storage/session-storage.service";
+import {
+  Search,
+  SessionStorageService,
+} from "../session-storage/session-storage.service";
 
 export type PromotionCategory = {
   name: "Hot";
@@ -43,7 +46,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   scrollOut: Boolean = false;
   timesScrollOut = 0;
   public getScreenWidth: any;
-  searchString: string = "";
+  search: Search = { searchString: "", event: "Reset" };
   // filteredSubcategories
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
@@ -111,8 +114,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
     const searchString$ =
       this.sessionStorageService.searchStringSubject.subscribe(
-        (searchString: string) => {
-          this.searchString = searchString;
+        (search: Search) => {
+          this.search = search;
         }
       );
     const mapView$ = this.sessionStorageService

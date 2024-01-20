@@ -4,7 +4,10 @@ import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
 import { Subscription, filter } from "rxjs";
 import { clearSearchFilter } from "../logic/search-filter-helper";
-import { SessionStorageService } from "../session-storage/session-storage.service";
+import {
+  Search,
+  SessionStorageService,
+} from "../session-storage/session-storage.service";
 
 @Component({
   selector: "app-search-filter",
@@ -12,7 +15,7 @@ import { SessionStorageService } from "../session-storage/session-storage.servic
   styleUrls: ["./search-filter.component.css"],
 })
 export class SearchFilterComponent implements OnInit, OnDestroy {
-  searchString = "";
+  search: Search = { searchString: "", event: "Reset" };
   timeout = null;
   delay = 300;
   getScreenWidth;
@@ -40,7 +43,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   onSearchChange() {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
-      this.sessionStorageService.setSearchString(this.searchString);
+      this.sessionStorageService.setSearchString(this.search);
     }, this.delay);
   }
   @HostListener("window:resize")
@@ -65,7 +68,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         if (!this.isFocused) {
           inputBar.classList.add("focus");
         } else {
-          if (this.searchString.length > 0) {
+          if (this.search.searchString.length > 0) {
             clearSearchFilter(this.sessionStorageService);
           }
           inputBar.classList.remove("focus");

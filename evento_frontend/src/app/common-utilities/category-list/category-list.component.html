@@ -1,6 +1,6 @@
 <div
   class="category-list-container"
-  *ngIf="!searchString"
+  *ngIf="!search.searchString"
   [class.animate-off-screen]="scrollOut && getScreenWidth < 1000"
 >
   <div
@@ -70,8 +70,8 @@
           X | Reset</span
         >
       </div>
-      <span *ngIf="searchString" class="subcategory subcategory-picked"
-        >Suche: {{ searchString }}</span
+      <span *ngIf="search.searchString" class="subcategory subcategory-picked"
+        >Suche: {{ search.searchString }}</span
       >
     </div>
   </div>
@@ -88,8 +88,10 @@
   </div>
 </div>
 
-<div *ngIf="searchString" class="search-category-replacement">
-  <span class="subcategory subcategory-picked"> Suche: {{ searchString }}</span>
+<div *ngIf="search.searchString" class="search-category-replacement">
+  <span class="subcategory subcategory-picked">
+    Suche: {{ search.searchString }}</span
+  >
   <span
     class="reset-subcategory-button reset-search"
     style="margin-left: 4px"

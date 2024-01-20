@@ -6,7 +6,10 @@ import { Subscription, delay, tap } from "rxjs";
 import { CategoriesService } from "../categories/categories.service";
 import { SharedObservableService } from "../common-utilities/logic/shared-observables.service";
 import { PositionService } from "../common-utilities/map-view/position.service";
-import { SessionStorageService } from "../common-utilities/session-storage/session-storage.service";
+import {
+  Search,
+  SessionStorageService,
+} from "../common-utilities/session-storage/session-storage.service";
 import { Category, Subcategory } from "../models/category";
 import { Event } from "../models/event";
 import { NominatimGeoService } from "../nominatim-geo.service";
@@ -37,7 +40,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   fetchEventsCompleted = false;
   fetchParamsCompleted = false;
-  currentPosition;
+  currentPosition = [];
   mapView = null;
   mapView$;
   eventList: Event[] = [];
@@ -49,7 +52,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   promotionCategory: PromotionCategory = { name: "Hot", _id: "1" };
   nowCategory: NowCategory = { name: "Now", _id: "2" };
 
-  searchString: string = "";
+  search: Search = { searchString: "", event: "Reset" };
 
   loadMore = false;
   isLoadMoreClicked = false;
@@ -97,7 +100,6 @@ export class EventsComponent implements OnInit, OnDestroy {
         this.mapView = data;
       });
     this.subscriptions$.push(mapView$);
-    this.spinner.show();
   }
   ngOnDestroy(): void {
     this.subscriptions$.forEach((subscription$) => {
@@ -117,8 +119,6 @@ export class EventsComponent implements OnInit, OnDestroy {
     );
     this.subscriptions$.push(settings$);
     this.getScreenWidth = window.innerWidth;
-    this.spinner.show();
-    this.closeSpinnerAfterTimeout();
 
     //this.setupPositionService();
     this.setupCategoriesService();
@@ -127,9 +127,11 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   private setupSearchFilterSubscription() {
     const search$ = this.sessionStorageService.searchStringSubject.subscribe(
-      (searchString: string) => {
+      (search: Search) => {
         this.spinner.show();
-        this.searchString = searchString;
+        this.closeSpinnerAfterTimeout();
+
+        this.search = search;
         const date = moment(new Date()).utcOffset(0, false).set({
           hour: 0,
           minute: 0,
@@ -138,7 +140,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         });
 
         const req = {
-          searchString: searchString,
+          searchString: search.searchString,
           limit: this.actualLoadEventLimit,
           date: date,
           categories: this.categoryList.map((cat) => cat._id),
@@ -147,7 +149,7 @@ export class EventsComponent implements OnInit, OnDestroy {
           .getEventsBySearchString(req)
           .subscribe({
             next: (events) => {
-              if (!searchString) {
+              if (search.event === "Reset") {
                 this.applyFilters();
               } else {
                 this.handlyEventListLoaded(events);
@@ -156,9 +158,7 @@ export class EventsComponent implements OnInit, OnDestroy {
             error: (error) => {
               console.log(error);
             },
-            complete: () => {
-              this.onFetchEventsCompleted();
-            },
+            complete: () => {},
           });
         this.subscriptions$.push(event$);
       }
@@ -167,21 +167,34 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   private setupPositionService(): void {
+    let storageLocationObservation$;
     if (!this.sessionStorageService.getUserLocationFromStorage()) {
-      this.positionService.getPositionByLocation();
-    }
-    const storageLocationObservation$ = this.sessionStorageService
-      .getLocation()
-      .pipe()
-      .subscribe((position) => {
-        if (position) {
-          this.eventList = [];
-        }
-        if (!this.searchString) {
-          this.currentPosition = position;
-          this.applyFilters();
-        }
+      this.positionService.getPositionByLocation().then((res) => {
+        storageLocationObservation$ = this.sessionStorageService
+          .getLocation()
+          .subscribe((position) => {
+            if (
+              this.search.event !== "Input" &&
+              JSON.stringify(position) !== JSON.stringify(this.currentPosition)
+            ) {
+              this.currentPosition = position;
+              this.applyFilters();
+            }
+          });
       });
+    } else {
+      storageLocationObservation$ = this.sessionStorageService
+        .getLocation()
+        .subscribe((position) => {
+          if (
+            this.search.event !== "Input" &&
+            JSON.stringify(position) !== JSON.stringify(this.currentPosition)
+          ) {
+            this.currentPosition = position;
+            this.applyFilters();
+          }
+        });
+    }
     const newCenter$ =
       this.sessionStorageService.searchNewCenterSubject.subscribe(
         (mapCenterPosition) => {
@@ -214,55 +227,51 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   private setupQueryParams(): void {
-    const params$ = this._activatedRoute.queryParams
-      .pipe(
-        tap(() => {
-          this.spinner.show();
-        }),
-        delay(200)
-      )
-      .subscribe({
-        next: (params) => {
-          if (params.date || params.categories) {
-            this.eventList = [];
-          }
-          this.resetLoadingLimit();
-          this.fetchEventsCompleted = false;
-          this.filteredDate = moment(params.date);
-          // append the hours of the current time zone because the post request will automatically
-          // change to time with time zone an this could change the date
-          this.filteredDate.add(moment(new Date()).utcOffset() / 60, "hours");
-          const category = params.category;
-          if (category === "1") {
-            this.filteredCategory = this.promotionCategory;
-          } else if (category === "2") {
-            this.filteredCategory = this.nowCategory;
-          } else {
-            this.filteredCategory = category
-              ? this.categoryList.find((c) => c._id === category)
-              : this.categoryList[0];
-          }
+    const params$ = this._activatedRoute.queryParams.subscribe({
+      next: (params) => {
+        if (params.date || params.categories) {
+          this.eventList = [];
+        }
+        this.resetLoadingLimit();
+        this.fetchEventsCompleted = false;
+        this.filteredDate = moment(params.date);
+        // append the hours of the current time zone because the post request will automatically
+        // change to time with time zone an this could change the date
+        this.filteredDate.add(moment(new Date()).utcOffset() / 60, "hours");
+        const category = params.category;
+        if (category === "1") {
+          this.filteredCategory = this.settings.isPromotionActivated
+            ? this.promotionCategory
+            : this.categoryList[0];
+        } else if (category === "2") {
+          this.filteredCategory = this.nowCategory;
+        } else {
+          this.filteredCategory = category
+            ? this.categoryList.find((c) => c._id === category)
+            : this.categoryList[0];
+        }
 
-          if (params.subcategory) {
-            this.filteredSubcategories = this.subcategoryList.filter((s) =>
-              params.subcategory.includes(s._id)
-            );
-          } else {
-            this.filteredSubcategories = [];
-          }
-          this.fetchParamsCompleted = true;
-          this.setupPositionService();
-          //this.applyFilters()
-        },
-        error: (error) => {
-          console.log(error);
-        },
-      });
+        if (params.subcategory) {
+          this.filteredSubcategories = this.subcategoryList.filter((s) =>
+            params.subcategory.includes(s._id)
+          );
+        } else {
+          this.filteredSubcategories = [];
+        }
+        this.fetchParamsCompleted = true;
+        this.setupPositionService();
+        //this.applyFilters()
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
     this.subscriptions$.push(params$);
   }
 
   applyFilters(mapCenter = undefined) {
     this.spinner.show();
+    console.log("Applying filters");
     // Request backend for date, category and subcategory filter
     // filter object
     //format date because in post request it is stringified and formatted, this could change the date

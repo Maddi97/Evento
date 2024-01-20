@@ -3,20 +3,25 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 
+export type Search = {
+  searchString: string;
+  event: "Input" | "Reset";
+};
 @Injectable({
   providedIn: "root",
 })
 export class SessionStorageService {
   defaultCenterPosition = [51.33962, 12.37129];
 
-  public searchNewCenterSubject = new Subject<Array<number>>()
+  public searchNewCenterSubject = new Subject<Array<number>>();
   public draggedMapCenterSubject = new Subject<Array<number>>();
-  public searchStringSubject = new Subject<string>();
+  public searchStringSubject = new Subject<Search>();
   private mapViewSubject = new Subject<boolean>(); // Change the type to boolean
-  private locationSubject = new BehaviorSubject<Array<number>>(this.getLocationFromStorage());
+  private locationSubject = new BehaviorSubject<Array<number>>(
+    this.getLocationFromStorage()
+  );
 
-  constructor(
-  ) {
+  constructor() {
     const initialMapViewData = this.getMapViewData();
     if (initialMapViewData === null) {
       this.setMapViewData(false); // Set the default value here as a boolean
@@ -50,45 +55,63 @@ export class SessionStorageService {
   }
 
   setLocation(location) {
-    sessionStorage.setItem('defaultLocation', JSON.stringify(false))
-    sessionStorage.setItem('location', JSON.stringify(location));
-    this.locationSubject.next(location);
+    sessionStorage.setItem("defaultLocation", JSON.stringify(false));
+    if (
+      JSON.stringify(location) !==
+      JSON.stringify(sessionStorage.getItem("location"))
+    ) {
+      console.log("Set", location);
+      sessionStorage.setItem("location", JSON.stringify(location));
+      this.locationSubject.next(location);
+    }
   }
 
   setDefaultLocation() {
-    sessionStorage.setItem('defaultLocation', JSON.stringify(true))
-    sessionStorage.setItem('location', JSON.stringify(this.defaultCenterPosition));
+    sessionStorage.setItem("defaultLocation", JSON.stringify(true));
+    sessionStorage.setItem(
+      "location",
+      JSON.stringify(this.defaultCenterPosition)
+    );
     this.locationSubject.next(this.defaultCenterPosition);
   }
 
   getDefaultLocationValue() {
-    const isDefaultLocation = JSON.parse(sessionStorage.getItem('defaultLocation'));
+    const isDefaultLocation = JSON.parse(
+      sessionStorage.getItem("defaultLocation")
+    );
     return isDefaultLocation || false;
   }
 
   private getLocationFromStorage() {
-    const storedLocation = JSON.parse(sessionStorage.getItem('location'));
+    const storedLocation = JSON.parse(sessionStorage.getItem("location"));
     return storedLocation || this.defaultCenterPosition;
   }
 
   getUserLocationFromStorage() {
-    return JSON.parse(sessionStorage.getItem('location')) || undefined;
+    return JSON.parse(sessionStorage.getItem("location")) || undefined;
   }
 
   setMapCenter(mapCenter: [number, number]) {
-    sessionStorage.setItem('mapCenter', JSON.stringify(mapCenter))
+    sessionStorage.setItem("mapCenter", JSON.stringify(mapCenter));
     this.draggedMapCenterSubject.next(mapCenter);
   }
   emitSearchOnNewCenter() {
-    this.searchNewCenterSubject.next(JSON.parse(sessionStorage.getItem('mapCenter')))
+    this.searchNewCenterSubject.next(
+      JSON.parse(sessionStorage.getItem("mapCenter"))
+    );
   }
-  setSearchString(searchString: string) {
-    sessionStorage.setItem('searchString', JSON.stringify(searchString))
-    console.log(JSON.parse(sessionStorage.getItem('searchString')))
-    this.searchStringSubject.next(searchString)
+
+  setSearchString(search: Search) {
+    sessionStorage.setItem("searchString", JSON.stringify(search));
+    console.log(JSON.parse(sessionStorage.getItem("searchString")));
+    this.searchStringSubject.next(search);
   }
   clearSearchFilter() {
-    sessionStorage.setItem('searchString', JSON.stringify(''));
-    this.searchStringSubject.next('');
+    const emptySearch: Search = {
+      searchString: "",
+      event: "Reset",
+    };
+    sessionStorage.setItem("searchString", JSON.stringify(""));
+    this.searchStringSubject.next(emptySearch);
   }
 }

@@ -56,7 +56,8 @@ export class AppComponent implements OnInit {
             }
           });
           if (!isNotEventsPage) {
-            this.positionService.getPositionByLocation(true);
+            console.log("app calls position");
+            //this.positionService.getPositionByLocation(true);
           }
         },
         error: (error) => {
