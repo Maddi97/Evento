@@ -38,6 +38,7 @@ export class HeaderbarComponent implements OnInit {
       .subscribe({
         next: (event: NavigationEnd) => {
           this.isNotEventsPage = false;
+          this.scrollOut = false;
           subDomainUrls.forEach((subdomain) => {
             if (event.url.includes(subdomain)) {
               this.isNotEventsPage = true;
@@ -52,7 +53,7 @@ export class HeaderbarComponent implements OnInit {
       });
     this.sharedObservables.scrollOutInOfScreenObservable.subscribe(
       (scrollOut) => {
-        this.scrollOut = scrollOut;
+        this.scrollOut = scrollOut && !this.isNotEventsPage;
       }
     );
   }
