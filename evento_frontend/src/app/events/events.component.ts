@@ -251,6 +251,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   applyFilters(mapCenter = undefined) {
+    this.spinner.show();
     // Request backend for date, category and subcategory filter
     // filter object
     //format date because in post request it is stringified and formatted, this could change the date
