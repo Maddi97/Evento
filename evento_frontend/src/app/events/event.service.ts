@@ -1,19 +1,19 @@
-import { HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import * as moment from 'moment';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, map, share } from 'rxjs/operators';
-import { Event } from '../models/event';
-import { Organizer } from '../models/organizer';
-import { WebService } from '../web.service';
+import { HttpRequest } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import * as moment from "moment";
+import { Observable, of, throwError } from "rxjs";
+import { catchError, map, share } from "rxjs/operators";
+import { Event } from "../models/event";
+import { Organizer } from "../models/organizer";
+import { WebService } from "../web.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class EventService {
   private cachedEvents: Map<string, Event[]> = new Map();
 
-  constructor(private webService: WebService) { }
+  constructor(private webService: WebService) {}
 
   get events(): Observable<Event[]> {
     return this.getAllEvents(); // Example, you can customize this based on your needs.
@@ -21,26 +21,27 @@ export class EventService {
 
   public eventForId(id: string): Observable<Event | undefined> {
     return this.getAllEvents().pipe(
-      map(events => events.find(event => event._id === id))
+      map((events) => events.find((event) => event._id === id))
     );
   }
 
   getEventById(id: string): Observable<Event> {
-    return this.webService.get('events/' + id).pipe(
+    return this.webService.get("events/" + id).pipe(
       map((r: HttpRequest<any>) => r as unknown as Event),
       catchError((error: any) => {
-        console.error('an error occurred', error);
+        console.error("an error occurred", error);
         return throwError(error.error.message || error);
       }),
       share()
     );
   }
 
-  getAllEvents(): Observable<Event[]> { //might be broken
-    return this.webService.get('organizer').pipe(
+  getAllEvents(): Observable<Event[]> {
+    //might be broken
+    return this.webService.get("organizer").pipe(
       map((r: HttpRequest<any>) => r as unknown as Organizer[]),
-      map(response => response.map(o => this.getEventForOrgId(o._id))),// Flatten the array of events
-      map(responses => {
+      map((response) => response.map((o) => this.getEventForOrgId(o._id))), // Flatten the array of events
+      map((responses) => {
         return responses.reduce((acc, current) => acc.concat(current), []);
       }), // Flatten the array of events
       share()
@@ -48,10 +49,10 @@ export class EventService {
   }
 
   getEventForOrgId(id: string): Observable<Event[]> {
-    return this.webService.get('organizer/' + id + '/events').pipe(
+    return this.webService.get("organizer/" + id + "/events").pipe(
       map((r: HttpRequest<any>) => r as unknown as Event[]),
       catchError((error: any) => {
-        console.error('an error occurred', error);
+        console.error("an error occurred", error);
         return throwError(error.error.message || error);
       }),
       share()
@@ -65,16 +66,16 @@ export class EventService {
       return of(this.cachedEvents.get(cacheKey)!);
     }
 
-    const obs = this.webService.get('upcomingEvents').pipe(
+    const obs = this.webService.get("upcomingEvents").pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
-        console.error('an error occurred', error);
+        console.error("an error occurred", error);
         return throwError(error.error.message || error);
       }),
       share()
     );
 
-    obs.subscribe(response => {
+    obs.subscribe((response) => {
       this.cachedEvents.set(cacheKey, response);
     });
 
@@ -82,14 +83,38 @@ export class EventService {
   }
 
   getEventsOnDate(date: moment.Moment, time): Observable<Event[]> {
-    return this.webService.post('eventOnDate', { date, time }).pipe(
+    return this.webService.post("eventOnDate", { date, time }).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
-        console.error('an error occurred', error);
+        console.error("an error occurred", error);
         return throwError(error.error.message || error);
       }),
       share()
     );
+  }
+
+  getHotEvents(): Observable<Event[]> {
+    const date = moment(new Date())
+      .utcOffset(0, false)
+      .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+    const cacheKey = JSON.stringify({ date, hot: "hot" });
+    if (this.cachedEvents.has(cacheKey)) {
+      return of(this.cachedEvents.get(cacheKey)!);
+    }
+    const obs = this.webService.post("hotEvents", { date }).pipe(
+      map((res: HttpRequest<any>) => res as unknown as Event[]),
+      catchError((error: any) => {
+        console.error("an error occurred", error);
+        return throwError(error.error.message || error);
+      }),
+      share()
+    );
+
+    obs.subscribe((response) => {
+      this.cachedEvents.set(cacheKey, response);
+    });
+
+    return obs;
   }
 
   getEventsBySearchString(req: any): Observable<Event[]> {
@@ -97,13 +122,13 @@ export class EventService {
     if (this.cachedEvents.has(cacheKey)) {
       return of(this.cachedEvents.get(cacheKey)!);
     }
-    return this.webService.post('getEventsBySearchString', { req }).pipe(
+    return this.webService.post("getEventsBySearchString", { req }).pipe(
       map((response: any) => {
         this.cachedEvents.set(cacheKey, response);
         return response as Event[]; // Return the response array
       }),
       catchError((error: any) => {
-        console.error('An error occurred', error);
+        console.error("An error occurred", error);
         return throwError(error.error.message || error);
       }),
       share()
@@ -116,13 +141,13 @@ export class EventService {
       return of(this.cachedEvents.get(cacheKey)!);
     }
 
-    return this.webService.post('eventOnDateCatAndSubcat', { fil }).pipe(
+    return this.webService.post("eventOnDateCatAndSubcat", { fil }).pipe(
       map((response: any) => {
         this.cachedEvents.set(cacheKey, response);
         return response as Event[]; // Return the response array
       }),
       catchError((error: any) => {
-        console.error('An error occurred', error);
+        console.error("An error occurred", error);
         return throwError(error.error.message || error);
       }),
       share()

@@ -20,6 +20,7 @@ export class GlobalSettingsFormComponent implements OnInit, OnChanges {
     _id: "",
     isAdsActivated: false,
     isPromotionActivated: false,
+    percentagOfAd: 0,
   }; // Input object containing all settings variables
   @Output() applySettings = new EventEmitter<Settings>();
 
@@ -32,6 +33,7 @@ export class GlobalSettingsFormComponent implements OnInit, OnChanges {
     this.settingsForm = this.formBuilder.group({
       isAdsActivated: this.settings?.isAdsActivated || false,
       isPromotionActivated: this.settings?.isPromotionActivated || false,
+      percentagOfAd: this.settings?.percentagOfAd || 0,
     });
   }
   ngOnChanges(changes: SimpleChanges): void {

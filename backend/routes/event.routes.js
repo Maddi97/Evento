@@ -210,6 +210,38 @@ router.post("/upcomingEvents", limiter, (req, res) => {
     });
 });
 
+router.post("/hotEvents", limiter, (req, res) => {
+  let date = new Date(req.body.date);
+  Event.find({
+    $and: [
+      {
+        $or: [
+          {
+            "date.start": { $gte: date }, //-1 um den heutigen Tag mit zu finden
+          },
+          {
+            $and: [
+              {
+                "date.start": { $lte: date }, //-1 um den heutigen Tag mit zu finden
+              },
+              {
+                "date.end": { $gte: date },
+              },
+            ],
+          },
+        ],
+      },
+      { hot: { $eq: true } },
+    ],
+  })
+
+    .then((events) => res.send(events))
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" }); // Send an error response with status code 500 (Internal Server Error)
+    });
+});
+
 router.post("/getEventsBySearchString", limiter, (req, res) => {
   const searchString = String(escape(req.body.req.searchString)); // Get the searchString from the request body
   const limit = Number(req.body.req.limit);

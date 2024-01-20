@@ -56,6 +56,11 @@ export class HeaderbarComponent implements OnInit {
         this.scrollOut = scrollOut && !this.isNotEventsPage;
       }
     );
+    this.sessionStorageService.mapViewChanges().subscribe((mapViewData) => {
+      if (mapViewData) {
+        this.scrollOut = false;
+      }
+    });
   }
 
   navBack() {

@@ -16,7 +16,16 @@ import { Category, Subcategory } from "../../models/category";
 import { clearSearchFilter } from "../logic/search-filter-helper";
 import { SharedObservableService } from "../logic/shared-observables.service";
 import { SessionStorageService } from "../session-storage/session-storage.service";
-type ID = string;
+
+export type PromotionCategory = {
+  name: "Hot";
+  _id: "1";
+};
+
+export type NowCategory = {
+  name: "Now";
+  _id: "2";
+};
 
 @Component({
   selector: "app-category-list",
@@ -39,6 +48,15 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
   // clicked date
+  showPromotion: boolean = false;
+  promotionCategory: PromotionCategory = {
+    name: "Hot",
+    _id: "1",
+  };
+  nowCategory: NowCategory = {
+    name: "Now",
+    _id: "2",
+  };
 
   constructor(
     private categoriesService: CategoriesService,
@@ -67,6 +85,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         this.scrollOut = scrollOut;
       }
     );
+    this.sharedObservables.settingsObservable.subscribe((settings) => {
+      this.showPromotion = settings?.isPromotionActivated;
+    });
     const categories$ = this.categoriesService
       .getAllCategories()
       .pipe(
@@ -94,8 +115,14 @@ export class CategoryListComponent implements OnInit, OnDestroy {
           this.searchString = searchString;
         }
       );
-
-    this.subscriptions$.push(categories$, searchString$);
+    const mapView$ = this.sessionStorageService
+      .mapViewChanges()
+      .subscribe((mapViewData) => {
+        if (mapViewData) {
+          this.scrollOut = false;
+        }
+      });
+    this.subscriptions$.push(categories$, searchString$, mapView$);
     // this.applyFilters()
     // request categories
     if (this.categoryList.length < 1) {
@@ -166,7 +193,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
 
   empty_filters() {
-    this.filteredCategory = { name: "hot" };
+    this.filteredCategory = { name: "" };
     this.filteredSubcategories = [];
   }
 

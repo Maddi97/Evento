@@ -4,6 +4,7 @@ const Settings = mongoose.model(
   new mongoose.Schema({
     isAdsActivated: Boolean,
     isPromotionActivated: Boolean,
+    percentagOfAd: Number,
   })
 );
 module.exports = Settings;

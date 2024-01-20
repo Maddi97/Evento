@@ -6,6 +6,7 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { SharedObservableService } from "../logic/shared-observables.service";
+import { setegid } from "process";
 
 @Component({
   selector: "vents-google-ads",
@@ -13,12 +14,16 @@ import { SharedObservableService } from "../logic/shared-observables.service";
   styleUrls: ["./google-ads.component.css"],
 })
 export class GoogleAdsComponent implements OnInit {
-  @Input() percentageOfAppearence: number = 100;
+  @Input() percentageActivated: boolean = false;
+  percentage = 0;
   isAdEnabled = false;
   constructor(private sharedObservableService: SharedObservableService) {}
   ngOnInit(): void {
     this.sharedObservableService.settingsObservable.subscribe((settings) => {
-      this.isAdEnabled = this.isRandomTrue() && settings.isAdsActivated;
+      this.percentage = this.percentageActivated
+        ? settings?.percentagOfAd
+        : 100;
+      this.isAdEnabled = this.isRandomTrue() && settings?.isAdsActivated;
     });
   }
   ngAfterViewInit() {
@@ -30,6 +35,6 @@ export class GoogleAdsComponent implements OnInit {
     const randomNumber = Math.random() * 100; // generates a random number between 0 and 1
 
     // Return true 20% of the time
-    return randomNumber <= this.percentageOfAppearence;
+    return randomNumber <= this.percentage;
   }
 }

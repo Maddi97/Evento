@@ -16,10 +16,20 @@
   </div>
 
   <span
+    *ngIf="showPromotion"
+    class="category now"
+    [ngClass]="isCategoryPicked(promotionCategory)"
+    (click)="selectCategory(promotionCategory)"
+  >
+    <img src="assets/static-icons/icons8-flame-60.png" />
+    {{ promotionCategory.name }}
+  </span>
+
+  <span
     *ngIf="false"
     class="category now"
-    [ngClass]="isCategoryPicked({ name: 'hot' })"
-    (click)="selectCategory({ name: 'hot' })"
+    [ngClass]="isCategoryPicked(nowCategory)"
+    (click)="selectCategory(nowCategory)"
   >
     <img src="assets/static-icons/icons8-flame-60.png" />
     Jetzt Gerade

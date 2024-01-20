@@ -12,6 +12,10 @@ import { Event } from "../models/event";
 import { NominatimGeoService } from "../nominatim-geo.service";
 import { EventService } from "./event.service";
 import { Settings } from "../models/settings";
+import {
+  NowCategory,
+  PromotionCategory,
+} from "../common-utilities/category-list/category-list.component";
 
 @Component({
   selector: "app-events",
@@ -42,7 +46,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   categoryList: Category[] = [];
 
   subcategoryList: Subcategory[] = [];
-  hot = { name: "hot" };
+  promotionCategory: PromotionCategory = { name: "Hot", _id: "1" };
+  nowCategory: NowCategory = { name: "Now", _id: "2" };
 
   searchString: string = "";
 
@@ -52,7 +57,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   eventToScrollId = undefined;
   hoveredEventId = null;
-  filteredCategory = this.hot;
+  filteredCategory: any = this.promotionCategory;
   lastEventListLength = 0;
   hasMoreEventsToLoad = true;
   // filteredSubcategories
@@ -228,9 +233,15 @@ export class EventsComponent implements OnInit, OnDestroy {
           // change to time with time zone an this could change the date
           this.filteredDate.add(moment(new Date()).utcOffset() / 60, "hours");
           const category = params.category;
-          this.filteredCategory = category
-            ? this.categoryList.find((c) => c._id === category)
-            : this.categoryList[0];
+          if (category === "1") {
+            this.filteredCategory = this.promotionCategory;
+          } else if (category === "2") {
+            this.filteredCategory = this.nowCategory;
+          } else {
+            this.filteredCategory = category
+              ? this.categoryList.find((c) => c._id === category)
+              : this.categoryList[0];
+          }
 
           if (params.subcategory) {
             this.filteredSubcategories = this.subcategoryList.filter((s) =>
@@ -269,7 +280,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     };
     let event$;
     // if category is not hot
-    if (!fil.cat.find((el) => el.name === "hot")) {
+    if (!fil.cat.find((el) => el._id === "1" || el._id === "2")) {
       event$ = this.eventService
         .getEventsOnDateCategoryAndSubcategory(fil)
         .subscribe({
@@ -283,7 +294,19 @@ export class EventsComponent implements OnInit, OnDestroy {
             this.onFetchEventsCompleted();
           },
         });
-    } else {
+    } else if (fil.cat.find((el) => el._id === "1")) {
+      event$ = this.eventService.getHotEvents().subscribe({
+        next: (events) => {
+          this.handlyEventListLoaded(events);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+        complete: () => {
+          this.onFetchEventsCompleted();
+        },
+      });
+    } else if (fil.cat.find((el) => el._id === "2")) {
       // if hot filter by date
 
       event$ = this.eventService
