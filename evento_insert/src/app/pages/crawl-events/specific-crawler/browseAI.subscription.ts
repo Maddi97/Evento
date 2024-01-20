@@ -26,7 +26,8 @@ export function crawlBrowseAi(crawler, url, crawlerService, crawlerName) {
           }),
           // list of input paramters from link extraction response
           map((res: any) => {
-            return res["capturedLists"].linklist.map((event) => {
+            console.log("Task 1 Result: ", res);
+            return res["capturedLists"]?.linklist.map((event) => {
               const inputParameter: InputParameter = {
                 originUrl: event.link,
               };

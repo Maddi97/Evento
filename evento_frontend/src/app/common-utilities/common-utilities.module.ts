@@ -27,6 +27,7 @@ import { SharedObservableService } from './logic/shared-observables.service';
 import { MapViewComponent } from './map-view/map-view.component';
 import { SearchFilterComponent } from './search-filter/search-filter.component';
 import { SocialMediaShareComponent } from './social-media-share/social-media-share.component';
+import { GoogleAdsComponent } from './google-ads/google-ads.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { SocialMediaShareComponent } from './social-media-share/social-media-sha
     CategoryListComponent,
     HamburgerMenuComponent,
     SearchFilterComponent,
+    GoogleAdsComponent,
 
   ],
   imports: [

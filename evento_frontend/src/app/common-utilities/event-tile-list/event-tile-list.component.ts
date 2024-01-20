@@ -1,12 +1,22 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
-import { NominatimGeoService } from '../../nominatim-geo.service';
-import { SessionStorageService } from '../session-storage/session-storage.service';
-import { NgxSpinnerService } from 'ngx-spinner';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChange,
+  SimpleChanges,
+} from "@angular/core";
+import { NominatimGeoService } from "../../nominatim-geo.service";
+import { SessionStorageService } from "../session-storage/session-storage.service";
+import { NgxSpinnerService } from "ngx-spinner";
+import { SharedObservableService } from "../logic/shared-observables.service";
 
 @Component({
-  selector: 'app-event-tile-list',
-  templateUrl: './event-tile-list.component.html',
-  styleUrls: ['./event-tile-list.component.css']
+  selector: "app-event-tile-list",
+  templateUrl: "./event-tile-list.component.html",
+  styleUrls: ["./event-tile-list.component.css"],
 })
 export class EventTileListComponent implements OnInit, OnChanges {
   @Input() fetchEventsCompleted = false;
@@ -22,34 +32,35 @@ export class EventTileListComponent implements OnInit, OnChanges {
   hoveredEvent: string = null;
   to: any;
 
+  showAds = false;
+
   constructor(
     private sessionStorageService: SessionStorageService,
     private geoService: NominatimGeoService,
-    private spinner: NgxSpinnerService,
-  ) {
-  }
+    private spinner: NgxSpinnerService
+  ) {}
 
   ngOnInit(): void {
-    this.sessionStorageService.getLocation().subscribe(location => {
-      this.userPosition = location
-    })
+    this.sessionStorageService.getLocation().subscribe((location) => {
+      this.userPosition = location;
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.eventToScrollId) {
-      this.scrollToEvent(this.eventToScrollId)
+      this.scrollToEvent(this.eventToScrollId);
     }
   }
 
   scrollToEvent(eventToScrollId) {
     if (eventToScrollId) {
       setTimeout(() => {
-        const id = "event-tile-" + eventToScrollId
-        const element = document.getElementById(id)
+        const id = "event-tile-" + eventToScrollId;
+        const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView()
+          element.scrollIntoView();
         }
-      }, 100)
+      }, 100);
     }
   }
   hover(eventId: string) {
@@ -66,8 +77,10 @@ export class EventTileListComponent implements OnInit, OnChanges {
 
   get_distance_to_current_position(event) {
     // get distance
-    const dist = this.geoService.get_distance(this.userPosition, [event.geoData.lat, event.geoData.lon]);
+    const dist = this.geoService.get_distance(this.userPosition, [
+      event.geoData.lat,
+      event.geoData.lon,
+    ]);
     return dist;
   }
-
 }

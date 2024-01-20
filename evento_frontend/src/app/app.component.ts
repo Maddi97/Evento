@@ -13,6 +13,10 @@ export const subDomainUrls: SubdomainUrl[] = [
   "categories",
   "full-event",
 ];
+declare interface Window {
+  adsbygoogle: any[];
+}
+declare var adsbygoogle: any[];
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
@@ -25,8 +29,6 @@ export class AppComponent implements OnInit {
     "";
   private cookieDismiss = "Verstanden!";
   private cookieLinkText = "Hier gehts zur Datenschutzerklärung";
-
-  private settings: Settings;
 
   constructor(
     private positionService: PositionService,
