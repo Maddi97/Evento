@@ -16,8 +16,14 @@ export class GlobalSettingsComponent implements OnInit {
   }
 
   applySettings(settings: Settings) {
-    this.settingsService.updateSettings(settings).subscribe((settings) => {
-      this.settings = settings;
-    });
+    if (this.settings) {
+      this.settingsService.updateSettings(settings).subscribe((settings) => {
+        this.settings = settings;
+      });
+    } else {
+      this.settingsService.addSettings(settings).subscribe((settings) => {
+        this.settings = settings;
+      });
+    }
   }
 }

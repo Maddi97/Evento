@@ -98,6 +98,9 @@ jobs:
     name: Deploy
     runs-on: netcup_runner
     steps:
+      - name: permissions
+        run: |
+          sudo chmod -R +777 /home/evento
       - name: Checkout Repository
         uses: actions/checkout@v3
 
