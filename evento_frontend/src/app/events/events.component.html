@@ -3,48 +3,79 @@
     <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
     <!--    <span class="category-label">Kategorien</span>-->
     <!-- <img class="category-headline" src="assets/design-elements/Kategorien_design.png"> -->
-    <app-category-list *ngIf="fetchParamsCompleted" class="main-category-container" id="main-category-container"
-      [filteredCategory]=filteredCategory [filteredSubcategories]=filteredSubcategories></app-category-list>
+    <app-category-list
+      *ngIf="fetchParamsCompleted"
+      class="main-category-container"
+      id="main-category-container"
+      [filteredCategory]="filteredCategory"
+      [filteredSubcategories]="filteredSubcategories"
+    ></app-category-list>
 
-    <div class="event-map-container" *ngIf="getScreenWidth>1000">
-
-      <div class="event-container" id="event-container" (scroll)="onScroll($event)">
-        <app-event-tile-list [fetchEventsCompleted]="fetchEventsCompleted" [eventList]=eventList
-          [userPosition]="currentPosition" [eventToScrollId]="eventToScrollId"
-          (hoverEventEmitter)="hoveredEventId = $event">
-
+    <div class="event-map-container" *ngIf="getScreenWidth > 1000">
+      <div
+        class="event-container"
+        id="event-container"
+        (scroll)="onScroll($event)"
+      >
+        <app-event-tile-list
+          [fetchEventsCompleted]="fetchEventsCompleted"
+          [eventList]="eventList"
+          [userPosition]="currentPosition"
+          [eventToScrollId]="eventToScrollId"
+          (hoverEventEmitter)="hoveredEventId = $event"
+        >
         </app-event-tile-list>
-          <div *ngIf="isLoadingMoreEvents">
-              <img class='pic' [src]="'assets/design-elements/loading-image.svg'">
-          </div>
+        <div *ngIf="isLoadingMoreEvents">
+          <img class="pic" [src]="'assets/design-elements/loading-image.svg'" />
+        </div>
       </div>
 
       <div class="map-container">
-        <map-view *ngIf="this.currentPosition" [markerData]="eventList" [hoveredData]="getEventFromId()"
-          [currentPosition]="currentPosition" [centerMapOnPosition]="currentPosition"></map-view>
+        <map-view
+          *ngIf="this.currentPosition"
+          [markerData]="eventList"
+          [hoveredData]="getEventFromId()"
+          [currentPosition]="currentPosition"
+          [centerMapOnPosition]="currentPosition"
+          [hasMoreEvents]="loadMore"
+        ></map-view>
       </div>
     </div>
-    <div class="event-map-container" *ngIf="getScreenWidth<1000">
-        <div class="switchViewButton" (click)="changeToMapView()">
-          <p> Zur Karte </p>
-          <mat-icon class="change-view-icon">map</mat-icon>
+    <div class="event-map-container" *ngIf="getScreenWidth < 1000">
+      <div class="switchViewButton" (click)="changeToMapView()">
+        <p>Zur Karte</p>
+        <mat-icon class="change-view-icon">map</mat-icon>
+      </div>
+      <div
+        class="event-container"
+        id="event-container"
+        (scroll)="onScroll($event)"
+      >
+        <app-event-tile-list
+          [fetchEventsCompleted]="fetchEventsCompleted"
+          [eventList]="eventList"
+          [eventToScrollId]="eventToScrollId"
+          (hoverEventEmitter)="hoveredEventId = $event"
+        ></app-event-tile-list>
+        <div *ngIf="isLoadingMoreEvents && loadMore">
+          <img class="pic" [src]="'assets/design-elements/loading-image.svg'" />
         </div>
-        <div class="event-container" id="event-container" (scroll)="onScroll($event)">
-
-          <app-event-tile-list [fetchEventsCompleted]="fetchEventsCompleted" [eventList]="eventList"
-            [eventToScrollId]="eventToScrollId" (hoverEventEmitter)="hoveredEventId = $event"></app-event-tile-list>
-          <div *ngIf="isLoadingMoreEvents && loadMore">
-              <img class='pic' [src]="'assets/design-elements/loading-image.svg'">
-          </div>
       </div>
 
       <div class="map-container" *ngIf="mapView">
         <div class="switchViewButton" (click)="changeToMapView()">
-          <p> Zu den Events </p>
-          <mat-icon class="change-view-icon" (click)="changeToMapView()">event</mat-icon>
+          <p>Zu den Events</p>
+          <mat-icon class="change-view-icon" (click)="changeToMapView()"
+            >event</mat-icon
+          >
         </div>
-        <map-view [markerData]="eventList" [hoveredData]="getEventFromId()" [currentPosition]="currentPosition"
-          [centerMapOnPosition]="currentPosition"></map-view>
+        <map-view
+          [markerData]="eventList"
+          [hoveredData]="getEventFromId()"
+          [currentPosition]="currentPosition"
+          [centerMapOnPosition]="currentPosition"
+          [hasMoreEvents]="loadMore"
+        ></map-view>
       </div>
     </div>
   </div>

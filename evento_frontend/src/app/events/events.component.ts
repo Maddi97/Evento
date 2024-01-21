@@ -269,8 +269,8 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.subscriptions$.push(params$);
   }
 
-  applyFilters(mapCenter = undefined) {
-    this.spinner.show();
+  applyFilters(mapCenter = undefined, showSpinner = true) {
+    if (showSpinner) this.spinner.show();
     console.log("Applying filters");
     // Request backend for date, category and subcategory filter
     // filter object
@@ -345,10 +345,9 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   loadMoreEvents(mapCenter = undefined) {
     if (this.loadMore) {
-      console.log("Loading more events");
       this.isLoadMoreClicked = mapCenter ? false : true;
       this.actualLoadEventLimit += this.offset;
-      this.applyFilters(mapCenter);
+      this.applyFilters(mapCenter, false);
     }
   }
 

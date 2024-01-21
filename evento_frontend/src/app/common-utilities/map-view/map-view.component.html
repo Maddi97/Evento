@@ -1,19 +1,36 @@
 <div class="map-container">
   <div class="input-line">
     <div>
-      <input class="address-input" (change)="searchForLocationInput()" placeholder="Dein Standort ..."
-        [(ngModel)]="address">
-      <button class="address-search" (click)="searchForLocationInput()">Suchen!</button>
+      <input
+        class="address-input"
+        (change)="searchForLocationInput()"
+        placeholder="Dein Standort ..."
+        [(ngModel)]="address"
+      />
+      <button class="address-search" (click)="searchForLocationInput()">
+        Suchen!
+      </button>
     </div>
     <div>
-      <span class="material-icons gps-button" (click)="setCurrentPositionOfUserToStorage()">
+      <span
+        class="material-icons gps-button"
+        (click)="setCurrentPositionOfUserToStorage()"
+      >
         gps_fixed
       </span>
     </div>
   </div>
   <div class="map-frame">
-    <button *ngIf="isMapDragged" (click)="searchEventsInNewArea()" class="address-search map-dragged-button"> In diesem
-      Bereich suchen</button>
+    <button
+      *ngIf="isMapDragged && hasMoreEvents"
+      (click)="searchEventsInNewArea()"
+      class="address-search map-dragged-button"
+    >
+      In diesem Bereich suchen
+    </button>
+    <div *ngIf="isMapDragged && !hasMoreEvents" class="no-more-events">
+      Keine weiteren Events
+    </div>
     <div id="map"></div>
   </div>
 </div>

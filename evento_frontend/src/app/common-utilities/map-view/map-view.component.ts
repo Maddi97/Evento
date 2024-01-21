@@ -25,6 +25,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Input() zoomInput = 13;
   @Input() currentPosition: Array<Number>;
   @Input() centerMapOnPosition: Array<Number>;
+  @Input() hasMoreEvents: boolean;
 
   isMapDragged = false;
   private map;
@@ -118,8 +119,8 @@ export class MapViewComponent implements OnInit, OnChanges {
 
       if (changes.markerData) {
         this.setPositionMarker();
-
         this.setMarkers(this.markerData);
+        this.isMapDragged = false;
       } else if (changes.hoveredData) {
         if (this.hoveredData === null) {
           this.clearHoverMarker();
