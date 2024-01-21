@@ -285,6 +285,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       cat: [this.filteredCategory],
       subcat: this.filteredSubcategories,
       limit: this.actualLoadEventLimit,
+      count: this.eventList.length,
       currentPosition: mapCenter ? mapCenter : this.currentPosition,
     };
     let event$;
@@ -304,7 +305,7 @@ export class EventsComponent implements OnInit, OnDestroy {
           },
         });
     } else if (fil.cat.find((el) => el._id === "1")) {
-      event$ = this.eventService.getHotEvents().subscribe({
+      event$ = this.eventService.getHotEvents(fil).subscribe({
         next: (events) => {
           this.handlyEventListLoaded(events);
         },
@@ -377,12 +378,10 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   handlyEventListLoaded(events: Event[]) {
-    const indexLastEvent = this.eventList.length;
-    this.eventList = events;
+    this.eventList.push(...events);
     this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
     if (this.isLoadMoreClicked) {
       this.isLoadMoreClicked = false;
-      this.eventToScrollId = this.eventList[indexLastEvent - 3]?._id;
     }
   }
 

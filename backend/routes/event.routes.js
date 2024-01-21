@@ -86,6 +86,7 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
   let date = req.body.fil.date;
   let time = req.body.fil.time;
   let categories = req.body.fil.cat;
+  let count = req.body.fil.count || 0;
   let limit = req.body.fil.limit;
   let userPosition = req.body.fil.currentPosition;
 
@@ -175,7 +176,7 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
       });
       // Return events from offset to limit to not load all at once
 
-      res.send(events.slice(0, limit));
+      res.send(events.slice(count, limit));
     })
     .catch((error) => {
       console.error(error);
@@ -211,7 +212,9 @@ router.post("/upcomingEvents", limiter, (req, res) => {
 });
 
 router.post("/hotEvents", limiter, (req, res) => {
-  let date = new Date(req.body.date);
+  let date = new Date(req.body.fil.date);
+  let count = req.body.fil.count || 0;
+  let limit = req.body.fil.limit;
   Event.find({
     $and: [
       {
@@ -235,7 +238,7 @@ router.post("/hotEvents", limiter, (req, res) => {
     ],
   })
 
-    .then((events) => res.send(events))
+    .then((events) => res.send(events.slice(count, limit)))
     .catch((error) => {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" }); // Send an error response with status code 500 (Internal Server Error)

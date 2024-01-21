@@ -93,15 +93,12 @@ export class EventService {
     );
   }
 
-  getHotEvents(): Observable<Event[]> {
-    const date = moment(new Date())
-      .utcOffset(0, false)
-      .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-    const cacheKey = JSON.stringify({ date, hot: "hot" });
+  getHotEvents(fil: any): Observable<Event[]> {
+    const cacheKey = JSON.stringify({ date: fil.date, category: "hot" });
     if (this.cachedEvents.has(cacheKey)) {
       return of(this.cachedEvents.get(cacheKey)!);
     }
-    const obs = this.webService.post("hotEvents", { date }).pipe(
+    const obs = this.webService.post("hotEvents", { fil }).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
         console.error("an error occurred", error);
