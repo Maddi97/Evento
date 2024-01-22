@@ -1,7 +1,7 @@
 // map-view-storage.service.ts
 
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject, map } from "rxjs";
 
 export type Search = {
   searchString: string;
@@ -96,8 +96,9 @@ export class SessionStorageService {
     sessionStorage.removeItem("defaultLocation");
   }
 
-  setMapCenter(mapCenter: [number, number]) {
-    sessionStorage.setItem("mapCenter", JSON.stringify(mapCenter));
+  setMapCenter(mapCenter) {
+    const mapCenterCorrectedType = [mapCenter.lat, mapCenter.lng];
+    sessionStorage.setItem("mapCenter", JSON.stringify(mapCenterCorrectedType));
     this.draggedMapCenterSubject.next(mapCenter);
   }
   emitSearchOnNewCenter() {
@@ -116,7 +117,12 @@ export class SessionStorageService {
       searchString: "",
       event: "Reset",
     };
-    sessionStorage.setItem("searchString", JSON.stringify(""));
-    this.searchStringSubject.next(emptySearch);
+    if (
+      emptySearch.searchString !==
+      JSON.parse(sessionStorage.getItem("searchString"))
+    ) {
+      sessionStorage.setItem("searchString", JSON.stringify(""));
+      this.searchStringSubject.next(emptySearch);
+    }
   }
 }

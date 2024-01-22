@@ -219,7 +219,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private setPositionMarker(): void {
-    this.positionMarkerGroup?.clearLayers();
+    this.positionMarkerGroup.clearLayers();
     const positionMarker = L.marker(this.currentPosition).setIcon(
       new this.LeafIcon({
         iconUrl: this.locationIcon,

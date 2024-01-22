@@ -167,6 +167,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   private setupPositionService(): void {
+    let appliedFiltersByPosition = false;
     let storageLocationObservation$;
     if (!this.sessionStorageService.getUserLocationFromStorage()) {
       this.positionService.getPositionByLocation().then((res) => {
@@ -178,6 +179,7 @@ export class EventsComponent implements OnInit, OnDestroy {
               JSON.stringify(position) !== JSON.stringify(this.currentPosition)
             ) {
               this.currentPosition = position;
+              appliedFiltersByPosition = true;
               this.applyFilters();
             }
           });
@@ -192,6 +194,7 @@ export class EventsComponent implements OnInit, OnDestroy {
             JSON.stringify(position) !== JSON.stringify(this.currentPosition)
           ) {
             this.currentPosition = position;
+            appliedFiltersByPosition = true;
             this.applyFilters();
           }
         });
@@ -199,10 +202,14 @@ export class EventsComponent implements OnInit, OnDestroy {
     const newCenter$ =
       this.sessionStorageService.searchNewCenterSubject.subscribe(
         (mapCenterPosition) => {
+          appliedFiltersByPosition = true;
           this.loadMoreEvents(mapCenterPosition);
         }
       );
     this.subscriptions$.push(storageLocationObservation$, newCenter$);
+    if (!appliedFiltersByPosition) {
+      this.applyFilters();
+    }
   }
 
   private setupCategoriesService(): void {
@@ -272,7 +279,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   applyFilters(mapCenter = undefined, showSpinner = true) {
     if (showSpinner) this.spinner.show();
-    console.log("Applying filters");
+
     // Request backend for date, category and subcategory filter
     // filter object
     //format date because in post request it is stringified and formatted, this could change the date
@@ -286,7 +293,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       cat: [this.filteredCategory],
       subcat: this.filteredSubcategories,
       limit: this.actualLoadEventLimit,
-      count: this.eventList.length,
+      alreadyReturnedEventIds: this.eventList.map((event) => event._id),
       currentPosition: mapCenter ? mapCenter : this.currentPosition,
     };
     let event$;
@@ -346,6 +353,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   loadMoreEvents(mapCenter = undefined) {
+    console.log("Load more events");
     if (this.loadMore) {
       this.isLoadMoreClicked = mapCenter ? false : true;
       this.actualLoadEventLimit += this.offset;
@@ -379,7 +387,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   handlyEventListLoaded(events: Event[]) {
-    this.eventList.push(...events);
+    this.eventList = [...this.eventList, ...events];
     this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
     if (this.isLoadMoreClicked) {
       this.isLoadMoreClicked = false;

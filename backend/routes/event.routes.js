@@ -86,7 +86,7 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
   let date = req.body.fil.date;
   let time = req.body.fil.time;
   let categories = req.body.fil.cat;
-  let count = req.body.fil.count || 0;
+  let alreadyReturnedEventIds = req.body.fil.alreadyReturnedEventIds || [];
   let limit = req.body.fil.limit;
   let userPosition = req.body.fil.currentPosition;
 
@@ -150,7 +150,10 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
         }
         return true;
       });
-
+      //sort out already returned events
+      events = events.filter((event) => {
+        return !alreadyReturnedEventIds.includes(event._id);
+      });
       //sort events by distance
       events.sort((ev1, ev2) => {
         // Check if ev1 should be promoted (promote == true) and ev2 should not
@@ -176,7 +179,7 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
       });
       // Return events from offset to limit to not load all at once
 
-      res.send(events.slice(count, limit));
+      res.send(events.slice(0, limit));
     })
     .catch((error) => {
       console.error(error);
