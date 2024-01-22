@@ -28,7 +28,7 @@ export class EventViewComponent implements OnInit {
   allOrganizers: Organizer[] = [];
 
   filteredOptions: Observable<string[]>;
-  allFilteredEvents: Event[];
+  allFilteredEvents: Event[] = [];
 
   category$: Observable<Category[]>;
   organizer$: Observable<Organizer[]>;
@@ -42,8 +42,7 @@ export class EventViewComponent implements OnInit {
     private eventObservableService: EventsObservableService,
     private snackbar: SnackbarService,
     public dialog: MatDialog,
-    private fileService: FileUploadService,
-    private sanitizer: DomSanitizer
+    private fileService: FileUploadService
   ) {}
 
   ngOnInit(): void {
@@ -53,10 +52,7 @@ export class EventViewComponent implements OnInit {
 
     this.category$.subscribe((cat) => (this.categories = cat));
     this.organizer$.subscribe((org) => (this.organizers = org));
-    this.event$.subscribe((event) => {
-      this.allFilteredEvents = event;
-      this.downloadImage();
-    });
+
     this.organizerService.getOrganizer().subscribe((org) => {
       this.allOrganizers = org;
     });
@@ -172,24 +168,6 @@ export class EventViewComponent implements OnInit {
     }
   }
 
-  downloadImage() {
-    this.allFilteredEvents.forEach((event) => {
-      let imageURL = null;
-      if (event.eventImagePath !== undefined) {
-        if (event.eventImageTemporaryURL === undefined) {
-          this.fileService
-            .downloadFile(event.eventImagePath)
-            .subscribe((imageData) => {
-              // create temporary Url for the downloaded image and bypass security
-              const unsafeImg = URL.createObjectURL(imageData);
-              imageURL =
-                this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-              event.eventImageTemporaryURL = imageURL;
-            });
-        }
-      }
-    });
-  }
   openDialogIfDuplicate(events: Event[], event) {
     const dialogRef = this.dialog.open(CustomDialogComponent, {
       data: { currentEvent: event, events: events },

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { emit } from "process";
 import { Observable } from "rxjs";
 import { Event } from "src/app/models/event";
 
@@ -13,6 +14,9 @@ export class ExpansionPanelComponent implements OnInit {
   @Input() parameter: any = undefined;
   @Output() emitInputEvent: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() emitDeleteEvent: EventEmitter<Event> = new EventEmitter<Event>();
+  @Output() emitFilteredList: EventEmitter<Event[]> = new EventEmitter<
+    Event[]
+  >();
 
   eventList: Event[] = [];
 
@@ -22,6 +26,7 @@ export class ExpansionPanelComponent implements OnInit {
     this.eventSubscription(this.parameter ? this.parameter : null).subscribe(
       (events) => {
         this.eventList = events;
+        this.emitFilteredList.emit(this.eventList);
       }
     );
   };

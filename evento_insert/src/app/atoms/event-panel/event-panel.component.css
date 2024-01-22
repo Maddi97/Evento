@@ -1,3 +1,7 @@
+.image {
+  height: 2.5rem;
+}
+
 .panel {
   display: flex;
   flex-direction: row;
@@ -16,7 +20,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 42pxx;
+  width: 42px;
   background-color: red;
   border-radius: 5px;
   cursor: pointer;

@@ -10,11 +10,6 @@
   margin: 1rem;
 }
 
-.event-image {
-  padding-right: 5%;
-  height: 100%;
-}
-
 .events {
   display: flex;
   flex-direction: column;
@@ -56,10 +51,6 @@
 
 .mat-mdc-radio-button ~ .mat-radio-button {
   margin-left: 16px;
-}
-
-mat-expansion-panel {
-  width: 100%;
 }
 
 @media screen and (min-width: 900px) {

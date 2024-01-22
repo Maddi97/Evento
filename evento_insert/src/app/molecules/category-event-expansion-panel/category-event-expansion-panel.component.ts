@@ -11,6 +11,9 @@ export class CategoryEventExpansionPanelComponent {
   @Input() category: Category = new Category();
   @Output() emitInputEvent: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() emitDeleteEvent: EventEmitter<Event> = new EventEmitter<Event>();
+  @Output() emitFilteredList: EventEmitter<Event[]> = new EventEmitter<
+    Event[]
+  >();
   constructor(private eventService: EventsService) {}
 
   getEventsOnSubcategory = (subcategory) => {

@@ -14,6 +14,8 @@
         [parameter]="subcategory"
         [eventSubscription]="this.getEventsOnSubcategory"
         (emitInputEvent)="emitInputEvent.emit($event)"
+        (emitDeleteEvent)="emitDeleteEvent.emit($event)"
+        (emitFilteredList)="emitFilteredList.emit($event)"
       >
       </app-expansion-panel>
     </div>
@@ -26,6 +28,8 @@
     [parameter]="category"
     [eventSubscription]="this.getEventsOnCategory"
     (emitInputEvent)="emitInputEvent.emit($event)"
+    (emitDeleteEvent)="emitDeleteEvent.emit($event)"
+    (emitFilteredList)="emitFilteredList.emit($event)"
   >
   </app-expansion-panel>
 </div>

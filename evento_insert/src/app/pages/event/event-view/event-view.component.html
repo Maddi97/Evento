@@ -8,10 +8,6 @@
     ></app-event-form>
   </div>
   <div class="events">
-    <!-- <div class="map-container">
-      <app-map-view [markerData]="allFilteredEvents"></app-map-view>
-    </div> -->
-
     All actual events grouped by category
     <div class="expansion-panel-container">
       <app-category-event-expansion-panel
@@ -19,6 +15,7 @@
         [category]="category"
         (emitInputEvent)="eventIn = $event"
         (emitDeleteEvent)="this.deleteEvent($event)"
+        (emitFilteredList)="allFilteredEvents = $event"
       ></app-category-event-expansion-panel>
 
       All events right now
@@ -27,6 +24,7 @@
         [eventSubscription]="this.getEventsRightNow"
         (emitInputEvent)="eventIn = $event"
         (emitDeleteEvent)="this.deleteEvent($event)"
+        (emitFilteredList)="allFilteredEvents = $event"
       ></app-expansion-panel>
 
       <app-expansion-panel
@@ -34,6 +32,7 @@
         [eventSubscription]="this.getHotEvents"
         (emitInputEvent)="eventIn = $event"
         (emitDeleteEvent)="this.deleteEvent($event)"
+        (emitFilteredList)="allFilteredEvents = $event"
       ></app-expansion-panel>
 
       <app-expansion-panel
@@ -41,6 +40,7 @@
         [eventSubscription]="this.getFrequentEvents"
         (emitInputEvent)="eventIn = $event"
         (emitDeleteEvent)="this.deleteEvent($event)"
+        (emitFilteredList)="allFilteredEvents = $event"
       ></app-expansion-panel>
 
       <app-expansion-panel
@@ -48,6 +48,7 @@
         [eventSubscription]="this.getOutdatedEvents"
         (emitInputEvent)="eventIn = $event"
         (emitDeleteEvent)="this.deleteEvent($event)"
+        (emitFilteredList)="allFilteredEvents = $event"
       ></app-expansion-panel>
       <div
         class="delete-outdated-events-button"
@@ -62,7 +63,11 @@
         [eventSubscription]="this.getAllEvents"
         (emitInputEvent)="eventIn = $event"
         (emitDeleteEvent)="this.deleteEvent($event)"
+        (emitFilteredList)="allFilteredEvents = $event"
       ></app-expansion-panel>
+    </div>
+    <div class="map-container">
+      <app-map-view [markerData]="allFilteredEvents"></app-map-view>
     </div>
   </div>
 </div>
