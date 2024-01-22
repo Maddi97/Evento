@@ -91,6 +91,11 @@ export class SessionStorageService {
     return JSON.parse(sessionStorage.getItem("location")) || undefined;
   }
 
+  removePositionFromStorage() {
+    sessionStorage.removeItem("location");
+    sessionStorage.removeItem("defaultLocation");
+  }
+
   setMapCenter(mapCenter: [number, number]) {
     sessionStorage.setItem("mapCenter", JSON.stringify(mapCenter));
     this.draggedMapCenterSubject.next(mapCenter);

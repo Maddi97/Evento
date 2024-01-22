@@ -116,36 +116,40 @@ export class MapViewComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     setTimeout(() => {
       this.initMapIfNeeded(); // Use the method to initialize the map
-
-      if (changes.markerData) {
-        this.setPositionMarker();
-        this.setMarkers(this.markerData);
-        this.isMapDragged = false;
-      } else if (changes.hoveredData) {
-        if (this.hoveredData === null) {
-          this.clearHoverMarker();
-        } else {
-          this.setHoverMarker(
-            this.hoveredData.geoData.lat,
-            this.hoveredData.geoData.lon
-          );
+      if (typeof this.map !== "undefined") {
+        if (changes.markerData) {
+          this.setPositionMarker();
+          this.setMarkers(this.markerData);
+          this.isMapDragged = false;
+        } else if (changes.hoveredData) {
+          if (this.hoveredData === null) {
+            this.clearHoverMarker();
+          } else {
+            this.setHoverMarker(
+              this.hoveredData.geoData.lat,
+              this.hoveredData.geoData.lon
+            );
+          }
         }
-      }
-      if (changes.currentPosition) {
-        this.resetCenter();
-      }
+        if (changes.currentPosition) {
+          this.resetCenter();
+        }
 
-      // set blue position marker always to top
+        // set blue position marker always to top
 
-      this.updateZIndexPosition("blue");
-      this.map.on("moveend", (e) => {
         this.updateZIndexPosition("blue");
-        this.loadNewEventsOnDrag();
-      });
+        this.map.on("moveend", (e) => {
+          this.updateZIndexPosition("blue");
+          this.loadNewEventsOnDrag();
+        });
+      }
     }, 200); // Adjust the delay time in milliseconds
   }
   private initMapIfNeeded(): void {
-    if (typeof this.map === "undefined" && this.centerMapOnPosition) {
+    if (
+      typeof this.map === "undefined" &&
+      this.centerMapOnPosition.length === 2
+    ) {
       this.initMap();
       this.mapInitialized = true;
     }
@@ -215,7 +219,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private setPositionMarker(): void {
-    this.positionMarkerGroup.clearLayers();
+    this.positionMarkerGroup?.clearLayers();
     const positionMarker = L.marker(this.currentPosition).setIcon(
       new this.LeafIcon({
         iconUrl: this.locationIcon,

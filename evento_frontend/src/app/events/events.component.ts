@@ -183,6 +183,7 @@ export class EventsComponent implements OnInit, OnDestroy {
           });
       });
     } else {
+      storageLocationObservation$?.unsubscribe();
       storageLocationObservation$ = this.sessionStorageService
         .getLocation()
         .subscribe((position) => {

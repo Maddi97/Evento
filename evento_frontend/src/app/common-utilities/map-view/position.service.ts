@@ -44,8 +44,8 @@ export class PositionService {
   }
 
   async getPositionByLocation(forcePositionCall = false) {
+    let positionReturned = false;
     this.spinner.show();
-    this.closeSpinnerAfterTimeout();
     if (
       this.disableCallLocation ||
       (!forcePositionCall &&
@@ -53,6 +53,12 @@ export class PositionService {
     ) {
       return Promise.resolve("failed");
     }
+    setTimeout(() => {
+      if (!positionReturned) {
+        this.sessionStorageService.setDefaultLocation();
+        Promise.resolve("Timeout");
+      }
+    }, 8000);
     this.disableCallLocation = true;
     // Simple geolocation API check provides values to publish
     // unfortunately needs some seconds sometimes
@@ -62,12 +68,14 @@ export class PositionService {
         if (latitude && longitude) {
           this.searchedCenter = [latitude, longitude];
           this.sessionStorageService.setLocation(this.searchedCenter);
+          positionReturned = true;
           console.log("Callback from geo API");
         } else {
           this.sessionStorageService.setDefaultLocation();
           this.openErrorSnackBar(
             "Standort konnte nicht ermittelt werden und wird auf Leipzig Zentrum gesetzt."
           );
+          positionReturned = true;
           return Promise.resolve("failed");
         }
       })
@@ -78,9 +86,11 @@ export class PositionService {
           message =
             "Deine Privatspähreeinstellungen verhinderen die Standortermittlung. \nStandort wird zu Leipzig Zentrum gesetzt.";
           this.sessionStorageService.setDefaultLocation();
+          positionReturned = true;
           this.openErrorSnackBar(message);
         } else {
           this.sessionStorageService.setDefaultLocation();
+          positionReturned = true;
           this.openErrorSnackBar(message);
         }
       });

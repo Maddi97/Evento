@@ -1,6 +1,10 @@
 <div class="event-pic">
   <!-- <img class='pic' *ngIf="!ImageURL && !IconURL" src="assets/static-icons/image-loading.webp"> -->
   <!-- loading.io for loading animations -->
-  <img class='pic' [defaultImage]="'assets/design-elements/loading-image.svg'" [lazyLoad]="ImageURL">
-  <img class='pic' *ngIf="ImageURL===undefined" [lazyLoad]="IconURL">
+  <img
+    class="pic"
+    [defaultImage]="'assets/design-elements/loading-image.svg'"
+    [lazyLoad]="ImageURL"
+  />
+  <img class="pic" *ngIf="ImageURL === undefined" [lazyLoad]="IconURL" />
 </div>

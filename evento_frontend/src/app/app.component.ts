@@ -6,6 +6,7 @@ import { PositionService } from "./common-utilities/map-view/position.service";
 import { SettingsService } from "./settings.service.service";
 import { Settings } from "./models/settings";
 import { SharedObservableService } from "./common-utilities/logic/shared-observables.service";
+import { SessionStorageService } from "./common-utilities/session-storage/session-storage.service";
 
 export type SubdomainUrl = "settings" | "categories" | "full-event";
 export const subDomainUrls: SubdomainUrl[] = [
@@ -31,10 +32,10 @@ export class AppComponent implements OnInit {
   private cookieLinkText = "Hier gehts zur Datenschutzerklärung";
 
   constructor(
-    private positionService: PositionService,
     private router: Router,
     private settingsService: SettingsService,
-    private sharedObservableService: SharedObservableService
+    private sharedObservableService: SharedObservableService,
+    private sessionStorageService: SessionStorageService
   ) {}
 
   ngOnInit(): void {
@@ -56,8 +57,7 @@ export class AppComponent implements OnInit {
             }
           });
           if (!isNotEventsPage) {
-            console.log("app calls position");
-            //this.positionService.getPositionByLocation(true);
+            this.sessionStorageService.removePositionFromStorage();
           }
         },
         error: (error) => {

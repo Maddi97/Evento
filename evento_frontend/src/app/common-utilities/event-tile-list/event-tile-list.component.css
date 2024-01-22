@@ -21,17 +21,12 @@
     justify-content: center;
     width: 100%;
   }
+  .app-event-tile {
+    width: 100%;
+  }
 }
 
 .event-tile-list-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.event-tile-list {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,7 +41,18 @@
   background-color: unset !important;
 }
 
+.event-tile-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 .event-tile-margin {
+  display: flex;
+  justify-content: center;
+  width: 100%;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
