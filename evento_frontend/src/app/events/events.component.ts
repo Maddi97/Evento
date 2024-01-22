@@ -36,7 +36,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   // equal limit at start == start limit
   actualLoadEventLimit;
   startLoadEventLimit = 16;
-  offset = 14;
+  offsetLoadEventLimit = 16;
 
   fetchEventsCompleted = false;
   fetchParamsCompleted = false;
@@ -74,6 +74,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     second: 0,
     millisecond: 0,
   });
+  storageLocationObservation$: Subscription;
 
   public getScreenWidth: number;
   public settings: Settings;
@@ -167,11 +168,9 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   private setupPositionService(): void {
-    let appliedFiltersByPosition = false;
-    let storageLocationObservation$;
     if (!this.sessionStorageService.getUserLocationFromStorage()) {
       this.positionService.getPositionByLocation().then((res) => {
-        storageLocationObservation$ = this.sessionStorageService
+        this.storageLocationObservation$ = this.sessionStorageService
           .getLocation()
           .subscribe((position) => {
             if (
@@ -179,14 +178,13 @@ export class EventsComponent implements OnInit, OnDestroy {
               JSON.stringify(position) !== JSON.stringify(this.currentPosition)
             ) {
               this.currentPosition = position;
-              appliedFiltersByPosition = true;
               this.applyFilters();
             }
           });
       });
     } else {
-      storageLocationObservation$?.unsubscribe();
-      storageLocationObservation$ = this.sessionStorageService
+      this.storageLocationObservation$?.unsubscribe();
+      this.storageLocationObservation$ = this.sessionStorageService
         .getLocation()
         .subscribe((position) => {
           if (
@@ -194,7 +192,6 @@ export class EventsComponent implements OnInit, OnDestroy {
             JSON.stringify(position) !== JSON.stringify(this.currentPosition)
           ) {
             this.currentPosition = position;
-            appliedFiltersByPosition = true;
             this.applyFilters();
           }
         });
@@ -202,14 +199,10 @@ export class EventsComponent implements OnInit, OnDestroy {
     const newCenter$ =
       this.sessionStorageService.searchNewCenterSubject.subscribe(
         (mapCenterPosition) => {
-          appliedFiltersByPosition = true;
-          this.loadMoreEvents(mapCenterPosition);
+          this.loadMoreEvents(mapCenterPosition, true);
         }
       );
-    this.subscriptions$.push(storageLocationObservation$, newCenter$);
-    if (!appliedFiltersByPosition) {
-      this.applyFilters();
-    }
+    this.subscriptions$.push(this.storageLocationObservation$, newCenter$);
   }
 
   private setupCategoriesService(): void {
@@ -267,6 +260,9 @@ export class EventsComponent implements OnInit, OnDestroy {
           this.filteredSubcategories = [];
         }
         this.fetchParamsCompleted = true;
+        if (this.storageLocationObservation$) {
+          this.applyFilters();
+        }
         this.setupPositionService();
         //this.applyFilters()
       },
@@ -278,6 +274,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   applyFilters(mapCenter = undefined, showSpinner = true) {
+    console.log("Apply filters");
     if (showSpinner) this.spinner.show();
 
     // Request backend for date, category and subcategory filter
@@ -292,7 +289,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       time: germanyTime,
       cat: [this.filteredCategory],
       subcat: this.filteredSubcategories,
-      limit: this.actualLoadEventLimit,
+      limit: this.offsetLoadEventLimit,
       alreadyReturnedEventIds: this.eventList.map((event) => event._id),
       currentPosition: mapCenter ? mapCenter : this.currentPosition,
     };
@@ -352,12 +349,12 @@ export class EventsComponent implements OnInit, OnDestroy {
     return dist;
   }
 
-  loadMoreEvents(mapCenter = undefined) {
+  loadMoreEvents(mapCenter = undefined, spinner = false) {
     console.log("Load more events");
     if (this.loadMore) {
       this.isLoadMoreClicked = mapCenter ? false : true;
-      this.actualLoadEventLimit += this.offset;
-      this.applyFilters(mapCenter, false);
+      this.actualLoadEventLimit += this.offsetLoadEventLimit;
+      this.applyFilters(mapCenter, spinner);
     }
   }
 

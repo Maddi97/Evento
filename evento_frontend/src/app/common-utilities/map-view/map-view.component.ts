@@ -261,6 +261,10 @@ export class MapViewComponent implements OnInit, OnChanges {
               `<hr>` +
               `<a target="_blank" rel="noopener noreferrer" href=${gmapsUrl} >Google Maps</a>`
           );
+        mark.on("click", () => {
+          // Call your specific function when the marker is clicked
+          console.log("Marker clicked");
+        });
       }
     });
   }
