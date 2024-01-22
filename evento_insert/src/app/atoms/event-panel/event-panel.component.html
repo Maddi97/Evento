@@ -1,0 +1,7 @@
+<div class="panel">
+  <div class="name" (click)="emitInputEvent.emit(event)">
+    {{ event.name }}
+  </div>
+  <img class="image" [src]="event.eventImageTemporaryURL" />
+  <div class="delete-button" (click)="emitDeleteEvent.emit(event)">Delete</div>
+</div>

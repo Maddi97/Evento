@@ -8,131 +8,61 @@
     ></app-event-form>
   </div>
   <div class="events">
-    <div class="map-container">
+    <!-- <div class="map-container">
       <app-map-view [markerData]="allFilteredEvents"></app-map-view>
-    </div>
+    </div> -->
 
     All actual events grouped by category
+    <div class="expansion-panel-container">
+      <app-category-event-expansion-panel
+        *ngFor="let category of categories"
+        [category]="category"
+        (emitInputEvent)="eventIn = $event"
+        (emitDeleteEvent)="this.deleteEvent($event)"
+      ></app-category-event-expansion-panel>
 
-    <div class="all-events-expansion-panel" *ngFor="let category of categories">
-      <mat-expansion-panel (afterExpand)="loadActualEventsByCategory(category)">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{ category.name }}
-          </mat-panel-title>
-          <mat-panel-description>
-            Open to see all events
-          </mat-panel-description>
-        </mat-expansion-panel-header>
+      All events right now
+      <app-expansion-panel
+        [title]="'Events right now'"
+        [eventSubscription]="this.getEventsRightNow"
+        (emitInputEvent)="eventIn = $event"
+        (emitDeleteEvent)="this.deleteEvent($event)"
+      ></app-expansion-panel>
 
-        <div *ngFor="let event of allFilteredEvents">
-          <div class="event-panel">
-            <div class="event-name" (click)="eventIn = event">
-              {{ event.name }}
-            </div>
-            <img class="event-image" [src]="event.eventImageTemporaryURL" />
-            <div class="delete-event-button" (click)="deleteEvent(event)">
-              Delete
-            </div>
-          </div>
-        </div>
-      </mat-expansion-panel>
-    </div>
+      <app-expansion-panel
+        [title]="'Promoted Hot Events'"
+        [eventSubscription]="this.getHotEvents"
+        (emitInputEvent)="eventIn = $event"
+        (emitDeleteEvent)="this.deleteEvent($event)"
+      ></app-expansion-panel>
 
-    All events right now
+      <app-expansion-panel
+        [title]="'All Frequent Events'"
+        [eventSubscription]="this.getFrequentEvents"
+        (emitInputEvent)="eventIn = $event"
+        (emitDeleteEvent)="this.deleteEvent($event)"
+      ></app-expansion-panel>
 
-    <div class="all-hot-events-expansion-panel">
-      <mat-expansion-panel (afterExpand)="getHotEvents()">
-        <mat-expansion-panel-header>
-          <mat-panel-title> All Events right now </mat-panel-title>
-          <mat-panel-description>
-            Open to see all events
-          </mat-panel-description>
-        </mat-expansion-panel-header>
+      <app-expansion-panel
+        [title]="'All Outdated Events'"
+        [eventSubscription]="this.getOutdatedEvents"
+        (emitInputEvent)="eventIn = $event"
+        (emitDeleteEvent)="this.deleteEvent($event)"
+      ></app-expansion-panel>
+      <div
+        class="delete-outdated-events-button"
+        (click)="deleteOutdatedEvents()"
+      >
+        Delete Outdated Events
+      </div>
 
-        <div *ngFor="let event of allFilteredEvents">
-          <div class="event-panel" (click)="eventIn = event">
-            <div class="event-name">
-              {{ event.name }}
-            </div>
-            <img class="event-image" [src]="event.eventImageTemporaryURL" />
-            <div class="delete-event-button" (click)="deleteEvent(event)">
-              Delete
-            </div>
-          </div>
-        </div>
-      </mat-expansion-panel>
-    </div>
-    <div class="all-hot-events-expansion-panel">
-      <mat-expansion-panel (afterExpand)="getFrequentEvents()">
-        <mat-expansion-panel-header>
-          <mat-panel-title> All Frequent Events </mat-panel-title>
-          <mat-panel-description>
-            Open to see all events
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
-        <div *ngFor="let event of allFilteredEvents">
-          <div class="event-panel" (click)="eventIn = event">
-            <div class="event-name">
-              {{ event.name }}
-            </div>
-            <img class="event-image" [src]="event.eventImageTemporaryURL" />
-            <div class="delete-event-button" (click)="deleteEvent(event)">
-              Delete
-            </div>
-          </div>
-        </div>
-      </mat-expansion-panel>
-    </div>
-    Old Events
-    <div class="all-hot-events-expansion-panel">
-      <mat-expansion-panel (afterExpand)="getOutdatedEvents()">
-        <mat-expansion-panel-header>
-          <mat-panel-title> Old Events </mat-panel-title>
-          <mat-panel-description>
-            Open to see all events
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
-        <div *ngFor="let event of allFilteredEvents">
-          <div class="event-panel" (click)="eventIn = event">
-            <div class="event-name">
-              {{ event.name }}
-            </div>
-            <img class="event-image" [src]="event.eventImageTemporaryURL" />
-            <div class="delete-event-button" (click)="deleteEvent(event)">
-              Delete
-            </div>
-          </div>
-        </div>
-      </mat-expansion-panel>
-    </div>
-    <div class="delete-outdated-events-button" (click)="deleteOutdatedEvents()">
-      Delete Outdated Events
-    </div>
-    All Events
-    <div class="all-hot-events-expansion-panel">
-      <mat-expansion-panel (afterExpand)="getAllEvents()">
-        <mat-expansion-panel-header>
-          <mat-panel-title> ALL EVENTS. ATTENTION </mat-panel-title>
-          <mat-panel-description>
-            Open to see all events
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
-        <div *ngFor="let event of allFilteredEvents">
-          <div class="event-panel" (click)="eventIn = event">
-            <div class="event-name">
-              {{ event.name }}
-            </div>
-            <img class="event-image" [src]="event.eventImageTemporaryURL" />
-            <div class="delete-event-button" (click)="deleteEvent(event)">
-              Delete
-            </div>
-          </div>
-        </div>
-      </mat-expansion-panel>
+      All Events
+      <app-expansion-panel
+        [title]="'ALL EVENTS. ATTENTION'"
+        [eventSubscription]="this.getAllEvents"
+        (emitInputEvent)="eventIn = $event"
+        (emitDeleteEvent)="this.deleteEvent($event)"
+      ></app-expansion-panel>
     </div>
   </div>
 </div>

@@ -214,7 +214,7 @@ router.post("/upcomingEvents", limiter, (req, res) => {
 router.post("/hotEvents", limiter, (req, res) => {
   let date = new Date(req.body.fil.date);
   let count = req.body.fil.count || 0;
-  let limit = req.body.fil.limit;
+  let limit = req.body.fil.limit || 99999;
   Event.find({
     $and: [
       {
@@ -306,8 +306,15 @@ router.post("/getEventsBySearchString", limiter, (req, res) => {
 
 router.post("/outdatedEvents", limiter, (req, res) => {
   let date = new Date();
+  date.setDate(date.getDate() - 30);
+
   Event.find({
-    "date.end": { $lte: date },
+    $and: [
+      {
+        "date.end": { $lte: date },
+        permanent: false,
+      },
+    ],
   })
     .then((events) => res.send(events))
     .catch((error) => {
@@ -371,6 +378,55 @@ router.post("/getEventsOnCategory", limiter, (req, res) => {
       res.status(500).json({ error: "Internal Server Error" }); // Send an error response with status code 500 (Internal Server Error)
     });
 });
+router.post(
+  "/getUpcomingventsOnCategoryAndSubcategory",
+  limiter,
+  (req, res) => {
+    let date = new Date();
+    const id = String(req.body.subcategory._id);
+    Event.find({
+      $or: [
+        {
+          "date.start": { $gte: date },
+        },
+        {
+          $and: [
+            {
+              "date.start": { $lte: date },
+            },
+            {
+              "date.end": { $gte: date },
+            },
+          ],
+        },
+        {
+          permanent: { $eq: true },
+        },
+        {
+          $and: [
+            { frequency: { $exists: true } },
+            {
+              "date.start": { $lte: date },
+            },
+          ],
+        },
+      ],
+    })
+      .then((events) => {
+        res.send(
+          events.filter((event) =>
+            event.category.subcategories
+              .map((subcategory) => subcategory._id)
+              .includes(id)
+          )
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" }); // Send an error response with status code 500 (Internal Server Error)
+      });
+  }
+);
 
 router.post("/getUpcomingventsOnCategory", limiter, (req, res) => {
   let date = new Date();
@@ -411,13 +467,6 @@ router.post("/getUpcomingventsOnCategory", limiter, (req, res) => {
     ],
   })
     .then((events) => {
-      events = events.filter((event) => {
-        if (event.frequency) {
-          return timeHelper.isFrequencyToday(event.frequency, date);
-        }
-        return true;
-      });
-
       res.send(events);
     })
     .catch((error) => {

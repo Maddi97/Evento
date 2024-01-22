@@ -6,9 +6,10 @@ import {
   Observable,
   throwError as observableThrowError,
   of,
+  throwError,
 } from "rxjs";
 import { catchError, map, share } from "rxjs/operators";
-import { Category } from "../models/category";
+import { Category, Subcategory } from "../models/category";
 import { Event } from "../models/event";
 import { WebService } from "./web.service";
 
@@ -72,7 +73,7 @@ export class EventsService {
   }
 
   getAllEvents(): Observable<Event[]> {
-    const obs = this.webService.get("events").pipe(
+    return this.webService.get("events").pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
         console.error("an error occured", error);
@@ -80,10 +81,6 @@ export class EventsService {
       }),
       share()
     );
-    obs.toPromise().then((response) => {
-      this._events.next(response);
-    });
-    return obs;
   }
 
   getEvents(organizerId: string): Observable<Event[]> {
@@ -101,7 +98,7 @@ export class EventsService {
     return obs;
   }
   getFrequentEvents() {
-    const obs = this.webService.get(`frequentEvents`).pipe(
+    return this.webService.get(`frequentEvents`).pipe(
       map((r: HttpRequest<any>) => r as unknown as Event[]),
       catchError((error: any) => {
         console.error("an error occurred", error);
@@ -109,10 +106,6 @@ export class EventsService {
       }),
       share()
     );
-    obs.toPromise().then((response) => {
-      this._events.next(response);
-    });
-    return obs;
   }
 
   getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
@@ -148,6 +141,17 @@ export class EventsService {
     return obs;
   }
 
+  getAllHotEvents(fil: any): Observable<Event[]> {
+    return this.webService.post("hotEvents", { fil }).pipe(
+      map((res: HttpRequest<any>) => res as unknown as Event[]),
+      catchError((error: any) => {
+        console.error("an error occurred", error);
+        return throwError(error.error.message || error);
+      }),
+      share()
+    );
+  }
+
   getUpcomingventsOnCategory(category: Category): Observable<Event[]> {
     const obs = this.webService
       .post("getUpcomingventsOnCategory", { category })
@@ -163,6 +167,20 @@ export class EventsService {
       this._events.next(response);
     });
     return obs;
+  }
+  getUpcomingventsOnCategoryAndSubcategory(
+    subcategory: Subcategory
+  ): Observable<Event[]> {
+    return this.webService
+      .post("getUpcomingventsOnCategoryAndSubcategory", { subcategory })
+      .pipe(
+        map((res: HttpRequest<any>) => res as unknown as Event[]),
+        catchError((error: any) => {
+          console.error("an error occured", error);
+          return observableThrowError(error.error.message || error);
+        }),
+        share()
+      );
   }
 
   getEventsOnDate(date: moment.Moment, time: any): Observable<Event[]> {
@@ -180,7 +198,7 @@ export class EventsService {
     return obs;
   }
   getOutdatedEvents(): Observable<Event[]> {
-    const obs = this.webService.post("outdatedEvents", {}).pipe(
+    return this.webService.post("outdatedEvents", {}).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
         console.error("an error occured", error);
@@ -188,10 +206,6 @@ export class EventsService {
       }),
       share()
     );
-    obs.toPromise().then((response) => {
-      this._events.next(response);
-    });
-    return obs;
   }
 
   checkIfEventsExistsInDB(event: Event): Observable<Event[]> {

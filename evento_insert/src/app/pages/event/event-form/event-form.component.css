@@ -1,79 +1,98 @@
 .event-form-container {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 95%;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 95%;
 }
 
-.organizer-name {}
+.organizer-name {
+}
 
 .event-name {
-    display: flex;
+  display: flex;
 }
 
-.plz {}
+.plz {
+}
 
-.city {}
+.city {
+}
 
-.street {}
+.street {
+}
 
-.coordinates {}
+.coordinates {
+}
 
-.category {}
+.category {
+}
 
-.description {}
+.description {
+}
 
-.link {}
+.link {
+}
 
-.price {}
+.price {
+}
 
-.is-permanent {}
+.is-permanent {
+}
 
 .time {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin-bottom: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.start {
+  display: flex;
+  flex-direction: row;
+}
+
+.end {
+  display: flex;
+  flex-direction: row;
+}
+
+.confirm-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-upload .input {
+  margin-left: 4rem;
+  margin-top: 8px;
+}
+
+.is-event-props {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 16px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+@media screen and (min-width: 900px) {
+  .time {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     margin-bottom: 8px;
     align-items: baseline;
+  }
 }
-
-.start {
-    display: flex;
-    flex-direction: row;
-}
-
-.end {
-    display: flex;
-    flex-direction: row;
-}
-
-.confirm-buttons {
-    display: flex;
-    justify-content: center;
-}
-
-.image-upload {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.image-upload .input {
-    margin-left: 4rem;
-    margin-top: 8px;
-}
-
-.is-event-props {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin: 16px;
-}
-
-mat-form-field {
-    width: 100%;
-}
-
-@media screen and (min-width: 900px) {}
