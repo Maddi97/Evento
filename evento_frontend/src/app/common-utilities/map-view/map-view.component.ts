@@ -1,9 +1,11 @@
 import {
   Component,
+  EventEmitter,
   HostListener,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
 } from "@angular/core";
 import { Capacitor } from "@capacitor/core";
@@ -26,6 +28,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Input() currentPosition: Array<Number>;
   @Input() centerMapOnPosition: Array<Number>;
   @Input() hasMoreEvents: boolean;
+  @Output() emitClickedEventId: EventEmitter<any> = new EventEmitter<any>();
 
   isMapDragged = false;
   private map;
@@ -261,9 +264,12 @@ export class MapViewComponent implements OnInit, OnChanges {
               `<hr>` +
               `<a target="_blank" rel="noopener noreferrer" href=${gmapsUrl} >Google Maps</a>`
           );
+        mark.on("popupclose", () => {
+          this.emitClickedEventId.emit({ event: "closed", _id: marker._id });
+        });
         mark.on("click", () => {
           // Call your specific function when the marker is clicked
-          console.log("Marker clicked");
+          this.emitClickedEventId.emit({ event: "open", _id: marker._id });
         });
       }
     });

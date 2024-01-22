@@ -7,6 +7,10 @@
   border: none;
 }
 
+.map-clicked {
+  box-shadow: 1px 1px 5px 7px #e4de4fc2 !important;
+}
+
 /* event tile width as picture */
 @media screen and (max-width: 300px) {
   .event-tile {
@@ -31,7 +35,6 @@
     width: 415px;
   }
 }
-
 
 .promo {
   margin-top: 1.5rem !important;
@@ -97,7 +100,6 @@
   mat-card {
     width: 90% !important;
     padding: unset;
-
   }
 }
 
@@ -105,7 +107,6 @@
   mat-card {
     width: 90% !important;
     padding: unset;
-
   }
 
   .event-tile {
@@ -162,7 +163,6 @@
   margin-left: 2px;
 }
 
-
 .event-name {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -171,7 +171,7 @@
   max-width: 70vw;
   margin-top: 5px;
   margin-bottom: 5px;
-  margin-left: 2px
+  margin-left: 2px;
 }
 
 .mat-mdc-card-title {
@@ -188,16 +188,18 @@
   margin-top: 1px;
 }
 
-.date-start {}
+.date-start {
+}
 
-.date-end {}
+.date-end {
+}
 
 .category {
   background-color: rgb(255, 238, 0);
   border-radius: 7px;
   padding: 0px 3px 0px 3px;
   width: fit-content;
-  font-size: .7rem;
+  font-size: 0.7rem;
 }
 
 /*medium screen size*/
@@ -207,7 +209,7 @@
   }
 
   .date {
-    font-size: .9rem !important;
+    font-size: 0.9rem !important;
   }
 }
 
@@ -218,7 +220,7 @@
   }
 
   .date {
-    font-size: .9rem !important;
+    font-size: 0.9rem !important;
   }
 }
 

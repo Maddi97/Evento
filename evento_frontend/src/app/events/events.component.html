@@ -38,6 +38,7 @@
           [currentPosition]="currentPosition"
           [centerMapOnPosition]="currentPosition"
           [hasMoreEvents]="loadMore"
+          (emitClickedEventId)="eventToScrollId = $event"
         ></map-view>
       </div>
     </div>

@@ -487,6 +487,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       return weightB - weightA;
     });
   }
+
   private resetLoadingLimit() {
     this.actualLoadEventLimit = this.startLoadEventLimit;
   }
