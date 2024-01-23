@@ -17,17 +17,32 @@ export function crawlBrowseAi(crawler, url, crawlerService, crawlerName) {
           // wait until robot is finished
           mergeMap((res: any) => {
             console.log("Task 1 response: ", res);
-            return waitForRobotToFinish(
+            res = waitForRobotToFinish(
               "task",
               crawler.robotId,
               res["result"].id,
               crawlerService
             );
+            if (res["status"] === "failed") {
+              console.log("Task failed, retrying");
+              res = waitForRobotToFinish(
+                "task",
+                crawler.robotId,
+                res["result"].retriedByTaskId,
+                crawlerService
+              );
+            }
+            return res;
           }),
           // list of input paramters from link extraction response
           map((res: any) => {
             console.log("Task 1 Result: ", res);
-            return res["capturedLists"]?.linklist.map((event) => {
+            const linkList = res["capturedLists"]?.linklist || [];
+            console.log(linkList);
+            if (linkList.length === 0) {
+              console.error("No links found of task", res);
+            }
+            return linkList.map((event) => {
               const inputParameter: InputParameter = {
                 originUrl: event.link,
               };
@@ -53,14 +68,21 @@ export function crawlBrowseAi(crawler, url, crawlerService, crawlerName) {
           }), // get the task ids of the single tasks finished  by the bulk task of the robot
           // map the task ids as list
           map((events: any) => {
-            events = events["robotTasks"].items.map((item) => {
+            const crawledEvents = events["robotTasks"]?.items || [];
+            if (crawledEvents.length === 0) {
+              console.error("No links found of bulk run: ", events);
+            }
+            events = crawledEvents.map((item) => {
               return {
                 ...item.capturedTexts,
                 link: item.inputParameters.originUrl,
                 crawlerName,
               };
             });
-            sessionStorage.setItem(url, JSON.stringify(events));
+            console.log(events.length, events);
+            if (events.length !== 0) {
+              sessionStorage.setItem(url, JSON.stringify(events));
+            }
             return events;
           })
         )
@@ -78,7 +100,7 @@ function waitForRobotToFinish(
   if (taskOrBulk === "task") {
     return crawlerService.getResultOfRobotList(robotId, taskId).pipe(
       map((res) => {
-        console.log(res);
+        console.count(res["status"]);
         if (res["status"] === "failed") {
           console.error("A task failed", res);
         }
@@ -143,4 +165,10 @@ export function getResultsOfBulkrun(
     crawlerService,
     "3"
   );
+}
+
+export function getResultOfRobot(crawlerService) {
+  const robotId = "ecb29737-7885-4521-85b9-feb7929b4d0b";
+  const taskId = "03a15f5d-070f-4c47-bd4e-0523fce9c008";
+  return waitForRobotToFinish("task", robotId, taskId, crawlerService);
 }

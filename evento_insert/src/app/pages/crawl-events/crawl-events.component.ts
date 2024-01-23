@@ -10,6 +10,7 @@ import { crawlerConfig } from "../../../constants/browseAi";
 import { CrawlerApiService } from "../../services/crawler/crawler-api.service";
 import {
   crawlBrowseAi,
+  getResultOfRobot,
   getResultsOfBulkrun,
 } from "./specific-crawler/browseAI.subscription";
 import { mapIfzToEvents } from "./specific-crawler/ifz-helper";
@@ -97,10 +98,14 @@ export class CrawlEventsComponent implements OnInit {
         next: (eventList) => {
           console.log("Final crawled events: ", eventList.flat());
           this.spinner.hide();
-          this.crawledEventList = mapCrawledEventsFunction(eventList.flat());
-          this.index = 0;
-          this.eventIn = this.crawledEventList[this.index];
-          this.findOrganizer();
+          if (eventList.length !== 0) {
+            this.crawledEventList = mapCrawledEventsFunction(eventList.flat());
+            this.index = 0;
+            this.eventIn = this.crawledEventList[this.index];
+            this.findOrganizer();
+          } else {
+            throw new Error("No events found");
+          }
         },
         error: (error) => {
           // Handle error here
