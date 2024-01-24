@@ -286,7 +286,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.subscriptions$.push(params$);
   }
 
-  applyFilters(mapCenter = undefined, showSpinner = true, reset = false) {
+  applyFilters(mapCenter = undefined, showSpinner = true) {
     console.log("Apply filters");
     if (showSpinner) this.spinner.show();
 

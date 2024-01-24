@@ -254,11 +254,15 @@ router.post("/getEventsBySearchString", limiter, (req, res) => {
   const categories = req.body.req.categories;
   const date = req.body.req.date;
   let alreadyReturnedEventIds = req.body.req.alreadyReturnedEventIds || [];
-
+  const fourteenDaysAgo = new Date(date);
+  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() + 21);
   Event.find({
     $and: [
       {
         $or: [
+          {
+            "date.start": { $gte: date },
+          },
           {
             $and: [
               {
@@ -272,7 +276,17 @@ router.post("/getEventsBySearchString", limiter, (req, res) => {
           {
             permanent: { $eq: true },
           },
+          {
+            $and: [
+              { frequency: { $exists: true } },
+              {
+                "date.start": { $lte: date },
+              },
+            ],
+          },
         ],
+
+        "date.start": { $lte: fourteenDaysAgo },
       },
 
       {
