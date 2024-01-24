@@ -8,23 +8,35 @@
     >Promotion Activated</mat-checkbox
   >
 
-  <div formGroupName="appBannerSettings">
-    <mat-checkbox formControlName="isAppBannerActivated"
-      >App Banner Activated</mat-checkbox
-    >
-    <mat-form-field
-      *ngIf="settingsForm.get('appBannerSettings').value.isAppBannerActivated"
-    >
-      <mat-label>App Store Link</mat-label>
-      <input matInput type="string" formControlName="appStoreLink" />
-    </mat-form-field>
-    <mat-form-field
-      *ngIf="settingsForm.get('appBannerSettings').value.isAppBannerActivated"
-    >
-      <mat-label>Google Play Store Link</mat-label>
-      <input matInput type="string" formControlName="googlePlayLink" />
-    </mat-form-field>
+  <div class="app-banner-settings-expansion">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title> App Banner Settings </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div formGroupName="appBannerSettings">
+        <mat-checkbox formControlName="isAppBannerActivated"
+          >App Banner Activated</mat-checkbox
+        >
+        <mat-form-field
+          *ngIf="
+            settingsForm.get('appBannerSettings').value.isAppBannerActivated
+          "
+        >
+          <mat-label>App Store Link</mat-label>
+          <input matInput type="string" formControlName="appStoreLink" />
+        </mat-form-field>
+        <mat-form-field
+          *ngIf="
+            settingsForm.get('appBannerSettings').value.isAppBannerActivated
+          "
+        >
+          <mat-label>Google Play Store Link</mat-label>
+          <input matInput type="string" formControlName="googlePlayLink" />
+        </mat-form-field>
+      </div>
+    </mat-expansion-panel>
   </div>
+
   <button
     type="button"
     mat-raised-button

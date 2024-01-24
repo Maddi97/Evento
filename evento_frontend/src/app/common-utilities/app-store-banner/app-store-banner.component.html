@@ -1,15 +1,17 @@
 <div
   class="app-store-container"
   *ngIf="
-    isMobile &&
-    deviceInfo.browser !== 'Unknown' &&
-    !isBannerClosed &&
-    bannerSettings?.isAppBannerActivated
+    !isPlatformNative &&
+    bannerSettings?.isAppBannerActivated! &&
+    !isBannerClosed
   "
 >
-  <p class="banner-intro">Jetzt App downloaden!</p>
+  <p *ngIf="isMobile" class="banner-intro">Jetzt App downloaden!</p>
+  <p *ngIf="!isMobile" class="banner-intro">
+    Holt euch die Evento App für euer Android oder iOS Device. Jetzt downloaden!
+  </p>
   <div class="link-container">
-    <div class="app-container" *ngIf="deviceInfo.os === 'Android'">
+    <div class="app-container" *ngIf="platform === 'Android' || !isMobile">
       <a [href]="bannerSettings.googlePlayLink" target="_blank"
         ><img
           [alt]="bannerProperties.playStoreImageAlt"
@@ -20,7 +22,7 @@
     <div class="app-container">
       <a
         [href]="bannerSettings.appStoreLink"
-        *ngIf="deviceInfo.os === 'iOS'"
+        *ngIf="platform === 'iOS' || !isMobile"
         target="_blank"
       >
         <img

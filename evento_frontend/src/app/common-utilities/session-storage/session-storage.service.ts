@@ -61,7 +61,6 @@ export class SessionStorageService {
       JSON.stringify(location) !==
       JSON.stringify(sessionStorage.getItem("location"))
     ) {
-      console.log("Set", location);
       sessionStorage.setItem("location", JSON.stringify(location));
       this.locationSubject.next(location);
     }

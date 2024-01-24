@@ -21,7 +21,8 @@ export class AppStoreBannerComponent {
   bannerProperties: AppStoreBannerProperties;
   isBannerClosed;
   isMobile;
-  deviceInfo;
+  isPlatformNative;
+  platform;
   bannerSettings: AppBannerSettings;
   constructor(
     private cookiesService: CookiesService,
@@ -31,7 +32,8 @@ export class AppStoreBannerComponent {
 
   ngOnInit(): void {
     this.isMobile = this.deviceService.isMobile();
-    this.deviceInfo = this.deviceService.getDeviceInfo();
+    this.isPlatformNative = Capacitor.isNativePlatform();
+    this.platform = this.deviceService.getDeviceInfo().os;
     this.sharedObservableService.settingsObservable.subscribe((settings) => {
       this.bannerSettings =
         settings?.appBannerSettings || new AppBannerSettings();

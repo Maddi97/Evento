@@ -66,7 +66,7 @@ export class AppComponent implements OnInit {
           subscription$.unsubscribe();
         },
       });
-    if (!Capacitor.isNativePlatform()) {
+    if (Capacitor.getPlatform() === "web") {
       const cc = window as any;
       cc.cookieconsent.initialise({
         palette: {

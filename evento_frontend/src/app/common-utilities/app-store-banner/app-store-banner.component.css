@@ -27,14 +27,14 @@
 }
 
 .play-store-image {
-  width: 150px;
-  height: 40px;
+  width: 130px;
+  height: 60px;
   object-fit: contain;
 }
 
 .app-store-image {
-  width: 150px;
-  height: 40px;
+  width: 130px;
+  height: 34px;
   object-fit: contain;
 }
 

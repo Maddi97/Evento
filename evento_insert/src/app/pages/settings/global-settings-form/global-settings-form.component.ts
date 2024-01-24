@@ -42,8 +42,6 @@ export class GlobalSettingsFormComponent implements OnInit, OnChanges {
         googlePlayLink: this.settings?.appBannerSettings.googlePlayLink || "",
       }),
     });
-
-    console.log(this.settingsForm.value);
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.settings && this.settingsForm) {
