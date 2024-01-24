@@ -76,13 +76,14 @@ export class CrawlEventsComponent implements OnInit {
   }
 
   setIndex(index) {
-    this.index = Number(index);
+    this.index = index;
     if (index > this.crawledEventList.length) {
       console.error("Index too big. Not that many Elements in the list.");
     } else if (index < 0) {
       console.error("Index smaller than 0.");
     } else {
       this.eventIn = this.crawledEventList[this.index];
+      this.findOrganizer();
     }
   }
 

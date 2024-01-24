@@ -26,6 +26,7 @@ import {
 export class OrganizerFormComponent implements OnInit, OnChanges {
   @Input() organizerIn: Organizer = new Organizer();
   @Input() allOrganizerIn: Organizer[] = [];
+  @Input() page: "crawler" | "insert" = "insert";
   @Output() updateOrganizer: EventEmitter<Organizer> =
     new EventEmitter<Organizer>();
   @Output() addNewOrganizer: EventEmitter<Organizer> =

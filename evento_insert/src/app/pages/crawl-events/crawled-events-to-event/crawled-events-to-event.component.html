@@ -1,10 +1,19 @@
 <div *ngIf="eventIn && organizerIn._id" class="event-input">
-    <app-event-crawled [eventIn]="eventIn"></app-event-crawled>
-    <app-event-form [organizersIn]="allOrganizer" (addNewEvent)="addEventCheckDuplicate($event)"
-        [eventIn]="eventIn"></app-event-form>
+  <app-event-crawled [eventIn]="eventIn"></app-event-crawled>
+  <app-event-form
+    [page]="'crawler'"
+    [organizersIn]="allOrganizer"
+    (addNewEvent)="addEventCheckDuplicate($event)"
+    [eventIn]="eventIn"
+  ></app-event-form>
 </div>
 <div *ngIf="eventIn && !organizerIn._id" class="organizer-input">
-    <app-event-crawled [organizerIn]="organizerIn"></app-event-crawled>
-    <app-organizer-form [organizerIn]="organizerIn" [allOrganizerIn]="allOrganizer"
-        (addNewOrganizer)="addNewOrganizer($event)" (updateOrganizer)="updateOrganizer($event)"></app-organizer-form>
+  <app-event-crawled [organizerIn]="organizerIn"></app-event-crawled>
+  <app-organizer-form
+    [page]="'crawler'"
+    [organizerIn]="organizerIn"
+    [allOrganizerIn]="allOrganizer"
+    (addNewOrganizer)="addNewOrganizer($event)"
+    (updateOrganizer)="updateOrganizer($event)"
+  ></app-organizer-form>
 </div>

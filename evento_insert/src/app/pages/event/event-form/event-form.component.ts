@@ -35,6 +35,7 @@ import { of } from "rxjs";
 export class EventFormComponent implements OnInit, OnChanges {
   @Input() eventIn: Event;
   @Input() organizersIn: Organizer[];
+  @Input() page: "crawler" | "insert" = "insert";
   @Output() updateEvent: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() addNewEvent: EventEmitter<Event> = new EventEmitter<Event>();
 
@@ -232,7 +233,6 @@ export class EventFormComponent implements OnInit, OnChanges {
   }
 
   setEventForm(): void {
-    console.log(this.eventIn);
     // prepare dates
     this.updateEventId = this.eventIn._id;
     const start: any = this.eventIn?.date?.start

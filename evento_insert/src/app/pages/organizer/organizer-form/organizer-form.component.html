@@ -1,4 +1,22 @@
 <div class="form-container">
+  <div class="confirm-buttons top" *ngIf="page === 'crawler'">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="
+        updateOrganizerId
+          ? this.emitUpdate(organizerForm)
+          : emitAddOrganizer(organizerForm);
+        target.value = ''
+      "
+      [disabled]="checkDisabled()"
+    >
+      {{ updateOrganizerId ? "Update" : "Submit" }}
+    </button>
+    <button mat-raised-button color="accent" (click)="nullFormField()">
+      Clear
+    </button>
+  </div>
   <form [formGroup]="organizerForm">
     <div *ngIf="organizerIn?.name" class="radio-group-organizer-is-alias">
       <label id="permanent-radio-group-label"

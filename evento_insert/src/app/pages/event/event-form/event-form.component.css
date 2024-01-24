@@ -96,3 +96,7 @@ mat-form-field {
     align-items: baseline;
   }
 }
+
+.confirm-buttons.top {
+  margin-top: 16px;
+}

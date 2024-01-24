@@ -53,8 +53,8 @@ function createAddressFromInput(address: any): Address {
   a.city = address.city;
   a.plz = address.plz;
   //divide street and street number from street input
-  a.street = address.street?.split(" ")[0];
-  a.streetNumber = address.street?.split(" ")[1] || "";
+  a.street = address.street?.split(" ").slice(0, -1).join(" ") || "";
+  a.streetNumber = address.street?.split(" ").slice(-1)[0] || "";
   a.country = address.country;
   return a;
 }

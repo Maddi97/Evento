@@ -1,3 +1,17 @@
+<div class="confirm-buttons top" *ngIf="page === 'crawler'">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="updateEventId ? emitUpdateEvent() : emitAddNewEvent()"
+    [disabled]="checkDisabled()"
+  >
+    {{ updateEventId ? "Update" : "Submit" }}
+  </button>
+  <button mat-raised-button color="accent" (click)="nullFormField()">
+    Clear
+  </button>
+</div>
+
 <div class="event-form-container">
   <div class="organizer-name">
     <mat-form-field appearance="fill">
@@ -289,7 +303,7 @@
     </div>
   </form>
 
-  <div class="confirm-buttons">
+  <div class="confirm-buttons bottom">
     <button
       mat-raised-button
       color="primary"
