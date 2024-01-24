@@ -15,6 +15,7 @@ import { SessionStorageService } from "../common-utilities/session-storage/sessi
 export class HeaderbarComponent implements OnInit {
   searchText = "";
   isNotEventsPage = false;
+  isMapView = false;
   getScreenWidth;
   scrollOut: Boolean = false;
   filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({
@@ -33,6 +34,7 @@ export class HeaderbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
+    this.isMapView = this.sessionStorageService.getMapViewData() || false;
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe({
@@ -51,9 +53,12 @@ export class HeaderbarComponent implements OnInit {
         },
         complete: () => {},
       });
+    this.sessionStorageService.mapViewChanges().subscribe((isMapView) => {
+      this.isMapView = isMapView;
+    });
     this.sharedObservables.scrollOutInOfScreenObservable.subscribe(
       (scrollOut) => {
-        this.scrollOut = scrollOut && !this.isNotEventsPage;
+        this.scrollOut = scrollOut && !this.isNotEventsPage && !this.isMapView;
       }
     );
     this.sessionStorageService.mapViewChanges().subscribe((mapViewData) => {

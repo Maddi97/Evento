@@ -60,6 +60,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     name: "Now",
     _id: "2",
   };
+  mapView: boolean;
 
   constructor(
     private categoriesService: CategoriesService,
@@ -82,10 +83,11 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getScreenWidth = window.innerWidth;
     //document.getElementById('main-category-container').scrollLeft = 0;
+    this.mapView = this.sessionStorageService.getMapViewData() || false;
     this.setScrollMaxBool();
     this.sharedObservables.scrollOutInOfScreenObservable.subscribe(
       (scrollOut) => {
-        this.scrollOut = scrollOut;
+        this.scrollOut = scrollOut && !this.mapView;
       }
     );
     this.sharedObservables.settingsObservable.subscribe((settings) => {
@@ -120,10 +122,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       );
     const mapView$ = this.sessionStorageService
       .mapViewChanges()
-      .subscribe((mapViewData) => {
-        if (mapViewData) {
-          this.scrollOut = false;
-        }
+      .subscribe((isMapView) => {
+        this.mapView = isMapView;
       });
     this.subscriptions$.push(categories$, searchString$, mapView$);
     // this.applyFilters()
