@@ -32,9 +32,9 @@ export class SharedObservableService {
   }
 
   public notifyScrollOutInOfScreen(scrollOutIn: ScrollOutIn): void {
-    if (scrollOutIn.distanceTop < 30 || scrollOutIn.distanceBottom < 1) {
+    if (scrollOutIn.distanceTop < 15 || scrollOutIn.distanceBottom < 1) {
       this.scrollOutInSubscject.next(false);
-    } else if (this.numberOfScrolls > 50) {
+    } else if (this.numberOfScrolls > 15) {
       this.scrollOutInSubscject.next(scrollOutIn.direction === "down");
       this.numberOfScrolls = 0;
     }

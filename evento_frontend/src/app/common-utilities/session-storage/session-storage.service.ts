@@ -16,6 +16,7 @@ export class SessionStorageService {
   public searchNewCenterSubject = new Subject<Array<number>>();
   public draggedMapCenterSubject = new Subject<Array<number>>();
   public searchStringSubject = new Subject<Search>();
+  public isAppStoreBannerClosedSubject = new Subject<boolean>();
   private mapViewSubject = new Subject<boolean>(); // Change the type to boolean
   private locationSubject = new BehaviorSubject<Array<number>>(
     this.getLocationFromStorage()
@@ -124,5 +125,13 @@ export class SessionStorageService {
       sessionStorage.setItem("searchString", JSON.stringify(""));
       this.searchStringSubject.next(emptySearch);
     }
+  }
+
+  getAppStoreBannerClosedStatus() {
+    return JSON.parse(sessionStorage.getItem("isAppStoreBannerClosed"));
+  }
+  setAppStoreBannerClosedStatus(isClosed: boolean) {
+    sessionStorage.setItem("isAppStoreBannerClosed", JSON.stringify(isClosed));
+    this.isAppStoreBannerClosedSubject.next(isClosed);
   }
 }

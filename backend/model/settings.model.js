@@ -5,6 +5,12 @@ const Settings = mongoose.model(
     isAdsActivated: Boolean,
     isPromotionActivated: Boolean,
     percentagOfAd: Number,
+    appBannerSettings: {
+      isAppBannerActivated: Boolean,
+      appStoreLink: String,
+      googlePlayLink: String,
+    },
   })
 );
+
 module.exports = Settings;

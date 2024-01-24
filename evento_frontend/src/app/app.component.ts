@@ -2,9 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { Capacitor } from "@capacitor/core";
 import { filter, take } from "rxjs";
-import { PositionService } from "./common-utilities/map-view/position.service";
 import { SettingsService } from "./settings.service.service";
-import { Settings } from "./models/settings";
 import { SharedObservableService } from "./common-utilities/logic/shared-observables.service";
 import { SessionStorageService } from "./common-utilities/session-storage/session-storage.service";
 

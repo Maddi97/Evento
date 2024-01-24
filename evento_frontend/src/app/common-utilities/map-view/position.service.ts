@@ -46,6 +46,7 @@ export class PositionService {
   async getPositionByLocation(forcePositionCall = false) {
     let positionReturned = false;
     this.spinner.show();
+    this.closeSpinnerAfterTimeout();
     if (
       this.disableCallLocation ||
       (!forcePositionCall &&

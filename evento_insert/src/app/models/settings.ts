@@ -3,4 +3,11 @@ export class Settings {
   isAdsActivated: boolean;
   isPromotionActivated: boolean;
   percentagOfAd: number;
+  appBannerSettings: AppBannerSettings;
+}
+
+export class AppBannerSettings {
+  isAppBannerActivated: boolean;
+  appStoreLink: string;
+  googlePlayLink: string;
 }

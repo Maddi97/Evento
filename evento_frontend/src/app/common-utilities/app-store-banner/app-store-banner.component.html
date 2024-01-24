@@ -1,0 +1,34 @@
+<div
+  class="app-store-container"
+  *ngIf="
+    isMobile &&
+    deviceInfo.browser !== 'Unknown' &&
+    !isBannerClosed &&
+    bannerSettings?.isAppBannerActivated
+  "
+>
+  <p class="banner-intro">Jetzt App downloaden!</p>
+  <div class="link-container">
+    <div class="app-container" *ngIf="deviceInfo.os === 'Android'">
+      <a [href]="bannerSettings.googlePlayLink" target="_blank"
+        ><img
+          [alt]="bannerProperties.playStoreImageAlt"
+          [src]="bannerProperties.playStoreImageSrc"
+          class="play-store-image"
+      /></a>
+    </div>
+    <div class="app-container">
+      <a
+        [href]="bannerSettings.appStoreLink"
+        *ngIf="deviceInfo.os === 'iOS'"
+        target="_blank"
+      >
+        <img
+          [alt]="bannerProperties.appleStoreImageAlt"
+          [src]="bannerProperties.appleStoreImageSrc"
+          class="app-store-image"
+      /></a>
+    </div>
+  </div>
+  <mat-icon class="close-banner" (click)="closeBanner()"> clear </mat-icon>
+</div>

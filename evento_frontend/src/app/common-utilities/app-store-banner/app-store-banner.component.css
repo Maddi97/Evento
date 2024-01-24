@@ -1,0 +1,51 @@
+.app-store-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 4rem;
+  background-color: #00609c;
+  display: flex;
+  color: white;
+  flex-direction: row;
+  padding: 5px 5px 5px;
+  align-content: center;
+}
+
+.link-container {
+  display: flex;
+  align-items: center;
+  width: 35%;
+}
+
+.banner-intro {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  width: 50%;
+  justify-content: center;
+}
+
+.play-store-image {
+  width: 150px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.app-store-image {
+  width: 150px;
+  height: 40px;
+  object-fit: contain;
+}
+
+p {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.close-banner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 15%;
+  justify-content: center;
+}

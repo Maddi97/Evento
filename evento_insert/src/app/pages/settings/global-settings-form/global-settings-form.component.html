@@ -4,11 +4,27 @@
     <mat-label>Percentage of Ads</mat-label>
     <input matInput type="number" formControlName="percentagOfAd" />
   </mat-form-field>
-
   <mat-checkbox formControlName="isPromotionActivated"
     >Promotion Activated</mat-checkbox
   >
 
+  <div formGroupName="appBannerSettings">
+    <mat-checkbox formControlName="isAppBannerActivated"
+      >App Banner Activated</mat-checkbox
+    >
+    <mat-form-field
+      *ngIf="settingsForm.get('appBannerSettings').value.isAppBannerActivated"
+    >
+      <mat-label>App Store Link</mat-label>
+      <input matInput type="string" formControlName="appStoreLink" />
+    </mat-form-field>
+    <mat-form-field
+      *ngIf="settingsForm.get('appBannerSettings').value.isAppBannerActivated"
+    >
+      <mat-label>Google Play Store Link</mat-label>
+      <input matInput type="string" formControlName="googlePlayLink" />
+    </mat-form-field>
+  </div>
   <button
     type="button"
     mat-raised-button
