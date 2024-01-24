@@ -152,7 +152,7 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
       });
       //sort out already returned events
       events = events.filter((event) => {
-        return !alreadyReturnedEventIds.includes(event._id);
+        return !alreadyReturnedEventIds.includes(event._id.toString());
       });
       //sort events by distance
       events.sort((ev1, ev2) => {
@@ -253,6 +253,7 @@ router.post("/getEventsBySearchString", limiter, (req, res) => {
   const limit = Number(req.body.req.limit);
   const categories = req.body.req.categories;
   const date = req.body.req.date;
+  let alreadyReturnedEventIds = req.body.req.alreadyReturnedEventIds || [];
 
   Event.find({
     $and: [
@@ -299,6 +300,9 @@ router.post("/getEventsBySearchString", limiter, (req, res) => {
     ],
   })
     .then((events) => {
+      events = events.filter((event) => {
+        return !alreadyReturnedEventIds.includes(event._id.toString());
+      });
       res.send(events.slice(0, limit));
     })
     .catch((error) => {

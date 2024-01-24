@@ -67,6 +67,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   filteredSubcategories = [];
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
+  lastRunningSubscription: "category" | "searchString" | "hot" | "promotion";
+  resetEventList = false;
   // clicked date
   filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({
     hour: 0,
@@ -143,6 +145,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         const req = {
           searchString: search.searchString,
           limit: this.actualLoadEventLimit,
+          alreadyReturnedEventIds: [],
           date: date,
           categories: this.categoryList.map((cat) => cat._id),
         };
@@ -150,16 +153,21 @@ export class EventsComponent implements OnInit, OnDestroy {
           .getEventsBySearchString(req)
           .subscribe({
             next: (events) => {
+              this.resetEventList = true;
               if (search.event === "Reset") {
+                this.eventList = [];
                 this.applyFilters();
               } else {
+                this.lastRunningSubscription = "searchString";
                 this.handlyEventListLoaded(events);
               }
             },
             error: (error) => {
               console.log(error);
             },
-            complete: () => {},
+            complete: () => {
+              this.onFetchEventsCompleted();
+            },
           });
         this.subscriptions$.push(event$);
       }
@@ -177,7 +185,9 @@ export class EventsComponent implements OnInit, OnDestroy {
               this.search.event !== "Input" &&
               JSON.stringify(position) !== JSON.stringify(this.currentPosition)
             ) {
+              this.resetLoadingLimit();
               this.currentPosition = position;
+              this.resetEventList = true;
               this.applyFilters();
             }
           });
@@ -191,7 +201,9 @@ export class EventsComponent implements OnInit, OnDestroy {
             this.search.event !== "Input" &&
             JSON.stringify(position) !== JSON.stringify(this.currentPosition)
           ) {
+            this.resetLoadingLimit();
             this.currentPosition = position;
+            this.resetEventList = true;
             this.applyFilters();
           }
         });
@@ -261,6 +273,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         }
         this.fetchParamsCompleted = true;
         if (this.storageLocationObservation$) {
+          this.resetEventList = true;
           this.applyFilters();
         }
         this.setupPositionService();
@@ -273,7 +286,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.subscriptions$.push(params$);
   }
 
-  applyFilters(mapCenter = undefined, showSpinner = true) {
+  applyFilters(mapCenter = undefined, showSpinner = true, reset = false) {
     console.log("Apply filters");
     if (showSpinner) this.spinner.show();
 
@@ -283,16 +296,19 @@ export class EventsComponent implements OnInit, OnDestroy {
     const germanyTime = new Date().toLocaleTimeString("en-DE", {
       timeZone: "Europe/Berlin",
     });
-
     const fil = {
       date: this.filteredDate,
       time: germanyTime,
       cat: [this.filteredCategory],
       subcat: this.filteredSubcategories,
       limit: this.offsetLoadEventLimit,
-      alreadyReturnedEventIds: this.eventList.map((event) => event._id),
+      alreadyReturnedEventIds:
+        this.startLoadEventLimit === this.actualLoadEventLimit
+          ? []
+          : this.eventList.map((event) => event._id),
       currentPosition: mapCenter ? mapCenter : this.currentPosition,
     };
+
     let event$;
     // if category is not hot
     if (!fil.cat.find((el) => el._id === "1" || el._id === "2")) {
@@ -300,6 +316,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         .getEventsOnDateCategoryAndSubcategory(fil)
         .subscribe({
           next: (events) => {
+            this.lastRunningSubscription = "category";
             this.handlyEventListLoaded(events);
           },
           error: (error) => {
@@ -312,6 +329,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     } else if (fil.cat.find((el) => el._id === "1")) {
       event$ = this.eventService.getHotEvents(fil).subscribe({
         next: (events) => {
+          this.lastRunningSubscription = "promotion";
           this.handlyEventListLoaded(events);
         },
         error: (error) => {
@@ -328,6 +346,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         .getEventsOnDate(this.filteredDate, germanyTime)
         .subscribe({
           next: (events) => {
+            this.lastRunningSubscription = "hot";
             this.handlyEventListLoaded(events);
           },
           error: (error) => {
@@ -354,7 +373,37 @@ export class EventsComponent implements OnInit, OnDestroy {
     if (this.loadMore) {
       this.isLoadMoreClicked = mapCenter ? false : true;
       this.actualLoadEventLimit += this.offsetLoadEventLimit;
-      this.applyFilters(mapCenter, spinner);
+      this.resetEventList = false;
+      if (this.lastRunningSubscription !== "searchString") {
+        this.applyFilters(mapCenter, spinner);
+      } else {
+        const date = moment(new Date()).utcOffset(0, false).set({
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+        });
+
+        const req = {
+          searchString: this.search.searchString,
+          limit: this.actualLoadEventLimit,
+          alreadyReturnedEventIds: this.eventList.map((event) => event._id),
+          date: date,
+          categories: this.categoryList.map((cat) => cat._id),
+        };
+        console.log(this.eventList.map((event) => event.name));
+        this.eventService.getEventsBySearchString(req).subscribe({
+          next: (events) => {
+            this.handlyEventListLoaded(events);
+          },
+          error: (error) => {
+            console.log(error);
+          },
+          complete: () => {
+            this.onFetchEventsCompleted();
+          },
+        });
+      }
     }
   }
 
@@ -384,7 +433,9 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   handlyEventListLoaded(events: Event[]) {
-    this.eventList = [...this.eventList, ...events];
+    this.eventList = !this.resetEventList
+      ? [...this.eventList, ...events]
+      : events;
     this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
     if (this.isLoadMoreClicked) {
       this.isLoadMoreClicked = false;

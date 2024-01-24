@@ -43,6 +43,11 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   onSearchChange() {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
+      if (this.search.searchString.length > 0) {
+        this.search.event = "Input";
+      } else {
+        this.search.event = "Reset";
+      }
       this.sessionStorageService.setSearchString(this.search);
     }, this.delay);
   }
