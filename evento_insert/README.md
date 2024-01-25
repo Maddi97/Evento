@@ -1,27 +1,35 @@
-# InsertApp
+### Refactoring
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.7.
+- https://angular.io/guide/reactive-forms#creating-nested-form-groups
 
-## Development server
+-Interface for form
+interface IssueForm {
+title: FormControl<string>;
+description: FormControl<string>;  
+priority: FormControl<string>;
+type: FormControl<string>;
+}
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+-> use formbuild to create the form (see angular docu)
+profileForm = this.formBuilder.group({
+firstName: [''],
+lastName: [''],
+address: this.formBuilder.group({
+street: [''],
+city: [''],
+state: [''],
+zip: [''],
+}),
+});
 
-## Code scaffolding
+--> then easy update the form with eventForm.patchValue({...})
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+then we can do : this.issueForm.getRawValue() as
+Issue to get the value of the defined template
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+- suggestions from the server when typing in:
+  ngOnInit(): void {
+  this.issueForm.controls.title.valueChanges.subscribe(title => {
+  this.suggestions = this.issueService.getSuggestions(title); --> load from server
+  });
+  }

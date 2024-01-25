@@ -2,16 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { Capacitor } from "@capacitor/core";
 import { filter, take } from "rxjs";
-import { SettingsService } from "./settings.service.service";
-import { SharedObservableService } from "./common-utilities/logic/shared-observables.service";
-import { SessionStorageService } from "./common-utilities/session-storage/session-storage.service";
-
-export type SubdomainUrl = "settings" | "categories" | "full-event";
-export const subDomainUrls: SubdomainUrl[] = [
-  "settings",
-  "categories",
-  "full-event",
-];
+import { SettingsService } from "./services/simple/settings/settings.service.service";
+import { SharedObservableService } from "./services/core/shared-observables/shared-observables.service";
+import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
+import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
 declare interface Window {
   adsbygoogle: any[];
 }
@@ -49,7 +43,7 @@ export class AppComponent implements OnInit {
       .subscribe({
         next: (event: NavigationEnd) => {
           let isNotEventsPage = false;
-          subDomainUrls.forEach((subdomain) => {
+          SUBDOMAIN_URLS.forEach((subdomain) => {
             if (event.url.includes(subdomain)) {
               isNotEventsPage = true;
             }
