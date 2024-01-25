@@ -16,6 +16,8 @@ replace div+*ngIf with ng-container + *ngIf -> ng container doesnt add to the do
 
 -models are interfaces not classes
 
+-custom-theme.scss -> correctly define and use the themes
+
 # syntactical
 
 - vents to app
