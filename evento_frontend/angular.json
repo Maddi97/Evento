@@ -108,21 +108,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "threeventsfiveone:build"
+            "buildTarget": "threeventsfiveone:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "threeventsfiveone:build:production"
+              "buildTarget": "threeventsfiveone:build:production"
             },
             "dev": {
-              "browserTarget": "threeventsfiveone:build:dev"
+              "buildTarget": "threeventsfiveone:build:dev"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "threeventsfiveone:build"
+            "buildTarget": "threeventsfiveone:build"
           }
         },
         "test": {
