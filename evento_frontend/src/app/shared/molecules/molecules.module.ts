@@ -28,6 +28,7 @@ import { FeedbackComponent } from "./feedback/feedback.component";
 import { FooterbarComponent } from "./footerbar/footerbar.component";
 import { HeaderbarComponent } from "./headerbar/headerbar.component";
 import { AtomsModule } from "@shared/atoms/atoms.module";
+import { CategoryTileComponent } from "./category-tile/category-tile.component";
 @NgModule({
   declarations: [
     DatePickerComponent,
@@ -43,6 +44,7 @@ import { AtomsModule } from "@shared/atoms/atoms.module";
     FeedbackComponent,
     FooterbarComponent,
     HeaderbarComponent,
+    CategoryTileComponent,
   ],
   imports: [
     CommonModule,
@@ -68,6 +70,7 @@ import { AtomsModule } from "@shared/atoms/atoms.module";
     MapViewComponent,
     SocialMediaShareComponent,
     EventTileListComponent,
+    CategoryTileComponent,
     CategoryListComponent,
     SearchFilterComponent,
     GoogleAdsComponent,

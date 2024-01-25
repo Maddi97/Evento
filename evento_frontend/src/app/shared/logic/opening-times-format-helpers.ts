@@ -1,15 +1,5 @@
 import { Event } from "../../globals/models/event";
-
-const days: string[] = [
-  "Sonntag",
-  "Montag",
-  "Dienstag",
-  "Mittwoch",
-  "Donnerstag",
-  "Freitag",
-  "Samstag",
-];
-
+import { WEEKDAYS_LONG } from "@globals/constants/dates";
 /* calculate von bis for every event */
 /* include always 24/7 open (is permanent and no openening times) von - bis per week day, if opening times than von - bis for every week day (open) and if von freitag 23 - sonntag 28 write with date von bis*/
 export function openingTimesFormatter(event: Event): string {
@@ -40,11 +30,11 @@ export function dateTimesFormater(event: Event): string {
     if (weekly.length === 1) return `jeden ${weekly[0]} offen`;
     let formattedFrequencies = weekly
       .slice(0, -1)
-      .map((day) => `${days[day]},`)
+      .map((day) => `${WEEKDAYS_LONG[day]},`)
       .join(" ");
     formattedFrequencies = formattedFrequencies
       .replace(/,\s*$/, " ") //substitute last comma by space
-      .concat(`und ${days[weekly[weekly.length - 1]]}`);
+      .concat(`und ${WEEKDAYS_LONG[weekly[weekly.length - 1]]}`);
     return `jeden ${formattedFrequencies}`;
   } else {
     const start = new Date(event.date.start);

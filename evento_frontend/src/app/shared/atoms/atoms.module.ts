@@ -17,7 +17,6 @@ import { EventPictureComponent } from "./event-picture/event-picture.component";
 import { EventTileComponent } from "./event-tile/event-tile.component";
 import { AppStoreBannerComponent } from "./app-store-banner/app-store-banner.component";
 import { DayDateComponent } from "./day-date/day-date.component";
-import { CategoryTileComponent } from "./category-tile/category-tile.component";
 import { DigitalClockComponent } from "./digital-clock/digital-clock.component";
 import { HamburgerMenuComponent } from "./hamburger-menu/hamburger-menu.component";
 
@@ -28,7 +27,6 @@ import { HamburgerMenuComponent } from "./hamburger-menu/hamburger-menu.componen
     AppStoreBannerComponent,
     EventPictureComponent,
     DayDateComponent,
-    CategoryTileComponent,
     DigitalClockComponent,
     HamburgerMenuComponent,
   ],
@@ -55,7 +53,6 @@ import { HamburgerMenuComponent } from "./hamburger-menu/hamburger-menu.componen
     HamburgerMenuComponent,
     AppStoreBannerComponent,
     DayDateComponent,
-    CategoryTileComponent,
   ],
 })
 export class AtomsModule {}

@@ -7,3 +7,13 @@ export const WEEKDAYS_SHORT: string[] = [
   "Fr",
   "Sa",
 ];
+
+export const WEEKDAYS_LONG: string[] = [
+  "Sonntag",
+  "Montag",
+  "Dienstag",
+  "Mittwoch",
+  "Donnerstag",
+  "Freitag",
+  "Samstag",
+];
