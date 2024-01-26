@@ -31,6 +31,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log("Hallo");
     //only get position on first creation and not on routing inside the spa
     this.settingsService.getSettings().subscribe((settings) => {
       this.sharedObservableService.setSettings(settings);

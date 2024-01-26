@@ -1,5 +1,8 @@
 import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
+import {
+  BrowserModule,
+  provideClientHydration,
+} from "@angular/platform-browser";
 
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
@@ -38,6 +41,7 @@ import { AtomsModule } from "@shared/atoms/atoms.module";
     Location,
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     { provide: "googleTagManagerId", useValue: "GTM-KHTB234N" },
+    provideClientHydration(),
   ],
   schemas: [],
   exports: [],

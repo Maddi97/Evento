@@ -31,7 +31,7 @@ docker compose -f  docker-compose-prod.yml up -d
 ```
 
 ```shell
- docker compose --env-file .env.prod -f docker-compose-prod.yml up  -d --force-recreate --no-deps --build threeventsfiveone
+ docker compose --env-file .env.prod -f docker-compose-prod.yml up  -d --force-recreate --no-deps --build evento_frontend
 
 ```
 
@@ -43,11 +43,11 @@ docker-compose --env-file .env.prod -f docker-compose-deploy-dev.yml up -d
 
 Afterwards the containers are reachable from the domain:
 
-[Events](https://events.3vents51.duckdns.org)
+[Events](https://events.evento.duckdns.org)
 
-[Insert](https://insert.3vents51.duckdns.org)
+[Insert](https://insert.evento.duckdns.org)
 
-[Backend](https://backend.3vents51.duckdns.org)
+[Backend](https://backend.evento.duckdns.org)
 
 ## Local Development
 

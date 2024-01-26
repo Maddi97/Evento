@@ -3,7 +3,7 @@ import { CapacitorConfig } from "@capacitor/cli";
 const config: CapacitorConfig = {
   appId: "com.evento.app",
   appName: "Evento",
-  webDir: "dist/threeventsfiveone",
+  webDir: "dist/evento",
   server: {
     url: "http://192.168.0.112:4200",
     cleartext: true,
