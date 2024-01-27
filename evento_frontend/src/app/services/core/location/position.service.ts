@@ -1,11 +1,12 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Geolocation } from "@capacitor/geolocation";
 import { NgxSpinnerService } from "ngx-spinner";
 import { NominatimGeoService } from "./nominatim-geo.service";
 import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { of } from "rxjs";
-
+import { BehaviorSubject, Subject, of } from "rxjs";
+import { DEFAULT_LOCATION } from "@globals/constants/position";
+import { isPlatformBrowser } from "@angular/common";
 @Injectable({
   providedIn: "root",
 })
@@ -13,6 +14,10 @@ export class PositionService {
   searchedCenter: Array<number>;
   disableCallLocation = false;
 
+  public positionObservable = new BehaviorSubject<Array<number>>(
+    DEFAULT_LOCATION
+  );
+  public isPositionDefault = new BehaviorSubject<Boolean>(true);
   // New York Center
   // default_center_position = [40.7142700, -74.0059700]
 
@@ -20,7 +25,7 @@ export class PositionService {
     private geoService: NominatimGeoService,
     private _snackbar: MatSnackBar,
     private spinner: NgxSpinnerService,
-    private sessionStorageService: SessionStorageService
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   getPositionByInput(addressInput) {
@@ -32,7 +37,8 @@ export class PositionService {
         const coordinates = [geoData.lat, geoData.lon];
         this.searchedCenter = coordinates;
         console.log("location from input");
-        this.sessionStorageService.setLocation(coordinates);
+        this.positionObservable.next(coordinates);
+        this.isPositionDefault.next(false);
       })
       .catch((error) => {
         // Handle the error here
@@ -44,62 +50,66 @@ export class PositionService {
   }
 
   async getPositionByLocation(forcePositionCall = false) {
-    let positionReturned = false;
-    this.spinner.show();
-    this.closeSpinnerAfterTimeout();
-    if (
-      this.disableCallLocation ||
-      (!forcePositionCall &&
-        this.sessionStorageService.getDefaultLocationValue())
-    ) {
-      return Promise.resolve("failed");
-    }
-    setTimeout(() => {
-      if (!positionReturned) {
-        this.sessionStorageService.setDefaultLocation();
-        Promise.resolve("Timeout");
+    if (isPlatformBrowser(this.platformId)) {
+      let positionReturned = false;
+      this.spinner.show();
+      this.closeSpinnerAfterTimeout();
+      if (this.disableCallLocation || !forcePositionCall) {
+        return Promise.resolve("failed");
       }
-    }, 8000);
-    this.disableCallLocation = true;
-    // Simple geolocation API check provides values to publish
-    // unfortunately needs some seconds sometimes
-    await Geolocation.getCurrentPosition()
-      .then((position: GeolocationPosition) => {
-        const { latitude, longitude } = position.coords;
-        if (latitude && longitude) {
-          this.searchedCenter = [latitude, longitude];
-          this.sessionStorageService.setLocation(this.searchedCenter);
-          positionReturned = true;
-          console.log("Callback from geo API");
-        } else {
-          this.sessionStorageService.setDefaultLocation();
-          this.openErrorSnackBar(
-            "Standort konnte nicht ermittelt werden und wird auf Leipzig Zentrum gesetzt."
-          );
-          positionReturned = true;
-          return Promise.resolve("failed");
+      setTimeout(() => {
+        if (!positionReturned) {
+          this.setDefaultLocation();
+          Promise.resolve("Timeout");
         }
-      })
-      .catch((error: GeolocationPositionError) => {
-        let message = "Standort konnte nicht ermittelt werden";
-        this.spinner.hide();
-        if (error.code === 1) {
-          message =
-            "Deine Privatspähreeinstellungen verhinderen die Standortermittlung. \nStandort wird zu Leipzig Zentrum gesetzt.";
-          this.sessionStorageService.setDefaultLocation();
-          positionReturned = true;
-          this.openErrorSnackBar(message);
-        } else {
-          this.sessionStorageService.setDefaultLocation();
-          positionReturned = true;
-          this.openErrorSnackBar(message);
-        }
-      });
+      }, 8000);
+      this.disableCallLocation = true;
+      // Simple geolocation API check provides values to publish
+      // unfortunately needs some seconds sometimes
+      await Geolocation.getCurrentPosition()
+        .then((position: GeolocationPosition) => {
+          const { latitude, longitude } = position.coords;
+          if (latitude && longitude) {
+            this.searchedCenter = [latitude, longitude];
+            this.positionObservable.next(this.searchedCenter);
+            this.isPositionDefault.next(false);
+            positionReturned = true;
+            console.log("Callback from geo API");
+          } else {
+            this.setDefaultLocation();
+            this.openErrorSnackBar(
+              "Standort konnte nicht ermittelt werden und wird auf Leipzig Zentrum gesetzt."
+            );
+            positionReturned = true;
+            return Promise.resolve("failed");
+          }
+        })
+        .catch((error: GeolocationPositionError) => {
+          let message = "Standort konnte nicht ermittelt werden";
+          this.spinner.hide();
+          if (error.code === 1) {
+            message =
+              "Deine Privatspähreeinstellungen verhinderen die Standortermittlung. \nStandort wird zu Leipzig Zentrum gesetzt.";
+            this.setDefaultLocation();
+            positionReturned = true;
+            this.openErrorSnackBar(message);
+          } else {
+            this.setDefaultLocation();
+            positionReturned = true;
+            this.openErrorSnackBar(message);
+          }
+        });
 
-    setTimeout(() => {
-      this.disableCallLocation = false;
-    }, 3000);
-    return Promise.resolve("completed");
+      setTimeout(() => {
+        this.disableCallLocation = false;
+      }, 3000);
+      return Promise.resolve("completed");
+    }
+  }
+
+  setDefaultLocation() {
+    this.isPositionDefault.next(true);
+    this.positionObservable.next(DEFAULT_LOCATION);
   }
 
   openErrorSnackBar(message) {

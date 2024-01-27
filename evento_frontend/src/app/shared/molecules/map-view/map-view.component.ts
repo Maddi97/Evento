@@ -15,7 +15,8 @@ import { skip, switchMap, timer } from "rxjs";
 import { clearSearchFilter } from "@shared/logic/search-filter-helper";
 import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
 import { PositionService } from "@services/core/location/position.service";
-
+import { LeafletService } from "@services/core/leaflet/leaflet.service";
+import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 @Component({
   selector: "map-view",
   templateUrl: "./map-view.component.html",
@@ -51,20 +52,13 @@ export class MapViewComponent implements OnInit, OnChanges {
   private hoverIconRetina =
     "./assets/leaflet_color_markers/marker-icon-2x-yellow.png";
 
-  private LeafIcon = L.Icon.extend({
-    options: {
-      shadowUrl: this.shadowUrl,
-      iconSize: [16, 24],
-      iconAnchor: [8, 30],
-      popupAnchor: [1, -26],
-      tooltipAnchor: [10, -20],
-      shadowSize: [30, 30],
-    },
-  });
+  private LeafIcon = null;
 
   constructor(
     private positionService: PositionService,
-    private sessionStorageService: SessionStorageService
+    private sessionStorageService: SessionStorageService,
+    private leafletService: LeafletService,
+    private mapCenterViewService: MapCenterViewService
   ) {}
 
   sanitizeInput(value) {
@@ -76,7 +70,17 @@ export class MapViewComponent implements OnInit, OnChanges {
     //   this.resetCenter();
     // })
     // this.updatePosition(this.positionService.getDefaultLocation());
-    this.sessionStorageService.draggedMapCenterSubject
+    this.LeafIcon = this.leafletService.L.Icon.extend({
+      options: {
+        shadowUrl: this.shadowUrl,
+        iconSize: [16, 24],
+        iconAnchor: [8, 30],
+        popupAnchor: [1, -26],
+        tooltipAnchor: [10, -20],
+        shadowSize: [30, 30],
+      },
+    });
+    this.mapCenterViewService.mapCenterPosition
       .pipe(
         skip(1),
         switchMap(() => {
@@ -94,7 +98,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   resetCenter() {
     this.setPositionMarker();
     this.map.panTo(
-      new L.LatLng(
+      new this.leafletService.L.LatLng(
         String(this.centerMapOnPosition[0]),
         String(this.centerMapOnPosition[1])
       )
@@ -180,11 +184,11 @@ export class MapViewComponent implements OnInit, OnChanges {
     });
   }
   private initMap(): void {
-    this.map = L.map("map", {
+    this.map = this.leafletService.L.map("map", {
       center: this.centerMapOnPosition,
       zoom: this.zoomInput,
     });
-    const tiles = L.tileLayer(
+    const tiles = this.leafletService.L.tileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
         maxZoom: 19,
@@ -193,21 +197,23 @@ export class MapViewComponent implements OnInit, OnChanges {
       }
     );
     tiles.addTo(this.map);
-    this.positionMarkerGroup = L.layerGroup().addTo(this.map);
+    this.positionMarkerGroup = this.leafletService.L.layerGroup().addTo(
+      this.map
+    );
 
-    this.markerGroup = L.layerGroup().addTo(this.map);
-    this.hoverMarkerGroup = L.layerGroup().addTo(this.map);
+    this.markerGroup = this.leafletService.L.layerGroup().addTo(this.map);
+    this.hoverMarkerGroup = this.leafletService.L.layerGroup().addTo(this.map);
 
     this.map.invalidateSize();
   }
 
   loadNewEventsOnDrag() {
-    this.sessionStorageService.setMapCenter(this.map.getCenter());
+    this.mapCenterViewService.setMapCenter(this.map.getCenter());
   }
 
   private setHoverMarker(lat, lon): void {
     this.hoverMarkerGroup.clearLayers();
-    L.marker([lat, lon])
+    this.leafletService.L.marker([lat, lon])
       .setIcon(
         new this.LeafIcon({
           iconUrl: this.hoverIcon,
@@ -223,7 +229,9 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private setPositionMarker(): void {
     this.positionMarkerGroup.clearLayers();
-    const positionMarker = L.marker(this.currentPosition).setIcon(
+    const positionMarker = this.leafletService.L.marker(
+      this.currentPosition
+    ).setIcon(
       new this.LeafIcon({
         iconUrl: this.locationIcon,
         iconRetinaUrl: this.locationIconRetina,
@@ -237,7 +245,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   searchEventsInNewArea() {
     this.isMapDragged = false;
     clearSearchFilter(this.sessionStorageService);
-    this.sessionStorageService.emitSearchOnNewCenter();
+    this.mapCenterViewService.setMapCenter(this.map.getCenter());
   }
 
   private setMarkers(markerData: any[]): void {
@@ -248,7 +256,10 @@ export class MapViewComponent implements OnInit, OnChanges {
       );
       const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
       if (marker.geoData) {
-        const mark = L.marker([marker.geoData.lat, marker.geoData.lon])
+        const mark = this.leafletService.L.marker([
+          marker.geoData.lat,
+          marker.geoData.lon,
+        ])
           .setIcon(
             new this.LeafIcon({
               iconUrl: this.defaultIcon,

@@ -1,136 +1,76 @@
 // map-view-storage.service.ts
 
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, Subject, map } from "rxjs";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Observable, Subject } from "rxjs";
+import { isPlatformBrowser } from "@angular/common";
 
-export type Search = {
-  searchString: string;
-  event: "Input" | "Reset";
-};
 @Injectable({
   providedIn: "root",
 })
 export class SessionStorageService {
-  defaultCenterPosition = [51.33962, 12.37129];
-
-  public searchNewCenterSubject = new Subject<Array<number>>();
-  public draggedMapCenterSubject = new Subject<Array<number>>();
-  public searchStringSubject = new Subject<Search>();
   public isAppStoreBannerClosedSubject = new Subject<boolean>();
-  private mapViewSubject = new Subject<boolean>(); // Change the type to boolean
-  private locationSubject = new BehaviorSubject<Array<number>>(
-    this.getLocationFromStorage()
-  );
+  private locationSubject;
 
-  constructor() {
-    const initialMapViewData = this.getMapViewData();
-    if (initialMapViewData === null) {
-      this.setMapViewData(false); // Set the default value here as a boolean
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    if (isPlatformBrowser(platformId)) {
     }
-
-    window.addEventListener("storage", (event: StorageEvent) => {
-      if (event.key === "mapViewData") {
-        this.mapViewSubject.next(JSON.parse(event.newValue)); // Parse the string to a boolean
-      }
-    });
   }
 
-  setMapViewData(data: boolean): void {
-    // Change the parameter type to boolean
-    sessionStorage.setItem("mapViewData", JSON.stringify(data)); // Convert boolean to string
-    this.mapViewSubject.next(data);
-  }
-
-  getMapViewData(): boolean | null {
-    // Change the return type to boolean
-    const value = sessionStorage.getItem("mapViewData");
-    return value !== null ? JSON.parse(value) : null; // Parse the string to a boolean
-  }
-
-  mapViewChanges(): Observable<boolean> {
-    // Change the return type to boolean
-    return this.mapViewSubject.asObservable();
-  }
   getLocation() {
-    return this.locationSubject.asObservable();
+    if (isPlatformBrowser(this.platformId)) {
+      return this.locationSubject.asObservable();
+    }
   }
 
   setLocation(location) {
-    sessionStorage.setItem("defaultLocation", JSON.stringify(false));
-    if (
-      JSON.stringify(location) !==
-      JSON.stringify(sessionStorage.getItem("location"))
-    ) {
-      sessionStorage.setItem("location", JSON.stringify(location));
-      this.locationSubject.next(location);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.setItem("defaultLocation", JSON.stringify(false));
+      if (
+        JSON.stringify(location) !==
+        JSON.stringify(sessionStorage.getItem("location"))
+      ) {
+        sessionStorage.setItem("location", JSON.stringify(location));
+        this.locationSubject.next(location);
+      }
     }
   }
 
-  setDefaultLocation() {
-    sessionStorage.setItem("defaultLocation", JSON.stringify(true));
-    sessionStorage.setItem(
-      "location",
-      JSON.stringify(this.defaultCenterPosition)
-    );
-    this.locationSubject.next(this.defaultCenterPosition);
-  }
-
   getDefaultLocationValue() {
-    const isDefaultLocation = JSON.parse(
-      sessionStorage.getItem("defaultLocation")
-    );
-    return isDefaultLocation || false;
-  }
-
-  private getLocationFromStorage() {
-    const storedLocation = JSON.parse(sessionStorage.getItem("location"));
-    return storedLocation || this.defaultCenterPosition;
+    if (isPlatformBrowser(this.platformId)) {
+      const isDefaultLocation = JSON.parse(
+        sessionStorage.getItem("defaultLocation")
+      );
+      return isDefaultLocation || false;
+    } else return false;
   }
 
   getUserLocationFromStorage() {
-    return JSON.parse(sessionStorage.getItem("location")) || undefined;
+    if (isPlatformBrowser(this.platformId)) {
+      return JSON.parse(sessionStorage.getItem("location")) || undefined;
+    }
+    return undefined;
   }
 
   removePositionFromStorage() {
-    sessionStorage.removeItem("location");
-    sessionStorage.removeItem("defaultLocation");
-  }
-
-  setMapCenter(mapCenter) {
-    const mapCenterCorrectedType = [mapCenter.lat, mapCenter.lng];
-    sessionStorage.setItem("mapCenter", JSON.stringify(mapCenterCorrectedType));
-    this.draggedMapCenterSubject.next(mapCenter);
-  }
-  emitSearchOnNewCenter() {
-    this.searchNewCenterSubject.next(
-      JSON.parse(sessionStorage.getItem("mapCenter"))
-    );
-  }
-
-  setSearchString(search: Search) {
-    sessionStorage.setItem("searchString", JSON.stringify(search));
-    console.log(JSON.parse(sessionStorage.getItem("searchString")));
-    this.searchStringSubject.next(search);
-  }
-  clearSearchFilter() {
-    const emptySearch: Search = {
-      searchString: "",
-      event: "Reset",
-    };
-    if (
-      emptySearch.searchString !==
-      JSON.parse(sessionStorage.getItem("searchString"))
-    ) {
-      sessionStorage.setItem("searchString", JSON.stringify(""));
-      this.searchStringSubject.next(emptySearch);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.removeItem("location");
+      sessionStorage.removeItem("defaultLocation");
     }
   }
 
   getAppStoreBannerClosedStatus() {
-    return JSON.parse(sessionStorage.getItem("isAppStoreBannerClosed"));
+    if (isPlatformBrowser(this.platformId)) {
+      return JSON.parse(sessionStorage.getItem("isAppStoreBannerClosed"));
+    }
+    return true;
   }
   setAppStoreBannerClosedStatus(isClosed: boolean) {
-    sessionStorage.setItem("isAppStoreBannerClosed", JSON.stringify(isClosed));
-    this.isAppStoreBannerClosedSubject.next(isClosed);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.setItem(
+        "isAppStoreBannerClosed",
+        JSON.stringify(isClosed)
+      );
+      this.isAppStoreBannerClosedSubject.next(isClosed);
+    }
   }
 }

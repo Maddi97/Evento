@@ -1,11 +1,18 @@
-import { Location } from "@angular/common";
-import { Component, HostListener, OnInit } from "@angular/core";
+import { Location, isPlatformBrowser } from "@angular/common";
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+} from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import * as moment from "moment";
 import { filter } from "rxjs";
 import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
+import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 
 @Component({
   selector: "app-headerbar",
@@ -28,13 +35,15 @@ export class HeaderbarComponent implements OnInit {
   constructor(
     private location: Location,
     private router: Router,
-    private sessionStorageService: SessionStorageService,
-    private sharedObservables: SharedObservableService
+    private sharedObservables: SharedObservableService,
+    private mapCenterViewService: MapCenterViewService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    this.getScreenWidth = window.innerWidth;
-    this.isMapView = this.sessionStorageService.getMapViewData() || false;
+    if (isPlatformBrowser(this.platformId)) {
+      this.getScreenWidth = window.innerWidth;
+    }
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe({
@@ -53,19 +62,17 @@ export class HeaderbarComponent implements OnInit {
         },
         complete: () => {},
       });
-    this.sessionStorageService.mapViewChanges().subscribe((isMapView) => {
+    this.mapCenterViewService.isMapViewObservable.subscribe((isMapView) => {
       this.isMapView = isMapView;
+      if (isMapView) {
+        this.scrollOut = false;
+      }
     });
     this.sharedObservables.scrollOutInOfScreenObservable.subscribe(
       (scrollOut) => {
         this.scrollOut = scrollOut && !this.isNotEventsPage && !this.isMapView;
       }
     );
-    this.sessionStorageService.mapViewChanges().subscribe((mapViewData) => {
-      if (mapViewData) {
-        this.scrollOut = false;
-      }
-    });
   }
 
   navBack() {
@@ -76,7 +83,7 @@ export class HeaderbarComponent implements OnInit {
     this.filteredDate = filter.date;
   }
   changeMapView() {
-    this.sessionStorageService.setMapViewData(false);
+    this.mapCenterViewService.setMapViewData(false);
   }
   getClassOnFullEvent() {
     if (this.isNotEventsPage) {

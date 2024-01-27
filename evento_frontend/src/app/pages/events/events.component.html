@@ -4,14 +4,13 @@
     <!--    <span class="category-label">Kategorien</span>-->
     <!-- <img class="category-headline" src="assets/design-elements/Kategorien_design.png"> -->
     <app-category-list
-      *ngIf="fetchParamsCompleted"
       class="main-category-container"
       id="main-category-container"
       [filteredCategory]="filteredCategory"
       [filteredSubcategories]="filteredSubcategories"
     ></app-category-list>
 
-    <div class="event-map-container" *ngIf="getScreenWidth > 1000">
+    <div class="event-map-container" *ngIf="false">
       <div
         class="event-container"
         id="event-container"
@@ -42,7 +41,7 @@
         ></map-view>
       </div>
     </div>
-    <div class="event-map-container" *ngIf="getScreenWidth < 1000">
+    <div class="event-map-container">
       <div class="switchViewButton" (click)="changeToMapView()">
         <p>Zur Karte</p>
         <mat-icon class="change-view-icon">map</mat-icon>

@@ -1,4 +1,11 @@
-import { Component, HostListener, OnDestroy, OnInit } from "@angular/core";
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Category, Subcategory } from "@globals/models/category";
 import { Event } from "@globals/models/event";
@@ -6,20 +13,25 @@ import { Settings } from "@globals/models/settings";
 import { NominatimGeoService } from "@services/core/location/nominatim-geo.service";
 import { PositionService } from "@services/core/location/position.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
-import { CategoriesService } from "@services/simple/categories/categories.service";
-import { EventService } from "@services/simple/events/event.service";
-import {
-  NowCategory,
-  PromotionCategory,
-} from "@shared/molecules/category-list/category-list.component";
+import { CategoriesComplexService } from "@services/complex/categories/categories.complex.service";
+import { EventsComplexService } from "@services/complex/events/events.complex.service";
+import { PROMOTION_CATEGORY } from "@globals/constants/categories.c";
 import * as moment from "moment-timezone";
 import { NgxSpinnerService } from "ngx-spinner";
-import { Subscription } from "rxjs";
 import {
-  Search,
-  SessionStorageService,
-} from "@services/core/session-storage/session-storage.service";
-
+  Observable,
+  Subscription,
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  switchMap,
+  tap,
+} from "rxjs";
+import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
+import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
+import { Search } from "@globals/types/search.types";
+import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
+import { isPlatformBrowser } from "@angular/common";
 @Component({
   selector: "app-events",
   templateUrl: "./events.component.html",
@@ -49,8 +61,6 @@ export class EventsComponent implements OnInit, OnDestroy {
   categoryList: Category[] = [];
 
   subcategoryList: Subcategory[] = [];
-  promotionCategory: PromotionCategory = { name: "Hot", _id: "1" };
-  nowCategory: NowCategory = { name: "Now", _id: "2" };
 
   search: Search = { searchString: "", event: "Reset" };
 
@@ -60,7 +70,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   eventToScrollId = undefined;
   hoveredEventId = null;
-  filteredCategory: any = this.promotionCategory;
+  filteredCategory: any = PROMOTION_CATEGORY;
   lastEventListLength = 0;
   hasMoreEventsToLoad = true;
   // filteredSubcategories
@@ -80,29 +90,120 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   public getScreenWidth: number;
   public settings: Settings;
+  mapCenter: number[];
   constructor(
-    private eventService: EventService,
+    private eventsComplexService: EventsComplexService,
     private spinner: NgxSpinnerService,
     private _activatedRoute: ActivatedRoute,
     private geoService: NominatimGeoService,
-    private categoriesService: CategoriesService,
-    private sessionStorageService: SessionStorageService,
+    private categoriesComplexService: CategoriesComplexService,
     private positionService: PositionService,
-    private sharedObservables: SharedObservableService
+    private sharedObservables: SharedObservableService,
+    private customRouterService: CustomRouterService,
+    private mapCenterViewService: MapCenterViewService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.actualLoadEventLimit = this.startLoadEventLimit;
-    this.mapView = this.sessionStorageService.getMapViewData();
-    if (this.mapView === null) {
-      this.sessionStorageService.setMapViewData(false);
-      this.mapView = false;
-    }
+    const searchString$ = this.sharedObservables.searchStringObservable;
+    const position$ = this.positionService.positionObservable;
+    const categoryList$ =
+      this.categoriesComplexService.getCategoriesSortedByWeight();
 
-    const mapView$ = this.sessionStorageService
-      .mapViewChanges()
-      .subscribe((data) => {
-        this.mapView = data;
+    categoryList$
+      .pipe(
+        tap((categoryList) => {
+          this.categoryList = categoryList;
+        }),
+        switchMap((categoryList: Category[]) => {
+          let queryParams$ =
+            this.customRouterService.getQueryParamsEventsComponent(
+              this.settings,
+              categoryList
+            );
+
+          return combineLatest([queryParams$, searchString$, position$]);
+        }),
+        distinctUntilChanged()
+      )
+      .subscribe({
+        next: ([queryParams, searchString, position]) => {
+          this.spinner.show();
+          // Handle the combined values here
+          [
+            this.filteredDate,
+            this.filteredCategory,
+            this.filteredSubcategories,
+          ] = queryParams;
+          this.sharedObservables.setSearchString(searchString);
+          this.search = searchString;
+          this.currentPosition = position;
+          const req = this.createRequestObject(false);
+          this.applyFilters(req);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          console.log("Subscription should never complete");
+        },
       });
-    this.subscriptions$.push(mapView$);
+
+    this.mapView = this.mapCenterViewService.isMapViewObservable.value;
+    const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe({
+      next: (isMapView) => {
+        console.log("Map view next: ", isMapView);
+        this.mapView = isMapView;
+      },
+    });
+    const mapCenter$ = this.mapCenterViewService.mapCenterPosition.subscribe({
+      next: (mapCenter) => {
+        this.mapCenter = mapCenter;
+      },
+    });
+
+    this.sharedObservables.settingsObservable.subscribe({
+      next: (settings) => {
+        console.log("Settings next: ", settings);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+      complete: () => {
+        console.log("Settings subsription should never complete");
+      },
+    });
+
+    this.subscriptions$.push(mapView$, mapCenter$);
+  }
+  createRequestObject(hasMapCenterChanged) {
+    const germanyTime = new Date().toLocaleTimeString("en-DE", {
+      timeZone: "Europe/Berlin",
+    });
+    if (this.search.event === "Input") {
+      return {
+        searchString: this.search.searchString,
+        limit: this.actualLoadEventLimit,
+        alreadyReturnedEventIds: [],
+        date: this.filteredDate,
+        categories: this.categoryList.map((cat) => cat._id),
+      };
+    } else {
+      return {
+        event: "Params",
+        date: this.filteredDate,
+        time: germanyTime,
+        cat: [this.filteredCategory],
+        subcat: this.filteredSubcategories,
+        limit: this.offsetLoadEventLimit,
+        alreadyReturnedEventIds:
+          this.startLoadEventLimit === this.actualLoadEventLimit
+            ? []
+            : this.eventList.map((event) => event._id),
+        currentPosition: hasMapCenterChanged
+          ? this.mapCenter
+          : this.currentPosition,
+      };
+    }
   }
   ngOnDestroy(): void {
     this.subscriptions$.forEach((subscription$) => {
@@ -113,6 +214,9 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log("Position");
+    this.positionService.getPositionByLocation();
+
     const settings$ = this.sharedObservables.settingsObservable.subscribe(
       (settings) => {
         if (settings) {
@@ -121,215 +225,15 @@ export class EventsComponent implements OnInit, OnDestroy {
       }
     );
     this.subscriptions$.push(settings$);
-    this.getScreenWidth = window.innerWidth;
-
-    //this.setupPositionService();
-    this.setupCategoriesService();
-    this.setupSearchFilterSubscription();
   }
 
-  private setupSearchFilterSubscription() {
-    const search$ = this.sessionStorageService.searchStringSubject.subscribe(
-      (search: Search) => {
-        this.spinner.show();
-        this.closeSpinnerAfterTimeout();
-
-        this.search = search;
-        const date = moment(new Date()).utcOffset(0, false).set({
-          hour: 0,
-          minute: 0,
-          second: 0,
-          millisecond: 0,
-        });
-
-        const req = {
-          searchString: search.searchString,
-          limit: this.actualLoadEventLimit,
-          alreadyReturnedEventIds: [],
-          date: date,
-          categories: this.categoryList.map((cat) => cat._id),
-        };
-        const event$ = this.eventService
-          .getEventsBySearchString(req)
-          .subscribe({
-            next: (events) => {
-              this.resetEventList = true;
-              if (search.event === "Reset") {
-                this.eventList = [];
-                this.applyFilters();
-              } else {
-                this.lastRunningSubscription = "searchString";
-                this.handlyEventListLoaded(events);
-              }
-            },
-            error: (error) => {
-              console.error(error);
-            },
-            complete: () => {
-              this.onFetchEventsCompleted();
-            },
-          });
-        this.subscriptions$.push(event$);
-      }
-    );
-    this.subscriptions$.push(search$);
-  }
-
-  private setupPositionService(): void {
-    if (!this.sessionStorageService.getUserLocationFromStorage()) {
-      this.positionService.getPositionByLocation().then((res) => {
-        this.storageLocationObservation$ = this.sessionStorageService
-          .getLocation()
-          .subscribe((position) => {
-            if (
-              this.search.event !== "Input" &&
-              JSON.stringify(position) !== JSON.stringify(this.currentPosition)
-            ) {
-              this.resetLoadingLimit();
-              this.currentPosition = position;
-              this.resetEventList = true;
-              this.applyFilters();
-            }
-          });
-      });
-    } else {
-      this.storageLocationObservation$?.unsubscribe();
-      this.storageLocationObservation$ = this.sessionStorageService
-        .getLocation()
-        .subscribe((position) => {
-          if (
-            this.search.event !== "Input" &&
-            JSON.stringify(position) !== JSON.stringify(this.currentPosition)
-          ) {
-            this.resetLoadingLimit();
-            this.currentPosition = position;
-            this.resetEventList = true;
-            this.applyFilters();
-          }
-        });
-    }
-    const newCenter$ =
-      this.sessionStorageService.searchNewCenterSubject.subscribe(
-        (mapCenterPosition) => {
-          this.loadMoreEvents(mapCenterPosition, true);
-        }
-      );
-    this.subscriptions$.push(this.storageLocationObservation$, newCenter$);
-  }
-
-  private setupCategoriesService(): void {
-    const categories$ = this.categoriesService.getAllCategories().subscribe({
-      next: (categories) => {
-        this.categoryList = this.sortCategoriesByWeight(categories);
-
-        categories.forEach((category: Category) => {
-          category.subcategories.forEach((subcategory) => {
-            this.subcategoryList.push(subcategory);
-          });
-        });
-      },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        console.log("Categories complete");
-        this.setupQueryParams();
-      },
-    });
-    this.subscriptions$.push(categories$);
-  }
-
-  private setupQueryParams(): void {
-    const params$ = this._activatedRoute.queryParams.subscribe({
-      next: (params) => {
-        if (params.date || params.categories) {
-          this.eventList = [];
-        }
-        this.resetLoadingLimit();
-        this.fetchEventsCompleted = false;
-        this.filteredDate = moment(params.date);
-        // append the hours of the current time zone because the post request will automatically
-        // change to time with time zone an this could change the date
-        this.filteredDate.add(moment(new Date()).utcOffset() / 60, "hours");
-        const category = params.category;
-        if (category === "1") {
-          this.filteredCategory = this.settings.isPromotionActivated
-            ? this.promotionCategory
-            : this.categoryList[0];
-        } else if (category === "2") {
-          this.filteredCategory = this.nowCategory;
-        } else {
-          this.filteredCategory = category
-            ? this.categoryList.find((c) => c._id === category)
-            : this.categoryList[0];
-        }
-
-        if (params.subcategory) {
-          this.filteredSubcategories = this.subcategoryList.filter((s) =>
-            params.subcategory.includes(s._id)
-          );
-        } else {
-          this.filteredSubcategories = [];
-        }
-        this.fetchParamsCompleted = true;
-        if (this.storageLocationObservation$) {
-          this.resetEventList = true;
-          this.applyFilters();
-        }
-        this.setupPositionService();
-        //this.applyFilters()
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
-    this.subscriptions$.push(params$);
-  }
-
-  applyFilters(mapCenter = undefined, showSpinner = true) {
-    console.log("Apply filters");
-    if (showSpinner) this.spinner.show();
-
-    // Request backend for date, category and subcategory filter
-    // filter object
-    //format date because in post request it is stringified and formatted, this could change the date
-    const germanyTime = new Date().toLocaleTimeString("en-DE", {
-      timeZone: "Europe/Berlin",
-    });
-    const fil = {
-      date: this.filteredDate,
-      time: germanyTime,
-      cat: [this.filteredCategory],
-      subcat: this.filteredSubcategories,
-      limit: this.offsetLoadEventLimit,
-      alreadyReturnedEventIds:
-        this.startLoadEventLimit === this.actualLoadEventLimit
-          ? []
-          : this.eventList.map((event) => event._id),
-      currentPosition: mapCenter ? mapCenter : this.currentPosition,
-    };
-
-    let event$;
-    // if category is not hot
-    if (!fil.cat.find((el) => el._id === "1" || el._id === "2")) {
-      event$ = this.eventService
-        .getEventsOnDateCategoryAndSubcategory(fil)
-        .subscribe({
-          next: (events) => {
-            this.lastRunningSubscription = "category";
-            this.handlyEventListLoaded(events);
-          },
-          error: (error) => {
-            console.error(error);
-          },
-          complete: () => {
-            this.onFetchEventsCompleted();
-          },
-        });
-    } else if (fil.cat.find((el) => el._id === "1")) {
-      event$ = this.eventService.getHotEvents(fil).subscribe({
+  applyFilters(req) {
+    console.log("Apply filters", req);
+    const event$ = this.eventsComplexService
+      .getEventsSubscriptionBasedOnTypeAndCategory(req)
+      .subscribe({
         next: (events) => {
-          this.lastRunningSubscription = "promotion";
+          this.resetEventList = true;
           this.handlyEventListLoaded(events);
         },
         error: (error) => {
@@ -339,24 +243,6 @@ export class EventsComponent implements OnInit, OnDestroy {
           this.onFetchEventsCompleted();
         },
       });
-    } else if (fil.cat.find((el) => el._id === "2")) {
-      // if hot filter by date
-
-      event$ = this.eventService
-        .getEventsOnDate(this.filteredDate, germanyTime)
-        .subscribe({
-          next: (events) => {
-            this.lastRunningSubscription = "hot";
-            this.handlyEventListLoaded(events);
-          },
-          error: (error) => {
-            console.error(error);
-          },
-          complete: () => {
-            this.onFetchEventsCompleted();
-          },
-        });
-    }
     this.subscriptions$.push(event$);
   }
   get_distance_to_current_position(event) {
@@ -368,46 +254,15 @@ export class EventsComponent implements OnInit, OnDestroy {
     return dist;
   }
 
-  loadMoreEvents(mapCenter = undefined, spinner = false) {
+  loadMoreEvents(mapCenter = undefined) {
     console.log("Load more events");
     if (this.loadMore) {
       this.isLoadMoreClicked = mapCenter ? false : true;
       this.actualLoadEventLimit += this.offsetLoadEventLimit;
       this.resetEventList = false;
-      if (this.lastRunningSubscription !== "searchString") {
-        this.applyFilters(mapCenter, spinner);
-      } else {
-        const date = moment(new Date()).utcOffset(0, false).set({
-          hour: 0,
-          minute: 0,
-          second: 0,
-          millisecond: 0,
-        });
-
-        const req = {
-          searchString: this.search.searchString,
-          limit: this.actualLoadEventLimit,
-          alreadyReturnedEventIds: this.eventList.map((event) => event._id),
-          date: date,
-          categories: this.categoryList.map((cat) => cat._id),
-        };
-        this.eventService.getEventsBySearchString(req).subscribe({
-          next: (events) => {
-            this.handlyEventListLoaded(events);
-          },
-          error: (error) => {
-            console.error(error);
-          },
-          complete: () => {
-            this.onFetchEventsCompleted();
-          },
-        });
-      }
+      const req = this.createRequestObject(false);
+      this.applyFilters(req);
     }
-  }
-
-  searchForDay(filter: DateClicked) {
-    this.filteredDate = filter.date;
   }
 
   getEventFromId() {
@@ -419,10 +274,11 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   changeToMapView() {
     this.mapView ? (this.mapView = false) : (this.mapView = true);
-    this.sessionStorageService.setMapViewData(this.mapView);
+    this.mapCenterViewService.setMapViewData(this.mapView);
   }
 
   onFetchEventsCompleted() {
+    console.log("Fetch events completed");
     this.fetchEventsCompleted = true;
     if (this.lastEventListLength <= this.eventList.length) {
       this.hasMoreEventsToLoad = false;
@@ -530,21 +386,16 @@ export class EventsComponent implements OnInit, OnDestroy {
       return false;
     }
   }
-  sortCategoriesByWeight(categoryList) {
-    return categoryList.sort((a, b) => {
-      const weightA = a.weight ? parseFloat(a.weight) : 0;
-      const weightB = b.weight ? parseFloat(b.weight) : 0;
-      return weightB - weightA;
-    });
-  }
 
   private resetLoadingLimit() {
     this.actualLoadEventLimit = this.startLoadEventLimit;
   }
+
+  //TODO time
   closeSpinnerAfterTimeout() {
     setTimeout(() => {
       this.spinner.hide();
-    }, 10000);
+    }, 1);
   }
 }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { Capacitor } from "@capacitor/core";
 import { filter, take } from "rxjs";
@@ -6,6 +6,7 @@ import { SettingsService } from "./services/simple/settings/settings.service.ser
 import { SharedObservableService } from "./services/core/shared-observables/shared-observables.service";
 import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
 import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
+import { isPlatformBrowser } from "@angular/common";
 declare interface Window {
   adsbygoogle: any[];
 }
@@ -17,6 +18,7 @@ declare var adsbygoogle: any[];
 })
 export class AppComponent implements OnInit {
   title = "Evento Leipzig";
+  isPlatformBrowser = false;
   private cookieMessage =
     "Diese Website verwendet nur essenzielle Cookies. Erfahrunge mehr über die verwendeten Cookies in unsererem Datenschutzbereich" +
     "";
@@ -27,11 +29,12 @@ export class AppComponent implements OnInit {
     private router: Router,
     private settingsService: SettingsService,
     private sharedObservableService: SharedObservableService,
-    private sessionStorageService: SessionStorageService
+    private sessionStorageService: SessionStorageService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    console.log("Hallo");
+    this.isPlatformBrowser = isPlatformBrowser(this.platformId);
     //only get position on first creation and not on routing inside the spa
     this.settingsService.getSettings().subscribe((settings) => {
       this.sharedObservableService.setSettings(settings);
@@ -49,7 +52,7 @@ export class AppComponent implements OnInit {
               isNotEventsPage = true;
             }
           });
-          if (!isNotEventsPage) {
+          if (!isNotEventsPage && isPlatformBrowser(this.platformId)) {
             this.sessionStorageService.removePositionFromStorage();
           }
         },
@@ -61,7 +64,10 @@ export class AppComponent implements OnInit {
           subscription$.unsubscribe();
         },
       });
-    if (Capacitor.getPlatform() === "web") {
+    if (
+      Capacitor.getPlatform() === "web" &&
+      isPlatformBrowser(this.platformId)
+    ) {
       const cc = window as any;
       cc.cookieconsent.initialise({
         palette: {

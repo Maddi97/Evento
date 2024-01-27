@@ -1,4 +1,12 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  Component,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+} from "@angular/core";
 import { FileService } from "@services/complex/files/file.service";
 import { OrganizerService } from "@services/simple/organizer/organizer.service";
 
@@ -20,7 +28,8 @@ export class EventPictureComponent implements OnInit, OnDestroy {
 
   constructor(
     private fileService: FileService,
-    private organizerService: OrganizerService
+    private organizerService: OrganizerService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
@@ -29,7 +38,9 @@ export class EventPictureComponent implements OnInit, OnDestroy {
       .getOrganizerById(this.event?._organizerId)
       .subscribe((organizer) => {
         this.organizer = organizer[0];
-        this.downloadImage();
+        if (isPlatformBrowser(this.platformId)) {
+          this.downloadImage();
+        }
       });
   }
   ngOnDestroy() {

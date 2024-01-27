@@ -1,9 +1,9 @@
-import { Component, Input } from "@angular/core";
-import { CookiesService } from "@services/core/cookie-service/cookies.service";
+import { Component } from "@angular/core";
 import { Capacitor } from "@capacitor/core";
-import { DeviceDetectorService } from "ngx-device-detector";
-import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 import { AppBannerSettings } from "@globals/models/settings";
+import { CookiesService } from "@services/core/cookie-service/cookies.service";
+import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
+import { DeviceDetectorService } from "ngx-device-detector";
 
 export interface AppStoreBannerProperties {
   appleStoreImageAlt: string;
@@ -19,7 +19,7 @@ export interface AppStoreBannerProperties {
 })
 export class AppStoreBannerComponent {
   bannerProperties: AppStoreBannerProperties;
-  isBannerClosed;
+  isBannerClosed = true;
   isMobile;
   isPlatformNative;
   platform;

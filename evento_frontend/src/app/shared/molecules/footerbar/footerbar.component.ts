@@ -1,7 +1,14 @@
-import { Component, HostListener, Inject, OnInit } from "@angular/core";
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { DOCUMENT } from "@angular/common";
+import { DOCUMENT, isPlatformBrowser } from "@angular/common";
+import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 
 type FooterPickedField = "/settings" | "/categories" | "/";
 
@@ -17,12 +24,15 @@ export class FooterbarComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private sessionStorageService: SessionStorageService,
-    @Inject(DOCUMENT) private document: Document
+    private mapCenterViewService: MapCenterViewService,
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    this.windowWidth = window.innerWidth;
+    if (isPlatformBrowser(this.platformId)) {
+      this.windowWidth = window.innerWidth;
+    }
     this.route.queryParams.subscribe((params) => {
       this.queryParams = params;
     });
@@ -38,7 +48,7 @@ export class FooterbarComponent implements OnInit {
   }
 
   changeMapView() {
-    this.sessionStorageService.setMapViewData(false);
+    this.mapCenterViewService.setMapViewData(false);
   }
 
   setFooterPickedField(footerPickedField: "/settings" | "/categories" | "/") {

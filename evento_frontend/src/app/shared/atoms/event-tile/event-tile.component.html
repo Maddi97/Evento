@@ -26,7 +26,7 @@
           Entfernung zum Zentrum: {{ distance }}km
         </div>
       </mat-card-subtitle>
-      <div class="date" *ngIf="isScreenMinWidth(1000)">
+      <div class="date" *ngIf="isScreemMin1000px">
         <p>{{ openingTimesFormatter(event) }}</p>
         <p *ngIf="!event.frequency">{{ dateTimesFormater(event) }}</p>
       </div>
@@ -36,7 +36,7 @@
       <!--      </div>-->
     </div>
   </div>
-  <div class="date" *ngIf="!isScreenMinWidth(1000)">
+  <div class="date" *ngIf="!isScreemMin1000px">
     <div>{{ openingTimesFormatter(event) }}</div>
     <div *ngIf="!event.frequency">{{ dateTimesFormater(event) }}</div>
   </div>

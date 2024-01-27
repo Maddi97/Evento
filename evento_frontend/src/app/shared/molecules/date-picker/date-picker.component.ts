@@ -1,14 +1,23 @@
+import { isPlatformBrowser } from "@angular/common";
 import {
   AfterViewInit,
   Component,
   HostListener,
+  Inject,
   OnInit,
+  PLATFORM_ID,
   ViewChild,
 } from "@angular/core";
 import { MatCalendar } from "@angular/material/datepicker";
-import { ActivatedRoute, Router } from "@angular/router";
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterEvent,
+  RoutesRecognized,
+} from "@angular/router";
 import * as moment from "moment";
-import { debounceTime, map, mergeMap, tap } from "rxjs/operators";
+import { debounceTime, filter, map, mergeMap, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-date-picker",
@@ -31,42 +40,43 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
 
   constructor(
     private _activatedRoute: ActivatedRoute,
-    private router: Router
-  ) {}
-
-  async ngOnInit(): Promise<void> {
-    this.getScreenWidth = window.innerWidth;
-
-    if (this.getScreenWidth > 700) {
-      this.numberOfDates = Number(this.getScreenWidth / 100);
-    } else {
-      this.numberOfDates = 30;
-    }
-    const params$ = this._activatedRoute.queryParams.pipe(
-      map((params) => {
-        const date = params.date;
-        if (date) {
-          this.selectedDate = this.removeTimezoneAndTimeFromDate(
-            new Date(date)
-          );
-        }
-      }),
-      tap()
-    );
-
-    params$
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    const params$ = this.router.events
       .pipe(
-        debounceTime(1),
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this._activatedRoute.snapshot.queryParams),
+        map((params) => {
+          const date = params.date;
+          if (date) {
+            this.selectedDate = this.removeTimezoneAndTimeFromDate(
+              new Date(date)
+            );
+          }
+        }),
         mergeMap(() => this.createDateList())
       )
-      .subscribe(() => {
-        this.scrollToClicked();
-      });
-    this.setScrollMaxBool();
+      .subscribe();
+  }
+
+  async ngOnInit(): Promise<void> {
+    if (isPlatformBrowser(this.platformId)) {
+      this.getScreenWidth = window.innerWidth;
+
+      if (this.getScreenWidth > 700) {
+        this.numberOfDates = Number(this.getScreenWidth / 100);
+      } else {
+        this.numberOfDates = 30;
+      }
+      this.setScrollMaxBool();
+    }
   }
 
   ngAfterViewInit() {
-    this.scrollToClicked();
+    if (isPlatformBrowser(this.platformId)) {
+      this.scrollToClicked();
+    }
   }
 
   safeDate(emitDate: DateClicked) {

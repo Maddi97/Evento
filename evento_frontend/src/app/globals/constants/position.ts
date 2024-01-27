@@ -1,0 +1,1 @@
+export const DEFAULT_LOCATION = [51.33962, 12.37129];

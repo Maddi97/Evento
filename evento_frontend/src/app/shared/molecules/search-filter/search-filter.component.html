@@ -3,25 +3,31 @@
   rel="stylesheet"
 />
 
-<div *ngIf="getScreenWidth > 800" class="search-filter">
+<div
+  *ngIf="getScreenWidth > 800"
+  class="search-filter"
+  [formGroup]="searchStringForm"
+>
   <input
     class="form-control"
     type="text"
     name="search"
     id="searchright"
+    formControlName="searchString"
     placeholder=" &#xF002;  Suche Events ..."
-    [(ngModel)]="search.searchString"
-    (keyup)="onSearchChange()"
   />
 </div>
-<div *ngIf="getScreenWidth <= 800" class="search-container">
+<div
+  *ngIf="getScreenWidth <= 800"
+  class="search-container"
+  [formGroup]="searchStringForm"
+>
   <input
     class="search expandright"
     id="searchright"
     type="text"
     placeholder="Suche Events ..."
-    [(ngModel)]="search.searchString"
-    (keyup)="onSearchChange()"
+    formControlName="searchString"
   />
   <label id="searchlabel" class="button searchbutton" for="searchright"
     ><span class="mglass">&#9906;</span></label

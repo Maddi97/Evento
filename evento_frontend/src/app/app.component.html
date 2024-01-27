@@ -1,7 +1,7 @@
 <div class="bg-image-1"></div>
 <div class="bg-image-2"></div>
 
-<vents-app-store-banner></vents-app-store-banner>
+<vents-app-store-banner *ngIf="isPlatformBrowser"></vents-app-store-banner>
 <app-headerbar> </app-headerbar>
 
 <ngx-spinner type="ball-scale-multiple"></ngx-spinner>

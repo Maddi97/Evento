@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { Settings } from "@globals/models/settings";
-
+import { Search } from "@globals/types/search.types";
+import { EMPTY_SEARCH } from "@globals/constants/search";
 type ScrollingDirection = "up" | "down";
 type ScrollOutIn = {
   direction: ScrollingDirection;
@@ -24,6 +25,9 @@ export class SharedObservableService {
   public scrollOutInOfScreenObservable =
     this.scrollOutInSubscject.asObservable();
 
+  private searchStringSubject = new BehaviorSubject<Search>(EMPTY_SEARCH);
+  public searchStringObservable = this.searchStringSubject.asObservable();
+
   public setSettings(settings: Settings): void {
     this.settingsSubject.next(settings);
   }
@@ -39,5 +43,24 @@ export class SharedObservableService {
       this.numberOfScrolls = 0;
     }
     this.numberOfScrolls++;
+  }
+
+  public setSearchString(searchString: Search): void {
+    if (
+      searchString.searchString !== this.searchStringSubject.value.searchString
+    ) {
+      console.log(
+        searchString.searchString,
+        this.searchStringSubject.value.searchString
+      );
+      this.searchStringSubject.next(searchString);
+    }
+  }
+  public clearSearchFilter() {
+    if (
+      EMPTY_SEARCH.searchString !== this.searchStringSubject.value.searchString
+    ) {
+      this.searchStringSubject.next(EMPTY_SEARCH);
+    }
   }
 }

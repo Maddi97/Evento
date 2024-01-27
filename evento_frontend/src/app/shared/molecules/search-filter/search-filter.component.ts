@@ -1,59 +1,91 @@
-import { Component, HostListener, OnDestroy, OnInit } from "@angular/core";
-import { NavigationEnd, Router } from "@angular/router";
+import { isPlatformBrowser } from "@angular/common";
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+} from "@angular/core";
+import { FormBuilder } from "@angular/forms";
 import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
-import { Subscription, filter } from "rxjs";
-import { clearSearchFilter } from "@shared/logic/search-filter-helper";
+import { EMPTY_SEARCH } from "@globals/constants/search";
+import { Search } from "@globals/types/search.types";
+import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 import {
-  Search,
-  SessionStorageService,
-} from "@services/core/session-storage/session-storage.service";
-
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  tap,
+} from "rxjs";
 @Component({
   selector: "app-search-filter",
   templateUrl: "./search-filter.component.html",
   styleUrls: ["./search-filter.component.css"],
 })
 export class SearchFilterComponent implements OnInit, OnDestroy {
-  search: Search = { searchString: "", event: "Reset" };
-  timeout = null;
+  search: Search = EMPTY_SEARCH;
   delay = 300;
   getScreenWidth;
   isFocused = false;
   event$: Subscription;
+  searchStringForm;
   constructor(
-    private sessionStorageService: SessionStorageService,
-    private router: Router
+    private sharedObservableService: SharedObservableService,
+    private formBuilder: FormBuilder,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
   ngOnDestroy(): void {
-    clearTimeout(this.timeout);
-    this.event$.unsubscribe();
+    this.event$?.unsubscribe();
   }
 
   ngOnInit() {
-    this.getScreenWidth = window.innerWidth;
-    this.event$ = this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        clearTimeout(this.timeout);
-        clearSearchFilter(this.sessionStorageService);
-      });
+    this.getScreenWidth = isPlatformBrowser(this.platformId)
+      ? window.innerWidth
+      : 0;
+    this.searchStringForm = this.formBuilder.group({
+      searchString: [""],
+    });
+    this.sharedObservableService.searchStringObservable
+      .pipe(
+        filter(
+          (search: Search) =>
+            search.searchString !== this.searchStringForm.get("searchString")
+        ),
+        tap((search: Search) =>
+          this.searchStringForm
+            .get("searchString")
+            .setValue(search.searchString)
+        )
+      )
+      .subscribe();
+    this.searchStringForm
+      .get("searchString")
+      .valueChanges.pipe(
+        debounceTime(this.delay),
+        distinctUntilChanged(),
+        map((searchString: string) => {
+          this.search = {
+            event: searchString.length > 0 ? "Input" : "Reset",
+            searchString: searchString,
+          };
+          return this.search;
+        }),
+        tap((search: Search) =>
+          this.sharedObservableService.setSearchString(search)
+        )
+      )
+      .subscribe();
   }
 
-  onSearchChange() {
-    clearTimeout(this.timeout);
-    this.timeout = setTimeout(() => {
-      if (this.search.searchString.length > 0) {
-        this.search.event = "Input";
-      } else {
-        this.search.event = "Reset";
-      }
-      this.sessionStorageService.setSearchString(this.search);
-    }, this.delay);
-  }
   @HostListener("window:resize")
   getScreenSize() {
-    this.getScreenWidth = window.innerWidth;
+    this.getScreenWidth = isPlatformBrowser(this.platformId)
+      ? window.innerWidth
+      : 0;
   }
   @HostListener("document:scroll")
   hideSearchOnScroll() {
@@ -74,7 +106,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
           inputBar.classList.add("focus");
         } else {
           if (this.search.searchString.length > 0) {
-            clearSearchFilter(this.sessionStorageService);
+            this.sharedObservableService.clearSearchFilter();
           }
           inputBar.classList.remove("focus");
           setTimeout(() => {

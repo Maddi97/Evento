@@ -1,35 +1,29 @@
 import {
   Component,
   HostListener,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
 } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { GoogleTagManagerService } from "angular-google-tag-manager";
 import { Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+import { first, map } from "rxjs/operators";
 import { CategoriesService } from "@services/simple/categories/categories.service";
 import { FileService } from "@services/complex/files/file.service";
 import { Category, Subcategory } from "@globals/models/category";
-import { clearSearchFilter } from "@shared/logic/search-filter-helper";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
+import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
+import { isPlatformBrowser } from "@angular/common";
+import { Search } from "@globals/types/search.types";
+import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import {
-  Search,
-  SessionStorageService,
-} from "@services/core/session-storage/session-storage.service";
-
-export type PromotionCategory = {
-  name: "Hot";
-  _id: "1";
-};
-
-export type NowCategory = {
-  name: "Now";
-  _id: "2";
-};
-
+  PromotionCategory,
+  NowCategory,
+} from "@globals/types/categories.types";
 @Component({
   selector: "app-category-list",
   templateUrl: "./category-list.component.html",
@@ -68,9 +62,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     private fileService: FileService,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private sessionStorageService: SessionStorageService,
     private gtmService: GoogleTagManagerService,
-    private sharedObservables: SharedObservableService
+    private sharedObservables: SharedObservableService,
+    private mapCenterViewService: MapCenterViewService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
   ngOnDestroy(): void {
     this.subscriptions$.forEach((subscription$: Subscription) => {
@@ -81,10 +76,25 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getScreenWidth = window.innerWidth;
-    //document.getElementById('main-category-container').scrollLeft = 0;
-    this.mapView = this.sessionStorageService.getMapViewData() || false;
-    this.setScrollMaxBool();
+    let searchString$ = null;
+    const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe(
+      (isMapView) => {
+        this.mapView = isMapView;
+      }
+    );
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.getScreenWidth = window.innerWidth;
+      //document.getElementById('main-category-container').scrollLeft = 0;
+
+      this.setScrollMaxBool();
+      searchString$ = this.sharedObservables.searchStringObservable.subscribe(
+        (search: Search) => {
+          this.search = search;
+        }
+      );
+    }
+
     this.sharedObservables.scrollOutInOfScreenObservable.subscribe(
       (scrollOut) => {
         this.scrollOut = scrollOut && !this.mapView;
@@ -109,27 +119,19 @@ export class CategoryListComponent implements OnInit, OnDestroy {
           });
         })
       )
-      .subscribe(() => {
-        this.downloadCategoryIcon();
-        this.scrollToClicked();
-      });
+      .subscribe(() => {});
 
-    const searchString$ =
-      this.sessionStorageService.searchStringSubject.subscribe(
-        (search: Search) => {
-          this.search = search;
-        }
-      );
-    const mapView$ = this.sessionStorageService
-      .mapViewChanges()
-      .subscribe((isMapView) => {
-        this.mapView = isMapView;
-      });
     this.subscriptions$.push(categories$, searchString$, mapView$);
     // this.applyFilters()
     // request categories
     if (this.categoryList.length < 1) {
       this.categoriesService.getAllCategories();
+    }
+  }
+  ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.downloadCategoryIcon();
+      this.scrollToClicked();
     }
   }
 
@@ -243,7 +245,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     });
   }
   clearSearchFilterOnReset() {
-    clearSearchFilter(this.sessionStorageService);
+    this.sharedObservables.clearSearchFilter();
   }
 
   @HostListener("window:resize", ["$event"])
