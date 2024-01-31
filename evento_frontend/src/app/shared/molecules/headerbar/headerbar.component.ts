@@ -7,13 +7,12 @@ import {
   PLATFORM_ID,
 } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
+import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
+import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
+import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 import * as moment from "moment";
 import { filter } from "rxjs";
-import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
-import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
-import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
-
+import { NgOptimizedImage } from "@angular/common";
 @Component({
   selector: "app-headerbar",
   templateUrl: "./headerbar.component.html",

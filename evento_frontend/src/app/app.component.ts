@@ -7,6 +7,8 @@ import { SharedObservableService } from "./services/core/shared-observables/shar
 import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
 import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
 import { isPlatformBrowser } from "@angular/common";
+import { NgxSpinnerService } from "ngx-spinner";
+import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
 declare interface Window {
   adsbygoogle: any[];
 }
@@ -29,7 +31,8 @@ export class AppComponent implements OnInit {
     private router: Router,
     private settingsService: SettingsService,
     private sharedObservableService: SharedObservableService,
-    private sessionStorageService: SessionStorageService,
+    private customRouterService: CustomRouterService,
+    private spinner: NgxSpinnerService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -39,31 +42,12 @@ export class AppComponent implements OnInit {
     this.settingsService.getSettings().subscribe((settings) => {
       this.sharedObservableService.setSettings(settings);
     });
-    const subscription$ = this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        take(1)
-      )
-      .subscribe({
-        next: (event: NavigationEnd) => {
-          let isNotEventsPage = false;
-          SUBDOMAIN_URLS.forEach((subdomain) => {
-            if (event.url.includes(subdomain)) {
-              isNotEventsPage = true;
-            }
-          });
-          if (!isNotEventsPage && isPlatformBrowser(this.platformId)) {
-            this.sessionStorageService.removePositionFromStorage();
-          }
-        },
-        error: (error) => {
-          // Handle error here
-          console.error("An error occurred while fetching categories", error);
-        },
-        complete: () => {
-          subscription$.unsubscribe();
-        },
-      });
+    this.customRouterService.getQueryParams().subscribe(() => {
+      if (isPlatformBrowser(this.platformId)) {
+        this.spinner.show();
+      }
+    });
+
     if (
       Capacitor.getPlatform() === "web" &&
       isPlatformBrowser(this.platformId)

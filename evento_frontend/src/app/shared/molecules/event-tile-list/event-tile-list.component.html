@@ -1,4 +1,4 @@
-<div *ngIf="fetchEventsCompleted" class="event-tile-list-container">
+<div class="event-tile-list-container">
   <div class="event-tile-list" *ngFor="let event of eventList">
     <div class="event-tile-margin">
       <a
@@ -19,7 +19,7 @@
       <vents-google-ads [percentageActivated]="true"></vents-google-ads>
     </div>
   </div>
-  <div class="nothing-found" *ngIf="eventList.length < 1">
+  <div class="nothing-found" *ngIf="!!eventList && eventList.length < 1">
     <mat-icon>sentiment_dissatisfied</mat-icon>
     Wir haben leider nichts passendes für deine Suche gefunden. Sorry!
   </div>

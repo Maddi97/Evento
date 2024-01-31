@@ -32,9 +32,8 @@ import {
 export class CategoryListComponent implements OnInit, OnDestroy {
   @Input() filteredCategory: any;
   @Input() filteredSubcategories: Array<Subcategory>;
-
   // List of all Categories
-  categoryList: Category[] = [];
+  @Input() categoryList: Category[] = [];
   subscriptions$: Subscription[] = [];
   subcategoryList: Subcategory[] = [];
   scrollOut: Boolean = false;
@@ -57,7 +56,6 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   mapView: boolean;
 
   constructor(
-    private categoriesService: CategoriesService,
     private _activatedRoute: ActivatedRoute,
     private fileService: FileService,
     private sanitizer: DomSanitizer,
@@ -76,6 +74,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log("init categories", this.categoryList, this.filteredCategory);
     let searchString$ = null;
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe(
       (isMapView) => {
@@ -93,6 +92,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
           this.search = search;
         }
       );
+      this.downloadCategoryIcon();
+      this.scrollToClicked();
     }
 
     this.sharedObservables.scrollOutInOfScreenObservable.subscribe(
@@ -103,36 +104,10 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.sharedObservables.settingsObservable.subscribe((settings) => {
       this.showPromotion = settings?.isPromotionActivated;
     });
-    const categories$ = this.categoriesService
-      .getAllCategories()
-      .pipe(
-        map((categories: Category[]) => {
-          this.categoryList = categories;
-          this.categoryList = this.sortCategoriesByWeight(this.categoryList);
-          categories.forEach((category: Category) => {
-            category.subcategories = this.sortCategoriesByWeight(
-              category.subcategories
-            );
-            category.subcategories.forEach((subcategory) => {
-              this.subcategoryList.push(subcategory);
-            });
-          });
-        })
-      )
-      .subscribe(() => {});
 
-    this.subscriptions$.push(categories$, searchString$, mapView$);
+    this.subscriptions$.push(searchString$, mapView$);
     // this.applyFilters()
     // request categories
-    if (this.categoryList.length < 1) {
-      this.categoriesService.getAllCategories();
-    }
-  }
-  ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.downloadCategoryIcon();
-      this.scrollToClicked();
-    }
   }
 
   selectCategory(category) {
@@ -178,7 +153,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
   // change color if category picked
   isCategoryPicked(cat: any) {
-    if (this.filteredCategory.name === cat.name) {
+    if (this.filteredCategory?.name === cat.name) {
       return "category-picked";
     } else {
       return "category-non-picked";

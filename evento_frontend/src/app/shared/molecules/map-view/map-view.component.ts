@@ -12,11 +12,11 @@ import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
 import * as L from "leaflet";
 import { skip, switchMap, timer } from "rxjs";
-import { clearSearchFilter } from "@shared/logic/search-filter-helper";
 import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
 import { PositionService } from "@services/core/location/position.service";
 import { LeafletService } from "@services/core/leaflet/leaflet.service";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
+import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 @Component({
   selector: "map-view",
   templateUrl: "./map-view.component.html",
@@ -32,8 +32,8 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Output() emitClickedEventId: EventEmitter<any> = new EventEmitter<any>();
 
   isMapDragged = false;
+  mapInitialized = false;
   private map;
-  private mapInitialized;
   private markerGroup;
   private positionMarkerGroup;
   private hoverMarkerGroup;
@@ -56,9 +56,9 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   constructor(
     private positionService: PositionService,
-    private sessionStorageService: SessionStorageService,
     private leafletService: LeafletService,
-    private mapCenterViewService: MapCenterViewService
+    private mapCenterViewService: MapCenterViewService,
+    private sharedObservableService: SharedObservableService
   ) {}
 
   sanitizeInput(value) {
@@ -80,18 +80,6 @@ export class MapViewComponent implements OnInit, OnChanges {
         shadowSize: [30, 30],
       },
     });
-    this.mapCenterViewService.mapCenterPosition
-      .pipe(
-        skip(1),
-        switchMap(() => {
-          this.isMapDragged = true;
-          // Set the timeout to reset the variable
-          return timer(5000); // 5000 milliseconds (adjust as needed)
-        })
-      )
-      .subscribe(() => {
-        this.isMapDragged = false; // Reset the variable after the timeout
-      });
     // this.initMapIfNeeded(); // Use the method to initialize the map
   }
 
@@ -110,14 +98,13 @@ export class MapViewComponent implements OnInit, OnChanges {
     if (Capacitor.isNativePlatform()) {
       Keyboard.hide();
     }
-    clearSearchFilter(this.sessionStorageService);
+    this.sharedObservableService.clearSearchFilter();
     const address = this.sanitizeInput(this.address);
     this.positionService.getPositionByInput(address);
   }
 
   async setCurrentPositionOfUserToStorage() {
-    const forcePositionCall = true;
-    this.positionService.getPositionByLocation(forcePositionCall);
+    this.positionService.getGeoLocation(true);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -147,7 +134,10 @@ export class MapViewComponent implements OnInit, OnChanges {
         this.updateZIndexPosition("blue");
         this.map.on("moveend", (e) => {
           this.updateZIndexPosition("blue");
-          this.loadNewEventsOnDrag();
+          this.isMapDragged = true;
+          setTimeout(() => {
+            this.isMapDragged = false;
+          }, 3000);
         });
       }
     }, 200); // Adjust the delay time in milliseconds
@@ -244,7 +234,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
   searchEventsInNewArea() {
     this.isMapDragged = false;
-    clearSearchFilter(this.sessionStorageService);
+    this.sharedObservableService.clearSearchFilter();
     this.mapCenterViewService.setMapCenter(this.map.getCenter());
   }
 

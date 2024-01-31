@@ -24,6 +24,7 @@ import {
   combineLatest,
   distinctUntilChanged,
   map,
+  of,
   switchMap,
   tap,
 } from "rxjs";
@@ -32,6 +33,8 @@ import { CustomRouterService } from "@services/core/custom-router/custom-router.
 import { Search } from "@globals/types/search.types";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { isPlatformBrowser } from "@angular/common";
+import { start } from "repl";
+import { CategoriesService } from "@services/simple/categories/categories.service";
 @Component({
   selector: "app-events",
   templateUrl: "./events.component.html",
@@ -46,16 +49,17 @@ export class EventsComponent implements OnInit, OnDestroy {
   private lastScrollPosition = 0;
 
   // equal limit at start == start limit
-  actualLoadEventLimit;
+
   startLoadEventLimit = 16;
+  actualLoadEventLimit = this.startLoadEventLimit;
   offsetLoadEventLimit = 16;
 
   fetchEventsCompleted = false;
   fetchParamsCompleted = false;
-  currentPosition = [];
+  currentPosition;
   mapView = null;
   mapView$;
-  eventList: Event[] = [];
+  eventList: Event[];
   // Applied filtered Category IDs
 
   categoryList: Category[] = [];
@@ -70,11 +74,11 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   eventToScrollId = undefined;
   hoveredEventId = null;
-  filteredCategory: any = PROMOTION_CATEGORY;
+  filteredCategory;
   lastEventListLength = 0;
   hasMoreEventsToLoad = true;
   // filteredSubcategories
-  filteredSubcategories = [];
+  filteredSubcategories;
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
   lastRunningSubscription: "category" | "searchString" | "hot" | "promotion";
@@ -90,63 +94,20 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   public getScreenWidth: number;
   public settings: Settings;
+
   mapCenter: number[];
   constructor(
     private eventsComplexService: EventsComplexService,
     private spinner: NgxSpinnerService,
-    private _activatedRoute: ActivatedRoute,
     private geoService: NominatimGeoService,
-    private categoriesComplexService: CategoriesComplexService,
     private positionService: PositionService,
     private sharedObservables: SharedObservableService,
     private customRouterService: CustomRouterService,
     private mapCenterViewService: MapCenterViewService,
+    private categoryService: CategoriesService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    this.actualLoadEventLimit = this.startLoadEventLimit;
-    const searchString$ = this.sharedObservables.searchStringObservable;
-    const position$ = this.positionService.positionObservable;
-    const categoryList$ =
-      this.categoriesComplexService.getCategoriesSortedByWeight();
-
-    categoryList$
-      .pipe(
-        tap((categoryList) => {
-          this.categoryList = categoryList;
-        }),
-        switchMap((categoryList: Category[]) => {
-          let queryParams$ =
-            this.customRouterService.getQueryParamsEventsComponent(
-              this.settings,
-              categoryList
-            );
-
-          return combineLatest([queryParams$, searchString$, position$]);
-        }),
-        distinctUntilChanged()
-      )
-      .subscribe({
-        next: ([queryParams, searchString, position]) => {
-          this.spinner.show();
-          // Handle the combined values here
-          [
-            this.filteredDate,
-            this.filteredCategory,
-            this.filteredSubcategories,
-          ] = queryParams;
-          this.sharedObservables.setSearchString(searchString);
-          this.search = searchString;
-          this.currentPosition = position;
-          const req = this.createRequestObject(false);
-          this.applyFilters(req);
-        },
-        error: (error) => {
-          console.error(error);
-        },
-        complete: () => {
-          console.log("Subscription should never complete");
-        },
-      });
+    console.log("CONSTRUCTION");
 
     this.mapView = this.mapCenterViewService.isMapViewObservable.value;
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe({
@@ -157,7 +118,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     });
     const mapCenter$ = this.mapCenterViewService.mapCenterPosition.subscribe({
       next: (mapCenter) => {
-        this.mapCenter = mapCenter;
+        this.loadMoreEvents(mapCenter);
       },
     });
 
@@ -181,6 +142,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     });
     if (this.search.event === "Input") {
       return {
+        event: "Input",
         searchString: this.search.searchString,
         limit: this.actualLoadEventLimit,
         alreadyReturnedEventIds: [],
@@ -194,7 +156,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         time: germanyTime,
         cat: [this.filteredCategory],
         subcat: this.filteredSubcategories,
-        limit: this.offsetLoadEventLimit,
+        limit: this.actualLoadEventLimit,
         alreadyReturnedEventIds:
           this.startLoadEventLimit === this.actualLoadEventLimit
             ? []
@@ -214,9 +176,37 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log("Position");
-    this.positionService.getPositionByLocation();
+    const searchString$ = this.sharedObservables.searchStringObservable;
+    const position$ = this.positionService.positionObservable;
 
+    const queryParams$ = this.customRouterService.getQueryParamsEventsComponent(
+      this.settings
+    );
+    const combined$ = combineLatest([queryParams$, searchString$, position$])
+      .pipe(distinctUntilChanged())
+      .subscribe({
+        next: ([queryParams, searchString, position]) => {
+          // Handle the combined values here
+          console.log(queryParams);
+          [
+            this.filteredDate,
+            this.filteredCategory,
+            this.filteredSubcategories,
+          ] = queryParams;
+          this.sharedObservables.setSearchString(searchString);
+          this.search = searchString;
+          this.currentPosition = position;
+          const req = this.createRequestObject(false);
+          this.applyFilters(req);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          console.log("Subscription should never complete");
+        },
+      });
+    this.positionService.getGeoLocation();
     const settings$ = this.sharedObservables.settingsObservable.subscribe(
       (settings) => {
         if (settings) {
@@ -224,16 +214,26 @@ export class EventsComponent implements OnInit, OnDestroy {
         }
       }
     );
-    this.subscriptions$.push(settings$);
+    const categoryList$ = this.categoryService
+      .getAllCategories()
+      .subscribe((categories) => (this.categoryList = categories));
+    this.subscriptions$.push(settings$, categoryList$, combined$);
+    if (isPlatformBrowser(this.platformId)) {
+      this.getScreenSize();
+      this.spinner.show();
+    }
   }
-
-  applyFilters(req) {
-    console.log("Apply filters", req);
+  ngOnChange() {
+    this.spinner.show();
+  }
+  applyFilters(req, loadMore = false) {
+    console.log("apply filters");
     const event$ = this.eventsComplexService
       .getEventsSubscriptionBasedOnTypeAndCategory(req)
       .subscribe({
         next: (events) => {
-          this.resetEventList = true;
+          console.log(events[0]?.name);
+          this.resetEventList = !loadMore;
           this.handlyEventListLoaded(events);
         },
         error: (error) => {
@@ -261,7 +261,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       this.actualLoadEventLimit += this.offsetLoadEventLimit;
       this.resetEventList = false;
       const req = this.createRequestObject(false);
-      this.applyFilters(req);
+      this.applyFilters(req, true);
     }
   }
 

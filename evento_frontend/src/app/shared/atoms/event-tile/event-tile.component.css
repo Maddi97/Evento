@@ -5,6 +5,7 @@
   transition: all 0.3s ease-in-out;
   box-shadow: none;
   border: none;
+  background-color: white;
 }
 
 .map-clicked {

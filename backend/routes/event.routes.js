@@ -254,66 +254,59 @@ router.post("/getEventsBySearchString", limiter, (req, res) => {
   const categories = req.body.req.categories;
   const date = req.body.req.date;
   let alreadyReturnedEventIds = req.body.req.alreadyReturnedEventIds || [];
-  const fourteenDaysAgo = new Date(date);
-  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() + 21);
+  const fourteenDaysAhead = new Date(date);
+  fourteenDaysAhead.setDate(fourteenDaysAhead.getDate() + 21);
+  console.log(categories);
+
+  const dateConditions = {
+    $or: [
+      { "date.start": { $gte: date } },
+      {
+        $and: [
+          { "date.start": { $lte: date } }, // -1 to include today
+          { "date.end": { $gte: date } },
+        ],
+      },
+      { permanent: true },
+      {
+        $and: [
+          { frequency: { $exists: true } },
+          { "date.start": { $lte: date } },
+        ],
+      },
+    ],
+  };
+
+  const fourteenDaysAgoCondition = {
+    "date.start": { $lte: fourteenDaysAhead },
+  };
+
+  const searchStringConditions = {
+    $or: [
+      { name: { $regex: searchString, $options: "i" } },
+      { organizerName: { $regex: searchString, $options: "i" } },
+      { "address.street": { $regex: searchString, $options: "i" } },
+      { "category.name": { $regex: searchString, $options: "i" } },
+      {
+        alias: {
+          $elemMatch: { $regex: searchString, $options: "i" },
+        },
+      },
+    ],
+  };
+
+  const categoryConditions = { "category._id": { $in: categories } };
+
   Event.find({
     $and: [
-      {
-        $or: [
-          {
-            "date.start": { $gte: date },
-          },
-          {
-            $and: [
-              {
-                "date.start": { $lte: date }, //-1 um den heutigen Tag mit zu finden
-              },
-              {
-                "date.end": { $gte: date },
-              },
-            ],
-          },
-          {
-            permanent: { $eq: true },
-          },
-          {
-            $and: [
-              { frequency: { $exists: true } },
-              {
-                "date.start": { $lte: date },
-              },
-            ],
-          },
-        ],
-
-        "date.start": { $lte: fourteenDaysAgo },
-      },
-
-      {
-        $or: [
-          {
-            name: { $regex: searchString, $options: "i" }, // Case-insensitive search for event name
-          },
-          {
-            organizerName: { $regex: searchString, $options: "i" }, // Case-insensitive search for organizer name
-          },
-          {
-            "address.street": { $regex: searchString, $options: "i" },
-          },
-          {
-            "category.name": { $regex: searchString, $options: "i" },
-          },
-          {
-            alias: {
-              $elemMatch: { $regex: searchString, $options: "i" },
-            },
-          },
-        ],
-      },
-      { "category._id": { $in: categories } },
+      dateConditions,
+      fourteenDaysAgoCondition,
+      searchStringConditions,
+      categoryConditions,
     ],
   })
     .then((events) => {
+      console.log(events);
       events = events.filter((event) => {
         return !alreadyReturnedEventIds.includes(event._id.toString());
       });

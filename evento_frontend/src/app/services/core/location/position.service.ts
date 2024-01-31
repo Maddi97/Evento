@@ -1,22 +1,26 @@
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { Geolocation } from "@capacitor/geolocation";
-import { NgxSpinnerService } from "ngx-spinner";
-import { NominatimGeoService } from "./nominatim-geo.service";
-import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { BehaviorSubject, Subject, of } from "rxjs";
 import { DEFAULT_LOCATION } from "@globals/constants/position";
-import { isPlatformBrowser } from "@angular/common";
+import { GeolocationService } from "@ng-web-apis/geolocation";
+import { NgxSpinnerService } from "ngx-spinner";
+import {
+  BehaviorSubject,
+  ReplaySubject,
+  Subject,
+  filter,
+  map,
+  take,
+  tap,
+} from "rxjs";
+import { NominatimGeoService } from "./nominatim-geo.service";
+
 @Injectable({
   providedIn: "root",
 })
 export class PositionService {
   searchedCenter: Array<number>;
   disableCallLocation = false;
-
-  public positionObservable = new BehaviorSubject<Array<number>>(
-    DEFAULT_LOCATION
-  );
+  public positionObservable = new ReplaySubject<Array<number>>(1);
   public isPositionDefault = new BehaviorSubject<Boolean>(true);
   // New York Center
   // default_center_position = [40.7142700, -74.0059700]
@@ -25,7 +29,7 @@ export class PositionService {
     private geoService: NominatimGeoService,
     private _snackbar: MatSnackBar,
     private spinner: NgxSpinnerService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private readonly geolocation$: GeolocationService
   ) {}
 
   getPositionByInput(addressInput) {
@@ -49,62 +53,32 @@ export class PositionService {
       });
   }
 
-  async getPositionByLocation(forcePositionCall = false) {
-    if (isPlatformBrowser(this.platformId)) {
-      let positionReturned = false;
-      this.spinner.show();
-      this.closeSpinnerAfterTimeout();
-      if (this.disableCallLocation || !forcePositionCall) {
-        return Promise.resolve("failed");
-      }
-      setTimeout(() => {
-        if (!positionReturned) {
-          this.setDefaultLocation();
-          Promise.resolve("Timeout");
-        }
-      }, 8000);
-      this.disableCallLocation = true;
-      // Simple geolocation API check provides values to publish
-      // unfortunately needs some seconds sometimes
-      await Geolocation.getCurrentPosition()
-        .then((position: GeolocationPosition) => {
-          const { latitude, longitude } = position.coords;
-          if (latitude && longitude) {
-            this.searchedCenter = [latitude, longitude];
-            this.positionObservable.next(this.searchedCenter);
+  getGeoLocation(showSpinner = false) {
+    if (showSpinner) this.spinner.show();
+    this.geolocation$
+      .pipe(
+        take(1),
+        map((position) => [position.coords.latitude, position.coords.longitude])
+      )
+      .subscribe({
+        next: (position) => {
+          console.log("Position requested: ", position);
+          this.positionObservable.next(position),
             this.isPositionDefault.next(false);
-            positionReturned = true;
-            console.log("Callback from geo API");
+        },
+        error: (error) => {
+          this.setDefaultLocation();
+          if (error.code === 1) {
+            this.openErrorSnackBar(
+              "Deine Privatspähreeinstellungen verhinderen die Standortermittlung.\nStandort wird zu Leipzig Zentrum gesetzt."
+            );
           } else {
-            this.setDefaultLocation();
             this.openErrorSnackBar(
               "Standort konnte nicht ermittelt werden und wird auf Leipzig Zentrum gesetzt."
             );
-            positionReturned = true;
-            return Promise.resolve("failed");
           }
-        })
-        .catch((error: GeolocationPositionError) => {
-          let message = "Standort konnte nicht ermittelt werden";
-          this.spinner.hide();
-          if (error.code === 1) {
-            message =
-              "Deine Privatspähreeinstellungen verhinderen die Standortermittlung. \nStandort wird zu Leipzig Zentrum gesetzt.";
-            this.setDefaultLocation();
-            positionReturned = true;
-            this.openErrorSnackBar(message);
-          } else {
-            this.setDefaultLocation();
-            positionReturned = true;
-            this.openErrorSnackBar(message);
-          }
-        });
-
-      setTimeout(() => {
-        this.disableCallLocation = false;
-      }, 3000);
-      return Promise.resolve("completed");
-    }
+        },
+      });
   }
 
   setDefaultLocation() {

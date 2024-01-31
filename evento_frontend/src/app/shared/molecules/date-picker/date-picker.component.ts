@@ -17,7 +17,9 @@ import {
   RoutesRecognized,
 } from "@angular/router";
 import * as moment from "moment";
-import { debounceTime, filter, map, mergeMap, tap } from "rxjs/operators";
+import { filter, map, tap } from "rxjs/operators";
+import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
+import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
 
 @Component({
   selector: "app-date-picker",
@@ -37,16 +39,15 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
 
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
-
+  params$;
   constructor(
     private _activatedRoute: ActivatedRoute,
+    private customRouterService: CustomRouterService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    const params$ = this.router.events
+    this.params$ = this.customRouterService.queryParamsSubject
       .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map(() => this._activatedRoute.snapshot.queryParams),
         map((params) => {
           const date = params.date;
           if (date) {
@@ -55,7 +56,9 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
             );
           }
         }),
-        mergeMap(() => this.createDateList())
+        tap((params) => {
+          this.createDateList();
+        })
       )
       .subscribe();
   }
@@ -77,6 +80,9 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     if (isPlatformBrowser(this.platformId)) {
       this.scrollToClicked();
     }
+  }
+  ngOnDestroy() {
+    this.params$.unsubscribe();
   }
 
   safeDate(emitDate: DateClicked) {

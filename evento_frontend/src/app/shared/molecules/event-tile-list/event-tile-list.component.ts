@@ -20,10 +20,10 @@ import { NgxSpinnerService } from "ngx-spinner";
   styleUrls: ["./event-tile-list.component.css"],
 })
 export class EventTileListComponent implements OnInit, OnChanges {
-  @Input() fetchEventsCompleted = false;
   @Input() eventList;
-  @Input() userPosition = [0, 0];
+  @Input() userPosition;
   @Input() eventToScrollId;
+  @Input() test;
   @Output() hoverEventEmitter = new EventEmitter<string>();
 
   emittedEventId = null;
@@ -35,20 +35,14 @@ export class EventTileListComponent implements OnInit, OnChanges {
 
   constructor(
     private geoService: NominatimGeoService,
-    private positionService: PositionService,
     private spinner: NgxSpinnerService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  ngOnInit(): void {
-    console.log("Init list", this.userPosition);
-    this.positionService.positionObservable.subscribe((location) => {
-      this.userPosition = location;
-    });
-  }
+  ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.eventToScrollId) {
+    if (changes.eventToScrollId && isPlatformBrowser(this.platformId)) {
       this.scrollToEvent(
         this.eventToScrollId,
         changes.eventToScrollId.previousValue
@@ -57,30 +51,28 @@ export class EventTileListComponent implements OnInit, OnChanges {
   }
 
   scrollToEvent(eventToScroll, previousEventToScroll) {
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
-        const id = "event-tile-" + eventToScroll?._id;
-        const previousId = "event-tile-" + previousEventToScroll?._id;
-        const element = document.getElementById(id);
+    setTimeout(() => {
+      const id = "event-tile-" + eventToScroll?._id;
+      const previousId = "event-tile-" + previousEventToScroll?._id;
+      const element = document.getElementById(id);
 
-        if (eventToScroll?.event === "open") {
-          element?.scrollIntoView(
-            { behavior: "smooth", block: "start" } // Use smooth scrolling
-          );
-          var styleTarget = element?.children[0]?.children[0];
-          styleTarget.classList.add("map-clicked");
-        }
-        if (
-          eventToScroll?._id !== previousEventToScroll?._id ||
-          eventToScroll?.event === "closed"
-        ) {
-          var styleTarget =
-            document.getElementById(previousId)?.children[0]?.children[0];
-          // Add the class
-          styleTarget?.classList.remove("map-clicked");
-        }
-      }, 1);
-    }
+      if (eventToScroll?.event === "open") {
+        element?.scrollIntoView(
+          { behavior: "smooth", block: "start" } // Use smooth scrolling
+        );
+        var styleTarget = element?.children[0]?.children[0];
+        styleTarget.classList.add("map-clicked");
+      }
+      if (
+        eventToScroll?._id !== previousEventToScroll?._id ||
+        eventToScroll?.event === "closed"
+      ) {
+        var styleTarget =
+          document.getElementById(previousId)?.children[0]?.children[0];
+        // Add the class
+        styleTarget?.classList.remove("map-clicked");
+      }
+    }, 1);
   }
   hover(eventId: string) {
     this.hoverEventEmitter.emit(eventId);
