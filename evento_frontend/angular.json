@@ -181,6 +181,24 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "assets": [
+                "src/assets",
+                {
+                  "glob": "**/*",
+                  "input": "node_modules/leaflet/dist/images",
+                  "output": "./assets/"
+                },
+                {
+                  "glob": "robots.txt",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "sitemap.xml",
+                  "input": "src/assets",
+                  "output": "/"
+                }
+              ],
               "optimization": true,
               "sourceMap": false,
               "extractLicenses": true,
@@ -202,7 +220,26 @@
             },
             "dev": {
               "optimization": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "outputHashing": "media",
+              "assets": [
+                "src/assets",
+                {
+                  "glob": "**/*",
+                  "input": "node_modules/leaflet/dist/images",
+                  "output": "./assets/"
+                },
+                {
+                  "glob": "robots.txt",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "sitemap.xml",
+                  "input": "src/assets",
+                  "output": "/"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"

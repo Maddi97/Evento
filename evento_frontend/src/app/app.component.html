@@ -4,6 +4,7 @@
 <vents-app-store-banner *ngIf="isPlatformBrowser"></vents-app-store-banner>
 <app-headerbar> </app-headerbar>
 <app-category-list
+  *ngIf="actualSubdomain === ''"
   class="main-category-container"
   [settings]="settings"
 ></app-category-list>

@@ -1,7 +1,8 @@
 <div class="event-page">
   <div class="filter-container">
     <div class="event-map-container" *ngIf="getScreenWidth >= 1000">
-      <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+      <ngx-spinner type="ball-scale-multiple" [fullScreen]="false">
+      </ngx-spinner>
       <div
         class="event-container"
         id="event-container"
@@ -36,7 +37,8 @@
       class="event-map-container"
       *ngIf="!getScreenWidth || getScreenWidth < 1000"
     >
-      <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+      <ngx-spinner type="ball-scale-multiple" [fullScreen]="false">
+      </ngx-spinner>
       <div class="switchViewButton" (click)="changeToMapView()">
         <p>Zur Karte</p>
         <mat-icon class="change-view-icon">map</mat-icon>

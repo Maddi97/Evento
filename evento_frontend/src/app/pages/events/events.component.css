@@ -177,3 +177,8 @@ app-event-tile-list {
 .load-more-events-button > p {
   margin: 0;
 }
+
+::ng-deep .ngx-spinner-overlay {
+  height: 85vh !important;
+  top: -20px !important;
+}

@@ -28,8 +28,8 @@ export class AppComponent implements OnInit {
   private cookieDismiss = "Verstanden!";
   private cookieLinkText = "Hier gehts zur Datenschutzerklärung";
   settings: Settings;
+  actualSubdomain = "";
   constructor(
-    private router: Router,
     private settingsService: SettingsService,
     private sharedObservableService: SharedObservableService,
     private customRouterService: CustomRouterService,
@@ -49,7 +49,9 @@ export class AppComponent implements OnInit {
         this.spinner.show();
       }
     });
-
+    this.customRouterService
+      .getSubdomain()
+      .subscribe((subdomain) => (this.actualSubdomain = subdomain));
     if (
       Capacitor.getPlatform() === "web" &&
       isPlatformBrowser(this.platformId)

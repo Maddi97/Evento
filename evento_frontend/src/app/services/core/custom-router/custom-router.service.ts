@@ -44,7 +44,24 @@ export class CustomRouterService {
   ) {}
 
   queryParamsSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
+  subdomainSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
   categoryList = [];
+  getSubdomain(): Observable<string> {
+    return this.router.events.pipe(
+      filter(
+        (event: any) =>
+          event instanceof NavigationEnd ||
+          event.routerEvent instanceof NavigationEnd
+      ),
+      map((event: any) => {
+        const url = event?.url || event?.routerEvent?.url;
+        return (
+          SUBDOMAIN_URLS.find((substring) => url.includes(substring)) || ""
+        );
+      }),
+      tap((url) => this.subdomainSubject.next(url))
+    );
+  }
   getQueryParams(): Observable<any> {
     return this.router.events.pipe(
       filter(

@@ -83,8 +83,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       .subscribe((queryParams) => {
         [this.categoryList, this.filteredCategory, this.filteredSubcategories] =
           queryParams;
-        console.log(this.categoryList);
-        this.downloadCategoryIcon();
+        if (isPlatformBrowser(this.platformId)) {
+          this.downloadCategoryIcon();
+        }
         this.scrollToClicked();
       });
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe(
@@ -223,6 +224,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
               const unsafeImg = URL.createObjectURL(imageData);
               category.iconTemporaryURL =
                 this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+              console.log(category.iconTemporaryURL);
             });
           this.subscriptions$.push(fileDownload$);
         }

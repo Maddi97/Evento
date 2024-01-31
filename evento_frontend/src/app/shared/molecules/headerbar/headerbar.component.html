@@ -24,7 +24,7 @@
   </div>
   <div *ngIf="!isNotEventsPage" class="logo-container">
     <img
-      *ngIf="getScreenWidth <= 1000"
+      *ngIf="!getScreenWidth || getScreenWidth <= 1000"
       class="logo-small"
       src="assets/icon/icon.png"
       alt="logo name"
