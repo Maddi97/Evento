@@ -13,6 +13,8 @@ import {
   dateTimesFormater,
 } from "@shared/logic/opening-times-format-helpers";
 import { SessionStorageService } from "@services/core//session-storage/session-storage.service";
+import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
+import { PositionService } from "@services/core/location/position.service";
 @Component({
   selector: "app-full-event",
   templateUrl: "./full-event.component.html",
@@ -24,7 +26,7 @@ export class FullEventComponent implements OnInit, OnDestroy {
   event: Event;
   organizer: Organizer;
 
-  private storage$;
+  private position$;
   private params$;
 
   IconURL = null;
@@ -37,17 +39,17 @@ export class FullEventComponent implements OnInit, OnDestroy {
     private eventService: EventService,
     private router: Router,
     private spinner: NgxSpinnerService,
-    private sessionStorageService: SessionStorageService,
+    private positionService: PositionService,
     private organizerService: OrganizerService,
     private gtmService: GoogleTagManagerService
   ) {}
 
   ngOnInit(): void {
-    this.storage$ = this.sessionStorageService
-      .getLocation()
-      .subscribe((position) => {
+    this.position$ = this.positionService.positionObservable.subscribe(
+      (position) => {
         this.currentPosition = position;
-      });
+      }
+    );
     this.params$ = this.route.params
       .pipe(
         map((eventIdParam) => eventIdParam["eventId"]),
@@ -105,8 +107,8 @@ export class FullEventComponent implements OnInit, OnDestroy {
     if (this.params$) {
       this.params$.unsubscribe();
     }
-    if (this.storage$) {
-      this.storage$.unsubscribe();
+    if (this.position$) {
+      this.position$.unsubscribe();
     }
   }
 }

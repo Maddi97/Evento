@@ -1,3 +1,4 @@
+import { isPlatformBrowser } from "@angular/common";
 import {
   Component,
   HostListener,
@@ -6,35 +7,20 @@ import {
   OnInit,
   PLATFORM_ID,
 } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import { Category, Subcategory } from "@globals/models/category";
 import { Event } from "@globals/models/event";
 import { Settings } from "@globals/models/settings";
+import { Search } from "@globals/types/search.types";
+import { EventsComplexService } from "@services/complex/events/events.complex.service";
+import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
 import { NominatimGeoService } from "@services/core/location/nominatim-geo.service";
 import { PositionService } from "@services/core/location/position.service";
+import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
-import { CategoriesComplexService } from "@services/complex/categories/categories.complex.service";
-import { EventsComplexService } from "@services/complex/events/events.complex.service";
-import { PROMOTION_CATEGORY } from "@globals/constants/categories.c";
+import { CategoriesService } from "@services/simple/categories/categories.service";
 import * as moment from "moment-timezone";
 import { NgxSpinnerService } from "ngx-spinner";
-import {
-  Observable,
-  Subscription,
-  combineLatest,
-  distinctUntilChanged,
-  map,
-  of,
-  switchMap,
-  tap,
-} from "rxjs";
-import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
-import { Search } from "@globals/types/search.types";
-import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
-import { isPlatformBrowser } from "@angular/common";
-import { start } from "repl";
-import { CategoriesService } from "@services/simple/categories/categories.service";
+import { Subscription, combineLatest, distinctUntilChanged } from "rxjs";
 @Component({
   selector: "app-events",
   templateUrl: "./events.component.html",
@@ -187,7 +173,6 @@ export class EventsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([queryParams, searchString, position]) => {
           // Handle the combined values here
-          console.log(queryParams);
           [
             this.filteredDate,
             this.filteredCategory,
@@ -214,10 +199,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         }
       }
     );
-    const categoryList$ = this.categoryService
-      .getAllCategories()
-      .subscribe((categories) => (this.categoryList = categories));
-    this.subscriptions$.push(settings$, categoryList$, combined$);
+    this.subscriptions$.push(settings$, combined$);
     if (isPlatformBrowser(this.platformId)) {
       this.getScreenSize();
       this.spinner.show();

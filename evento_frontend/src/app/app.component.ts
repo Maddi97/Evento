@@ -9,6 +9,7 @@ import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
 import { isPlatformBrowser } from "@angular/common";
 import { NgxSpinnerService } from "ngx-spinner";
 import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
+import { Settings } from "@globals/models/settings";
 declare interface Window {
   adsbygoogle: any[];
 }
@@ -26,7 +27,7 @@ export class AppComponent implements OnInit {
     "";
   private cookieDismiss = "Verstanden!";
   private cookieLinkText = "Hier gehts zur Datenschutzerklärung";
-
+  settings: Settings;
   constructor(
     private router: Router,
     private settingsService: SettingsService,
@@ -41,6 +42,7 @@ export class AppComponent implements OnInit {
     //only get position on first creation and not on routing inside the spa
     this.settingsService.getSettings().subscribe((settings) => {
       this.sharedObservableService.setSettings(settings);
+      this.settings = settings;
     });
     this.customRouterService.getQueryParams().subscribe(() => {
       if (isPlatformBrowser(this.platformId)) {

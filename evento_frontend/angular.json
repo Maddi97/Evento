@@ -224,7 +224,7 @@
         "prerender": {
           "builder": "@angular-devkit/build-angular:prerender",
           "options": {
-            "routes": ["/"]
+            "discoverRoutes": true
           },
           "configurations": {
             "production": {

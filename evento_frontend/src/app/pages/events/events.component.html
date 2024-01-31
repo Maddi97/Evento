@@ -1,15 +1,5 @@
 <div class="event-page">
   <div class="filter-container">
-    <!--    <span class="category-label">Kategorien</span>-->
-    <!-- <img class="category-headline" src="assets/design-elements/Kategorien_design.png"> -->
-    <app-category-list
-      *ngIf="categoryList && filteredCategory"
-      class="main-category-container"
-      id="main-category-container"
-      [categoryList]="categoryList"
-      [filteredCategory]="filteredCategory"
-      [filteredSubcategories]="filteredSubcategories"
-    ></app-category-list>
     <div class="event-map-container" *ngIf="getScreenWidth >= 1000">
       <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
       <div

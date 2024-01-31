@@ -3,7 +3,10 @@
 
 <vents-app-store-banner *ngIf="isPlatformBrowser"></vents-app-store-banner>
 <app-headerbar> </app-headerbar>
-
+<app-category-list
+  class="main-category-container"
+  [settings]="settings"
+></app-category-list>
 <router-outlet></router-outlet>
 
 <app-footerbar> </app-footerbar>

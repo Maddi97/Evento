@@ -24,16 +24,19 @@ import {
   PromotionCategory,
   NowCategory,
 } from "@globals/types/categories.types";
+import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
+import { Settings } from "@globals/models/settings";
 @Component({
   selector: "app-category-list",
   templateUrl: "./category-list.component.html",
   styleUrls: ["./category-list.component.css"],
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
-  @Input() filteredCategory: any;
-  @Input() filteredSubcategories: Array<Subcategory>;
+  @Input() settings: Settings;
+  filteredCategory: any;
+  filteredSubcategories: Array<Subcategory>;
   // List of all Categories
-  @Input() categoryList: Category[] = [];
+  categoryList: Category[];
   subscriptions$: Subscription[] = [];
   subcategoryList: Subcategory[] = [];
   scrollOut: Boolean = false;
@@ -63,6 +66,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     private gtmService: GoogleTagManagerService,
     private sharedObservables: SharedObservableService,
     private mapCenterViewService: MapCenterViewService,
+    private customRouterService: CustomRouterService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
   ngOnDestroy(): void {
@@ -74,26 +78,32 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log("init categories", this.categoryList, this.filteredCategory);
-    let searchString$ = null;
+    const queryParams$ = this.customRouterService
+      .getQueryParamsCategoryListComponent(this.settings)
+      .subscribe((queryParams) => {
+        [this.categoryList, this.filteredCategory, this.filteredSubcategories] =
+          queryParams;
+        console.log(this.categoryList);
+        this.downloadCategoryIcon();
+        this.scrollToClicked();
+      });
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe(
       (isMapView) => {
         this.mapView = isMapView;
       }
     );
 
-    if (isPlatformBrowser(this.platformId)) {
-      this.getScreenWidth = window.innerWidth;
-      //document.getElementById('main-category-container').scrollLeft = 0;
-
-      this.setScrollMaxBool();
-      searchString$ = this.sharedObservables.searchStringObservable.subscribe(
+    const searchString$ =
+      this.sharedObservables.searchStringObservable.subscribe(
         (search: Search) => {
           this.search = search;
         }
       );
-      this.downloadCategoryIcon();
-      this.scrollToClicked();
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.getScreenWidth = window.innerWidth;
+      //document.getElementById('main-category-container').scrollLeft = 0;
+      this.setScrollMaxBool();
     }
 
     this.sharedObservables.scrollOutInOfScreenObservable.subscribe(
@@ -105,7 +115,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       this.showPromotion = settings?.isPromotionActivated;
     });
 
-    this.subscriptions$.push(searchString$, mapView$);
+    this.subscriptions$.push(searchString$, mapView$, queryParams$);
     // this.applyFilters()
     // request categories
   }
@@ -229,15 +239,17 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.setScrollMaxBool();
   }
   scrollToClicked() {
-    setTimeout(() => {
-      const element: HTMLElement = document.getElementById("category-picked");
-      if (!element) return;
-      element.scrollIntoView({
-        block: "end",
-        inline: "center",
-        behavior: "instant",
-      });
-    }, 800);
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        const element: HTMLElement = document.getElementById("category-picked");
+        if (!element) return;
+        element.scrollIntoView({
+          block: "end",
+          inline: "center",
+          behavior: "instant",
+        });
+      }, 800);
+    }
   }
 
   scrollRight() {

@@ -20,10 +20,11 @@ const routes: Routes = [
     component: FullEventComponent,
   },
   {
-    path: "**",
+    path: "",
     loadChildren: () =>
       import("./pages/events/events.module").then((m) => m.EventsModule),
   },
+  { path: "**", redirectTo: "" },
 ];
 
 @NgModule({

@@ -18,6 +18,8 @@ replace div+*ngIf with ng-container + *ngIf -> ng container doesnt add to the do
 
 -custom-theme.scss -> correctly define and use the themes
 
+- independently build categoryList
+
 # syntactical
 
 - vents to app

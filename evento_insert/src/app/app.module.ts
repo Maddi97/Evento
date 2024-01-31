@@ -56,7 +56,7 @@ import { GlobalSettingsComponent } from "./pages/settings/global-settings/global
 import { GlobalSettingsFormComponent } from "./pages/settings/global-settings-form/global-settings-form.component";
 import { ExpansionPanelComponent } from "./molecules/expansion-panel/expansion-panel.component";
 import { EventPanelComponent } from "./atoms/event-panel/event-panel.component";
-import { CategoryEventExpansionPanelComponent } from './molecules/category-event-expansion-panel/category-event-expansion-panel.component';
+import { CategoryEventExpansionPanelComponent } from "./molecules/category-event-expansion-panel/category-event-expansion-panel.component";
 
 @NgModule({
   declarations: [
