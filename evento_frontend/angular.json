@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "threeventsfiveone": {
+    "evento": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/threeventsfiveone",
+            "outputPath": "dist/evento/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -108,21 +108,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "threeventsfiveone:build"
+            "buildTarget": "evento:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "threeventsfiveone:build:production"
+              "buildTarget": "evento:build:production"
             },
             "dev": {
-              "browserTarget": "threeventsfiveone:build:dev"
+              "buildTarget": "evento:build:dev"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "threeventsfiveone:build"
+            "buildTarget": "evento:build"
           }
         },
         "test": {
@@ -132,12 +132,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         },
@@ -149,26 +145,135 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "threeventsfiveone:serve"
+            "devServerTarget": "evento:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "threeventsfiveone:serve:production"
+              "devServerTarget": "evento:serve:production"
             }
           }
         },
         "deploy": {
           "builder": "@angular/fire:deploy",
           "options": {}
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/evento/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "buildOptimizer": true,
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "assets": [
+                "src/assets",
+                {
+                  "glob": "**/*",
+                  "input": "node_modules/leaflet/dist/images",
+                  "output": "./assets/"
+                },
+                {
+                  "glob": "robots.txt",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "sitemap.xml",
+                  "input": "src/assets",
+                  "output": "/"
+                }
+              ],
+              "optimization": true,
+              "sourceMap": false,
+              "extractLicenses": true,
+              "vendorChunk": false
+            },
+            "staging": {
+              "buildOptimizer": true,
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ],
+              "optimization": true,
+              "sourceMap": false,
+              "extractLicenses": true,
+              "vendorChunk": false
+            },
+            "dev": {
+              "optimization": false,
+              "sourceMap": true,
+              "outputHashing": "media",
+              "assets": [
+                "src/assets",
+                {
+                  "glob": "**/*",
+                  "input": "node_modules/leaflet/dist/images",
+                  "output": "./assets/"
+                },
+                {
+                  "glob": "robots.txt",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "sitemap.xml",
+                  "input": "src/assets",
+                  "output": "/"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-ssr": {
+          "builder": "@angular-devkit/build-angular:ssr-dev-server",
+          "configurations": {
+            "dev": {
+              "browserTarget": "evento:build:dev",
+              "serverTarget": "evento:server:dev"
+            },
+            "production": {
+              "browserTarget": "evento:build:production",
+              "serverTarget": "evento:server:production"
+            }
+          },
+          "defaultConfiguration": "dev"
+        },
+        "prerender": {
+          "builder": "@angular-devkit/build-angular:prerender",
+          "options": {
+            "discoverRoutes": true
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "evento:build:production",
+              "serverTarget": "evento:server:production"
+            },
+            "dev": {
+              "browserTarget": "evento:build:dev",
+              "serverTarget": "evento:server:dev"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }

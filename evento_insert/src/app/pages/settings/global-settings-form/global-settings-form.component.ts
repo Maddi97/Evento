@@ -8,7 +8,7 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { Settings } from "src/app/models/settings";
+import { AppBannerSettings, Settings } from "src/app/models/settings";
 
 @Component({
   selector: "app-global-settings-form",
@@ -20,6 +20,8 @@ export class GlobalSettingsFormComponent implements OnInit, OnChanges {
     _id: "",
     isAdsActivated: false,
     isPromotionActivated: false,
+    percentagOfAd: 0,
+    appBannerSettings: new AppBannerSettings(),
   }; // Input object containing all settings variables
   @Output() applySettings = new EventEmitter<Settings>();
 
@@ -32,6 +34,13 @@ export class GlobalSettingsFormComponent implements OnInit, OnChanges {
     this.settingsForm = this.formBuilder.group({
       isAdsActivated: this.settings?.isAdsActivated || false,
       isPromotionActivated: this.settings?.isPromotionActivated || false,
+      percentagOfAd: this.settings?.percentagOfAd || 0,
+      appBannerSettings: this.formBuilder.group({
+        isAppBannerActivated:
+          this.settings?.appBannerSettings.isAppBannerActivated || true,
+        appStoreLink: this.settings?.appBannerSettings.appStoreLink || "",
+        googlePlayLink: this.settings?.appBannerSettings.googlePlayLink || "",
+      }),
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -45,6 +54,8 @@ export class GlobalSettingsFormComponent implements OnInit, OnChanges {
     this.settingsForm.reset({
       isAdsActivated: false,
       isPromotionActivated: false,
+      percentageOfAd: 0,
+      AppBannerSettings: new AppBannerSettings(),
     });
   }
 

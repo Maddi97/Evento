@@ -1,22 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~leaflet/dist/leaflet.css';
-@import 'assets/fonts/fonts.css';
+@import "~leaflet/dist/leaflet.css";
+@import "assets/fonts/fonts.css";
 
 :root {
   --safe-area-inset-bottom: env(safe-area-inset-bottom);
 }
 
-html {}
+html {
+}
 
 html,
 body {
   height: 100%;
 }
 
-
 body {
-  //margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 /*cookie consent banner to top*/
@@ -28,7 +28,6 @@ body {
 .cc-bottom {
   bottom: unset !important;
 }
-
 
 .green-snackbar {
   --mat-mdc-snack-bar-button-color: green;

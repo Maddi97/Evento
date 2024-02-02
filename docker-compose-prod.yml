@@ -26,7 +26,7 @@ services:
     ports:
       - "10000:80"
     volumes:
-      - ./threeventsfiveone:/app
+      - ./evento:/app
       - /app/node_modules
     # depends_on:
     #   - letsencrypt

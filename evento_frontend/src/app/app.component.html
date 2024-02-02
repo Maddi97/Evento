@@ -1,11 +1,13 @@
 <div class="bg-image-1"></div>
 <div class="bg-image-2"></div>
 
-<app-headerbar>
-</app-headerbar>
-
-<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<vents-app-store-banner *ngIf="isPlatformBrowser"></vents-app-store-banner>
+<app-headerbar> </app-headerbar>
+<app-category-list
+  *ngIf="actualSubdomain === ''"
+  class="main-category-container"
+  [settings]="settings"
+></app-category-list>
 <router-outlet></router-outlet>
 
-<app-footerbar>
-</app-footerbar>
+<app-footerbar> </app-footerbar>

@@ -1,13 +1,13 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "NodeJS Backend 3vents51",
+  "description": "NodeJS Backend Evento",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js"
   },
   "keywords": [
-    "3vents51"
+    "evento"
   ],
   "author": "Maximilian Schaller",
   "license": "ISC",

@@ -1,27 +1,27 @@
-# Threeventsfiveone
+### Refactor
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.20.
+- Lazy Loading -> routes load children/ seperates modules for pages that manages routing e.g. events.routing.module
 
-## Development server
+- for parameters from root use withComponentInputBindin https://angular.io/guide/router
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- for getting route params try const heroId = this.route.snapshot.paramMap.get('id');
+  this.hero$ = this.service.getHero(heroId);
 
-## Code scaffolding
+- passing observables down to components to use it in html if possible using the async pipe {{$evebts || async}}
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+replace div+*ngIf with ng-container + *ngIf -> ng container doesnt add to the dom
 
-## Build
+- As Pipe: common-utilities/logic/opening-times-format-helpers.ts
+- global types directory
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+-models are interfaces not classes
 
-## Running unit tests
+-custom-theme.scss -> correctly define and use the themes
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- independently build categoryList
 
-## Running end-to-end tests
+# syntactical
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+- vents to app
+- rename docker container to equal
+- all threevents to evento

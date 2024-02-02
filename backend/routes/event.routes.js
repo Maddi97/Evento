@@ -4,6 +4,8 @@ const auth = require("../middleware/authJWT");
 const limiter = require("../middleware/rateLimiter");
 const Event = require("../model/event.model");
 const timeHelper = require("../helpers/timeAndDate.helper");
+const Category = require("../model/category.model"); // Import the Category model
+
 router.get("/events", limiter, (req, res) => {
   Event.find({})
     .then((events) => res.send(events))
@@ -86,6 +88,7 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
   let date = req.body.fil.date;
   let time = req.body.fil.time;
   let categories = req.body.fil.cat;
+  let alreadyReturnedEventIds = req.body.fil.alreadyReturnedEventIds || [];
   let limit = req.body.fil.limit;
   let userPosition = req.body.fil.currentPosition;
 
@@ -149,7 +152,10 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
         }
         return true;
       });
-
+      //sort out already returned events
+      events = events.filter((event) => {
+        return !alreadyReturnedEventIds.includes(event._id.toString());
+      });
       //sort events by distance
       events.sort((ev1, ev2) => {
         // Check if ev1 should be promoted (promote == true) and ev2 should not
@@ -210,16 +216,17 @@ router.post("/upcomingEvents", limiter, (req, res) => {
     });
 });
 
-router.post("/getEventsBySearchString", limiter, (req, res) => {
-  const searchString = String(escape(req.body.req.searchString)); // Get the searchString from the request body
-  const limit = Number(req.body.req.limit);
-  const categories = req.body.req.categories;
-  const date = req.body.req.date;
-
+router.post("/hotEvents", limiter, (req, res) => {
+  let date = new Date(req.body.fil.date);
+  let count = req.body.fil.count || 0;
+  let limit = req.body.fil.limit || 99999;
   Event.find({
     $and: [
       {
         $or: [
+          {
+            "date.start": { $gte: date }, //-1 um den heutigen Tag mit zu finden
+          },
           {
             $and: [
               {
@@ -230,37 +237,80 @@ router.post("/getEventsBySearchString", limiter, (req, res) => {
               },
             ],
           },
-          {
-            permanent: { $eq: true },
-          },
         ],
       },
+      { hot: { $eq: true } },
+    ],
+  })
 
+    .then((events) => res.send(events.slice(count, limit)))
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" }); // Send an error response with status code 500 (Internal Server Error)
+    });
+});
+
+router.post("/getEventsBySearchString", limiter, async (req, res) => {
+  const searchString = String(escape(req.body.req.searchString)); // Get the searchString from the request body
+  const limit = Number(req.body.req.limit);
+  let categories = await Category.find({}, "_id");
+  categories = categories.map((catIdObj) => catIdObj._id); //map category id object to list of ids
+  const date = req.body.req.date;
+  let alreadyReturnedEventIds = req.body.req.alreadyReturnedEventIds || [];
+  const fourteenDaysAhead = new Date(date);
+  fourteenDaysAhead.setDate(fourteenDaysAhead.getDate() + 21);
+  console.log(alreadyReturnedEventIds);
+  const dateConditions = {
+    $or: [
+      { "date.start": { $gte: date } },
       {
-        $or: [
-          {
-            name: { $regex: searchString, $options: "i" }, // Case-insensitive search for event name
-          },
-          {
-            organizerName: { $regex: searchString, $options: "i" }, // Case-insensitive search for organizer name
-          },
-          {
-            "address.street": { $regex: searchString, $options: "i" },
-          },
-          {
-            "category.name": { $regex: searchString, $options: "i" },
-          },
-          {
-            alias: {
-              $elemMatch: { $regex: searchString, $options: "i" },
-            },
-          },
+        $and: [
+          { "date.start": { $lte: date } }, // -1 to include today
+          { "date.end": { $gte: date } },
         ],
       },
-      { "category._id": { $in: categories } },
+      { permanent: true },
+      {
+        $and: [
+          { frequency: { $exists: true } },
+          { "date.start": { $lte: date } },
+        ],
+      },
+    ],
+  };
+
+  const fourteenDaysAgoCondition = {
+    "date.start": { $lte: fourteenDaysAhead },
+  };
+
+  const searchStringConditions = {
+    $or: [
+      { name: { $regex: searchString, $options: "i" } },
+      { organizerName: { $regex: searchString, $options: "i" } },
+      { "address.street": { $regex: searchString, $options: "i" } },
+      { "category.name": { $regex: searchString, $options: "i" } },
+      {
+        alias: {
+          $elemMatch: { $regex: searchString, $options: "i" },
+        },
+      },
+    ],
+  };
+
+  const categoryConditions = { "category._id": { $in: categories } };
+
+  Event.find({
+    $and: [
+      dateConditions,
+      fourteenDaysAgoCondition,
+      searchStringConditions,
+      categoryConditions,
     ],
   })
     .then((events) => {
+      events = events.filter((event) => {
+        return !alreadyReturnedEventIds.includes(event._id.toString());
+      });
       res.send(events.slice(0, limit));
     })
     .catch((error) => {
@@ -271,8 +321,15 @@ router.post("/getEventsBySearchString", limiter, (req, res) => {
 
 router.post("/outdatedEvents", limiter, (req, res) => {
   let date = new Date();
+  date.setDate(date.getDate() - 30);
+
   Event.find({
-    "date.end": { $lte: date },
+    $and: [
+      {
+        "date.end": { $lte: date },
+        permanent: false,
+      },
+    ],
   })
     .then((events) => res.send(events))
     .catch((error) => {
@@ -336,6 +393,55 @@ router.post("/getEventsOnCategory", limiter, (req, res) => {
       res.status(500).json({ error: "Internal Server Error" }); // Send an error response with status code 500 (Internal Server Error)
     });
 });
+router.post(
+  "/getUpcomingventsOnCategoryAndSubcategory",
+  limiter,
+  (req, res) => {
+    let date = new Date();
+    const id = String(req.body.subcategory._id);
+    Event.find({
+      $or: [
+        {
+          "date.start": { $gte: date },
+        },
+        {
+          $and: [
+            {
+              "date.start": { $lte: date },
+            },
+            {
+              "date.end": { $gte: date },
+            },
+          ],
+        },
+        {
+          permanent: { $eq: true },
+        },
+        {
+          $and: [
+            { frequency: { $exists: true } },
+            {
+              "date.start": { $lte: date },
+            },
+          ],
+        },
+      ],
+    })
+      .then((events) => {
+        res.send(
+          events.filter((event) =>
+            event.category.subcategories
+              .map((subcategory) => subcategory._id)
+              .includes(id)
+          )
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" }); // Send an error response with status code 500 (Internal Server Error)
+      });
+  }
+);
 
 router.post("/getUpcomingventsOnCategory", limiter, (req, res) => {
   let date = new Date();
@@ -376,13 +482,6 @@ router.post("/getUpcomingventsOnCategory", limiter, (req, res) => {
     ],
   })
     .then((events) => {
-      events = events.filter((event) => {
-        if (event.frequency) {
-          return timeHelper.isFrequencyToday(event.frequency, date);
-        }
-        return true;
-      });
-
       res.send(events);
     })
     .catch((error) => {

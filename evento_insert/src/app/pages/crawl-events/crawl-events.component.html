@@ -1,48 +1,78 @@
 <div class="select-crawler">
-    <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+  <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
 
-    <div class="crawler">
-        <mat-form-field>
-            <mat-label>Select an Crawler</mat-label>
-            <mat-select [(value)]="actualCrawler">
-                <mat-option *ngFor="let crawler of crawlerNames" [value]="crawler">
-                    {{crawler}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+  <div class="crawler">
+    <mat-form-field>
+      <mat-label>Select an Crawler</mat-label>
+      <mat-select [(value)]="actualCrawler">
+        <mat-option *ngFor="let crawler of crawlerNames" [value]="crawler">
+          {{ crawler }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-        <div class="input">
-            <mat-form-field>
-                <mat-label>Crawl date</mat-label>
-                <input matInput [matDatepicker]="picker3" [(ngModel)]="selectedInputDate" (ngModelChange)="onDateChange($event)">
-                <mat-hint>MM/DD/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
-                <mat-datepicker #picker3></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field class="days input">
-                <mat-label>Number of days</mat-label>
-                <input matInput placeholder="number ..." [(ngModel)]="inputNumberOfDays">
-            </mat-form-field>
-        </div>
-
-        <div class="buttons-run-task">
-            <button mat-raised-button color="primary" (click)="startCrawling(actualCrawler)">
-                Run task of Crawler '{{actualCrawler}}''
-            </button>
-        </div>
-
-        <div>
-            <p>Found {{crawledEventList.length}} events with crawler {{actualCrawler}}</p>
-            <label>Search Event of index</label>
-            <input class="input-index" (keydown.enter)="setIndex($event.target.value)" />
-            <p>Event of index: {{index}}</p>
-            <button (click)="previousEvent()">Previous Event</button>
-            <button (click)="nextEvent()">Next Event</button>
-        </div>
+    <div class="input">
+      <mat-form-field>
+        <mat-label>Crawl date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker3"
+          [(ngModel)]="selectedInputDate"
+          (ngModelChange)="onDateChange($event)"
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker3"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker3></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field class="days input">
+        <mat-label>Number of days</mat-label>
+        <input
+          matInput
+          placeholder="number ..."
+          [(ngModel)]="inputNumberOfDays"
+        />
+      </mat-form-field>
     </div>
+
+    <div class="buttons-run-task">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="startCrawling(actualCrawler)"
+      >
+        Run task of Crawler '{{ actualCrawler }}''
+      </button>
+    </div>
+
+    <div>
+      <p>
+        Found {{ crawledEventList.length }} events with crawler
+        {{ actualCrawler }}
+      </p>
+      <label>Search Event of index</label>
+      <input
+        class="input-index"
+        type="number"
+        (keydown.enter)="setIndex($event.target.value)"
+      />
+      <p>Event of index: {{ index }}</p>
+      <button (click)="previousEvent()">Previous Event</button>
+      <button (click)="nextEvent()">Next Event</button>
+    </div>
+  </div>
 </div>
 <div class="insert-event-container" *ngIf="crawledEventList.length > 0">
-    <app-crawled-events-to-event *ngIf="allOrganizer.length > 0" [allOrganizer]="allOrganizer" [organizerIn]="organizerIn" [eventIn]="eventIn"
-        (emitAddEvent)="nextEvent()" (emitNextEvent)="nextEvent()"
-        (emitPreviousEvent)="previousEvent()" (emitOrganizer)="newOrganizer($event)"></app-crawled-events-to-event>
+  <app-crawled-events-to-event
+    *ngIf="allOrganizer.length > 0"
+    [allOrganizer]="allOrganizer"
+    [organizerIn]="organizerIn"
+    [eventIn]="eventIn"
+    (emitAddEvent)="nextEvent()"
+    (emitNextEvent)="nextEvent()"
+    (emitPreviousEvent)="previousEvent()"
+    (emitOrganizer)="newOrganizer($event)"
+  ></app-crawled-events-to-event>
 </div>

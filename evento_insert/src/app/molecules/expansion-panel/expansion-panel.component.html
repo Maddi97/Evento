@@ -1,0 +1,19 @@
+<div class="expansion-panel">
+  <mat-expansion-panel (afterExpand)="onExpansion()">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ title }}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{ "open to see all events" }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div *ngFor="let event of eventList">
+      <app-event-panel
+        [event]="event"
+        (emitInputEvent)="emitInputEvent.emit($event)"
+        (emitDeleteEvent)="emitDeleteEvent.emit($event)"
+      ></app-event-panel>
+    </div>
+  </mat-expansion-panel>
+</div>

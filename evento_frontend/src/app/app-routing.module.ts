@@ -1,29 +1,34 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { EventsComponent } from './events/events.component';
-import { CategoriesComponent } from './categories/categories.component';
-import { SettingsComponent } from './settings/settings.component';
-import { FullEventComponent } from './common-utilities/full-event/full-event.component';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { FullEventComponent } from "./pages/full-event/full-event.component";
 
 const routes: Routes = [
   {
-    path: 'categories',
-    component: CategoriesComponent
+    path: "categories",
+    loadChildren: () =>
+      import("./pages/categories/categories.module").then(
+        (m) => m.CategoriesModule
+      ),
   },
   {
-    path: 'settings',
-    component: SettingsComponent
+    path: "settings",
+    loadChildren: () =>
+      import("./pages/settings/settings.module").then((m) => m.SettingsModule),
   },
   {
-    path: 'full-event/:eventId',
-    component: FullEventComponent
+    path: "full-event/:eventId",
+    component: FullEventComponent,
   },
-  { path: '**', component: EventsComponent }
+  {
+    path: "",
+    loadChildren: () =>
+      import("./pages/events/events.module").then((m) => m.EventsModule),
+  },
+  { path: "**", redirectTo: "" },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

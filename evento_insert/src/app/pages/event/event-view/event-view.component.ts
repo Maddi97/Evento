@@ -28,7 +28,7 @@ export class EventViewComponent implements OnInit {
   allOrganizers: Organizer[] = [];
 
   filteredOptions: Observable<string[]>;
-  allFilteredEvents: Event[];
+  allFilteredEvents: Event[] = [];
 
   category$: Observable<Category[]>;
   organizer$: Observable<Organizer[]>;
@@ -38,12 +38,11 @@ export class EventViewComponent implements OnInit {
   constructor(
     private categoryService: CategoryService,
     private organizerService: OrganizerService,
-    private eventService: EventsService,
+    public eventService: EventsService,
     private eventObservableService: EventsObservableService,
     private snackbar: SnackbarService,
     public dialog: MatDialog,
-    private fileService: FileUploadService,
-    private sanitizer: DomSanitizer
+    private fileService: FileUploadService
   ) {}
 
   ngOnInit(): void {
@@ -53,10 +52,7 @@ export class EventViewComponent implements OnInit {
 
     this.category$.subscribe((cat) => (this.categories = cat));
     this.organizer$.subscribe((org) => (this.organizers = org));
-    this.event$.subscribe((event) => {
-      this.allFilteredEvents = event;
-      this.downloadImage();
-    });
+
     this.organizerService.getOrganizer().subscribe((org) => {
       this.allOrganizers = org;
     });
@@ -130,35 +126,33 @@ export class EventViewComponent implements OnInit {
       .subscribe();
   }
 
-  loadOrganizerOnSubcategories(category: Category) {
-    this.organizerService.filterOrganizerByEventsCategory(category);
-  }
-
-  loadEvents(organizerId: string, categoryId: string) {
-    this.eventService.getAllUpcomingEvents().pipe(
-      map((events) => {
-        this.allFilteredEvents = events.filter(
-          (event) =>
-            event._organizerId === organizerId &&
-            event.category._id === categoryId
-        );
-      })
-    );
-  }
-
-  getHotEvents() {
+  getEventsRightNow = () => {
     const date = moment(new Date())
       .utcOffset(0, false)
       .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-    this.eventService.getEventsOnDate(date, "00:00");
-  }
-  getFrequentEvents = () => {
-    this.eventService.getFrequentEvents();
+    //this.eventService.getEventsOnDate(date, "00:00");
+    //console.error("Not implemented yet");
+    return of([]);
   };
-
-  loadActualEventsByCategory(category: Category) {
-    this.eventService.getUpcomingventsOnCategory(category);
-  }
+  getOutdatedEvents = () => {
+    return this.eventService.getOutdatedEvents();
+  };
+  getAllEvents = () => {
+    return this.eventService.getAllEvents();
+  };
+  getHotEvents = () => {
+    const germanyTime = moment(
+      new Date().toLocaleTimeString("en-DE", {
+        timeZone: "Europe/Berlin",
+      })
+    )
+      .utcOffset(0, false)
+      .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+    return this.eventService.getAllHotEvents({ date: germanyTime });
+  };
+  getFrequentEvents = () => {
+    return this.eventService.getFrequentEvents();
+  };
 
   deleteEvent(event: Event) {
     if (confirm("Are you sure to delete " + event.name + " ?")) {
@@ -174,81 +168,6 @@ export class EventViewComponent implements OnInit {
     }
   }
 
-  timeSince(date) {
-    const seconds = Math.floor(
-      (new Date().getTime() - new Date(date).getTime()) / 1000
-    );
-
-    let interval = seconds / 31536000;
-
-    if (interval > 1) {
-      return Math.floor(interval) + " years";
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return Math.floor(interval) + " months";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return Math.floor(interval) + " days";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return Math.floor(interval) + " hours";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return Math.floor(interval) + " minutes";
-    }
-    return Math.floor(seconds) + " seconds";
-  }
-
-  timeSinceInteger(date) {
-    const seconds = Math.floor(
-      (new Date().getTime() - new Date(date).getTime()) / 1000
-    );
-    return seconds / 86400;
-  }
-
-  getColor(organizer: Organizer): string {
-    if (
-      organizer.frequency - this.timeSinceInteger(organizer.lastUpdated) <=
-      1
-    ) {
-      return "lightcoral";
-    }
-    if (
-      1 < organizer.frequency - this.timeSinceInteger(organizer.lastUpdated) &&
-      organizer.frequency - this.timeSinceInteger(organizer.lastUpdated) <= 5
-    ) {
-      return "orange";
-    }
-    if (
-      organizer.frequency - this.timeSinceInteger(organizer.lastUpdated) >
-      5
-    ) {
-      return "lightgreen";
-    }
-  }
-
-  downloadImage() {
-    this.allFilteredEvents.forEach((event) => {
-      let imageURL = null;
-      if (event.eventImagePath !== undefined) {
-        if (event.eventImageTemporaryURL === undefined) {
-          this.fileService
-            .downloadFile(event.eventImagePath)
-            .subscribe((imageData) => {
-              // create temporary Url for the downloaded image and bypass security
-              const unsafeImg = URL.createObjectURL(imageData);
-              imageURL =
-                this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-              event.eventImageTemporaryURL = imageURL;
-            });
-        }
-      }
-    });
-  }
   openDialogIfDuplicate(events: Event[], event) {
     const dialogRef = this.dialog.open(CustomDialogComponent, {
       data: { currentEvent: event, events: events },
@@ -262,12 +181,7 @@ export class EventViewComponent implements OnInit {
       }
     });
   }
-  getOutdatedEvents() {
-    this.eventService.getOutdatedEvents().subscribe();
-  }
-  getAllEvents() {
-    this.eventService.getAllEvents().subscribe();
-  }
+
   deleteOutdatedEvents() {
     if (confirm("Are you sure to delete all events older than 30 days")) {
       this.eventService

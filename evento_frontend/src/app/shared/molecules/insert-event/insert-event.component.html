@@ -1,0 +1,76 @@
+<div class="insert-container">
+  <form class="form" [formGroup]="eventForm">
+    <span class="heading">
+      Reiche Events oder interessante Orte ein und hilf deiner Stadt!
+    </span>
+    <div class="organizer-name">
+      <mat-form-field appearance="fill">
+        <mat-label>Organizer</mat-label>
+        <input matInput #target formControlName="organizerName" type="text" />
+      </mat-form-field>
+    </div>
+    <div class="event-name">
+      <mat-form-field appearance="fill">
+        <mat-label>Event</mat-label>
+        <input
+          matInput
+          #target
+          required
+          minlength="3"
+          formControlName="eventName"
+          type="text"
+        />
+        <mat-error *ngIf="eventForm.get('eventName').hasError('required')"
+          >Eventname notwendig
+        </mat-error>
+        <mat-error
+          *ngIf="
+            eventForm.get('eventName').hasError('minlength') &&
+            !eventForm.get('eventName').hasError('required')
+          "
+        >
+          Eventname muss mindestens 3 Zeichen lang sein
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="event-name">
+      <mat-form-field appearance="fill">
+        <mat-label>Adresse oder Koordinaten</mat-label>
+        <input matInput #target formControlName="adress" type="text" />
+      </mat-form-field>
+    </div>
+    <div class="link">
+      <mat-form-field appearance="fill">
+        <mat-label>Link</mat-label>
+        <input matInput #target formControlName="link" type="text" />
+      </mat-form-field>
+    </div>
+    <div class="description">
+      <mat-form-field appearance="fill">
+        <mat-label>Beschreibung</mat-label>
+        <input
+          matInput
+          #target
+          required
+          minlength="5"
+          formControlName="description"
+          type="text"
+        />
+        <mat-error *ngIf="eventForm.get('description').hasError('required')"
+          >Beschreibung notwendig</mat-error
+        >
+        <mat-error
+          *ngIf="
+            eventForm.get('description').hasError('minlength') &&
+            !eventForm.get('description').hasError('required')
+          "
+        >
+          Beschreibung muss mindestens 5 Zeichen lang sein
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+  <button class="submit-event" type="button" (click)="submitEvent()">
+    Event abschicken
+  </button>
+</div>

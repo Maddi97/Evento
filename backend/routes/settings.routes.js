@@ -6,7 +6,9 @@ const limiter = require("../middleware/rateLimiter");
 
 router.get("/settings", limiter, (req, res) => {
   Settings.find({})
-    .then((settings) => res.send(settings[0]))
+    .then((settings) => {
+      res.send(settings[0]);
+    })
     .catch((error) => {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" }); // Send an error response with status code 500 (Internal Server Error)

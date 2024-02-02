@@ -1,0 +1,83 @@
+<div class="event-page">
+  <div class="filter-container">
+    <div
+      class="event-map-container-big"
+      *ngIf="!getScreenWidth || getScreenWidth >= 1000"
+    >
+      <ngx-spinner type="ball-scale-multiple" [fullScreen]="false">
+      </ngx-spinner>
+      <div
+        class="event-container"
+        id="event-container"
+        (scroll)="onScroll($event)"
+      >
+        <app-event-tile-list
+          [eventList]="eventList"
+          [userPosition]="currentPosition"
+          [eventToScrollId]="eventToScrollId"
+          (hoverEventEmitter)="hoveredEventId = $event"
+        >
+        </app-event-tile-list>
+        <div *ngIf="isLoadingMoreEvents">
+          <img class="pic" [src]="'assets/design-elements/loading-image.svg'" />
+        </div>
+      </div>
+
+      <div class="map-container">
+        <map-view
+          *ngIf="this.currentPosition"
+          [markerData]="eventList"
+          [hoveredData]="getEventFromId()"
+          [currentPosition]="currentPosition"
+          [centerMapOnPosition]="currentPosition"
+          [hasMoreEvents]="loadMore"
+          (emitClickedEventId)="eventToScrollId = $event"
+        ></map-view>
+      </div>
+    </div>
+
+    <div
+      class="event-map-container-small"
+      *ngIf="!getScreenWidth || getScreenWidth < 1000"
+    >
+      <ngx-spinner type="ball-scale-multiple" [fullScreen]="false">
+      </ngx-spinner>
+      <div class="switchViewButton" (click)="changeToMapView()">
+        <p>Zur Karte</p>
+        <mat-icon class="change-view-icon">map</mat-icon>
+      </div>
+      <div
+        class="event-container"
+        id="event-container"
+        (scroll)="onScroll($event)"
+      >
+        <app-event-tile-list
+          [eventList]="eventList"
+          [userPosition]="currentPosition"
+          [eventToScrollId]="eventToScrollId"
+          (hoverEventEmitter)="hoveredEventId = $event"
+        ></app-event-tile-list>
+        <div *ngIf="isLoadingMoreEvents && loadMore">
+          <img class="pic" [src]="'assets/design-elements/loading-image.svg'" />
+        </div>
+      </div>
+
+      <div class="map-container" *ngIf="mapView">
+        <div class="switchViewButton" (click)="changeToMapView()">
+          <p>Zu den Events</p>
+          <mat-icon class="change-view-icon" (click)="changeToMapView()"
+            >event</mat-icon
+          >
+        </div>
+        <map-view
+          [markerData]="eventList"
+          [hoveredData]="getEventFromId()"
+          [currentPosition]="currentPosition"
+          [centerMapOnPosition]="currentPosition"
+          [hasMoreEvents]="loadMore"
+          (emitClickedEventId)="eventToScrollId = $event"
+        ></map-view>
+      </div>
+    </div>
+  </div>
+</div>

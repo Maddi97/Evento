@@ -1,0 +1,236 @@
+.event-tile {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: none;
+  border: none;
+  background-color: white;
+}
+
+.map-clicked {
+  box-shadow: 1px 1px 5px 7px #e4de4fc2 !important;
+}
+
+/* event tile width as picture */
+@media screen and (max-width: 300px) {
+  .event-tile {
+    width: 265px !important;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .event-tile {
+    width: 295px;
+  }
+}
+
+@media screen and (min-width: 400px) and (max-width: 500px) {
+  .event-tile {
+    width: 365px;
+  }
+}
+
+@media screen and (min-width: 500px) and (max-width: 1000px) {
+  .event-tile {
+    width: 415px;
+  }
+}
+
+.promo {
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  box-shadow: 0px 0px 10px 8px #46048f7d;
+}
+
+.event-tile:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0px 10px gray;
+}
+
+.event-tile-picture {
+  object-fit: cover;
+  min-width: 100%;
+  height: auto;
+  /* border style */
+  display: inline-block;
+  border: 1px solid white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.pic {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 1rem;
+  overflow: hidden;
+}
+
+@media screen and (min-width: 1000px) {
+  .event-tile {
+    flex-direction: row;
+    width: 92%;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 0.65rem !important;
+    margin-bottom: 0.65rem !important;
+  }
+
+  .event-tile-picture {
+    min-width: 45%;
+    max-width: 45%;
+  }
+
+  .event-tile-information {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 52%;
+    margin-left: 10px;
+  }
+
+  .event-tile-information-name-date {
+    max-width: 100%;
+  }
+
+  .event-name {
+    max-width: 100% !important;
+  }
+
+  mat-card {
+    width: 90% !important;
+    padding: unset;
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  mat-card {
+    width: 90% !important;
+    padding: unset;
+  }
+
+  .event-tile {
+    flex-direction: row;
+    width: 92%;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 0.65rem !important;
+    margin-bottom: 0.65rem !important;
+  }
+
+  .event-tile-picture {
+    min-width: 45%;
+    max-width: 45%;
+  }
+
+  .event-tile-information {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 52%;
+    margin-left: 10px;
+  }
+
+  .event-tile-information-name-date {
+    max-width: 100%;
+  }
+
+  .event-name {
+    max-width: 100% !important;
+  }
+}
+
+.event-tile-information {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.event-tile-information-name-date {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.event-organizer-name {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0px;
+  margin-left: 2px;
+}
+
+.event-name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1.2rem;
+  max-width: 70vw;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 2px;
+}
+
+.mat-mdc-card-title {
+  font-weight: 400 !important;
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  font-size: 0.8rem;
+  margin-left: 2px;
+  margin-top: 1px;
+}
+
+.date-start {
+}
+
+.date-end {
+}
+
+.category {
+  background-color: rgb(255, 238, 0);
+  border-radius: 7px;
+  padding: 0px 3px 0px 3px;
+  width: fit-content;
+  font-size: 0.7rem;
+}
+
+/*medium screen size*/
+@media screen and (min-width: 440px) and (max-width: 1000px) {
+  .event-name {
+    font-size: 1.1rem !important;
+  }
+
+  .date {
+    font-size: 0.9rem !important;
+  }
+}
+
+/*small screen size like iphone*/
+@media screen and (max-width: 440px) {
+  .event-name {
+    font-size: 1rem !important;
+  }
+
+  .date {
+    font-size: 0.9rem !important;
+  }
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+mat-card {
+  padding: 6px !important;
+}
+
+app-event-tile-list {
+  display: flex;
+  flex-direction: column;
+}

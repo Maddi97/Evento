@@ -1,24 +1,24 @@
 version: "3"
 
 services:
-  threeventsfiveone:
+  evento_frontend:
     build:
       context: evento_frontend
       dockerfile: prod.Dockerfile
-    container_name: 3vents51_threeventsfiveone
+    container_name: evento_frontend
     ports:
       - "10000:80"
     volumes:
-      - ./threeventsfiveone:/app
+      - ./evento:/app
       - /app/node_modules
     depends_on:
       - letsencrypt
 
-  insert-app:
+  evento_insert:
     build:
       context: evento_insert
       dockerfile: prod.Dockerfile
-    container_name: 3vents51_insert-app
+    container_name: evento_insert
     ports:
       - "10001:80"
     volumes:
@@ -31,7 +31,7 @@ services:
     build:
       context: backend
       dockerfile: prod.Dockerfile
-    container_name: 3vents51_backend
+    container_name: evento_backend
     ports:
       - "10002:3000"
     volumes:
@@ -48,7 +48,7 @@ services:
 
   letsencrypt:
     image: linuxserver/swag
-    container_name: 3vents51_swag
+    container_name: swag
     volumes:
       - ./letsencryptPi/config:/config/
     ports:
@@ -57,7 +57,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
-      - URL=3vents51.duckdns.org
+      - URL=evento.duckdns.org
       - DUCKDNSTOKEN=${DUCKDNSTOKEN}
       - SUBDOMAINS=wildcard
       - VALIDATION=duckdns
@@ -66,7 +66,7 @@ services:
 
   duckdns:
     image: linuxserver/duckdns
-    container_name: 3vents51_duckdns
+    container_name: duckdns
     environment:
-      - SUBDOMAINS=3vents51.duckdns.org
+      - SUBDOMAINS=eventos.duckdns.org
       - TOKEN=${DUCKDNSTOKEN}

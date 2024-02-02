@@ -1,0 +1,35 @@
+<div *ngIf="category.subcategories.length > 0" class="expansion-panel">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ category.name }}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{ "open to see all subcategories" }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div *ngFor="let subcategory of category.subcategories">
+      <app-expansion-panel
+        [title]="subcategory.name"
+        [parameter]="subcategory"
+        [eventSubscription]="this.getEventsOnSubcategory"
+        (emitInputEvent)="emitInputEvent.emit($event)"
+        (emitDeleteEvent)="emitDeleteEvent.emit($event)"
+        (emitFilteredList)="emitFilteredList.emit($event)"
+      >
+      </app-expansion-panel>
+    </div>
+  </mat-expansion-panel>
+</div>
+
+<div *ngIf="category.subcategories.length === 0" class="expansion-panel">
+  <app-expansion-panel
+    [title]="category.name"
+    [parameter]="category"
+    [eventSubscription]="this.getEventsOnCategory"
+    (emitInputEvent)="emitInputEvent.emit($event)"
+    (emitDeleteEvent)="emitDeleteEvent.emit($event)"
+    (emitFilteredList)="emitFilteredList.emit($event)"
+  >
+  </app-expansion-panel>
+</div>
