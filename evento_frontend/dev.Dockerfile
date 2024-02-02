@@ -15,4 +15,4 @@ RUN npm install --legacy-peer-deps
 
 COPY . /app
 
-CMD ng run evento:serve-ssr --host 0.0.0.0 --configuration=dev
+CMD ng build --host 0.0.0.0 --configuration=dev && ng run evento:server
