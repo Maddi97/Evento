@@ -1,4 +1,4 @@
-import { Location, isPlatformBrowser } from "@angular/common";
+import { Location, isPlatformBrowser, isPlatformServer } from "@angular/common";
 import {
   Component,
   HostListener,
@@ -12,7 +12,6 @@ import { MapCenterViewService } from "@services/core/map-center-view/map-center-
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 import * as moment from "moment";
 import { filter } from "rxjs";
-import { NgOptimizedImage } from "@angular/common";
 @Component({
   selector: "app-headerbar",
   templateUrl: "./headerbar.component.html",
@@ -30,7 +29,7 @@ export class HeaderbarComponent implements OnInit {
     second: 0,
     millisecond: 0,
   });
-
+  isPlatformServer: boolean;
   constructor(
     private location: Location,
     private router: Router,
@@ -43,6 +42,8 @@ export class HeaderbarComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.getScreenWidth = window.innerWidth;
     }
+    this.isPlatformServer = isPlatformServer(this.platformId);
+    console.log(this.isPlatformServer);
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe({

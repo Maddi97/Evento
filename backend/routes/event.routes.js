@@ -4,6 +4,8 @@ const auth = require("../middleware/authJWT");
 const limiter = require("../middleware/rateLimiter");
 const Event = require("../model/event.model");
 const timeHelper = require("../helpers/timeAndDate.helper");
+const Category = require("../model/category.model"); // Import the Category model
+
 router.get("/events", limiter, (req, res) => {
   Event.find({})
     .then((events) => res.send(events))
@@ -248,16 +250,16 @@ router.post("/hotEvents", limiter, (req, res) => {
     });
 });
 
-router.post("/getEventsBySearchString", limiter, (req, res) => {
+router.post("/getEventsBySearchString", limiter, async (req, res) => {
   const searchString = String(escape(req.body.req.searchString)); // Get the searchString from the request body
   const limit = Number(req.body.req.limit);
-  const categories = req.body.req.categories;
+  let categories = await Category.find({}, "_id");
+  categories = categories.map((catIdObj) => catIdObj._id); //map category id object to list of ids
   const date = req.body.req.date;
   let alreadyReturnedEventIds = req.body.req.alreadyReturnedEventIds || [];
   const fourteenDaysAhead = new Date(date);
   fourteenDaysAhead.setDate(fourteenDaysAhead.getDate() + 21);
-  console.log(categories);
-
+  console.log(alreadyReturnedEventIds);
   const dateConditions = {
     $or: [
       { "date.start": { $gte: date } },
@@ -306,7 +308,6 @@ router.post("/getEventsBySearchString", limiter, (req, res) => {
     ],
   })
     .then((events) => {
-      console.log(events);
       events = events.filter((event) => {
         return !alreadyReturnedEventIds.includes(event._id.toString());
       });

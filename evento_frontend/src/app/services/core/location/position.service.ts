@@ -10,7 +10,9 @@ import {
   filter,
   map,
   take,
+  takeUntil,
   tap,
+  timeout,
 } from "rxjs";
 import { NominatimGeoService } from "./nominatim-geo.service";
 
@@ -24,7 +26,7 @@ export class PositionService {
   public isPositionDefault = new BehaviorSubject<Boolean>(true);
   // New York Center
   // default_center_position = [40.7142700, -74.0059700]
-
+  timeout = 8000;
   constructor(
     private geoService: NominatimGeoService,
     private _snackbar: MatSnackBar,
@@ -58,6 +60,7 @@ export class PositionService {
     this.geolocation$
       .pipe(
         take(1),
+        timeout(this.timeout),
         map((position) => [position.coords.latitude, position.coords.longitude])
       )
       .subscribe({
@@ -68,6 +71,12 @@ export class PositionService {
         },
         error: (error) => {
           this.setDefaultLocation();
+          if (error.name === "TimeoutError") {
+            // Handle timeout error
+            this.openErrorSnackBar(
+              "Timeout beim finden der Position.\nStandort wird zu Leipzig Zentrum gesetzt."
+            );
+          }
           if (error.code === 1) {
             this.openErrorSnackBar(
               "Deine Privatspähreeinstellungen verhinderen die Standortermittlung.\nStandort wird zu Leipzig Zentrum gesetzt."
@@ -100,6 +109,6 @@ export class PositionService {
   closeSpinnerAfterTimeout() {
     setTimeout(() => {
       this.spinner.hide();
-    }, 8000);
+    }, this.timeout);
   }
 }

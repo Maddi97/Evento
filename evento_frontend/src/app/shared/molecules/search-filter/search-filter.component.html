@@ -3,11 +3,7 @@
   rel="stylesheet"
 />
 
-<div
-  *ngIf="getScreenWidth > 800"
-  class="search-filter"
-  [formGroup]="searchStringForm"
->
+<div class="search-filter" [formGroup]="searchStringForm">
   <input
     class="form-control"
     type="text"
@@ -17,11 +13,7 @@
     placeholder=" &#xF002;  Suche Events ..."
   />
 </div>
-<div
-  *ngIf="getScreenWidth <= 800"
-  class="search-container"
-  [formGroup]="searchStringForm"
->
+<div class="search-container" [formGroup]="searchStringForm">
   <input
     class="search expandright"
     id="searchright"

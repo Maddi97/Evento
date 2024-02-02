@@ -22,20 +22,23 @@
   margin-top: -15px;
 }
 
-.event-map-container {
+.event-map-container-small {
   display: flex;
   flex-direction: row;
   justify-content: center;
   width: 100%;
 }
 
-@media screen and (min-width: 1000px) {
-  .event-map-container {
+@media screen and (min-width: 1001px) {
+  .event-map-container-big {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     max-width: 100%;
     min-width: 100%;
+  }
+  .event-map-container-small {
+    display: none !important;
   }
 
   .event-container {
@@ -65,8 +68,12 @@
     margin-bottom: 0px !important;
   }
 
-  .event-map-container {
+  .event-map-container-small {
     min-height: 25rem;
+  }
+
+  .event-map-container-big {
+    display: none;
   }
 
   .map-container {
@@ -180,5 +187,4 @@ app-event-tile-list {
 
 ::ng-deep .ngx-spinner-overlay {
   height: 85vh !important;
-  top: -20px !important;
 }

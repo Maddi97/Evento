@@ -10,7 +10,6 @@
   justify-content: space-around;
   padding-top: constant(safe-area-inset-top);
   padding-top: env(safe-area-inset-top);
-
 }
 
 .header::after {
@@ -116,7 +115,7 @@
   }
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1000px) {
   .header {
     align-items: center;
   }
@@ -138,7 +137,9 @@
     min-width: 44px;
     margin-bottom: 2px;
   }
-
+  .logo {
+    display: none !important;
+  }
   .logo-fullevent {
     max-width: 120px;
     margin-top: 6px;
@@ -156,7 +157,7 @@
   }
 
   app-hamburger-menu {
-    display: none
+    display: none;
   }
 
   .search-container- {
@@ -167,5 +168,11 @@
     margin-bottom: 6px;
     margin-right: 8px;
     margin-left: 2px;
+  }
+}
+
+@media screen and (min-width: 1001px) {
+  .logo-small {
+    display: none !important;
   }
 }

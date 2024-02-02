@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from "@angular/common";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import {
   Component,
   Inject,
@@ -26,6 +26,8 @@ export class EventPictureComponent implements OnInit, OnDestroy {
   private organizer$;
   private fileService$;
 
+  isPlatformServer;
+
   constructor(
     private fileService: FileService,
     private organizerService: OrganizerService,
@@ -33,6 +35,7 @@ export class EventPictureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.isPlatformServer = isPlatformServer(this.platformId);
     this.category = this.event?.category;
     this.organizer$ = this.organizerService
       .getOrganizerById(this.event?._organizerId)

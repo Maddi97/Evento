@@ -47,6 +47,9 @@
   .category-list-container {
     margin-bottom: 0px !important;
   }
+  .search-category-replacement {
+    width: 100% !important;
+  }
 }
 
 .category-list {
@@ -199,6 +202,7 @@ img {
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
 .search-category-replacement > * {

@@ -1,6 +1,9 @@
 <div class="event-page">
   <div class="filter-container">
-    <div class="event-map-container" *ngIf="getScreenWidth >= 1000">
+    <div
+      class="event-map-container-big"
+      *ngIf="!getScreenWidth || getScreenWidth >= 1000"
+    >
       <ngx-spinner type="ball-scale-multiple" [fullScreen]="false">
       </ngx-spinner>
       <div
@@ -34,7 +37,7 @@
     </div>
 
     <div
-      class="event-map-container"
+      class="event-map-container-small"
       *ngIf="!getScreenWidth || getScreenWidth < 1000"
     >
       <ngx-spinner type="ball-scale-multiple" [fullScreen]="false">

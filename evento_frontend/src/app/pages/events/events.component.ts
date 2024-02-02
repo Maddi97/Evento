@@ -214,7 +214,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       .getEventsSubscriptionBasedOnTypeAndCategory(req)
       .subscribe({
         next: (events) => {
-          console.log(events[0]?.name);
+          console.log("fetched events: ", events[0]?.name);
           this.resetEventList = !loadMore;
           this.handlyEventListLoaded(events);
         },

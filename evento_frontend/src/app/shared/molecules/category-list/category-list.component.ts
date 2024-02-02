@@ -224,7 +224,6 @@ export class CategoryListComponent implements OnInit, OnDestroy {
               const unsafeImg = URL.createObjectURL(imageData);
               category.iconTemporaryURL =
                 this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-              console.log(category.iconTemporaryURL);
             });
           this.subscriptions$.push(fileDownload$);
         }

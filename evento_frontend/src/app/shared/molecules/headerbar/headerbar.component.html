@@ -24,7 +24,6 @@
   </div>
   <div *ngIf="!isNotEventsPage" class="logo-container">
     <img
-      *ngIf="!getScreenWidth || getScreenWidth <= 1000"
       class="logo-small"
       src="assets/icon/icon.png"
       alt="logo name"
@@ -33,7 +32,6 @@
       (click)="changeMapView()"
     />
     <img
-      *ngIf="getScreenWidth > 1000"
       class="logo"
       src="assets/branding/logo_name.png"
       alt="logo name"
