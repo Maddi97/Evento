@@ -25,7 +25,7 @@
 
       <div class="map-container">
         <map-view
-          *ngIf="this.currentPosition"
+          *ngIf="isPlatformBrowser"
           [markerData]="eventList"
           [hoveredData]="getEventFromId()"
           [currentPosition]="currentPosition"
@@ -70,6 +70,7 @@
           >
         </div>
         <map-view
+          *ngIf="isPlatformBrowser"
           [markerData]="eventList"
           [hoveredData]="getEventFromId()"
           [currentPosition]="currentPosition"

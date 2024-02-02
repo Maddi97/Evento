@@ -8,8 +8,6 @@
   box-shadow: 1px 1px 12px #8389a4;
   cursor: pointer;
   margin-bottom: 1rem;
-
-
 }
 
 .form {
@@ -39,6 +37,7 @@ div {
 }
 
 div > mat-form-field {
+  margin-top: 15px;
   width: 70%;
 }
 
@@ -63,8 +62,19 @@ div > mat-form-field {
 }
 
 .submit-event:before {
-  content: '';
-  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
   position: absolute;
   top: -2px;
   left: -2px;
@@ -75,7 +85,7 @@ div > mat-form-field {
   height: calc(100% + 4px);
   animation: glowing 20s linear infinite;
   opacity: 0;
-  transition: opacity .3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
   border-radius: 10px;
 }
 
@@ -83,12 +93,11 @@ div > mat-form-field {
   .submit-event:before {
     animation: 0 !important;
     background: white !important;
-
   }
 }
 
 .submit-event:active {
-  color: #000
+  color: #000;
 }
 
 .submit-event:active:after {
@@ -101,7 +110,7 @@ div > mat-form-field {
 
 .submit-event:after {
   z-index: -1;
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -121,4 +130,8 @@ div > mat-form-field {
   100% {
     background-position: 0 0;
   }
+}
+
+::ng-deep .mdc-floating-label {
+  margin-top: 9px !important;
 }

@@ -84,6 +84,12 @@
   min-width: 4rem;
   height: auto;
 }
+.logo-full {
+  margin-left: 3px;
+  max-width: 150px;
+  min-width: 4rem;
+  height: auto;
+}
 
 .search-container- {
   margin-top: 8px !important;

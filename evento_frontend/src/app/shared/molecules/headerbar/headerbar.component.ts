@@ -43,7 +43,6 @@ export class HeaderbarComponent implements OnInit {
       this.getScreenWidth = window.innerWidth;
     }
     this.isPlatformServer = isPlatformServer(this.platformId);
-    console.log(this.isPlatformServer);
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe({

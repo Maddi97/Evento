@@ -69,6 +69,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   scrollRightMax: Boolean;
   lastRunningSubscription: "category" | "searchString" | "hot" | "promotion";
   resetEventList = false;
+  isPlatformBrowser;
   // clicked date
   filteredDate: moment.Moment = moment(new Date()).utcOffset(0, false).set({
     hour: 0,
@@ -90,11 +91,8 @@ export class EventsComponent implements OnInit, OnDestroy {
     private sharedObservables: SharedObservableService,
     private customRouterService: CustomRouterService,
     private mapCenterViewService: MapCenterViewService,
-    private categoryService: CategoriesService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    console.log("CONSTRUCTION");
-
     this.mapView = this.mapCenterViewService.isMapViewObservable.value;
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe({
       next: (isMapView) => {
@@ -162,6 +160,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.isPlatformBrowser = isPlatformBrowser(this.platformId);
     const searchString$ = this.sharedObservables.searchStringObservable;
     const position$ = this.positionService.positionObservable;
 
@@ -248,7 +247,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   getEventFromId() {
-    const event = this.eventList.find(
+    const event = this.eventList?.find(
       (event) => event._id === this.hoveredEventId
     );
     return event || null;
