@@ -66,10 +66,6 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    // this.positionService.getPositionByLocation().subscribe((res) => {
-    //   this.resetCenter();
-    // })
-    // this.updatePosition(this.positionService.getDefaultLocation());
     this.LeafIcon = this.leafletService.L.Icon.extend({
       options: {
         shadowUrl: this.shadowUrl,
@@ -80,7 +76,6 @@ export class MapViewComponent implements OnInit, OnChanges {
         shadowSize: [30, 30],
       },
     });
-    // this.initMapIfNeeded(); // Use the method to initialize the map
   }
 
   resetCenter() {

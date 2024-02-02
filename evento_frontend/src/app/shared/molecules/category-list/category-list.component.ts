@@ -46,6 +46,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   // filteredSubcategories
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
+  scrollCategoriesDistance = 250;
   // clicked date
   showPromotion: boolean = false;
   promotionCategory: PromotionCategory = {
@@ -257,8 +258,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     const element = document.getElementById("main-category-container");
     const subcatEl = document.getElementById("subcategory-container");
 
-    if (element) element.scrollLeft += 160;
-    if (subcatEl) subcatEl.scrollLeft += 160;
+    if (element) element.scrollLeft += this.scrollCategoriesDistance;
+    if (subcatEl) subcatEl.scrollLeft += this.scrollCategoriesDistance;
 
     this.setScrollMaxBool();
     // if max scrolled true then true
@@ -267,9 +268,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   scrollLeft() {
     const element = document.getElementById("main-category-container");
     const subcatEl = document.getElementById("subcategory-container");
-
-    if (element) element.scrollLeft -= 160;
-    if (subcatEl) subcatEl.scrollLeft -= 160;
+    if (element) element.scrollLeft -= this.scrollCategoriesDistance;
+    if (subcatEl) subcatEl.scrollLeft -= this.scrollCategoriesDistance;
 
     this.setScrollMaxBool();
   }
