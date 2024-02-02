@@ -24,7 +24,7 @@ services:
     container_name: evento_app
     restart: always
     ports:
-      - "10000:80"
+      - "10000:4200"
     volumes:
       - ./evento:/app
       - /app/node_modules
