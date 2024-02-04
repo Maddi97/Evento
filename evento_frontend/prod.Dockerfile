@@ -13,4 +13,4 @@ COPY . /app
 
 EXPOSE 4200
 RUN npm run build:ssr
-# CMD npm run serve:ssr
+CMD npm run serve:ssr
