@@ -16,5 +16,4 @@ RUN npm install --legacy-peer-deps
 COPY . /app
 
 EXPOSE 4200
-RUN npm run build:ssr
-CMD npm run dev:ssr
+RUN npm run build:ssr:dev

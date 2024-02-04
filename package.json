@@ -1,13 +1,26 @@
 {
-    "name": "evento",
-    "version": "1.0.0",
-    "description": "Event supply chain",
-        "scripts": {
-            "build": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build",
-            "build:backend": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build backend",
-            "build:mongodb": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build mongodb",
-            "build:frontend": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build evento_frontend",
-            "build:insert": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build evento_insert"
-           },
-    "author": "Maximilian Schaller"
-  }
+  "name": "evento",
+  "version": "1.0.0",
+  "description": "Event supply chain",
+  "scripts": {
+    "DEVELOPEMENT": "",
+    "build:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build",
+    "build:backend:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build backend",
+    "build:mongodb:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build mongodb",
+    "build:frontend:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build evento_frontend",
+    "build:insert:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build evento_insert",
+    "STAGING": "",
+    "build:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build",
+    "build:backend:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build backend",
+    "build:mongodb:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build mongodb",
+    "build:frontend:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build evento_frontend",
+    "build:insert:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build evento_insert",
+    "PRODUCTION": "",
+    "build:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build",
+    "build:backend:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build backend",
+    "build:mongodb:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build mongodb",
+    "build:frontend:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build evento_frontend",
+    "build:insert:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build evento_insert"
+  },
+  "author": "Maximilian Schaller"
+}
