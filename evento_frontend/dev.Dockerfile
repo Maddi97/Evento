@@ -15,4 +15,6 @@ RUN npm install --legacy-peer-deps
 
 COPY . /app
 
-CMD ng build --host 0.0.0.0 --configuration=dev && ng run evento:server
+EXPOSE 4200
+RUN npm run build:ssr
+CMD npm run dev:ssr
