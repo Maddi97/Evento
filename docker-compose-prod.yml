@@ -26,7 +26,7 @@ services:
     ports:
       - "10000:4200"
     volumes:
-      - ./evento:/app
+      - ./evento_frontend:/app
       - /app/node_modules
     # depends_on:
     #   - letsencrypt
@@ -38,7 +38,7 @@ services:
     ports:
       - "10001:80"
     volumes:
-      - ./insertApp:/app
+      - ./evento_insert:/app
       - /app/node_modules
     # depends_on:
     #   - letsencrypt
@@ -50,7 +50,7 @@ services:
     ports:
       - "10002:3000"
     volumes:
-      #         - ./backend:/app
+      - ./backend:/app
       - /images/:/app/images
       - /app/node_modules
     environment:

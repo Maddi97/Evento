@@ -5,7 +5,7 @@ services:
       dockerfile: dev.Dockerfile
     container_name: evento_frontend_container
     ports:
-      - 4200:4200
+      - 4200:4000
     volumes:
       - ./evento_frontend:/app
       - /app/node_modules
