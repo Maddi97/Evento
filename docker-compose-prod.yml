@@ -25,7 +25,7 @@ services:
     restart: always
     ports:
       - "10000:4200"
-      - "10002:3000"
+      # - "10002:3000"
 
     volumes:
       - ./evento_frontend:/app
