@@ -11,6 +11,16 @@ RUN npm ci
 
 COPY . /app
 
+RUN npm run build:ssr:prod
+
+FROM node:18.17.1
+
+RUN npm install pm2 -g
+
+WORKDIR /app
+
+## From ‘build’ stage copy over the artifacts
+COPY --from=build /ng-app/dist /app/dist
 EXPOSE 4200
 
-CMD npm run build:ssr:prod && npm run serve:ssr
+CMD ["pm2-runtime", "dist/server"]
