@@ -12,15 +12,6 @@ RUN npm ci
 COPY . /app
 
 RUN ng build --configuration production && ng run evento:server
-
-FROM node:18.17.1
-
-RUN npm install pm2 -g
-
-WORKDIR /app
-
-## From ‘build’ stage copy over the artifacts
-COPY --from=build /app/dist /app/dist
 EXPOSE 4200
 
-CMD ["pm2-runtime", "dist/evento/server"]
+CMD ["npm run serve:ssr"]
