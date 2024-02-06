@@ -14,4 +14,4 @@ COPY . /app
 RUN ng build --configuration production && ng run evento:server
 EXPOSE 4200
 
-CMD ["npm run serve:ssr"]
+CMD ["node dist/evento/server/main.js"]
