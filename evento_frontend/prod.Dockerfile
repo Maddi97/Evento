@@ -23,4 +23,4 @@ WORKDIR /app
 COPY --from=build /app/dist /app/dist
 EXPOSE 4200
 
-CMD ["pm2-runtime", "dist/server"]
+CMD ["pm2-runtime", "dist/evento/server"]
