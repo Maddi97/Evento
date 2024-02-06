@@ -8,6 +8,8 @@ import {
 } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
+import { isPlatformServer } from "@angular/common";
+import { get } from "http";
 
 @Injectable({
   providedIn: "root",
@@ -17,8 +19,17 @@ export class WebService {
 
   env = environment;
 
-  constructor(private http: HttpClient) {
-    this.ROOT_URL = this.env.apiBaseUrl;
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: object
+  ) {
+    if (isPlatformServer(this.platformId)) {
+      // Use Docker network address for server-side requests
+      this.ROOT_URL = this.env.apiBaseUrlServer;
+    } else {
+      // Use localhost for client-side requests
+      this.ROOT_URL = this.env.apiBaseUrlBrowser;
+    }
   }
 
   get(uri: string) {

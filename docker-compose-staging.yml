@@ -1,24 +1,24 @@
 version: "3"
 
 services:
-  letsencrypt:
-    image: linuxserver/swag
-    container_name: swag
-    restart: always
-    volumes:
-      - ./letsencryptStrato/config:/config/
-    ports:
-      - "443:443"
-      - "80:80"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Berlin
-      - URL=evento-leipzig.de
-      - SUBDOMAINS=staging, insert.staging, backend.staging
-      - ONLY_SUBDOMAINS=true
-      - VALIDATION=http
-      - EMAIL=business@evento-leipzig.de
+  # letsencrypt:
+  #   image: linuxserver/swag
+  #   container_name: swag
+  #   restart: always
+  #   volumes:
+  #     - ./letsencryptStrato/config:/config/
+  #   ports:
+  #     - "443:443"
+  #     - "80:80"
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Europe/Berlin
+  #     - URL=evento-leipzig.de
+  #     - SUBDOMAINS=staging, insert.staging, backend.staging
+  #     - ONLY_SUBDOMAINS=true
+  #     - VALIDATION=http
+  #     - EMAIL=business@evento-leipzig.de
 
   evento_frontend:
     build:
@@ -28,12 +28,13 @@ services:
     container_name: evento_app
     restart: always
     ports:
-      - "10000:80"
+      - "10000:4200"
     volumes:
       - ./evento:/app
       - /app/node_modules
-    depends_on:
-      - letsencrypt
+      - /app/dist
+    # depends_on:
+    #   - letsencrypt
 
   evento_insert:
     build:
@@ -47,8 +48,8 @@ services:
     volumes:
       - ./insertApp:/app
       - /app/node_modules
-    depends_on:
-      - letsencrypt
+    # depends_on:
+    #   - letsencrypt
 
   backend:
     image: eventodockerhub/evento_backend_staging:latest
@@ -64,12 +65,12 @@ services:
       - SIGNUPKEY=${SIGNUPKEY}
       - SECRET=${SECRET}
       - BROWSE_AI_API_KEY=${BROWSE_AI_API_KEY}
-    depends_on:
-      - letsencrypt
+    # depends_on:
+    #   - letsencrypt
 
-  mongodb:
-    image: mongo
-    restart: always
-    container_name: mongodb
-    depends_on:
-      - letsencrypt
+  # mongodb:
+  #   image: mongo
+  #   restart: always
+  #   container_name: mongodb
+  #   depends_on:
+  #     - letsencrypt
