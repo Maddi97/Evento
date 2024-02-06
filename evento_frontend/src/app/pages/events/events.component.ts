@@ -177,6 +177,7 @@ export class EventsComponent implements OnInit, OnDestroy {
             this.filteredCategory,
             this.filteredSubcategories,
           ] = queryParams;
+          this.resetLoadingLimit();
           this.sharedObservables.setSearchString(searchString);
           this.search = searchString;
           this.currentPosition = position;
@@ -370,13 +371,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   private resetLoadingLimit() {
     this.actualLoadEventLimit = this.startLoadEventLimit;
-  }
-
-  //TODO time
-  closeSpinnerAfterTimeout() {
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 1);
   }
 }
 

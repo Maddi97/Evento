@@ -5,22 +5,18 @@ import {
   withHttpTransferCacheOptions,
 } from "@angular/platform-browser";
 
-import { MatDialogModule } from "@angular/material/dialog";
-import { MatIconModule } from "@angular/material/icon";
-import { NgxSpinnerModule } from "ngx-spinner";
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
 import { LocationStrategy, PathLocationStrategy } from "@angular/common";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { GoogleTagManagerModule } from "angular-google-tag-manager";
 import {
   HttpClientModule,
   provideHttpClient,
   withFetch,
 } from "@angular/common/http";
-import { FullEventModule } from "./pages/full-event/full-event.module";
-import { MoleculesModule } from "@shared/molecules/molecules.module";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AtomsModule } from "@shared/atoms/atoms.module";
+import { MoleculesModule } from "@shared/molecules/molecules.module";
+import { GoogleTagManagerModule } from "angular-google-tag-manager";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -30,17 +26,13 @@ import { AtomsModule } from "@shared/atoms/atoms.module";
     /*
     Angular Material
     */
-    MatIconModule,
-    MatDialogModule,
     /*
     Own Modules
     */
-    NgxSpinnerModule,
     GoogleTagManagerModule,
     HttpClientModule,
     MoleculesModule,
     AtomsModule,
-    FullEventModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: PathLocationStrategy },

@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { FullEventComponent } from "./pages/full-event/full-event.component";
 
 const routes: Routes = [
   {
@@ -17,7 +16,10 @@ const routes: Routes = [
   },
   {
     path: "full-event/:eventId",
-    component: FullEventComponent,
+    loadChildren: () =>
+      import("./pages/full-event/full-event.module").then(
+        (m) => m.FullEventModule
+      ),
   },
   {
     path: "",

@@ -41,6 +41,7 @@
     "@ng-web-apis/common": "^3.0.6",
     "@ng-web-apis/geolocation": "^3.0.6",
     "angular-google-tag-manager": "^1.9.0",
+    "compression": "^1.7.4",
     "css.gg": "^2.1.1",
     "express": "^4.18.2",
     "leaflet": "^1.9.4",

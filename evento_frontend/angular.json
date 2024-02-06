@@ -101,7 +101,8 @@
             },
             "dev": {
               "optimization": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "statsJson": true
             }
           }
         },
@@ -169,7 +170,8 @@
           "options": {
             "outputPath": "dist/evento/server",
             "main": "server.ts",
-            "tsConfig": "tsconfig.server.json"
+            "tsConfig": "tsconfig.server.json",
+            "statsJson": true
           },
           "configurations": {
             "production": {
@@ -220,7 +222,13 @@
             },
             "dev": {
               "optimization": false,
-              "sourceMap": true,
+              "namedChunks": true,
+
+              "sourceMap": {
+                "scripts": true,
+                "styles": true,
+                "vendor": true
+              },
               "outputHashing": "media",
               "assets": [
                 "src/assets",
