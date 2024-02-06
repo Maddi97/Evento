@@ -20,7 +20,7 @@ RUN npm install pm2 -g
 WORKDIR /app
 
 ## From ‘build’ stage copy over the artifacts
-COPY --from=build /ng-app/dist /app/dist
+COPY --from=build /app/dist /app/dist
 EXPOSE 4200
 
 CMD ["pm2-runtime", "dist/server"]
