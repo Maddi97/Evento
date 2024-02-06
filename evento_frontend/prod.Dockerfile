@@ -11,7 +11,7 @@ RUN npm ci
 
 COPY . /app
 
-RUN npm run build:ssr:prod
+RUN ng build --configuration production && ng run evento:server
 
 FROM node:18.17.1
 
