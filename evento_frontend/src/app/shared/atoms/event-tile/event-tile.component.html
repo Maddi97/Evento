@@ -4,6 +4,7 @@
   [ngClass]="{ 'event-tile': true, promo: event.promotion }"
 >
   <app-event-picture
+    *ngIf="event"
     class="event-tile-picture"
     [event]="event"
   ></app-event-picture>

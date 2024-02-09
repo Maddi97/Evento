@@ -10,7 +10,7 @@
     "e2e": "ng e2e",
     "dev:ssr": "ng run evento:serve-ssr",
     "serve:ssr": "node dist/evento/server/main.js",
-    "build:ssr:dev": "ng build --configuration dev && ng run evento:server",
+    "build:ssr:dev": "ng build --configuration=dev && ng run evento:server:dev",
     "build:ssr:prod": "ng build --configuration production && ng run evento:server",
     "prerender": "ng run evento:prerender"
   },

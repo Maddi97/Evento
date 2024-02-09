@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { WebService } from "../../core/web/web.service";
-import { catchError, delay, map, share, tap } from "rxjs/operators";
+import { catchError, delay, map, share, take, tap } from "rxjs/operators";
 import {
   Observable,
   throwError as observableThrowError,
@@ -19,6 +19,7 @@ export class FileService {
 
   downloadFile(path: string): Observable<Blob> {
     if (this.cachedFiles.has(path)) {
+      console.log("Return cached file");
       return of(this.cachedFiles.get(path)!);
     }
 
@@ -31,7 +32,7 @@ export class FileService {
       tap((blob) => {
         this.cachedFiles.set(path, blob);
       }),
-      share()
+      take(1)
     );
     return obs;
   }

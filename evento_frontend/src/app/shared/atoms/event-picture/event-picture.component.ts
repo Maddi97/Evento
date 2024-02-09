@@ -1,4 +1,5 @@
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
+import { Event } from "@globals/models/event";
 import {
   Component,
   Inject,
@@ -9,6 +10,7 @@ import {
 } from "@angular/core";
 import { FileService } from "@services/complex/files/file.service";
 import { OrganizerService } from "@services/simple/organizer/organizer.service";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: "app-event-picture",
@@ -16,46 +18,35 @@ import { OrganizerService } from "@services/simple/organizer/organizer.service";
   styleUrls: ["./event-picture.component.css"],
 })
 export class EventPictureComponent implements OnInit, OnDestroy {
-  @Input() event;
+  @Input() event: Event;
+  @Input() organizerId: string;
   category;
-  organizer;
   IconURL = null;
   ImageURL = null;
   private downloadedImage = false;
 
-  private organizer$;
   private fileService$;
 
   isPlatformServer;
 
   constructor(
     private fileService: FileService,
-    private organizerService: OrganizerService,
+    private sanitizer: DomSanitizer,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
     this.isPlatformServer = isPlatformServer(this.platformId);
-    this.category = this.event?.category;
-    this.organizer$ = this.organizerService
-      .getOrganizerById(this.event?._organizerId)
-      .subscribe((organizer) => {
-        this.organizer = organizer[0];
-        if (isPlatformBrowser(this.platformId)) {
-          this.downloadImage();
-        }
-      });
+    this.category = this.event.category;
+    this.downloadImage();
   }
   ngOnDestroy() {
-    if (this.organizer$) {
-      this.organizer$.unsubscribe();
-    }
     if (this.fileService$) {
       this.fileService$.unsubscribe();
     }
   }
 
-  downloadImageIfNotExists(imagePath: string, temporaryURL: string) {
+  downloadImageIfNotExists(imagePath: string, temporaryURL: any) {
     if (
       !this.downloadedImage &&
       imagePath !== undefined &&
@@ -64,8 +55,11 @@ export class EventPictureComponent implements OnInit, OnDestroy {
       this.downloadedImage = true;
       this.fileService$ = this.fileService.downloadFile(imagePath).subscribe({
         next: (imageData) => {
+          console.log("NEXTTTT");
           const unsafeImg = URL.createObjectURL(imageData);
-          this.ImageURL = unsafeImg;
+          this.ImageURL =
+            this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+          unsafeImg;
         },
         error: (error) => {
           console.log(error);
@@ -78,14 +72,17 @@ export class EventPictureComponent implements OnInit, OnDestroy {
   }
 
   downloadImage() {
+    console.log(this.event.name);
+    console.log(this.event);
+    console.log(this.category);
     this.downloadImageIfNotExists(
       this.event?.eventImagePath,
       this.event?.eventImageTemporaryURL
     );
-    this.downloadImageIfNotExists(
-      this.organizer?.organizerImagePath,
-      this.organizer?.organizerImageTemporaryURL
-    );
+    // this.downloadImageIfNotExists(
+    //   this.organizerId?.organizerImagePath,
+    //   this.organizerId?.organizerImageTemporaryURL
+    // );
     this.downloadImageIfNotExists(
       this.event?.category.subcategories[0]?.stockImagePath,
       this.event?.category.subcategories[0]?.stockImageTemporaryURL
