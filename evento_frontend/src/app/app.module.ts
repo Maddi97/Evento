@@ -37,11 +37,7 @@ import { AppComponent } from "./app.component";
   providers: [
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     { provide: "googleTagManagerId", useValue: "GTM-KHTB234N" },
-    provideClientHydration(
-      withHttpTransferCacheOptions({
-        includePostRequests: true,
-      })
-    ),
+    provideClientHydration(),
     provideHttpClient(withFetch()),
   ],
   schemas: [],

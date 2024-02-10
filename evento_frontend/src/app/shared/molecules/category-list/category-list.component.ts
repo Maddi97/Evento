@@ -220,13 +220,18 @@ export class CategoryListComponent implements OnInit, OnDestroy {
         if (category.iconTemporaryURL === undefined) {
           const fileDownload$ = this.fileService
             .downloadFile(category.iconPath)
-            .subscribe((imageData) => {
-              // create temporary Url for the downloaded image and bypass security
-              const unsafeImg = URL.createObjectURL(imageData);
-              category.iconTemporaryURL =
-                this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+            .subscribe({
+              next: (imageData) => {
+                category.iconTemporaryURL = URL.createObjectURL(imageData);
+              },
+              error: (error) => {
+                console.log(error);
+              },
+              complete: () => {
+                console.log("Image download complete");
+                fileDownload$?.unsubscribe();
+              },
             });
-          this.subscriptions$.push(fileDownload$);
         }
       }
     });

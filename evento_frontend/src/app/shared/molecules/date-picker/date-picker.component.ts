@@ -9,17 +9,10 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatCalendar } from "@angular/material/datepicker";
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterEvent,
-  RoutesRecognized,
-} from "@angular/router";
-import * as moment from "moment";
-import { filter, map, tap } from "rxjs/operators";
-import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
+import { ActivatedRoute, Router } from "@angular/router";
 import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
+import moment from "moment";
+import { map, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-date-picker",

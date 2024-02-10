@@ -89,7 +89,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   }
   @HostListener("document:scroll")
   hideSearchOnScroll() {
-    const inputElement = document.getElementById("searchright");
+    const inputElement =
+      document.getElementById("search-filter-small") ||
+      document.getElementById("search-filter-big");
     inputElement.classList.remove("focus");
     inputElement.blur();
     this.isFocused = false;
@@ -99,8 +101,10 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   @HostListener("document:mousedown", ["$event"])
   public onMouseDownTrigger(event: any) {
     const inputElement: HTMLInputElement = event.srcElement;
-    if (inputElement.id !== "searchright") {
-      const inputBar = document.getElementById("searchright");
+    if (!inputElement.id.includes("search-filter")) {
+      const inputBar =
+        document.getElementById("search-filter-small") ||
+        document.getElementById("search-filter-big");
       if (inputElement.id === "searchlabel") {
         if (!this.isFocused) {
           inputBar.classList.add("focus");

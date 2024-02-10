@@ -29,6 +29,7 @@ import { FooterbarComponent } from "./footerbar/footerbar.component";
 import { HeaderbarComponent } from "./headerbar/headerbar.component";
 import { AtomsModule } from "@shared/atoms/atoms.module";
 import { CategoryTileComponent } from "./category-tile/category-tile.component";
+import { PipesModule } from "@shared/pipes/pipes.module";
 @NgModule({
   declarations: [
     DatePickerComponent,
@@ -64,6 +65,7 @@ import { CategoryTileComponent } from "./category-tile/category-tile.component";
     LazyLoadImageModule,
     NgxSpinnerModule,
     AtomsModule,
+    PipesModule,
   ],
   exports: [
     DatePickerComponent,

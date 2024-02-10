@@ -42,7 +42,10 @@
       [ngClass]="isCategoryPicked(category)"
       (click)="selectCategory(category)"
     >
-      <img [src]="category.iconTemporaryURL" />
+      <img
+        *ngIf="category.iconTemporaryURL"
+        [src]="category.iconTemporaryURL | byPassSecurity"
+      />
       {{ category.name }}
     </span>
     <div class="subcategory-placeholder">

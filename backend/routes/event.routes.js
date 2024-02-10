@@ -259,7 +259,6 @@ router.post("/getEventsBySearchString", limiter, async (req, res) => {
   let alreadyReturnedEventIds = req.body.req.alreadyReturnedEventIds || [];
   const fourteenDaysAhead = new Date(date);
   fourteenDaysAhead.setDate(fourteenDaysAhead.getDate() + 21);
-  console.log(alreadyReturnedEventIds);
   const dateConditions = {
     $or: [
       { "date.start": { $gte: date } },

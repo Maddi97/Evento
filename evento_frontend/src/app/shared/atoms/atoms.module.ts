@@ -19,6 +19,7 @@ import { AppStoreBannerComponent } from "./app-store-banner/app-store-banner.com
 import { DayDateComponent } from "./day-date/day-date.component";
 import { DigitalClockComponent } from "./digital-clock/digital-clock.component";
 import { HamburgerMenuComponent } from "./hamburger-menu/hamburger-menu.component";
+import { PipesModule } from "@shared/pipes/pipes.module";
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { HamburgerMenuComponent } from "./hamburger-menu/hamburger-menu.componen
     MatCardModule,
     MatButtonModule,
     LazyLoadImageModule,
+    PipesModule,
   ],
   exports: [
     EventPictureComponent,

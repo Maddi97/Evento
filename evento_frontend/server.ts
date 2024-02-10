@@ -2,16 +2,15 @@ import "zone.js/node";
 
 import { APP_BASE_HREF } from "@angular/common";
 import { CommonEngine } from "@angular/ssr";
-import * as express from "express";
+import express from "express";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import AppServerModule from "./src/main.server";
-import * as compression from "compression";
-
+import cors from "cors";
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
-  server.use(compression());
+  server.use(cors({ origin: "*" }));
   const distFolder = join(process.cwd(), "dist/evento/browser");
   const indexHtml = existsSync(join(distFolder, "index.original.html"))
     ? join(distFolder, "index.original.html")
@@ -39,6 +38,7 @@ export function app(): express.Express {
     commonEngine
       .render({
         bootstrap: AppServerModule,
+        inlineCriticalCss: true,
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
         publicPath: distFolder,

@@ -1,36 +1,24 @@
+import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import {
-  Router,
-  ActivatedRoute,
-  NavigationEnd,
-  NavigationSkipped,
-} from "@angular/router";
+  NOW_CATEGORY,
+  PROMOTION_CATEGORY,
+} from "@globals/constants/categories.c";
+import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
 import { Settings } from "@globals/models/settings";
-import * as moment from "moment";
+import { CategoriesComplexService } from "@services/complex/categories/categories.complex.service";
+import moment from "moment";
+import { NgxSpinnerService } from "ngx-spinner";
 import {
-  BehaviorSubject,
   Observable,
   ReplaySubject,
   filter,
-  first,
   map,
-  mergeMap,
   of,
-  share,
-  shareReplay,
-  startWith,
   switchMap,
-  take,
   tap,
 } from "rxjs";
-import {
-  PROMOTION_CATEGORY,
-  NOW_CATEGORY,
-} from "@globals/constants/categories.c";
-import { CategoriesComplexService } from "@services/complex/categories/categories.complex.service";
-import { isPlatformBrowser } from "@angular/common";
-import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
-import { NgxSpinner, NgxSpinnerService } from "ngx-spinner";
 @Injectable({
   providedIn: "root",
 })

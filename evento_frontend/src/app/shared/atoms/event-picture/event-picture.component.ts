@@ -38,7 +38,9 @@ export class EventPictureComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isPlatformServer = isPlatformServer(this.platformId);
     this.category = this.event.category;
-    this.downloadImage();
+    if (!this.isPlatformServer) {
+      this.downloadImage();
+    }
   }
   ngOnDestroy() {
     if (this.fileService$) {
@@ -55,11 +57,8 @@ export class EventPictureComponent implements OnInit, OnDestroy {
       this.downloadedImage = true;
       this.fileService$ = this.fileService.downloadFile(imagePath).subscribe({
         next: (imageData) => {
-          console.log("NEXTTTT");
-          const unsafeImg = URL.createObjectURL(imageData);
-          this.ImageURL =
-            this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-          unsafeImg;
+          console.log("Set image URL");
+          this.ImageURL = URL.createObjectURL(imageData);
         },
         error: (error) => {
           console.log(error);
@@ -72,9 +71,6 @@ export class EventPictureComponent implements OnInit, OnDestroy {
   }
 
   downloadImage() {
-    console.log(this.event.name);
-    console.log(this.event);
-    console.log(this.category);
     this.downloadImageIfNotExists(
       this.event?.eventImagePath,
       this.event?.eventImageTemporaryURL

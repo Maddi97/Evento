@@ -10,7 +10,7 @@ import { NavigationEnd, Router } from "@angular/router";
 import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
-import * as moment from "moment";
+import moment from "moment";
 import { filter } from "rxjs";
 @Component({
   selector: "app-headerbar",

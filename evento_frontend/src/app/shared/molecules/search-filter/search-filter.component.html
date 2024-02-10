@@ -8,7 +8,7 @@
     class="form-control"
     type="text"
     name="search"
-    id="searchright"
+    id="search-filter-small"
     formControlName="searchString"
     placeholder=" &#xF002;  Suche Events ..."
   />
@@ -16,12 +16,12 @@
 <div class="search-container" [formGroup]="searchStringForm">
   <input
     class="search expandright"
-    id="searchright"
+    id="search-filter-big"
     type="text"
     placeholder="Suche Events ..."
     formControlName="searchString"
   />
-  <label id="searchlabel" class="button searchbutton" for="searchright"
+  <label id="searchlabel" class="button searchbutton" for="search-filter-big"
     ><span class="mglass">&#9906;</span></label
   >
 </div>

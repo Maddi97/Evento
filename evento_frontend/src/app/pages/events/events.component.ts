@@ -17,8 +17,7 @@ import { NominatimGeoService } from "@services/core/location/nominatim-geo.servi
 import { PositionService } from "@services/core/location/position.service";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
-import { CategoriesService } from "@services/simple/categories/categories.service";
-import * as moment from "moment-timezone";
+import moment from "moment-timezone";
 import { NgxSpinnerService } from "ngx-spinner";
 import { Subscription, combineLatest, distinctUntilChanged } from "rxjs";
 @Component({

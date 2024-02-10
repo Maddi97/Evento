@@ -13,10 +13,6 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { EventsRoutingModule } from "./events-routing.module";
 import { MoleculesModule } from "@shared/molecules/molecules.module";
 import { AtomsModule } from "@shared/atoms/atoms.module";
-import {
-  provideClientHydration,
-  withHttpTransferCacheOptions,
-} from "@angular/platform-browser";
 
 @NgModule({
   declarations: [EventsComponent],
@@ -33,13 +29,6 @@ import {
     NgxSpinnerModule,
     AtomsModule,
   ],
-  providers: [
-    provideClientHydration(
-      withHttpTransferCacheOptions({
-        includePostRequests: true,
-      })
-    ),
-    provideHttpClient(withFetch()),
-  ],
+  providers: [],
 })
 export class EventsModule {}
