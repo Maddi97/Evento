@@ -2,26 +2,34 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
   rel="stylesheet"
 />
-
-<div class="search-filter" [formGroup]="searchStringForm">
+<div class="search-container-big" [formGroup]="searchStringForm">
   <input
     class="form-control"
     type="text"
     name="search"
-    id="search-filter-small"
+    id="search-filter-big"
     formControlName="searchString"
     placeholder=" &#xF002;  Suche Events ..."
   />
+  <label
+    id="searchlabel-big"
+    class="button searchbutton"
+    for="search-filter-big"
+    ><span class="mglass">&#9906;</span></label
+  >
 </div>
-<div class="search-container" [formGroup]="searchStringForm">
+<div class="search-container-small" [formGroup]="searchStringForm">
   <input
     class="search expandright"
-    id="search-filter-big"
+    id="search-filter-small"
     type="text"
     placeholder="Suche Events ..."
     formControlName="searchString"
   />
-  <label id="searchlabel" class="button searchbutton" for="search-filter-big"
+  <label
+    id="searchlabel-small"
+    class="button searchbutton"
+    for="search-filter-small"
     ><span class="mglass">&#9906;</span></label
   >
 </div>

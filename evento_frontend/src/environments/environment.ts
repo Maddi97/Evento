@@ -7,7 +7,7 @@ export const environment = {
   //apiBaseUrl: "https://backend.staging.evento-leipzig.de",
   //apiBaseUrl: "https://backend.evento-leipzig.de",
   apiBaseUrlBrowser: "http://localhost:3000",
-  apiBaseUrlServer: "http://backend:3000",
+  apiBaseUrlServer: "http://localhost:3000",
 
   /* Für Android App Testing*/
   //apiBaseUrl: "http://172.20.10.3:3000"

@@ -140,7 +140,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   private initMapIfNeeded(): void {
     if (
       typeof this.map === "undefined" &&
-      this.centerMapOnPosition.length === 2
+      this.centerMapOnPosition?.length === 2
     ) {
       this.initMap();
       this.mapInitialized = true;

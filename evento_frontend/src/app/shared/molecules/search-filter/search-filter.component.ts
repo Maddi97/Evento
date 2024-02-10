@@ -43,9 +43,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getScreenWidth = isPlatformBrowser(this.platformId)
-      ? window.innerWidth
-      : 0;
+    this.getScreenWidth = this.getScreenSize();
+    console.log(this.getScreenWidth);
     this.searchStringForm = this.formBuilder.group({
       searchString: [""],
     });
@@ -83,9 +82,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   @HostListener("window:resize")
   getScreenSize() {
-    this.getScreenWidth = isPlatformBrowser(this.platformId)
-      ? window.innerWidth
-      : 0;
+    if (isPlatformBrowser(this.platformId)) {
+      this.getScreenWidth = window.innerWidth;
+    }
   }
   @HostListener("document:scroll")
   hideSearchOnScroll() {
@@ -97,15 +96,13 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.isFocused = false;
   }
 
-  @HostListener("document:touch", ["$event"])
-  @HostListener("document:mousedown", ["$event"])
+  @HostListener("window:touch", ["$event"])
+  @HostListener("window:mousedown", ["$event"])
   public onMouseDownTrigger(event: any) {
     const inputElement: HTMLInputElement = event.srcElement;
     if (!inputElement.id.includes("search-filter")) {
-      const inputBar =
-        document.getElementById("search-filter-small") ||
-        document.getElementById("search-filter-big");
-      if (inputElement.id === "searchlabel") {
+      const inputBar = document.getElementById("search-filter-small");
+      if (inputElement.id.includes("searchlabel")) {
         if (!this.isFocused) {
           inputBar.classList.add("focus");
         } else {
@@ -130,7 +127,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
           }, 10);
         }
       }
-      if (this.isFocused || event.srcElement.id === "searchlabel") {
+      if (this.isFocused || !event.srcElement.id.includes("searchlabel")) {
         this.isFocused = !this.isFocused;
       }
     }

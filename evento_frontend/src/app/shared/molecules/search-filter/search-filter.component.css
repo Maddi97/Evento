@@ -60,7 +60,7 @@
   color: black;
 }
 
-.search-container {
+.search-container-small {
   position: relative;
   display: inline-block;
   height: 40px;
@@ -157,12 +157,12 @@
 }
 
 @media screen and (max-width: 1000px) {
-  .search-filter {
+  .search-container-big {
     display: none;
   }
 }
 @media screen and (min-width: 1001px) {
-  .search-container {
+  .search-container-small {
     display: none;
   }
 }
