@@ -100,35 +100,35 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   @HostListener("window:mousedown", ["$event"])
   public onMouseDownTrigger(event: any) {
     const inputElement: HTMLInputElement = event.srcElement;
-    if (!inputElement.id.includes("search-filter")) {
-      const inputBar = document.getElementById("search-filter-small");
-      if (inputElement.id.includes("searchlabel")) {
-        if (!this.isFocused) {
-          inputBar.classList.add("focus");
-        } else {
-          if (this.search.searchString.length > 0) {
-            this.sharedObservableService.clearSearchFilter();
-          }
-          inputBar.classList.remove("focus");
-          setTimeout(() => {
-            if (Capacitor.isNativePlatform()) {
-              Keyboard.hide();
-            }
-          }, 10);
-        }
+    if (inputElement.id.includes("search-filter")) {
+      return;
+    }
+    const inputBar = document.getElementById("search-filter-small");
+    const isSearchFocused = inputBar?.classList?.contains("focus");
+    if (inputElement.id.includes("searchlabel")) {
+      if (!isSearchFocused) {
+        inputBar.classList.add("focus");
       } else {
-        if (this.isFocused && !inputElement.value) {
-          inputBar.classList.remove("focus");
-          inputBar.blur();
-          setTimeout(() => {
-            if (Capacitor.isNativePlatform()) {
-              Keyboard.hide();
-            }
-          }, 10);
+        inputBar.classList.remove("focus");
+
+        if (this.search.searchString.length > 0) {
+          this.sharedObservableService.clearSearchFilter();
         }
+        setTimeout(() => {
+          if (Capacitor.isNativePlatform()) {
+            Keyboard.hide();
+          }
+        }, 10);
       }
-      if (this.isFocused || !event.srcElement.id.includes("searchlabel")) {
-        this.isFocused = !this.isFocused;
+    } else {
+      if (isSearchFocused && !inputElement.value) {
+        inputBar.classList.remove("focus");
+        inputBar.blur();
+        setTimeout(() => {
+          if (Capacitor.isNativePlatform()) {
+            Keyboard.hide();
+          }
+        }, 10);
       }
     }
   }
