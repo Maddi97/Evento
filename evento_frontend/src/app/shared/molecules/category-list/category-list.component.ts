@@ -225,10 +225,11 @@ export class CategoryListComponent implements OnInit, OnDestroy {
                 category.iconTemporaryURL = URL.createObjectURL(imageData);
               },
               error: (error) => {
-                console.log(error);
+                //console.log(error);
+                fileDownload$?.unsubscribe();
               },
               complete: () => {
-                console.log("Image download complete");
+                //console.log("Image download complete");
                 fileDownload$?.unsubscribe();
               },
             });

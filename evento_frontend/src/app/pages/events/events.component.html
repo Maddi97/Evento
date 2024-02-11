@@ -14,7 +14,7 @@
         <app-event-tile-list
           [eventList]="eventList"
           [userPosition]="currentPosition"
-          [eventToScrollId]="eventToScrollId"
+          [eventToScroll]="eventToScroll"
           (hoverEventEmitter)="hoveredEventId = $event"
         >
         </app-event-tile-list>
@@ -31,7 +31,7 @@
           [currentPosition]="currentPosition"
           [centerMapOnPosition]="currentPosition"
           [hasMoreEvents]="loadMore"
-          (emitClickedEventId)="eventToScrollId = $event"
+          (emitClickedEventId)="eventToScroll = $event"
         ></map-view>
       </div>
     </div>
@@ -54,7 +54,7 @@
         <app-event-tile-list
           [eventList]="eventList"
           [userPosition]="currentPosition"
-          [eventToScrollId]="eventToScrollId"
+          [eventToScroll]="eventToScroll"
           (hoverEventEmitter)="hoveredEventId = $event"
         ></app-event-tile-list>
         <div *ngIf="isLoadingMoreEvents && loadMore">
@@ -76,7 +76,7 @@
           [currentPosition]="currentPosition"
           [centerMapOnPosition]="currentPosition"
           [hasMoreEvents]="loadMore"
-          (emitClickedEventId)="eventToScrollId = $event"
+          (emitClickedEventId)="eventToScroll = $event"
         ></map-view>
       </div>
     </div>

@@ -115,9 +115,6 @@ export class CustomRouterService {
         }
 
         return [date, category, subcategories];
-      }),
-      tap((qp) => {
-        console.log("Query params: ", qp);
       })
     );
   }

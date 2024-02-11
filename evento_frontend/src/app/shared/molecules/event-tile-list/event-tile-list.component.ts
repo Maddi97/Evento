@@ -10,8 +10,8 @@ import {
   PLATFORM_ID,
   SimpleChanges,
 } from "@angular/core";
+import { Event } from "@globals/models/event";
 import { NominatimGeoService } from "@services/core/location/nominatim-geo.service";
-import { PositionService } from "@services/core/location/position.service";
 import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
@@ -20,10 +20,9 @@ import { NgxSpinnerService } from "ngx-spinner";
   styleUrls: ["./event-tile-list.component.css"],
 })
 export class EventTileListComponent implements OnInit, OnChanges {
-  @Input() eventList;
+  @Input() eventList: Event[] = [];
   @Input() userPosition;
-  @Input() eventToScrollId;
-  @Input() test;
+  @Input() eventToScroll: Event;
   @Output() hoverEventEmitter = new EventEmitter<string>();
 
   emittedEventId = null;
@@ -42,12 +41,30 @@ export class EventTileListComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.eventToScrollId && isPlatformBrowser(this.platformId)) {
+    if (
+      changes.eventList?.currentValue &&
+      changes.eventList?.currentValue[0]?._id !==
+        changes.eventList?.previousValue?.[0]?._id &&
+      isPlatformBrowser(this.platformId)
+    ) {
+      this.scrollEventListToTop();
+    }
+
+    if (changes.eventToScroll && isPlatformBrowser(this.platformId)) {
       this.scrollToEvent(
-        this.eventToScrollId,
-        changes.eventToScrollId.previousValue
+        this.eventToScroll,
+        changes.eventToScroll.previousValue
       );
     }
+  }
+  scrollEventListToTop() {
+    setTimeout(() => {
+      const id = "event-tile-" + this.eventList[0]._id;
+      const element = document.getElementById(id);
+      element?.scrollIntoView(
+        { behavior: "instant", block: "start" } // Use smooth scrolling
+      );
+    }, 1);
   }
 
   scrollToEvent(eventToScroll, previousEventToScroll) {

@@ -55,9 +55,10 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   loadMore = false;
   isLoadMoreClicked = false;
-  hasLoadedMore = true;
+  hasRouteChangedRecently = false;
 
-  eventToScrollId = undefined;
+  hasLoadedMore = true;
+  eventToScroll = undefined;
   hoveredEventId = null;
   filteredCategory;
   lastEventListLength = 0;
@@ -95,7 +96,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.mapView = this.mapCenterViewService.isMapViewObservable.value;
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe({
       next: (isMapView) => {
-        console.log("Map view next: ", isMapView);
+        //console.log("Map view next: ", isMapView);
         this.mapView = isMapView;
       },
     });
@@ -107,7 +108,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     this.sharedObservables.settingsObservable.subscribe({
       next: (settings) => {
-        console.log("Settings next: ", settings);
+        //console.log("Settings next: ", settings);
       },
       error: (error) => {
         console.error(error);
@@ -118,6 +119,70 @@ export class EventsComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions$.push(mapView$, mapCenter$);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions$.forEach((subscription$) => {
+      if (subscription$) {
+        subscription$.unsubscribe();
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.isPlatformBrowser = isPlatformBrowser(this.platformId);
+    const searchString$ = this.sharedObservables.searchStringObservable;
+    const position$ = this.positionService.positionObservable;
+
+    const queryParams$ = this.customRouterService.getQueryParamsEventsComponent(
+      this.settings
+    );
+    const combined$ = combineLatest([queryParams$, searchString$, position$])
+      .pipe(distinctUntilChanged())
+      .subscribe({
+        next: ([queryParams, searchString, position]) => {
+          // Handle the combined values here
+          [
+            this.filteredDate,
+            this.filteredCategory,
+            this.filteredSubcategories,
+          ] = queryParams;
+          this.resetLoadingLimit();
+          if (isPlatformBrowser(this.platformId)) {
+            this.hasRouteChangedRecently = true;
+            setTimeout(() => {
+              this.hasRouteChangedRecently = false;
+            }, 1000);
+          }
+          this.sharedObservables.setSearchString(searchString);
+          this.search = searchString;
+          this.currentPosition = position;
+          const req = this.createRequestObject(false);
+          this.applyFilters(req);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          console.log("Subscription should never complete");
+        },
+      });
+    this.positionService.getGeoLocation();
+    const settings$ = this.sharedObservables.settingsObservable.subscribe(
+      (settings) => {
+        if (settings) {
+          this.settings = settings;
+        }
+      }
+    );
+    this.subscriptions$.push(settings$, combined$);
+    if (isPlatformBrowser(this.platformId)) {
+      this.getScreenSize();
+      this.spinner.show();
+    }
+  }
+  ngOnChange() {
+    this.spinner.show();
   }
   createRequestObject(hasMapCenterChanged) {
     const germanyTime = new Date().toLocaleTimeString("en-DE", {
@@ -150,70 +215,12 @@ export class EventsComponent implements OnInit, OnDestroy {
       };
     }
   }
-  ngOnDestroy(): void {
-    this.subscriptions$.forEach((subscription$) => {
-      if (subscription$) {
-        subscription$.unsubscribe();
-      }
-    });
-  }
-
-  ngOnInit(): void {
-    this.isPlatformBrowser = isPlatformBrowser(this.platformId);
-    const searchString$ = this.sharedObservables.searchStringObservable;
-    const position$ = this.positionService.positionObservable;
-
-    const queryParams$ = this.customRouterService.getQueryParamsEventsComponent(
-      this.settings
-    );
-    const combined$ = combineLatest([queryParams$, searchString$, position$])
-      .pipe(distinctUntilChanged())
-      .subscribe({
-        next: ([queryParams, searchString, position]) => {
-          // Handle the combined values here
-          [
-            this.filteredDate,
-            this.filteredCategory,
-            this.filteredSubcategories,
-          ] = queryParams;
-          this.resetLoadingLimit();
-          this.sharedObservables.setSearchString(searchString);
-          this.search = searchString;
-          this.currentPosition = position;
-          const req = this.createRequestObject(false);
-          this.applyFilters(req);
-        },
-        error: (error) => {
-          console.error(error);
-        },
-        complete: () => {
-          console.log("Subscription should never complete");
-        },
-      });
-    this.positionService.getGeoLocation();
-    const settings$ = this.sharedObservables.settingsObservable.subscribe(
-      (settings) => {
-        if (settings) {
-          this.settings = settings;
-        }
-      }
-    );
-    this.subscriptions$.push(settings$, combined$);
-    if (isPlatformBrowser(this.platformId)) {
-      this.getScreenSize();
-      this.spinner.show();
-    }
-  }
-  ngOnChange() {
-    this.spinner.show();
-  }
   applyFilters(req, loadMore = false) {
     console.log("apply filters");
     const event$ = this.eventsComplexService
       .getEventsSubscriptionBasedOnTypeAndCategory(req)
       .subscribe({
         next: (events) => {
-          console.log("fetched events: ", events[0]?.name);
           this.resetEventList = !loadMore;
           this.handlyEventListLoaded(events);
         },
@@ -237,7 +244,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   loadMoreEvents(mapCenter = undefined) {
     console.log("Load more events");
-    if (this.loadMore) {
+    if (this.loadMore && !this.hasRouteChangedRecently) {
       this.isLoadMoreClicked = mapCenter ? false : true;
       this.actualLoadEventLimit += this.offsetLoadEventLimit;
       this.resetEventList = false;
@@ -259,7 +266,6 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   onFetchEventsCompleted() {
-    console.log("Fetch events completed");
     this.fetchEventsCompleted = true;
     if (this.lastEventListLength <= this.eventList.length) {
       this.hasMoreEventsToLoad = false;
@@ -272,6 +278,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.eventList = !this.resetEventList
       ? [...this.eventList, ...events]
       : events;
+    // if event more or equal events than limit or event recently resetted
     this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
     if (this.isLoadMoreClicked) {
       this.isLoadMoreClicked = false;
@@ -371,9 +378,4 @@ export class EventsComponent implements OnInit, OnDestroy {
   private resetLoadingLimit() {
     this.actualLoadEventLimit = this.startLoadEventLimit;
   }
-}
-
-class DateClicked {
-  date: moment.Moment;
-  isClicked: boolean;
 }

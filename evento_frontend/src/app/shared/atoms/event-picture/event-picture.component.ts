@@ -57,14 +57,13 @@ export class EventPictureComponent implements OnInit, OnDestroy {
       this.downloadedImage = true;
       this.fileService$ = this.fileService.downloadFile(imagePath).subscribe({
         next: (imageData) => {
-          console.log("Set image URL");
           this.ImageURL = URL.createObjectURL(imageData);
         },
         error: (error) => {
           console.log(error);
         },
         complete: () => {
-          console.log("Image download complete");
+          //console.log("Image download complete");
         },
       });
     }
