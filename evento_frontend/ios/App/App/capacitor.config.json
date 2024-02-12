@@ -1,7 +1,7 @@
 {
 	"appId": "com.evento.app",
 	"appName": "Evento",
-	"webDir": "dist/evento/browser",
+	"webDir": "dist/evento",
 	"server": {
 		"url": "http://localhost:4200",
 		"cleartext": true,
