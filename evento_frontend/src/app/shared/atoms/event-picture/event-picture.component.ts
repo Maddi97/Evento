@@ -51,13 +51,14 @@ export class EventPictureComponent implements OnInit, OnDestroy {
         .subscribe({
           complete: () => {
             this.downloadImage();
-            organizer$.unsubscribe();
+            organizer$?.unsubscribe();
           },
         });
     }
   }
   ngOnDestroy() {
     if (this.fileService$) {
+      console.log("Destroy file service");
       this.fileService$.unsubscribe();
     }
   }
