@@ -1,4 +1,8 @@
-import { CommonModule, isPlatformBrowser } from "@angular/common";
+import {
+  CommonModule,
+  isPlatformBrowser,
+  isPlatformServer,
+} from "@angular/common";
 import {
   Component,
   EventEmitter,
@@ -107,6 +111,9 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
     setTimeout(() => {
       this.initMapIfNeeded(); // Use the method to initialize the map
       if (typeof this.map !== "undefined") {

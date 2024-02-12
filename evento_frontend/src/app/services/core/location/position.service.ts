@@ -15,6 +15,7 @@ import {
   timeout,
 } from "rxjs";
 import { NominatimGeoService } from "./nominatim-geo.service";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 
 @Injectable({
   providedIn: "root",
@@ -31,10 +32,14 @@ export class PositionService {
     private geoService: NominatimGeoService,
     private _snackbar: MatSnackBar,
     private spinner: NgxSpinnerService,
-    private readonly geolocation$: GeolocationService
+    private readonly geolocation$: GeolocationService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   getPositionByInput(addressInput) {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
     this.spinner.show();
     this.closeSpinnerAfterTimeout();
     this.geoService
@@ -56,6 +61,9 @@ export class PositionService {
   }
 
   getGeoLocation(showSpinner = false) {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
     if (showSpinner) this.spinner.show();
     this.geolocation$
       .pipe(
@@ -107,6 +115,9 @@ export class PositionService {
     });
   }
   closeSpinnerAfterTimeout() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
     setTimeout(() => {
       this.spinner.hide();
     }, this.timeout);

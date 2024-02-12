@@ -333,38 +333,40 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   onScroll(event): void {
-    const element = event.target;
-    const distanceToTop: number = element.scrollTop;
-    const distanceToBottom =
-      element.scrollHeight - element.clientHeight - element.scrollTop;
-    if (this.isScrollingDown(element)) {
-      //this.sharedObservables.notifyScrolling("down");
-      const scroll = {
-        direction: "down" as any,
-        distanceTop: distanceToTop,
-        distanceBottom: distanceToBottom,
-      };
-      this.sharedObservables.notifyScrollOutInOfScreen(scroll);
-    } else {
-      const scroll = {
-        direction: "up" as any,
-        distanceTop: distanceToTop,
-        distanceBottom: distanceToBottom,
-      };
-      this.sharedObservables.notifyScrollOutInOfScreen(scroll);
-      // this.sharedObservables.notifyScrolling("up");
-    }
-    // Check if the div is scrolled to the bottom
-    if (
-      this.isScrolledToBottom(element) &&
-      !this.isLoadingMoreEvents &&
-      this.loadMore
-    ) {
-      this.isLoadingMoreEvents = true;
-      this.loadMoreEvents();
-      setTimeout(() => {
-        this.isLoadingMoreEvents = false;
-      }, 750);
+    if (isPlatformBrowser(this.platformId)) {
+      const element = event.target;
+      const distanceToTop: number = element.scrollTop;
+      const distanceToBottom =
+        element.scrollHeight - element.clientHeight - element.scrollTop;
+      if (this.isScrollingDown(element)) {
+        //this.sharedObservables.notifyScrolling("down");
+        const scroll = {
+          direction: "down" as any,
+          distanceTop: distanceToTop,
+          distanceBottom: distanceToBottom,
+        };
+        this.sharedObservables.notifyScrollOutInOfScreen(scroll);
+      } else {
+        const scroll = {
+          direction: "up" as any,
+          distanceTop: distanceToTop,
+          distanceBottom: distanceToBottom,
+        };
+        this.sharedObservables.notifyScrollOutInOfScreen(scroll);
+        // this.sharedObservables.notifyScrolling("up");
+      }
+      // Check if the div is scrolled to the bottom
+      if (
+        this.isScrolledToBottom(element) &&
+        !this.isLoadingMoreEvents &&
+        this.loadMore
+      ) {
+        this.isLoadingMoreEvents = true;
+        this.loadMoreEvents();
+        setTimeout(() => {
+          this.isLoadingMoreEvents = false;
+        }, 750);
+      }
     }
   }
 

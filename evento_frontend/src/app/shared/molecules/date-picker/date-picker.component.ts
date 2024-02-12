@@ -142,7 +142,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
       // Apply the calculated scroll position
       //container.scrollLeft = scrollPosition;
       element.scrollIntoView({ block: "end", inline: "center" });
-    }, 100);
+    }, 10);
   }
 
   addDates() {
@@ -164,7 +164,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     element.scrollLeft += 160;
     setTimeout(() => {
       this.setScrollMaxBool();
-    }, 100);
+    }, 10);
     // if max scrolled true then true
   }
 
@@ -173,7 +173,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     element.scrollLeft -= 160;
     setTimeout(() => {
       this.setScrollMaxBool();
-    }, 100);
+    }, 10);
   }
 
   @HostListener("window:mouseover", ["$event"])

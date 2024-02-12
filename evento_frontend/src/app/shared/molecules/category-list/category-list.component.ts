@@ -17,7 +17,11 @@ import { FileService } from "@services/complex/files/file.service";
 import { Category, Subcategory } from "@globals/models/category";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { CommonModule, isPlatformBrowser } from "@angular/common";
+import {
+  CommonModule,
+  isPlatformBrowser,
+  isPlatformServer,
+} from "@angular/common";
 import { Search } from "@globals/types/search.types";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import {
@@ -286,6 +290,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   @HostListener("window:mouseover", ["$event"])
   setScrollMaxBool() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
     setTimeout(() => {
       const element = document.getElementById("main-category-container");
       if (!element) {
