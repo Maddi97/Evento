@@ -74,16 +74,18 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.LeafIcon = this.leafletService.L.Icon.extend({
-      options: {
-        shadowUrl: this.shadowUrl,
-        iconSize: [16, 24],
-        iconAnchor: [8, 30],
-        popupAnchor: [1, -26],
-        tooltipAnchor: [10, -20],
-        shadowSize: [30, 30],
-      },
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.LeafIcon = this.leafletService.L.Icon.extend({
+        options: {
+          shadowUrl: this.shadowUrl,
+          iconSize: [16, 24],
+          iconAnchor: [8, 30],
+          popupAnchor: [1, -26],
+          tooltipAnchor: [10, -20],
+          shadowSize: [30, 30],
+        },
+      });
+    }
   }
 
   resetCenter() {
