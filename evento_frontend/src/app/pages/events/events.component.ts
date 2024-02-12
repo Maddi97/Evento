@@ -1,5 +1,4 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { HttpClientModule } from "@angular/common/http";
 import {
   Component,
   HostListener,
