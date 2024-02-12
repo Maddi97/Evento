@@ -1,5 +1,4 @@
-import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { Event } from "@globals/models/event";
+import { isPlatformServer } from "@angular/common";
 import {
   Component,
   Inject,
@@ -8,10 +7,11 @@ import {
   OnInit,
   PLATFORM_ID,
 } from "@angular/core";
+import { Event } from "@globals/models/event";
 import { FileService } from "@services/complex/files/file.service";
 import { OrganizerService } from "@services/simple/organizer/organizer.service";
-import { DomSanitizer } from "@angular/platform-browser";
 import { LazyLoadImageModule } from "ng-lazyload-image";
+import { take, tap } from "rxjs";
 
 @Component({
   selector: "app-event-picture",
@@ -31,10 +31,10 @@ export class EventPictureComponent implements OnInit, OnDestroy {
   private fileService$;
 
   isPlatformServer;
-
+  organizer;
   constructor(
     private fileService: FileService,
-    private sanitizer: DomSanitizer,
+    private organizerService: OrganizerService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -42,7 +42,18 @@ export class EventPictureComponent implements OnInit, OnDestroy {
     this.isPlatformServer = isPlatformServer(this.platformId);
     this.category = this.event.category;
     if (!this.isPlatformServer) {
-      this.downloadImage();
+      const organizer$ = this.organizerService
+        .getOrganizerById(this.event._organizerId)
+        .pipe(
+          take(1),
+          tap((organizer) => (this.organizer = organizer[0]))
+        )
+        .subscribe({
+          complete: () => {
+            this.downloadImage();
+            organizer$.unsubscribe();
+          },
+        });
     }
   }
   ngOnDestroy() {
@@ -58,17 +69,21 @@ export class EventPictureComponent implements OnInit, OnDestroy {
       temporaryURL === undefined
     ) {
       this.downloadedImage = true;
-      this.fileService$ = this.fileService.downloadFile(imagePath).subscribe({
-        next: (imageData) => {
-          this.ImageURL = URL.createObjectURL(imageData);
-        },
-        error: (error) => {
-          console.log(error);
-        },
-        complete: () => {
-          //console.log("Image download complete");
-        },
-      });
+      this.fileService$ = this.fileService
+        .downloadFile(imagePath)
+        .pipe(take(1))
+        .subscribe({
+          next: (imageData) => {
+            this.ImageURL = URL.createObjectURL(imageData);
+          },
+          error: (error) => {
+            console.log(error);
+          },
+          complete: () => {
+            this.fileService$.unsubscribe();
+            //console.log("Image download complete");
+          },
+        });
     }
   }
 
@@ -77,14 +92,15 @@ export class EventPictureComponent implements OnInit, OnDestroy {
       this.event?.eventImagePath,
       this.event?.eventImageTemporaryURL
     );
-    // this.downloadImageIfNotExists(
-    //   this.organizerId?.organizerImagePath,
-    //   this.organizerId?.organizerImageTemporaryURL
-    // );
+
     this.downloadImageIfNotExists(
-      this.event?.category.subcategories[0]?.stockImagePath,
-      this.event?.category.subcategories[0]?.stockImageTemporaryURL
-    );
+      this.organizer?.organizerImagePath,
+      this.organizer?.organizerImageTemporaryURL
+    ),
+      this.downloadImageIfNotExists(
+        this.event?.category.subcategories[0]?.stockImagePath,
+        this.event?.category.subcategories[0]?.stockImageTemporaryURL
+      );
     this.downloadImageIfNotExists(
       this.category?.stockImagePath,
       this.category?.stockImageTemporaryURL

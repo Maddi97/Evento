@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, Inject, PLATFORM_ID } from "@angular/core";
 import { Category } from "@globals/models/category";
 import { DomSanitizer } from "@angular/platform-browser";
 import { FileService } from "@services/complex/files/file.service";
-import { CommonModule } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
+import { take } from "rxjs";
 
 @Component({
   selector: "app-category-tile",
@@ -20,12 +21,15 @@ export class CategoryTileComponent implements OnInit {
 
   constructor(
     private fileService: FileService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    this.downloadImage();
-    this.downloadImageSubcategories();
+    if (isPlatformBrowser(this.platformId)) {
+      this.downloadImage();
+      this.downloadImageSubcategories();
+    }
   }
 
   onClick() {
@@ -39,12 +43,18 @@ export class CategoryTileComponent implements OnInit {
     const cat = this.category;
     if (cat.iconPath !== undefined) {
       if (cat.iconTemporaryURL === undefined) {
-        this.fileService.downloadFile(cat.iconPath).subscribe((imageData) => {
-          // create temporary Url for the downloaded image and bypass security
-          const unsafeImg = URL.createObjectURL(imageData);
-          this.category.iconTemporaryURL =
-            this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-        });
+        const image$ = this.fileService
+          .downloadFile(cat.iconPath)
+          .pipe(take(1))
+          .subscribe({
+            next: (imageData) => {
+              // create temporary Url for the downloaded image and bypass security
+              const unsafeImg = URL.createObjectURL(imageData);
+              this.category.iconTemporaryURL =
+                this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+            },
+            complete: () => image$?.unsubscribe(),
+          });
       }
     }
   }
