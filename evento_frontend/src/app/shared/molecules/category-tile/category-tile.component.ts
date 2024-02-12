@@ -2,9 +2,14 @@ import { Component, OnInit, Input } from "@angular/core";
 import { Category } from "@globals/models/category";
 import { DomSanitizer } from "@angular/platform-browser";
 import { FileService } from "@services/complex/files/file.service";
+import { CommonModule } from "@angular/common";
+import { RouterModule } from "@angular/router";
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
   selector: "app-category-tile",
+  standalone: true,
+  imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: "./category-tile.component.html",
   styleUrls: ["./category-tile.component.css"],
 })

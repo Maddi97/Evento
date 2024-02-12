@@ -7,7 +7,7 @@ import {
   OnInit,
   PLATFORM_ID,
 } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
 import { EMPTY_SEARCH } from "@globals/constants/search";
@@ -23,12 +23,14 @@ import {
 } from "rxjs";
 @Component({
   selector: "app-search-filter",
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: "./search-filter.component.html",
   styleUrls: ["./search-filter.component.css"],
 })
 export class SearchFilterComponent implements OnInit, OnDestroy {
   search: Search = EMPTY_SEARCH;
-  delay = 300;
+  delay = 500;
   getScreenWidth;
   isFocused = false;
   event$: Subscription;
@@ -44,7 +46,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getScreenWidth = this.getScreenSize();
-    console.log(this.getScreenWidth);
     this.searchStringForm = this.formBuilder.group({
       searchString: [""],
     });

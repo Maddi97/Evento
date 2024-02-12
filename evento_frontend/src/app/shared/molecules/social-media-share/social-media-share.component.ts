@@ -4,9 +4,14 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { Share } from "@capacitor/share";
 import { DeviceDetectorService } from "ngx-device-detector";
 import { faWhatsapp, faTelegram } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ClipboardModule } from "@angular/cdk/clipboard";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "app-social-media-share",
+  standalone: true,
+  imports: [CommonModule, FontAwesomeModule, ClipboardModule],
   templateUrl: "./social-media-share.component.html",
   styleUrls: ["./social-media-share.component.css"],
 })

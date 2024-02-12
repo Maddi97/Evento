@@ -1,8 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 
 @Component({
   selector: "app-hamburger-menu",
+  standalone: true,
+  imports: [MatIconModule, MatMenuModule, RouterModule],
   templateUrl: "./hamburger-menu.component.html",
   styleUrls: ["./hamburger-menu.component.css"],
 })

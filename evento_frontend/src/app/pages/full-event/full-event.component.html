@@ -87,12 +87,14 @@
       >
 
       <div class="map-container">
+        @if(currentPosition) {
         <map-view
           [markerData]="[event]"
           [zoomInput]="14"
           [currentPosition]="currentPosition"
           [centerMapOnPosition]="[event.geoData.lat, event.geoData.lon]"
-        ></map-view>
+        ></map-view
+        >}
       </div>
     </div>
   </div>

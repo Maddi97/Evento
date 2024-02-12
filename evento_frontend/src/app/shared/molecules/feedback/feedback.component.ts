@@ -1,15 +1,26 @@
+import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import {
   FormBuilder,
   FormControl,
   FormGroup,
+  ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { WebService } from "@services/core/web/web.service";
 
 @Component({
   selector: "app-feedback",
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatInputModule,
+  ],
   templateUrl: "./feedback.component.html",
   styleUrls: ["./feedback.component.css"],
 })

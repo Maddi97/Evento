@@ -11,9 +11,12 @@ import {
 import { FileService } from "@services/complex/files/file.service";
 import { OrganizerService } from "@services/simple/organizer/organizer.service";
 import { DomSanitizer } from "@angular/platform-browser";
+import { LazyLoadImageModule } from "ng-lazyload-image";
 
 @Component({
   selector: "app-event-picture",
+  standalone: true,
+  imports: [LazyLoadImageModule],
   templateUrl: "./event-picture.component.html",
   styleUrls: ["./event-picture.component.css"],
 })

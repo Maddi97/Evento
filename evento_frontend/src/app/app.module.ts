@@ -12,11 +12,13 @@ import {
   withFetch,
 } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { AtomsModule } from "@shared/atoms/atoms.module";
-import { MoleculesModule } from "@shared/molecules/molecules.module";
 import { GoogleTagManagerModule } from "angular-google-tag-manager";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { HeaderbarComponent } from "@shared/molecules/headerbar/headerbar.component";
+import { AppStoreBannerComponent } from "@shared/atoms/app-store-banner/app-store-banner.component";
+import { CategoryListComponent } from "@shared/molecules/category-list/category-list.component";
+import { FooterbarComponent } from "@shared/molecules/footerbar/footerbar.component";
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -31,8 +33,10 @@ import { AppComponent } from "./app.component";
     */
     GoogleTagManagerModule,
     HttpClientModule,
-    MoleculesModule,
-    AtomsModule,
+    HeaderbarComponent,
+    AppStoreBannerComponent,
+    CategoryListComponent,
+    FooterbarComponent,
   ],
   providers: [
     { provide: LocationStrategy, useClass: PathLocationStrategy },

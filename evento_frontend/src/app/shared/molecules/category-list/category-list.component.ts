@@ -17,7 +17,7 @@ import { FileService } from "@services/complex/files/file.service";
 import { Category, Subcategory } from "@globals/models/category";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { isPlatformBrowser } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import { Search } from "@globals/types/search.types";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import {
@@ -26,8 +26,12 @@ import {
 } from "@globals/types/categories.types";
 import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
 import { Settings } from "@globals/models/settings";
+import { ByPassSecurityPipe } from "@shared/pipes/BypassSecurity.pipe";
+import { MatIconModule } from "@angular/material/icon";
 @Component({
   selector: "app-category-list",
+  standalone: true,
+  imports: [CommonModule, ByPassSecurityPipe, MatIconModule],
   templateUrl: "./category-list.component.html",
   styleUrls: ["./category-list.component.css"],
 })

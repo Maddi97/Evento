@@ -1,24 +1,27 @@
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import {
   Component,
   EventEmitter,
   HostListener,
+  Inject,
   Input,
   OnChanges,
   OnInit,
   Output,
+  PLATFORM_ID,
   SimpleChanges,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
-import * as L from "leaflet";
-import { skip, switchMap, timer } from "rxjs";
-import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { PositionService } from "@services/core/location/position.service";
 import { LeafletService } from "@services/core/leaflet/leaflet.service";
+import { PositionService } from "@services/core/location/position.service";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 @Component({
   selector: "map-view",
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: "./map-view.component.html",
   styleUrls: ["./map-view.component.css"],
 })
@@ -58,7 +61,8 @@ export class MapViewComponent implements OnInit, OnChanges {
     private positionService: PositionService,
     private leafletService: LeafletService,
     private mapCenterViewService: MapCenterViewService,
-    private sharedObservableService: SharedObservableService
+    private sharedObservableService: SharedObservableService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   sanitizeInput(value) {
@@ -126,7 +130,8 @@ export class MapViewComponent implements OnInit, OnChanges {
 
         // set blue position marker always to top
 
-        this.updateZIndexPosition("blue");
+        if (isPlatformBrowser(this.platformId))
+          this.updateZIndexPosition("blue");
         this.map.on("moveend", (e) => {
           this.updateZIndexPosition("blue");
           this.isMapDragged = true;
@@ -235,7 +240,7 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private setMarkers(markerData: any[]): void {
     this.markerGroup.clearLayers();
-    markerData.forEach((marker) => {
+    markerData?.forEach((marker) => {
       const adressStringUrl = encodeURIComponent(
         `${marker.address?.street} ${marker.address?.streetNumber} ${marker.address?.city}`
       );

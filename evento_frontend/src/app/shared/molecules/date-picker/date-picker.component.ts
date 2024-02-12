@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import {
   AfterViewInit,
   Component,
@@ -9,13 +9,17 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatCalendar } from "@angular/material/datepicker";
+import { MatIconModule } from "@angular/material/icon";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
+import { DayDateComponent } from "@shared/atoms/day-date/day-date.component";
 import moment from "moment";
 import { map, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-date-picker",
+  standalone: true,
+  imports: [MatIconModule, CommonModule, DayDateComponent],
   templateUrl: "./date-picker.component.html",
   styleUrls: ["./date-picker.component.css"],
 })

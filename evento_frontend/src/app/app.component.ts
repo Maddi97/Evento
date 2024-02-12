@@ -6,6 +6,7 @@ import { CustomRouterService } from "@services/core/custom-router/custom-router.
 import { NgxSpinnerService } from "ngx-spinner";
 import { SharedObservableService } from "./services/core/shared-observables/shared-observables.service";
 import { SettingsService } from "./services/simple/settings/settings.service.service";
+import { PositionService } from "@services/core/location/position.service";
 
 @Component({
   selector: "app-root",
@@ -27,11 +28,15 @@ export class AppComponent implements OnInit {
     private sharedObservableService: SharedObservableService,
     private customRouterService: CustomRouterService,
     private spinner: NgxSpinnerService,
+    private positionService: PositionService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
     this.isPlatformBrowser = isPlatformBrowser(this.platformId);
+    if (this.isPlatformBrowser) {
+      this.positionService.getGeoLocation();
+    }
     //only get position on first creation and not on routing inside the spa
     this.settingsService.getSettings().subscribe((settings) => {
       this.sharedObservableService.setSettings(settings);

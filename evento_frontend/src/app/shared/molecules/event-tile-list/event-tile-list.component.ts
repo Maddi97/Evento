@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import {
   Component,
   EventEmitter,
@@ -10,12 +10,26 @@ import {
   PLATFORM_ID,
   SimpleChanges,
 } from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
 import { Event } from "@globals/models/event";
 import { NominatimGeoService } from "@services/core/location/nominatim-geo.service";
 import { NgxSpinnerService } from "ngx-spinner";
+import { GoogleAdsComponent } from "../google-ads/google-ads.component";
+import { EventTileComponent } from "@shared/atoms/event-tile/event-tile.component";
+import { RouterModule } from "@angular/router";
+import { MatCardModule } from "@angular/material/card";
 
 @Component({
   selector: "app-event-tile-list",
+  standalone: true,
+  imports: [
+    CommonModule,
+    EventTileComponent,
+    GoogleAdsComponent,
+    RouterModule,
+    MatIconModule,
+    MatCardModule,
+  ],
   templateUrl: "./event-tile-list.component.html",
   styleUrls: ["./event-tile-list.component.css"],
 })
@@ -59,7 +73,7 @@ export class EventTileListComponent implements OnInit, OnChanges {
   }
   scrollEventListToTop() {
     setTimeout(() => {
-      const id = "event-tile-" + this.eventList[0]._id;
+      const id = "event-tile-" + this.eventList?.[0]?._id;
       const element = document.getElementById(id);
       element?.scrollIntoView(
         { behavior: "instant", block: "start" } // Use smooth scrolling

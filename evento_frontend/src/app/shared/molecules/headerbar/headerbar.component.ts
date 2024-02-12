@@ -1,4 +1,9 @@
-import { Location, isPlatformBrowser, isPlatformServer } from "@angular/common";
+import {
+  CommonModule,
+  Location,
+  isPlatformBrowser,
+  isPlatformServer,
+} from "@angular/common";
 import {
   Component,
   HostListener,
@@ -6,14 +11,25 @@ import {
   OnInit,
   PLATFORM_ID,
 } from "@angular/core";
-import { NavigationEnd, Router } from "@angular/router";
+import { NavigationEnd, Router, RouterModule } from "@angular/router";
 import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
+import { HamburgerMenuComponent } from "@shared/atoms/hamburger-menu/hamburger-menu.component";
 import moment from "moment";
 import { filter } from "rxjs";
+import { SearchFilterComponent } from "../search-filter/search-filter.component";
+import { DatePickerComponent } from "../date-picker/date-picker.component";
 @Component({
   selector: "app-headerbar",
+  standalone: true,
+  imports: [
+    HamburgerMenuComponent,
+    SearchFilterComponent,
+    DatePickerComponent,
+    RouterModule,
+    CommonModule,
+  ],
   templateUrl: "./headerbar.component.html",
   styleUrls: ["./headerbar.component.css"],
 })

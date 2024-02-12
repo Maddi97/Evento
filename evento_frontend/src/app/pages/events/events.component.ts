@@ -1,4 +1,5 @@
-import { isPlatformBrowser } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
+import { HttpClientModule } from "@angular/common/http";
 import {
   Component,
   HostListener,
@@ -7,6 +8,8 @@ import {
   OnInit,
   PLATFORM_ID,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatIconModule } from "@angular/material/icon";
 import { Category, Subcategory } from "@globals/models/category";
 import { Event } from "@globals/models/event";
 import { Settings } from "@globals/models/settings";
@@ -17,11 +20,23 @@ import { NominatimGeoService } from "@services/core/location/nominatim-geo.servi
 import { PositionService } from "@services/core/location/position.service";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
+import { EventTileListComponent } from "@shared/molecules/event-tile-list/event-tile-list.component";
+import { MapViewComponent } from "@shared/molecules/map-view/map-view.component";
 import moment from "moment-timezone";
-import { NgxSpinnerService } from "ngx-spinner";
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import { Subscription, combineLatest, distinctUntilChanged } from "rxjs";
 @Component({
   selector: "app-events",
+  standalone: true,
+  imports: [
+    CommonModule,
+    NgxSpinnerModule,
+    MatIconModule,
+    FormsModule,
+    NgxSpinnerModule,
+    MapViewComponent,
+    EventTileListComponent,
+  ],
   templateUrl: "./events.component.html",
   styleUrls: ["./events.component.css"],
 })
@@ -167,7 +182,6 @@ export class EventsComponent implements OnInit, OnDestroy {
           console.log("Subscription should never complete");
         },
       });
-    this.positionService.getGeoLocation();
     const settings$ = this.sharedObservables.settingsObservable.subscribe(
       (settings) => {
         if (settings) {

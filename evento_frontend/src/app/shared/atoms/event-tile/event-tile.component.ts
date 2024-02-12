@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import {
   Component,
   Inject,
@@ -9,6 +9,7 @@ import {
   SimpleChange,
   SimpleChanges,
 } from "@angular/core";
+import { MatCardModule } from "@angular/material/card";
 import { Event } from "@globals/models/event";
 import { PositionService } from "@services/core/location/position.service";
 import { OrganizerService } from "@services/simple/organizer/organizer.service";
@@ -18,9 +19,12 @@ import {
 } from "@shared/logic/opening-times-format-helpers";
 import { isScreenMinWidth } from "@shared/logic/screen-size-helpers";
 import { first, tap } from "rxjs";
+import { EventPictureComponent } from "../event-picture/event-picture.component";
 
 @Component({
   selector: "app-event-tile",
+  standalone: true,
+  imports: [CommonModule, MatCardModule, EventPictureComponent],
   templateUrl: "./event-tile.component.html",
   styleUrls: ["./event-tile.component.css"],
 })
