@@ -157,6 +157,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       .pipe(distinctUntilChanged())
       .subscribe({
         next: ([queryParams, searchString, position]) => {
+          this.spinner.show();
           // Handle the combined values here
           [
             this.filteredDate,
@@ -193,11 +194,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.subscriptions$.push(settings$, combined$);
     if (isPlatformBrowser(this.platformId)) {
       this.getScreenSize();
-      this.spinner.show();
     }
-  }
-  ngOnChange() {
-    this.spinner.show();
   }
   createRequestObject(hasMapCenterChanged) {
     const germanyTime = new Date().toLocaleTimeString("en-DE", {

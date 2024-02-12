@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: "Evento",
   webDir: "dist/evento",
   server: {
-    url: "http://192.168.0.112:4200",
+    url: "http://localhost:4200",
     cleartext: true,
     androidScheme: "http",
     allowNavigation: [

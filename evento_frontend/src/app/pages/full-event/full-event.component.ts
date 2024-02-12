@@ -12,7 +12,7 @@ import {
 } from "../../shared/logic/opening-times-format-helpers";
 import { MapViewComponent } from "../../shared/molecules/map-view/map-view.component";
 import { GoogleTagManagerService } from "angular-google-tag-manager";
-import { NgxSpinnerService } from "ngx-spinner";
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import { map } from "rxjs";
 import { delay, switchMap, take } from "rxjs/operators";
 import { SocialMediaShareComponent } from "@shared/molecules/social-media-share/social-media-share.component";
@@ -22,6 +22,7 @@ import { EventPictureComponent } from "@shared/atoms/event-picture/event-picture
   standalone: true,
   imports: [
     CommonModule,
+    NgxSpinnerModule,
     MapViewComponent,
     SocialMediaShareComponent,
     EventPictureComponent,
@@ -54,6 +55,7 @@ export class FullEventComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.spinner.show();
     this.position$ = this.positionService.positionObservable.pipe(
       map((position) => {
         this.currentPosition = position;
@@ -68,8 +70,8 @@ export class FullEventComponent implements OnInit, OnDestroy {
           this.organizerService.getOrganizerById(event._organizerId)
         ),
         map((organizerResponse) => (this.organizer = organizerResponse[0])),
-        take(1),
-        switchMap(() => this.position$)
+        switchMap(() => this.position$),
+        take(1)
       )
       .subscribe({
         next: () => {

@@ -1,9 +1,9 @@
 {
 	"appId": "com.evento.app",
 	"appName": "Evento",
-	"webDir": "dist/evento",
+	"webDir": "dist/evento/browser",
 	"server": {
-		"url": "http://192.168.0.112:4200",
+		"url": "http://localhost:4200",
 		"cleartext": true,
 		"androidScheme": "http",
 		"allowNavigation": [

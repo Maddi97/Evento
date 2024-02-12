@@ -49,10 +49,6 @@ export class SharedObservableService {
     if (
       searchString.searchString !== this.searchStringSubject.value.searchString
     ) {
-      console.log(
-        searchString.searchString,
-        this.searchStringSubject.value.searchString
-      );
       this.searchStringSubject.next(searchString);
     }
   }

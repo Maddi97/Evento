@@ -57,7 +57,6 @@ export class EventPictureComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     if (this.fileService$) {
-      console.log("Destroy file service");
       this.fileService$.unsubscribe();
     }
   }
