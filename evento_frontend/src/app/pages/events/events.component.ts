@@ -152,6 +152,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     const queryParams$ = this.customRouterService.getQueryParamsEventsComponent(
       this.settings
     );
+
     const combined$ = combineLatest([queryParams$, searchString$, position$])
       .pipe(distinctUntilChanged())
       .subscribe({

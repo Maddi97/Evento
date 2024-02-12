@@ -153,9 +153,6 @@ export class CustomRouterService {
         }
 
         return [this.categoryList, category, subcategories];
-      }),
-      tap((qp) => {
-        console.log("Query params: ", qp);
       })
     );
   }

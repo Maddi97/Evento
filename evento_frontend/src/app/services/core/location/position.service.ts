@@ -25,8 +25,7 @@ export class PositionService {
   disableCallLocation = false;
   public positionObservable = new ReplaySubject<Array<number>>(1);
   public isPositionDefault = new BehaviorSubject<Boolean>(true);
-  // New York Center
-  // default_center_position = [40.7142700, -74.0059700]
+
   timeout = 8000;
   constructor(
     private geoService: NominatimGeoService,
@@ -34,7 +33,11 @@ export class PositionService {
     private spinner: NgxSpinnerService,
     private readonly geolocation$: GeolocationService,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  ) {
+    if (isPlatformServer(platformId)) {
+      this.positionObservable.next(DEFAULT_LOCATION);
+    }
+  }
 
   getPositionByInput(addressInput) {
     if (isPlatformServer(this.platformId)) {

@@ -42,7 +42,7 @@ export class EventPictureComponent implements OnInit, OnDestroy {
     this.isPlatformServer = isPlatformServer(this.platformId);
     this.category = this.event.category;
     if (!this.isPlatformServer) {
-      const organizer$ = this.organizerService
+      this.organizerService
         .getOrganizerById(this.event._organizerId)
         .pipe(
           take(1),
@@ -51,7 +51,6 @@ export class EventPictureComponent implements OnInit, OnDestroy {
         .subscribe({
           complete: () => {
             this.downloadImage();
-            organizer$?.unsubscribe();
           },
         });
     }
