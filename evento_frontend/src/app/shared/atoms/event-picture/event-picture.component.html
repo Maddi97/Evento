@@ -4,7 +4,7 @@
   <img
     class="pic"
     [defaultImage]="'assets/design-elements/loading-image.svg'"
-    [lazyLoad]="ImageURL"
+    [lazyLoad]="fileService$ | async"
   />
   <!-- <img class="pic" *ngIf="!ImageURL" [lazyLoad]="IconURL" /> -->
 </div>

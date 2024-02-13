@@ -18,7 +18,7 @@ import {
   openingTimesFormatter,
 } from "@shared/logic/opening-times-format-helpers";
 import { isScreenMinWidth } from "@shared/logic/screen-size-helpers";
-import { first, tap } from "rxjs";
+import { first, map, tap } from "rxjs";
 import { EventPictureComponent } from "../event-picture/event-picture.component";
 
 @Component({
@@ -34,7 +34,7 @@ export class EventTileComponent implements OnInit, OnChanges {
 
   IconURL = null;
   ImageURL = null;
-  organizer = null;
+  organizerOfEvent$;
   isScreemMin1000px;
   hasUserPosition;
   public openingTimesFormatter = openingTimesFormatter;
@@ -51,13 +51,12 @@ export class EventTileComponent implements OnInit, OnChanges {
     if (isPlatformBrowser(this.platformId)) {
       this.isScreemMin1000px = isScreenMinWidth(1000);
     }
-    this.organizerService
+    this.organizerOfEvent$ = this.organizerService
       .getOrganizerById(this.event._organizerId)
       .pipe(
         first(),
-        tap((organizerResponse) => (this.organizer = organizerResponse[0]))
-      )
-      .subscribe();
+        map((organizerResponse) => organizerResponse[0])
+      );
     this.positionService.isPositionDefault.subscribe(
       (isPositionDefault) => (this.hasUserPosition = !isPositionDefault)
     );

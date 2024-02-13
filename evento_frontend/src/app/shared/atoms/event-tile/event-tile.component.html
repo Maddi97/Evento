@@ -7,6 +7,7 @@
     *ngIf="event"
     class="event-tile-picture"
     [event]="event"
+    [organizer]="organizerOfEvent$ | async"
   ></app-event-picture>
   <div class="event-tile-information">
     <div class="event-tile-information-name-date">

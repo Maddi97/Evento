@@ -227,7 +227,6 @@ export class EventsComponent implements OnInit, OnDestroy {
     }
   }
   applyFilters(req, loadMore = false) {
-    console.log("apply filters");
     const event$ = this.eventsComplexService
       .getEventsSubscriptionBasedOnTypeAndCategory(req)
       .subscribe({

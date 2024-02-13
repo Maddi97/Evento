@@ -1,4 +1,4 @@
-import { isPlatformServer } from "@angular/common";
+import { CommonModule, isPlatformServer } from "@angular/common";
 import {
   Component,
   Inject,
@@ -8,33 +8,32 @@ import {
   PLATFORM_ID,
 } from "@angular/core";
 import { Event } from "@globals/models/event";
+import { Organizer } from "@globals/models/organizer";
 import { FileService } from "@services/complex/files/file.service";
 import { OrganizerService } from "@services/simple/organizer/organizer.service";
 import { LazyLoadImageModule } from "ng-lazyload-image";
-import { take, tap } from "rxjs";
+import { map, take, tap } from "rxjs";
 
 @Component({
   selector: "app-event-picture",
   standalone: true,
-  imports: [LazyLoadImageModule],
+  imports: [LazyLoadImageModule, CommonModule],
   templateUrl: "./event-picture.component.html",
   styleUrls: ["./event-picture.component.css"],
 })
-export class EventPictureComponent implements OnInit, OnDestroy {
+export class EventPictureComponent implements OnInit {
   @Input() event: Event;
-  @Input() organizerId: string;
+  @Input() organizer: Organizer;
   category;
   IconURL = null;
   ImageURL = null;
   private downloadedImage = false;
 
-  private fileService$;
+  public fileService$;
 
   isPlatformServer;
-  organizer;
   constructor(
     private fileService: FileService,
-    private organizerService: OrganizerService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -42,25 +41,9 @@ export class EventPictureComponent implements OnInit, OnDestroy {
     this.isPlatformServer = isPlatformServer(this.platformId);
     this.category = this.event.category;
     if (!this.isPlatformServer) {
-      this.organizerService
-        .getOrganizerById(this.event._organizerId)
-        .pipe(
-          take(1),
-          tap((organizer) => (this.organizer = organizer[0]))
-        )
-        .subscribe({
-          complete: () => {
-            this.downloadImage();
-          },
-        });
+      this.downloadImage();
     }
   }
-  ngOnDestroy() {
-    if (this.fileService$) {
-      this.fileService$.unsubscribe();
-    }
-  }
-
   downloadImageIfNotExists(imagePath: string, temporaryURL: any) {
     if (
       !this.downloadedImage &&
@@ -68,21 +51,12 @@ export class EventPictureComponent implements OnInit, OnDestroy {
       temporaryURL === undefined
     ) {
       this.downloadedImage = true;
-      this.fileService$ = this.fileService
-        .downloadFile(imagePath)
-        .pipe(take(1))
-        .subscribe({
-          next: (imageData) => {
-            this.ImageURL = URL.createObjectURL(imageData);
-          },
-          error: (error) => {
-            console.log(error);
-          },
-          complete: () => {
-            this.fileService$.unsubscribe();
-            //console.log("Image download complete");
-          },
-        });
+      this.fileService$ = this.fileService.downloadFile(imagePath).pipe(
+        take(1),
+        map((imageData) => {
+          return URL.createObjectURL(imageData);
+        })
+      );
     }
   }
 
