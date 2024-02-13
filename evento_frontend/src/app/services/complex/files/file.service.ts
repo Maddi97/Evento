@@ -1,21 +1,22 @@
 import { Injectable } from "@angular/core";
+import { Observable, of, throwError } from "rxjs";
+import { catchError, map, take } from "rxjs/operators";
 import { WebService } from "../../core/web/web.service";
-import { catchError, delay, map, share, take, tap } from "rxjs/operators";
-import {
-  Observable,
-  throwError as observableThrowError,
-  BehaviorSubject,
-  of,
-  throwError,
-} from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class FileService {
+  private fileCache: { [path: string]: Blob } = {};
+
   constructor(private webService: WebService) {}
 
   downloadFile(path: string): Observable<Blob> {
+    if (this.fileCache[path]) {
+      console.log("File retrieved from cache");
+      return of(this.fileCache[path]);
+    }
+
     const obs = this.webService.get_file("downloadFile", { path }).pipe(
       map((response) => response as Blob),
       catchError((error: any) => {
@@ -24,6 +25,11 @@ export class FileService {
       }),
       take(1)
     );
+
+    obs.subscribe((blob) => {
+      this.fileCache[path] = blob;
+    });
+
     return obs;
   }
 }
