@@ -12,6 +12,11 @@ import { MatIconModule } from "@angular/material/icon";
 import { Category, Subcategory } from "@globals/models/category";
 import { Event } from "@globals/models/event";
 import { Settings } from "@globals/models/settings";
+import { ID } from "@globals/types/common.types";
+import {
+  FilterEventsByInput,
+  FilterEventsByParams,
+} from "@globals/types/events.types";
 import { Search } from "@globals/types/search.types";
 import { EventsComplexService } from "@services/complex/events/events.complex.service";
 import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
@@ -62,7 +67,6 @@ export class EventsComponent implements OnInit, OnDestroy {
   // Applied filtered Category IDs
 
   categoryList: Category[] = [];
-
   subcategoryList: Subcategory[] = [];
 
   search: Search = { searchString: "", event: "Reset" };
@@ -74,11 +78,11 @@ export class EventsComponent implements OnInit, OnDestroy {
   hasLoadedMore = true;
   eventToScroll = undefined;
   hoveredEventId = null;
-  filteredCategory;
+  filteredCategoryID: ID;
   lastEventListLength = 0;
   hasMoreEventsToLoad = true;
   // filteredSubcategories
-  filteredSubcategories;
+  filteredSubcategoryIDs: ID[];
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
   lastRunningSubscription: "category" | "searchString" | "hot" | "promotion";
@@ -160,8 +164,8 @@ export class EventsComponent implements OnInit, OnDestroy {
           // Handle the combined values here
           [
             this.filteredDate,
-            this.filteredCategory,
-            this.filteredSubcategories,
+            this.filteredCategoryID,
+            this.filteredSubcategoryIDs,
           ] = queryParams;
           this.resetLoadingLimit();
           if (isPlatformBrowser(this.platformId)) {
@@ -195,7 +199,9 @@ export class EventsComponent implements OnInit, OnDestroy {
       this.getScreenSize();
     }
   }
-  createRequestObject(hasMapCenterChanged) {
+  createRequestObject(
+    hasMapCenterChanged
+  ): FilterEventsByInput | FilterEventsByParams {
     const germanyTime = new Date().toLocaleTimeString("en-DE", {
       timeZone: "Europe/Berlin",
     });
@@ -207,14 +213,13 @@ export class EventsComponent implements OnInit, OnDestroy {
         alreadyReturnedEventIds: [],
         date: this.filteredDate,
         categories: this.categoryList.map((cat) => cat._id),
-      };
+      } as FilterEventsByInput;
     } else {
       return {
         event: "Params",
         date: this.filteredDate,
-        time: germanyTime,
-        cat: [this.filteredCategory],
-        subcat: this.filteredSubcategories,
+        cat: [this.filteredCategoryID],
+        subcat: this.filteredSubcategoryIDs,
         limit: this.actualLoadEventLimit,
         alreadyReturnedEventIds:
           this.startLoadEventLimit === this.actualLoadEventLimit
@@ -223,7 +228,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         currentPosition: hasMapCenterChanged
           ? this.mapCenter
           : this.currentPosition,
-      };
+      } as FilterEventsByParams;
     }
   }
   applyFilters(req, loadMore = false) {
@@ -232,13 +237,16 @@ export class EventsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (events) => {
           this.resetEventList = !loadMore;
+          this.spinner.hide();
           this.handlyEventListLoaded(events);
+          this.onFetchEventsCompleted();
         },
         error: (error) => {
           console.error(error);
+          this.spinner.hide();
         },
         complete: () => {
-          this.onFetchEventsCompleted();
+          // console.log("complete");
         },
       });
     this.subscriptions$.push(event$);

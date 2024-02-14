@@ -1,16 +1,8 @@
-import {
-  Inject,
-  Injectable,
-  PLATFORM_ID,
-  TransferState,
-  inject,
-  makeStateKey,
-} from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { environment } from "../../../../environments/environment";
 import { isPlatformServer } from "@angular/common";
-import { get } from "http";
-
+import { HttpClient } from "@angular/common/http";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { environment } from "../../../../environments/environment";
+import { TransferStateService } from "@services/core/transfer-state/transfer-state.service";
 @Injectable({
   providedIn: "root",
 })
@@ -21,6 +13,7 @@ export class WebService {
 
   constructor(
     private http: HttpClient,
+    private transferStateService: TransferStateService,
     @Inject(PLATFORM_ID) private platformId: object
   ) {
     if (isPlatformServer(this.platformId)) {
@@ -37,7 +30,11 @@ export class WebService {
   }
 
   post(uri: string, payload: object) {
-    return this.http.post(`${this.ROOT_URL}/${uri}`, payload);
+    const stateKey = this.transferStateService.getDynamicStateKey(
+      JSON.stringify({ uri, payload: Object.values(payload) })
+    );
+    const httpObservable = this.http.post(`${this.ROOT_URL}/${uri}`, payload);
+    return this.transferStateService.transferState(stateKey, httpObservable);
   }
 
   put(uri: string, payload: object) {

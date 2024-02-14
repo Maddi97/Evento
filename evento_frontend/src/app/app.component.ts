@@ -43,9 +43,7 @@ export class AppComponent implements OnInit {
       this.settings = settings;
     });
     if (isPlatformBrowser(this.platformId)) {
-      this.customRouterService.getQueryParams().subscribe(() => {
-        this.spinner.show();
-      });
+      this.customRouterService.getQueryParams().subscribe();
     }
     this.customRouterService
       .getSubdomain()

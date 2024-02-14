@@ -85,26 +85,18 @@ router.post("/eventOnDate", limiter, (req, res) => {
 });
 
 router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
-  let date = req.body.fil.date;
-  let time = req.body.fil.time;
-  let categories = req.body.fil.cat;
-  let alreadyReturnedEventIds = req.body.fil.alreadyReturnedEventIds || [];
-  let limit = req.body.fil.limit;
-  let userPosition = req.body.fil.currentPosition;
+  let date = req.body.date;
+  let categoryIds = req.body.cat;
+  let alreadyReturnedEventIds = req.body.alreadyReturnedEventIds || [];
+  let limit = req.body.limit;
+  let userPosition = req.body.currentPosition;
 
-  //get ids bc we filter by id
-  let catIds = [];
-  categories.forEach((cat) => catIds.push(cat._id));
-
-  let subcategories = req.body.fil.subcat;
-  let subcatIds = [];
-  subcategories.forEach((sub) => subcatIds.push(sub._id));
+  let subcategoryIds = req.body.subcat;
+  console.log(req.body.subcat);
   if (date == "Invalid Date") {
     res.status(500).json({ error: "Invalid Date Error" }); // Send an error response with status code 500 (Internal Server Error)
   }
-  if (!time) {
-    res.status(500).json({ error: "Invalid Time Error" }); // Send an error response with status code 500 (Internal Server Error)
-  }
+
   Event.find({
     $and: [
       {
@@ -133,13 +125,13 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
         ],
       },
 
-      { "category._id": { $in: catIds } },
+      { "category._id": { $in: categoryIds } },
     ],
   })
     .then((events) => {
       // events contains all events filtered by date and category, based on this here we filter on the subcategory
       events = events.filter((event) => {
-        return subcatIds.every((subcat) =>
+        return subcategoryIds.every((subcat) =>
           event.category.subcategories
             .map((subcategory) => subcategory._id)
             .includes(subcat)
@@ -217,15 +209,15 @@ router.post("/upcomingEvents", limiter, (req, res) => {
 });
 
 router.post("/hotEvents", limiter, (req, res) => {
-  let date = new Date(req.body.fil.date);
-  let count = req.body.fil.count || 0;
-  let limit = req.body.fil.limit || 99999;
+  let date = new Date(req.body.date);
+  let count = req.body.count || 0;
+  let limit = req.body.limit || 99999;
   Event.find({
     $and: [
       {
         $or: [
           {
-            "date.start": { $gte: date }, //-1 um den heutigen Tag mit zu finden
+            "date.start": { $gte: date },
           },
           {
             $and: [
@@ -251,12 +243,11 @@ router.post("/hotEvents", limiter, (req, res) => {
 });
 
 router.post("/getEventsBySearchString", limiter, async (req, res) => {
-  const searchString = String(escape(req.body.req.searchString)); // Get the searchString from the request body
-  const limit = Number(req.body.req.limit);
+  const searchString = String(escape(req.body.searchString)); // Get the searchString from the request body
+  const limit = Number(req.body.limit);
   let categories = await Category.find({}, "_id");
-  categories = categories.map((catIdObj) => catIdObj._id); //map category id object to list of ids
-  const date = req.body.req.date;
-  let alreadyReturnedEventIds = req.body.req.alreadyReturnedEventIds || [];
+  const date = req.body.date;
+  let alreadyReturnedEventIds = req.body.alreadyReturnedEventIds || [];
   const fourteenDaysAhead = new Date(date);
   fourteenDaysAhead.setDate(fourteenDaysAhead.getDate() + 21);
   const dateConditions = {

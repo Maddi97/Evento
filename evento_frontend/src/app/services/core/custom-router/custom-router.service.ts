@@ -19,6 +19,8 @@ import {
 import { SUBDOMAIN_URLS } from "../../../globals/constants/subdomainUrls";
 import { Settings } from "../../../globals/models/settings";
 import { CategoriesComplexService } from "../../../services/complex/categories/categories.complex.service";
+import { Category, Subcategory } from "@globals/models/category";
+import { ID } from "@globals/types/common.types";
 @Injectable({
   providedIn: "root",
 })
@@ -70,7 +72,9 @@ export class CustomRouterService {
     return of(this._activatedRoute.snapshot.queryParams);
   }
 
-  getQueryParamsEventsComponent(settings: Settings): Observable<any> {
+  getQueryParamsEventsComponent(
+    settings: Settings
+  ): Observable<[moment.Moment, ID, ID[]]> {
     const categoryList$ =
       this.categoriesComplexService.getCategoriesSortedByWeight();
     return categoryList$.pipe(
@@ -96,19 +100,14 @@ export class CustomRouterService {
           category = NOW_CATEGORY;
         } else {
           category = category
-            ? this.categoryList.find((c) => c._id === category)
-            : this.categoryList[0];
+            ? this.categoryList.find((c: Category) => c._id === category)?._id
+            : this.categoryList[0]._id;
         }
-        let subcategories;
-        if (queryParams.subcategory) {
-          subcategories = category.subcategories?.filter((s) =>
-            queryParams.subcategory.includes(s._id)
-          );
-        } else {
-          subcategories = [];
-        }
+        const subcategories = category.subcategories
+          ?.filter((s: Subcategory) => queryParams.subcategory.includes(s._id))
+          .map((s: Subcategory) => s._id);
 
-        return [date, category, subcategories];
+        return [date, category, subcategories || []];
       })
     );
   }

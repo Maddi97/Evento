@@ -6,6 +6,11 @@ import { catchError, map, share } from "rxjs/operators";
 import { Event } from "../../../globals/models/event";
 import { Organizer } from "../../../globals/models/organizer";
 import { WebService } from "../../core/web/web.service";
+import {
+  FilterEvents,
+  FilterEventsByInput,
+  FilterEventsByParams,
+} from "@globals/types/events.types";
 
 @Injectable({
   providedIn: "root",
@@ -93,12 +98,12 @@ export class EventService {
     );
   }
 
-  getHotEvents(fil: any): Observable<Event[]> {
-    const cacheKey = JSON.stringify({ date: fil.date, category: "hot" });
+  getHotEvents(filter: any): Observable<Event[]> {
+    const cacheKey = JSON.stringify({ date: filter.date, category: "hot" });
     if (this.cachedEvents.has(cacheKey)) {
       return of(this.cachedEvents.get(cacheKey)!);
     }
-    const obs = this.webService.post("hotEvents", { fil }).pipe(
+    const obs = this.webService.post("hotEvents", filter).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {
         console.error("an error occurred", error);
@@ -114,12 +119,12 @@ export class EventService {
     return obs;
   }
 
-  getEventsBySearchString(req: any): Observable<Event[]> {
-    const cacheKey = JSON.stringify(req);
+  getEventsBySearchString(filterEvents: any): Observable<Event[]> {
+    const cacheKey = JSON.stringify(filterEvents);
     if (this.cachedEvents.has(cacheKey)) {
       return of(this.cachedEvents.get(cacheKey)!);
     }
-    return this.webService.post("getEventsBySearchString", { req }).pipe(
+    return this.webService.post("getEventsBySearchString", filterEvents).pipe(
       map((response: any) => {
         this.cachedEvents.set(cacheKey, response);
         return response as Event[]; // Return the response array
@@ -132,15 +137,12 @@ export class EventService {
     );
   }
 
-  getEventsOnDateCategoryAndSubcategory(fil: any): Observable<Event[]> {
-    const cacheKey = JSON.stringify(fil);
-    if (this.cachedEvents.has(cacheKey)) {
-      return of(this.cachedEvents.get(cacheKey)!);
-    }
-
-    return this.webService.post("eventOnDateCatAndSubcat", { fil }).pipe(
+  getEventsOnDateCategoryAndSubcategory(
+    filterEvents: FilterEvents
+  ): Observable<Event[]> {
+    const url = "eventOnDateCatAndSubcat";
+    return this.webService.post(url, filterEvents).pipe(
       map((response: any) => {
-        this.cachedEvents.set(cacheKey, response);
         return response as Event[]; // Return the response array
       }),
       catchError((error: any) => {
