@@ -35,7 +35,6 @@ import { MatCardModule } from "@angular/material/card";
 })
 export class EventTileListComponent implements OnInit, OnChanges {
   @Input() eventList: Event[] = [];
-  @Input() userPosition;
   @Input() eventToScroll: Event;
   @Output() hoverEventEmitter = new EventEmitter<string>();
 
@@ -47,7 +46,6 @@ export class EventTileListComponent implements OnInit, OnChanges {
   showAds = false;
 
   constructor(
-    private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
@@ -115,14 +113,5 @@ export class EventTileListComponent implements OnInit, OnChanges {
 
   hoverLeave() {
     this.hoverEventEmitter.emit(null);
-  }
-
-  get_distance_to_current_position(event) {
-    // get distance
-    const dist = this.geoService.get_distance(this.userPosition, [
-      event.geoData.lat,
-      event.geoData.lon,
-    ]);
-    return dist;
   }
 }

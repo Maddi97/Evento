@@ -20,6 +20,7 @@ import {
 import { isScreenMinWidth } from "@shared/logic/screen-size-helpers";
 import { first, map, tap } from "rxjs";
 import { EventPictureComponent } from "../event-picture/event-picture.component";
+import { NominatimGeoService } from "@services/core/location/nominatim-geo.service";
 
 @Component({
   selector: "app-event-tile",
@@ -28,10 +29,9 @@ import { EventPictureComponent } from "../event-picture/event-picture.component"
   templateUrl: "./event-tile.component.html",
   styleUrls: ["./event-tile.component.css"],
 })
-export class EventTileComponent implements OnInit, OnChanges {
+export class EventTileComponent implements OnInit {
   @Input() event: Event;
-  @Input() distance;
-
+  distance;
   IconURL = null;
   ImageURL = null;
   organizerOfEvent$;
@@ -44,6 +44,7 @@ export class EventTileComponent implements OnInit, OnChanges {
   constructor(
     private organizerService: OrganizerService,
     private positionService: PositionService,
+    private geoService: NominatimGeoService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -60,12 +61,20 @@ export class EventTileComponent implements OnInit, OnChanges {
     this.positionService.isPositionDefault.subscribe(
       (isPositionDefault) => (this.hasUserPosition = !isPositionDefault)
     );
-    this.distance = Math.round(this.distance * 100) / 100; // 2 decimals
+    this.positionService.positionObservable.subscribe((position) => {
+      this.distance = this.get_distance_to_current_position(
+        this.event,
+        position
+      );
+    });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.distance) {
-      this.distance = Math.round(this.distance * 100) / 100; // 2 decimals
-    }
+  get_distance_to_current_position(event, position) {
+    // get distance
+    const dist = this.geoService.get_distance(position, [
+      event.geoData.lat,
+      event.geoData.lon,
+    ]);
+    return Math.round(dist * 100) / 100;
   }
 }

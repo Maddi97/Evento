@@ -1,13 +1,6 @@
 import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import {
-  NOW_CATEGORY,
-  PROMOTION_CATEGORY,
-} from "@globals/constants/categories.c";
-import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
-import { Settings } from "@globals/models/settings";
-import { CategoriesComplexService } from "@services/complex/categories/categories.complex.service";
 import moment from "moment";
 import { NgxSpinnerService } from "ngx-spinner";
 import {
@@ -19,6 +12,13 @@ import {
   switchMap,
   tap,
 } from "rxjs";
+import {
+  NOW_CATEGORY,
+  PROMOTION_CATEGORY,
+} from "../../../globals/constants/categories.c";
+import { SUBDOMAIN_URLS } from "../../../globals/constants/subdomainUrls";
+import { Settings } from "../../../globals/models/settings";
+import { CategoriesComplexService } from "../../../services/complex/categories/categories.complex.service";
 @Injectable({
   providedIn: "root",
 })
@@ -54,14 +54,8 @@ export class CustomRouterService {
     return this.router.events.pipe(
       filter(
         (event: any) =>
-          (event instanceof NavigationEnd &&
-            !SUBDOMAIN_URLS.some((subdomain) =>
-              event.url.includes(subdomain)
-            )) ||
-          (event.routerEvent instanceof NavigationEnd &&
-            !SUBDOMAIN_URLS.some((subdomain) =>
-              event.routerEvent.url.includes(subdomain)
-            ))
+          event instanceof NavigationEnd &&
+          !SUBDOMAIN_URLS.some((subdomain) => event.url.includes(subdomain))
 
         // this is the issue
         //||

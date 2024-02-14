@@ -5,7 +5,7 @@ import { FileService } from "@services/complex/files/file.service";
 import { CommonModule, isPlatformBrowser } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
-import { take } from "rxjs";
+import { Observable, map, take } from "rxjs";
 
 @Component({
   selector: "app-category-tile",
@@ -18,7 +18,7 @@ export class CategoryTileComponent implements OnInit {
   @Input() category: Category;
 
   showSubcategories = false;
-
+  image$: Observable<any>;
   constructor(
     private fileService: FileService,
     private sanitizer: DomSanitizer,
@@ -43,18 +43,10 @@ export class CategoryTileComponent implements OnInit {
     const cat = this.category;
     if (cat.iconPath !== undefined) {
       if (cat.iconTemporaryURL === undefined) {
-        const image$ = this.fileService
-          .downloadFile(cat.iconPath)
-          .pipe(take(1))
-          .subscribe({
-            next: (imageData) => {
-              // create temporary Url for the downloaded image and bypass security
-              const unsafeImg = URL.createObjectURL(imageData);
-              this.category.iconTemporaryURL =
-                this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-            },
-            complete: () => image$?.unsubscribe(),
-          });
+        this.image$ = this.fileService.downloadFile(cat.iconPath).pipe(
+          take(1),
+          map((imageData) => URL.createObjectURL(imageData))
+        );
       }
     }
   }

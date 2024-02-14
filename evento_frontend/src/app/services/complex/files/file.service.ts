@@ -13,7 +13,6 @@ export class FileService {
 
   downloadFile(path: string): Observable<Blob> {
     if (this.fileCache[path]) {
-      console.log("File retrieved from cache");
       return of(this.fileCache[path]);
     }
 

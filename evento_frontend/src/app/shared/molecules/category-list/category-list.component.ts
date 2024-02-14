@@ -232,11 +232,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
               },
               error: (error) => {
                 //console.log(error);
-                fileDownload$?.unsubscribe();
               },
               complete: () => {
                 //console.log("Image download complete");
-                fileDownload$?.unsubscribe();
               },
             });
         }

@@ -1,9 +1,14 @@
-<div class="category-tile" (click)="onClick()" [routerLink]="['/']" [queryParams]="{ category: category._id }"
-  [queryParamsHandling]="'merge'">
-  <img class="category-icon" [src]="category.iconTemporaryURL">
+<div
+  class="category-tile"
+  (click)="onClick()"
+  [routerLink]="['/']"
+  [queryParams]="{ category: category._id }"
+  [queryParamsHandling]="'merge'"
+>
+  <img class="category-icon" [src]="image$ | async" />
   <div class="category-tile-name-container">
     <span>
-      {{category.name}}
+      {{ category.name }}
     </span>
   </div>
   <mat-icon *ngIf="false" class="material-icons small-icon">
@@ -12,22 +17,27 @@
 </div>
 
 <div *ngIf="false && this.showSubcategories">
-  <div class="category-tile subcategory" routerLink="/" [queryParams]="{category: category._id}"
-    [queryParamsHandling]="'merge'">
+  <div
+    class="category-tile subcategory"
+    routerLink="/"
+    [queryParams]="{ category: category._id }"
+    [queryParamsHandling]="'merge'"
+  >
     <div class="category-tile-name-container">
-      <span>
-        All
-      </span>
+      <span> All </span>
     </div>
   </div>
   <div *ngFor="let subcategory of category.subcategories">
-    <div class="category-tile subcategory" routerLink="/"
-      [queryParams]="{subcategory: [subcategory._id], category: category._id}">
+    <div
+      class="category-tile subcategory"
+      routerLink="/"
+      [queryParams]="{ subcategory: [subcategory._id], category: category._id }"
+    >
       <div class="category-tile-name-container">
         <span>
-          {{subcategory.name}}
+          {{ subcategory.name }}
         </span>
-        <img class="category-icon" [src]="subcategory.iconTemporaryURL">
+        <img class="category-icon" [src]="subcategory.iconTemporaryURL" />
       </div>
     </div>
   </div>

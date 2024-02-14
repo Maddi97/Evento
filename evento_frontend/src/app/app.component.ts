@@ -42,11 +42,11 @@ export class AppComponent implements OnInit {
       this.sharedObservableService.setSettings(settings);
       this.settings = settings;
     });
-    this.customRouterService.getQueryParams().subscribe(() => {
-      if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.customRouterService.getQueryParams().subscribe(() => {
         this.spinner.show();
-      }
-    });
+      });
+    }
     this.customRouterService
       .getSubdomain()
       .subscribe((subdomain) => (this.actualSubdomain = subdomain));

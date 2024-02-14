@@ -146,8 +146,7 @@ export class EventService {
       catchError((error: any) => {
         console.error("An error occurred", error);
         return throwError(error.error.message || error);
-      }),
-      share()
+      })
     );
   }
 
