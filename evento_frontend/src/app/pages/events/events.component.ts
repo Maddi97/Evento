@@ -100,7 +100,6 @@ export class EventsComponent implements OnInit, OnDestroy {
   public getScreenWidth: number;
   public settings: Settings;
 
-  mapCenter: number[];
   constructor(
     private eventsComplexService: EventsComplexService,
     private spinner: NgxSpinnerService,
@@ -200,9 +199,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       this.getScreenSize();
     }
   }
-  createRequestObject(
-    hasMapCenterChanged
-  ): FilterEventsByInput | FilterEventsByParams {
+  createRequestObject(mapCenter): FilterEventsByInput | FilterEventsByParams {
     const germanyTime = new Date().toLocaleTimeString("en-DE", {
       timeZone: "Europe/Berlin",
     });
@@ -225,9 +222,7 @@ export class EventsComponent implements OnInit, OnDestroy {
           this.startLoadEventLimit === this.actualLoadEventLimit
             ? []
             : this.eventList.map((event) => event._id),
-        currentPosition: hasMapCenterChanged
-          ? this.mapCenter
-          : this.currentPosition,
+        currentPosition: mapCenter ? mapCenter : this.currentPosition,
       } as FilterEventsByParams;
     }
   }
@@ -266,7 +261,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       this.isLoadMoreClicked = mapCenter ? false : true;
       this.actualLoadEventLimit += this.offsetLoadEventLimit;
       this.resetEventList = false;
-      const req = this.createRequestObject(false);
+      const req = this.createRequestObject(mapCenter);
       this.applyFilters(req, true);
     }
   }

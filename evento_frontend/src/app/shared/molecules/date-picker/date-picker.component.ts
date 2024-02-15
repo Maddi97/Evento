@@ -146,7 +146,6 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
   }
 
   addDates() {
-    // TODO maybe try to add number of dates dynamically
     this.numberOfDates += this.displayNumberOfDates;
     this.createDateList(true);
     this.firstDate += this.displayNumberOfDates;
@@ -155,7 +154,6 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
   removeTimezoneAndTimeFromDate(date) {
     date = moment(date.toISOString()).utcOffset(0, false);
     date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-    // date.toISOString()
     return date;
   }
 

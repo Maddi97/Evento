@@ -39,6 +39,8 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Output() emitClickedEventId: EventEmitter<any> = new EventEmitter<any>();
 
   isMapDragged = false;
+  private isMapDraggedTimeoutRunning: boolean = false;
+
   mapInitialized = false;
   private map;
   private markerGroup;
@@ -144,12 +146,17 @@ export class MapViewComponent implements OnInit, OnChanges {
         this.map.on("moveend", (e) => {
           this.updateZIndexPosition("blue");
           this.isMapDragged = true;
-          setTimeout(() => {
-            this.isMapDragged = false;
-          }, 3000);
+          if (!this.isMapDraggedTimeoutRunning) {
+            this.isMapDraggedTimeoutRunning = true;
+
+            setTimeout(() => {
+              this.isMapDragged = false;
+              this.isMapDraggedTimeoutRunning = false; // Reset the flag after the timeout
+            }, 5000);
+          }
         });
       }
-    }, 200); // Adjust the delay time in milliseconds
+    }, 10); // Adjust the delay time in milliseconds
   }
   private initMapIfNeeded(): void {
     if (
