@@ -90,9 +90,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
       .subscribe((queryParams) => {
         [this.categoryList, this.filteredCategory, this.filteredSubcategories] =
           queryParams;
-        if (isPlatformBrowser(this.platformId)) {
-          this.downloadCategoryIcon();
-        }
+        this.downloadCategoryIcon();
         this.scrollToClicked();
       });
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe(
@@ -224,19 +222,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
     this.categoryList.forEach((category) => {
       if (category.iconPath !== undefined) {
         if (category.iconTemporaryURL === undefined) {
-          const fileDownload$ = this.fileService
-            .downloadFile(category.iconPath)
-            .subscribe({
-              next: (imageData) => {
-                category.iconTemporaryURL = URL.createObjectURL(imageData);
-              },
-              error: (error) => {
-                //console.log(error);
-              },
-              complete: () => {
-                //console.log("Image download complete");
-              },
-            });
+          category.iconTemporaryURL = this.fileService.downloadFile(
+            category.iconPath
+          );
         }
       }
     });

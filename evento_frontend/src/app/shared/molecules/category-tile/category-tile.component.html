@@ -37,7 +37,10 @@
         <span>
           {{ subcategory.name }}
         </span>
-        <img class="category-icon" [src]="subcategory.iconTemporaryURL" />
+        <img
+          class="category-icon"
+          [src]="subcategory.iconTemporaryURL | async"
+        />
       </div>
     </div>
   </div>

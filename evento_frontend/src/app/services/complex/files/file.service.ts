@@ -1,26 +1,30 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { Observable, of, throwError } from "rxjs";
-import { catchError, map, take } from "rxjs/operators";
+import { catchError, map, switchMap, take } from "rxjs/operators";
 import { WebService } from "../../core/web/web.service";
+import { isPlatformServer } from "@angular/common";
 
 @Injectable({
   providedIn: "root",
 })
 export class FileService {
-  private fileCache: { [path: string]: Blob } = {};
+  private fileCache: { [path: string]: string } = {};
 
-  constructor(private webService: WebService) {}
+  constructor(
+    private webService: WebService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
-  downloadFile(path: string): Observable<Blob> {
+  downloadFile(path: string): Observable<string> {
     if (this.fileCache[path]) {
       return of(this.fileCache[path]);
     }
 
-    const obs = this.webService.get_file("downloadFile", { path }).pipe(
-      map((response) => response as Blob),
+    const obs = this.webService.downloadFile("downloadFile", { path }).pipe(
+      switchMap((response) => this.blobToBase64(response as Blob)),
       catchError((error: any) => {
         console.error("An error occurred", error);
-        return throwError(error.error.message || error);
+        return throwError(error?.error?.message || error);
       }),
       take(1)
     );
@@ -30,5 +34,21 @@ export class FileService {
     });
 
     return obs;
+  }
+  private blobToBase64(blob: Blob): Observable<string> {
+    if (isPlatformServer(this.platformId)) {
+      return of(null);
+    }
+    return new Observable<string>((observer) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        observer.next(reader.result as string);
+        observer.complete();
+      };
+      reader.onerror = (error) => {
+        observer.error(error);
+      };
+      reader.readAsDataURL(blob);
+    });
   }
 }

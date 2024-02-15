@@ -32,17 +32,11 @@ export class EventPictureComponent implements OnInit {
   public fileService$;
 
   isPlatformServer;
-  constructor(
-    private fileService: FileService,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  constructor(private fileService: FileService) {}
 
   ngOnInit(): void {
-    this.isPlatformServer = isPlatformServer(this.platformId);
     this.category = this.event.category;
-    if (!this.isPlatformServer) {
-      this.downloadImage();
-    }
+    this.downloadImage();
   }
   downloadImageIfNotExists(imagePath: string, temporaryURL: any) {
     if (
@@ -51,12 +45,9 @@ export class EventPictureComponent implements OnInit {
       temporaryURL === undefined
     ) {
       this.downloadedImage = true;
-      this.fileService$ = this.fileService.downloadFile(imagePath).pipe(
-        take(1),
-        map((imageData) => {
-          return URL.createObjectURL(imageData);
-        })
-      );
+      this.fileService$ = this.fileService
+        .downloadFile(imagePath)
+        .pipe(take(1));
     }
   }
 

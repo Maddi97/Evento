@@ -43,10 +43,7 @@ export class CategoryTileComponent implements OnInit {
     const cat = this.category;
     if (cat.iconPath !== undefined) {
       if (cat.iconTemporaryURL === undefined) {
-        this.image$ = this.fileService.downloadFile(cat.iconPath).pipe(
-          take(1),
-          map((imageData) => URL.createObjectURL(imageData))
-        );
+        this.image$ = this.fileService.downloadFile(cat.iconPath).pipe(take(1));
       }
     }
   }
@@ -55,14 +52,9 @@ export class CategoryTileComponent implements OnInit {
     this.category.subcategories.forEach((subcategory) => {
       if (subcategory.iconPath !== undefined) {
         if (subcategory.iconTemporaryURL === undefined) {
-          this.fileService
-            .downloadFile(subcategory.iconPath)
-            .subscribe((imageData) => {
-              // create temporary Url for the downloaded image and bypass security
-              const unsafeImg = URL.createObjectURL(imageData);
-              subcategory.iconTemporaryURL =
-                this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-            });
+          subcategory.iconTemporaryURL = this.fileService.downloadFile(
+            subcategory.iconPath
+          );
         }
       }
     });
