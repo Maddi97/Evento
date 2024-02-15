@@ -231,6 +231,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       .getEventsSubscriptionBasedOnTypeAndCategory(req)
       .subscribe({
         next: (events) => {
+          this.isLoadingMoreEvents = false;
           this.resetEventList = !loadMore;
           this.spinner.hide();
           this.handlyEventListLoaded(events);
@@ -362,9 +363,6 @@ export class EventsComponent implements OnInit, OnDestroy {
       ) {
         this.isLoadingMoreEvents = true;
         this.loadMoreEvents();
-        setTimeout(() => {
-          this.isLoadingMoreEvents = false;
-        }, 750);
       }
     }
   }

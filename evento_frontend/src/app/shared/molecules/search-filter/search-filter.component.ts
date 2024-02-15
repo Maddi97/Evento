@@ -30,7 +30,7 @@ import {
 })
 export class SearchFilterComponent implements OnInit, OnDestroy {
   search: Search = EMPTY_SEARCH;
-  delay = 500;
+  delay = 750;
   getScreenWidth;
   isFocused = false;
   event$: Subscription;
