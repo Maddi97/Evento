@@ -27,7 +27,6 @@ export class FooterbarComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private mapCenterViewService: MapCenterViewService,
-    @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 

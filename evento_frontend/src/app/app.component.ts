@@ -7,6 +7,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { SharedObservableService } from "./services/core/shared-observables/shared-observables.service";
 import { SettingsService } from "./services/simple/settings/settings.service.service";
 import { PositionService } from "@services/core/location/position.service";
+import { SubdomainUrl } from "@globals/types/url.types";
 
 @Component({
   selector: "app-root",
@@ -22,12 +23,11 @@ export class AppComponent implements OnInit {
   private cookieDismiss = "Verstanden!";
   private cookieLinkText = "Hier gehts zur Datenschutzerklärung";
   settings: Settings;
-  actualSubdomain = "";
+  actualSubdomain: SubdomainUrl = "";
   constructor(
     private settingsService: SettingsService,
     private sharedObservableService: SharedObservableService,
     private customRouterService: CustomRouterService,
-    private spinner: NgxSpinnerService,
     private positionService: PositionService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
@@ -47,7 +47,9 @@ export class AppComponent implements OnInit {
     }
     this.customRouterService
       .getSubdomain()
-      .subscribe((subdomain) => (this.actualSubdomain = subdomain));
+      .subscribe(
+        (subdomain: SubdomainUrl) => (this.actualSubdomain = subdomain)
+      );
     if (
       Capacitor.getPlatform() === "web" &&
       isPlatformBrowser(this.platformId)
