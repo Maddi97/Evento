@@ -47,7 +47,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
       .pipe(
         map((params) => {
           const date = params.date;
-          if (date) {
+          if (date && !this.isDateSmallerThanYesterday(date)) {
             this.selectedDate = this.removeTimezoneAndTimeFromDate(
               new Date(date)
             );
@@ -191,6 +191,24 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
       relativeTo: this._activatedRoute,
       queryParamsHandling: "merge",
     });
+  }
+
+  private isDateSmallerThanYesterday(date: Date): Boolean {
+    // Get today's date
+    const today = new Date();
+    // Set the time part of today's date to 0 (midnight)
+    today.setHours(0, 0, 0, 0);
+
+    // Get yesterday's date
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    // Set the time part of the input date to 0 (midnight)
+    const adjustedDate = new Date(date);
+    adjustedDate.setHours(0, 0, 0, 0);
+
+    // Compare the adjusted date with yesterday's date
+    return adjustedDate < yesterday;
   }
 }
 

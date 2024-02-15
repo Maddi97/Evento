@@ -220,8 +220,8 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   downloadCategoryIcon() {
     this.categoryList.forEach((category) => {
-      if (category.iconPath !== undefined) {
-        if (category.iconTemporaryURL === undefined) {
+      if (!!category.iconPath) {
+        if (!category.iconTemporaryURL) {
           const fileDownload$ = this.fileService
             .downloadFile(category.iconPath)
             .subscribe({
