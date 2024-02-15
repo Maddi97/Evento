@@ -246,8 +246,27 @@ router.post(
 );
 
 router.post("/downloadFile", limiter, function (req, res) {
-  const dest = req.body.path;
-  res.download(dest);
+  try {
+    const filePath = req.body.path;
+
+    // Validate file path
+    if (!filePath) {
+      return res.status(400).json({ error: "File path is required." });
+    }
+
+    // Send file for download
+    res.download(filePath, (err) => {
+      if (err) {
+        if (err.code === "ENOENT") {
+          return res.status(404).json({ error: "File not found." });
+        }
+        return res.status(500).json({ error: "Internal server error." });
+      }
+    });
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
 });
 
 async function deleteEmptyFolders(directoryPath) {

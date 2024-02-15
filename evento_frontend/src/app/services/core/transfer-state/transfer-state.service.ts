@@ -27,9 +27,7 @@ export class TransferStateService {
     getDataObservable: Observable<any>,
     defaultValue: any = null
   ) {
-    console.log(key);
     if (this.tstate.hasKey(key)) {
-      console.log("return cache", this.tstate.get(key, defaultValue));
       return of(this.tstate.get(key, defaultValue));
     } else {
       return getDataObservable.pipe(

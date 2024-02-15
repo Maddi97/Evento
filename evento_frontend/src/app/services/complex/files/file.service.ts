@@ -1,6 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { Observable, of, throwError } from "rxjs";
-import { catchError, map, switchMap, take } from "rxjs/operators";
+import { catchError, map, switchMap, take, tap } from "rxjs/operators";
 import { WebService } from "../../core/web/web.service";
 import { isPlatformServer } from "@angular/common";
 
@@ -16,22 +16,22 @@ export class FileService {
   ) {}
 
   downloadFile(path: string): Observable<string> {
+    if (isPlatformServer(this.platformId)) {
+      return of(null);
+    }
     if (this.fileCache[path]) {
       return of(this.fileCache[path]);
     }
 
     const obs = this.webService.downloadFile("downloadFile", { path }).pipe(
       switchMap((response) => this.blobToBase64(response as Blob)),
+      tap((response) => (this.fileCache[path] = response)),
       catchError((error: any) => {
         console.error("An error occurred", error);
         return throwError(error?.error?.message || error);
       }),
       take(1)
     );
-
-    obs.subscribe((blob) => {
-      this.fileCache[path] = blob;
-    });
 
     return obs;
   }

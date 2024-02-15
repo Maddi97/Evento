@@ -1,8 +1,9 @@
-import { isPlatformServer } from "@angular/common";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { environment } from "../../../../environments/environment";
 import { TransferStateService } from "@services/core/transfer-state/transfer-state.service";
+import { of } from "rxjs";
 @Injectable({
   providedIn: "root",
 })
