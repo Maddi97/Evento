@@ -92,7 +92,6 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
   let userPosition = req.body.currentPosition;
 
   let subcategoryIds = req.body.subcat;
-  console.log(req.body.subcat);
   if (date == "Invalid Date") {
     res.status(500).json({ error: "Invalid Date Error" }); // Send an error response with status code 500 (Internal Server Error)
   }
@@ -246,6 +245,7 @@ router.post("/getEventsBySearchString", limiter, async (req, res) => {
   const searchString = String(escape(req.body.searchString)); // Get the searchString from the request body
   const limit = Number(req.body.limit);
   let categories = await Category.find({}, "_id");
+  categories = categories.map((catIdObj) => catIdObj._id); //map category id object to list of ids
   const date = req.body.date;
   let alreadyReturnedEventIds = req.body.alreadyReturnedEventIds || [];
   const fourteenDaysAhead = new Date(date);

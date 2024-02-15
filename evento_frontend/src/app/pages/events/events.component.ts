@@ -161,6 +161,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([queryParams, searchString, position]) => {
           this.spinner.show();
+          this.eventList = [];
           // Handle the combined values here
           [
             this.filteredDate,
@@ -212,7 +213,6 @@ export class EventsComponent implements OnInit, OnDestroy {
         limit: this.actualLoadEventLimit,
         alreadyReturnedEventIds: [],
         date: this.filteredDate,
-        categories: this.categoryList.map((cat) => cat._id),
       } as FilterEventsByInput;
     } else {
       return {

@@ -10,7 +10,6 @@ export type FilterEventsByInput = {
   limit: Number;
   alreadyReturnedEventIds: ID[];
   date: moment.Moment;
-  categories: ID[];
 };
 
 export type FilterEventsByParams = {
