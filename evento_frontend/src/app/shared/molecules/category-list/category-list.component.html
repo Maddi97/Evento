@@ -42,7 +42,7 @@
       [ngClass]="isCategoryPicked(category)"
       (click)="selectCategory(category)"
     >
-      <img [src]="category.iconTemporaryURL | async" />
+      <img [src]="category.iconTemporaryURL" />
       {{ category.name }}
     </span>
     <div class="subcategory-placeholder">

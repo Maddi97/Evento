@@ -25,11 +25,11 @@ export class FileService {
 
     const obs = this.webService.downloadFile("downloadFile", { path }).pipe(
       switchMap((response) => this.blobToBase64(response as Blob)),
-      tap((response) => (this.fileCache[path] = response)),
       catchError((error: any) => {
         console.error("An error occurred", error);
         return throwError(error?.error?.message || error);
       }),
+      tap((response) => (this.fileCache[path] = response)),
       take(1)
     );
 
