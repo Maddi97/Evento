@@ -28,7 +28,7 @@ import { EventTileListComponent } from "@shared/molecules/event-tile-list/event-
 import { MapViewComponent } from "@shared/molecules/map-view/map-view.component";
 import moment from "moment-timezone";
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
-import { Subscription, combineLatest, distinctUntilChanged, tap } from "rxjs";
+import { Subscription, combineLatest, distinctUntilChanged } from "rxjs";
 @Component({
   selector: "app-events",
   standalone: true,
