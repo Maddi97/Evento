@@ -94,10 +94,12 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
 
     let subcategoryIds = req.body.subcat;
     if (date == "Invalid Date") {
-      res.status(500).json({ error: "Invalid Date Error" }); // Send an error response with status code 500 (Internal Server Error)
+      res.status(500).json({ error: "Invalid Date Error" });
+      return; // Send an error response with status code 500 (Internal Server Error)
     }
     if (!userPosition) {
       res.status(500).json({ error: "No user position" });
+      return;
     }
 
     Event.find({
@@ -130,62 +132,57 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
 
         { "category._id": { $in: categoryIds } },
       ],
-    })
-      .then((events) => {
-        // events contains all events filtered by date and category, based on this here we filter on the subcategory
-        events = events.filter((event) => {
-          return subcategoryIds.every((subcat) =>
-            event.category.subcategories
-              .map((subcategory) => subcategory._id)
-              .includes(subcat)
-          );
-        });
-        //filter events of end day that are already over
-        events = events.filter((event) => {
-          if (event.frequency) {
-            return timeHelper.isFrequencyToday(event.frequency, date);
-          }
-          return true;
-        });
-        //sort out already returned events
-        events = events.filter((event) => {
-          return !alreadyReturnedEventIds.includes(event._id.toString());
-        });
-        //sort events by distance
-        events.sort((ev1, ev2) => {
-          // Check if ev1 should be promoted (promote == true) and ev2 should not
-          if (ev1.promotion && !ev2.promotion) {
-            return -1; // ev1 comes before ev2
-          }
-          // Check if ev2 should be promoted (promote == true) and ev1 should not
-          else if (!ev1.promotion && ev2.promotion) {
-            return 1; // ev2 comes before ev1
-          }
-          // If neither should be promoted, compare by distance
-          else {
-            const distance1 = get_distance(
-              [ev1.geoData.lat, ev1.geoData.lon],
-              userPosition
-            );
-            const distance2 = get_distance(
-              [ev2.geoData.lat, ev2.geoData.lon],
-              userPosition
-            );
-            return distance1 - distance2;
-          }
-        });
-        // Return events from offset to limit to not load all at once
-
-        res.send(events.slice(0, limit));
-      })
-      .catch((error) => {
-        console.error(error);
-        res
-          .status(500)
-          .json({ error: "Internal Server Error in events route" });
+    }).then((events) => {
+      // events contains all events filtered by date and category, based on this here we filter on the subcategory
+      events = events.filter((event) => {
+        return subcategoryIds.every((subcat) =>
+          event.category.subcategories
+            .map((subcategory) => subcategory._id)
+            .includes(subcat)
+        );
       });
+      //filter events of end day that are already over
+      events = events.filter((event) => {
+        if (event.frequency) {
+          return timeHelper.isFrequencyToday(event.frequency, date);
+        }
+        return true;
+      });
+      //sort out already returned events
+      events = events.filter((event) => {
+        return !alreadyReturnedEventIds.includes(event._id.toString());
+      });
+      //sort events by distance
+      events.sort((ev1, ev2) => {
+        // Check if ev1 should be promoted (promote == true) and ev2 should not
+        if (ev1.promotion && !ev2.promotion) {
+          return -1; // ev1 comes before ev2
+        }
+        // Check if ev2 should be promoted (promote == true) and ev1 should not
+        else if (!ev1.promotion && ev2.promotion) {
+          return 1; // ev2 comes before ev1
+        }
+        // If neither should be promoted, compare by distance
+        else {
+          const distance1 = get_distance(
+            [ev1.geoData.lat, ev1.geoData.lon],
+            userPosition
+          );
+          const distance2 = get_distance(
+            [ev2.geoData.lat, ev2.geoData.lon],
+            userPosition
+          );
+          return distance1 - distance2;
+        }
+      });
+      // Return events from offset to limit to not load all at once
+
+      res.send(events.slice(0, limit));
+    });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error in events route" });
+    res
+      .status(500)
+      .json({ error: "Internal Server Error in events route", error });
   }
 });
 
