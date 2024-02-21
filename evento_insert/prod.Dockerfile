@@ -12,12 +12,12 @@ RUN npm ci
 COPY . /app
 
 ENV NODE_OPTIONS="--max-old-space-size=8192"
-RUN ng build --output-path=dist --configuration production
+RUN ng build --output-path=dist --configuration=production
 
 
 FROM nginx:1.16.0-alpine
 
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist/browser /usr/share/nginx/html
 
 #deep links fix change the config file for nginx
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
