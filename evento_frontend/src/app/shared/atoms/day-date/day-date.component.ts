@@ -1,9 +1,12 @@
 import { Component, OnInit, Input } from "@angular/core";
-import * as moment from "moment";
+import moment from "moment";
 import { WEEKDAYS_SHORT } from "@globals/constants/dates";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "app-day-date",
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: "./day-date.component.html",
   styleUrls: ["./day-date.component.css"],
 })

@@ -1,4 +1,9 @@
 import {
+  CommonModule,
+  isPlatformBrowser,
+  isPlatformServer,
+} from "@angular/common";
+import {
   Component,
   HostListener,
   Inject,
@@ -7,27 +12,28 @@ import {
   OnInit,
   PLATFORM_ID,
 } from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Category, Subcategory } from "@globals/models/category";
+import { Settings } from "@globals/models/settings";
+import {
+  NowCategory,
+  PromotionCategory,
+} from "@globals/types/categories.types";
+import { Search } from "@globals/types/search.types";
+import { FileService } from "@services/complex/files/file.service";
+import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
+import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
+import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
+import { ByPassSecurityPipe } from "@shared/pipes/BypassSecurity.pipe";
 import { GoogleTagManagerService } from "angular-google-tag-manager";
 import { Subscription } from "rxjs";
-import { first, map } from "rxjs/operators";
-import { CategoriesService } from "@services/simple/categories/categories.service";
-import { FileService } from "@services/complex/files/file.service";
-import { Category, Subcategory } from "@globals/models/category";
-import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
-import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { isPlatformBrowser } from "@angular/common";
-import { Search } from "@globals/types/search.types";
-import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
-import {
-  PromotionCategory,
-  NowCategory,
-} from "@globals/types/categories.types";
-import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
-import { Settings } from "@globals/models/settings";
+import { take } from "rxjs/operators";
 @Component({
   selector: "app-category-list",
+  standalone: true,
+  imports: [CommonModule, ByPassSecurityPipe, MatIconModule],
   templateUrl: "./category-list.component.html",
   styleUrls: ["./category-list.component.css"],
 })
@@ -62,7 +68,6 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   constructor(
     private _activatedRoute: ActivatedRoute,
     private fileService: FileService,
-    private sanitizer: DomSanitizer,
     private router: Router,
     private gtmService: GoogleTagManagerService,
     private sharedObservables: SharedObservableService,
@@ -81,12 +86,11 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const queryParams$ = this.customRouterService
       .getQueryParamsCategoryListComponent(this.settings)
+      .pipe(take(1))
       .subscribe((queryParams) => {
         [this.categoryList, this.filteredCategory, this.filteredSubcategories] =
           queryParams;
-        if (isPlatformBrowser(this.platformId)) {
-          this.downloadCategoryIcon();
-        }
+        this.downloadCategoryIcon();
         this.scrollToClicked();
       });
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe(
@@ -216,17 +220,21 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   downloadCategoryIcon() {
     this.categoryList.forEach((category) => {
-      if (category.iconPath !== undefined) {
-        if (category.iconTemporaryURL === undefined) {
+      if (!!category.iconPath) {
+        if (!category.iconTemporaryURL) {
           const fileDownload$ = this.fileService
             .downloadFile(category.iconPath)
-            .subscribe((imageData) => {
-              // create temporary Url for the downloaded image and bypass security
-              const unsafeImg = URL.createObjectURL(imageData);
-              category.iconTemporaryURL =
-                this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
+            .subscribe({
+              next: (imageData) => {
+                category.iconTemporaryURL = imageData;
+              },
+              error: (error) => {
+                //console.log(error);
+              },
+              complete: () => {
+                //console.log("Image download complete");
+              },
             });
-          this.subscriptions$.push(fileDownload$);
         }
       }
     });
@@ -276,6 +284,9 @@ export class CategoryListComponent implements OnInit, OnDestroy {
 
   @HostListener("window:mouseover", ["$event"])
   setScrollMaxBool() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
     setTimeout(() => {
       const element = document.getElementById("main-category-container");
       if (!element) {

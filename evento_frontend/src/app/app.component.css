@@ -6,8 +6,8 @@
   width: 31rem;
   top: -108px;
   right: -60px;
-  background: url("../assets/design-elements/pattern1-pink-ink.png") 0 0
-    no-repeat;
+  /* background: url("../assets/design-elements/pattern1-pink-ink.png") 0 0
+    no-repeat; */
   background-size: 32rem;
   transform: rotate(150deg);
   opacity: 0.9;
@@ -31,8 +31,8 @@
   width: 40rem;
   bottom: -12em;
   left: -5em;
-  background: url("../assets/design-elements/pattern1-blue-ink.png") 0 0
-    no-repeat;
+  /* background: url("../assets/design-elements/pattern1-blue-ink.png") 0 0
+    no-repeat; */
   background-size: 40rem;
   transform: rotate(310deg);
   opacity: 0.8;

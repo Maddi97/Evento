@@ -85,108 +85,108 @@ router.post("/eventOnDate", limiter, (req, res) => {
 });
 
 router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
-  let date = req.body.fil.date;
-  let time = req.body.fil.time;
-  let categories = req.body.fil.cat;
-  let alreadyReturnedEventIds = req.body.fil.alreadyReturnedEventIds || [];
-  let limit = req.body.fil.limit;
-  let userPosition = req.body.fil.currentPosition;
+  try {
+    let date = req.body.date;
+    let categoryIds = req.body.cat;
+    let alreadyReturnedEventIds = req.body.alreadyReturnedEventIds || [];
+    let limit = req.body.limit;
+    let userPosition = req.body.currentPosition;
 
-  //get ids bc we filter by id
-  let catIds = [];
-  categories.forEach((cat) => catIds.push(cat._id));
+    let subcategoryIds = req.body.subcat;
+    if (date == "Invalid Date") {
+      res.status(500).json({ error: "Invalid Date Error" }); // Send an error response with status code 500 (Internal Server Error)
+    }
+    if (!userPosition) {
+      res.status(500).json({ error: "No user position" });
+    }
 
-  let subcategories = req.body.fil.subcat;
-  let subcatIds = [];
-  subcategories.forEach((sub) => subcatIds.push(sub._id));
-  if (date == "Invalid Date") {
-    res.status(500).json({ error: "Invalid Date Error" }); // Send an error response with status code 500 (Internal Server Error)
-  }
-  if (!time) {
-    res.status(500).json({ error: "Invalid Time Error" }); // Send an error response with status code 500 (Internal Server Error)
-  }
-  Event.find({
-    $and: [
-      {
-        $or: [
-          {
-            $and: [
-              {
-                "date.start": { $lte: date },
-              },
-              {
-                "date.end": { $gte: date },
-              },
-            ],
-          },
-          {
-            permanent: { $eq: true },
-          },
-          {
-            $and: [
-              { frequency: { $exists: true } },
-              {
-                "date.start": { $lte: date }, //-1 um den heutigen Tag mit zu finden
-              },
-            ],
-          },
-        ],
-      },
+    Event.find({
+      $and: [
+        {
+          $or: [
+            {
+              $and: [
+                {
+                  "date.start": { $lte: date },
+                },
+                {
+                  "date.end": { $gte: date },
+                },
+              ],
+            },
+            {
+              permanent: { $eq: true },
+            },
+            {
+              $and: [
+                { frequency: { $exists: true } },
+                {
+                  "date.start": { $lte: date }, //-1 um den heutigen Tag mit zu finden
+                },
+              ],
+            },
+          ],
+        },
 
-      { "category._id": { $in: catIds } },
-    ],
-  })
-    .then((events) => {
-      // events contains all events filtered by date and category, based on this here we filter on the subcategory
-      events = events.filter((event) => {
-        return subcatIds.every((subcat) =>
-          event.category.subcategories
-            .map((subcategory) => subcategory._id)
-            .includes(subcat)
-        );
-      });
-      //filter events of end day that are already over
-      events = events.filter((event) => {
-        if (event.frequency) {
-          return timeHelper.isFrequencyToday(event.frequency, date);
-        }
-        return true;
-      });
-      //sort out already returned events
-      events = events.filter((event) => {
-        return !alreadyReturnedEventIds.includes(event._id.toString());
-      });
-      //sort events by distance
-      events.sort((ev1, ev2) => {
-        // Check if ev1 should be promoted (promote == true) and ev2 should not
-        if (ev1.promotion && !ev2.promotion) {
-          return -1; // ev1 comes before ev2
-        }
-        // Check if ev2 should be promoted (promote == true) and ev1 should not
-        else if (!ev1.promotion && ev2.promotion) {
-          return 1; // ev2 comes before ev1
-        }
-        // If neither should be promoted, compare by distance
-        else {
-          const distance1 = get_distance(
-            [ev1.geoData.lat, ev1.geoData.lon],
-            userPosition
-          );
-          const distance2 = get_distance(
-            [ev2.geoData.lat, ev2.geoData.lon],
-            userPosition
-          );
-          return distance1 - distance2;
-        }
-      });
-      // Return events from offset to limit to not load all at once
-
-      res.send(events.slice(0, limit));
+        { "category._id": { $in: categoryIds } },
+      ],
     })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).json({ error: "Internal Server Error" }); // Send an error response with status code 500 (Internal Server Error)
-    });
+      .then((events) => {
+        // events contains all events filtered by date and category, based on this here we filter on the subcategory
+        events = events.filter((event) => {
+          return subcategoryIds.every((subcat) =>
+            event.category.subcategories
+              .map((subcategory) => subcategory._id)
+              .includes(subcat)
+          );
+        });
+        //filter events of end day that are already over
+        events = events.filter((event) => {
+          if (event.frequency) {
+            return timeHelper.isFrequencyToday(event.frequency, date);
+          }
+          return true;
+        });
+        //sort out already returned events
+        events = events.filter((event) => {
+          return !alreadyReturnedEventIds.includes(event._id.toString());
+        });
+        //sort events by distance
+        events.sort((ev1, ev2) => {
+          // Check if ev1 should be promoted (promote == true) and ev2 should not
+          if (ev1.promotion && !ev2.promotion) {
+            return -1; // ev1 comes before ev2
+          }
+          // Check if ev2 should be promoted (promote == true) and ev1 should not
+          else if (!ev1.promotion && ev2.promotion) {
+            return 1; // ev2 comes before ev1
+          }
+          // If neither should be promoted, compare by distance
+          else {
+            const distance1 = get_distance(
+              [ev1.geoData.lat, ev1.geoData.lon],
+              userPosition
+            );
+            const distance2 = get_distance(
+              [ev2.geoData.lat, ev2.geoData.lon],
+              userPosition
+            );
+            return distance1 - distance2;
+          }
+        });
+        // Return events from offset to limit to not load all at once
+
+        res.send(events.slice(0, limit));
+      })
+      .catch((error) => {
+        console.error(error);
+        res
+          .status(500)
+          .json({ error: "Internal Server Error in events route" });
+      });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error in events route" });
+  }
 });
 
 router.post("/upcomingEvents", limiter, (req, res) => {
@@ -217,15 +217,15 @@ router.post("/upcomingEvents", limiter, (req, res) => {
 });
 
 router.post("/hotEvents", limiter, (req, res) => {
-  let date = new Date(req.body.fil.date);
-  let count = req.body.fil.count || 0;
-  let limit = req.body.fil.limit || 99999;
+  let date = new Date(req.body.date);
+  let count = req.body.count || 0;
+  let limit = req.body.limit || 99999;
   Event.find({
     $and: [
       {
         $or: [
           {
-            "date.start": { $gte: date }, //-1 um den heutigen Tag mit zu finden
+            "date.start": { $gte: date },
           },
           {
             $and: [
@@ -251,72 +251,78 @@ router.post("/hotEvents", limiter, (req, res) => {
 });
 
 router.post("/getEventsBySearchString", limiter, async (req, res) => {
-  const searchString = String(escape(req.body.req.searchString)); // Get the searchString from the request body
-  const limit = Number(req.body.req.limit);
-  let categories = await Category.find({}, "_id");
-  categories = categories.map((catIdObj) => catIdObj._id); //map category id object to list of ids
-  const date = req.body.req.date;
-  let alreadyReturnedEventIds = req.body.req.alreadyReturnedEventIds || [];
-  const fourteenDaysAhead = new Date(date);
-  fourteenDaysAhead.setDate(fourteenDaysAhead.getDate() + 21);
-  console.log(alreadyReturnedEventIds);
-  const dateConditions = {
-    $or: [
-      { "date.start": { $gte: date } },
-      {
-        $and: [
-          { "date.start": { $lte: date } }, // -1 to include today
-          { "date.end": { $gte: date } },
-        ],
-      },
-      { permanent: true },
-      {
-        $and: [
-          { frequency: { $exists: true } },
-          { "date.start": { $lte: date } },
-        ],
-      },
-    ],
-  };
-
-  const fourteenDaysAgoCondition = {
-    "date.start": { $lte: fourteenDaysAhead },
-  };
-
-  const searchStringConditions = {
-    $or: [
-      { name: { $regex: searchString, $options: "i" } },
-      { organizerName: { $regex: searchString, $options: "i" } },
-      { "address.street": { $regex: searchString, $options: "i" } },
-      { "category.name": { $regex: searchString, $options: "i" } },
-      {
-        alias: {
-          $elemMatch: { $regex: searchString, $options: "i" },
+  try {
+    const searchString = String(escape(req.body.searchString)); // Get the searchString from the request body
+    const limit = Number(req.body.limit);
+    let categories = await Category.find({}, "_id");
+    categories = categories.map((catIdObj) => catIdObj._id); //map category id object to list of ids
+    const date = req.body.date;
+    let alreadyReturnedEventIds = req.body.alreadyReturnedEventIds || [];
+    const fourteenDaysAhead = new Date(date);
+    fourteenDaysAhead.setDate(fourteenDaysAhead.getDate() + 21);
+    const dateConditions = {
+      $or: [
+        { "date.start": { $gte: date } },
+        {
+          $and: [
+            { "date.start": { $lte: date } }, // -1 to include today
+            { "date.end": { $gte: date } },
+          ],
         },
-      },
-    ],
-  };
+        { permanent: true },
+        {
+          $and: [
+            { frequency: { $exists: true } },
+            { "date.start": { $lte: date } },
+          ],
+        },
+      ],
+    };
 
-  const categoryConditions = { "category._id": { $in: categories } };
+    const fourteenDaysAgoCondition = {
+      "date.start": { $lte: fourteenDaysAhead },
+    };
 
-  Event.find({
-    $and: [
-      dateConditions,
-      fourteenDaysAgoCondition,
-      searchStringConditions,
-      categoryConditions,
-    ],
-  })
-    .then((events) => {
-      events = events.filter((event) => {
-        return !alreadyReturnedEventIds.includes(event._id.toString());
-      });
-      res.send(events.slice(0, limit));
+    const searchStringConditions = {
+      $or: [
+        { name: { $regex: searchString, $options: "i" } },
+        { organizerName: { $regex: searchString, $options: "i" } },
+        { "address.street": { $regex: searchString, $options: "i" } },
+        { "category.name": { $regex: searchString, $options: "i" } },
+        {
+          alias: {
+            $elemMatch: { $regex: searchString, $options: "i" },
+          },
+        },
+      ],
+    };
+
+    const categoryConditions = { "category._id": { $in: categories } };
+
+    Event.find({
+      $and: [
+        dateConditions,
+        fourteenDaysAgoCondition,
+        searchStringConditions,
+        categoryConditions,
+      ],
     })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
-    });
+      .then((events) => {
+        events = events.filter((event) => {
+          return !alreadyReturnedEventIds.includes(event._id.toString());
+        });
+        res.send(events.slice(0, limit));
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error Search in events route" });
+  }
 });
 
 router.post("/outdatedEvents", limiter, (req, res) => {

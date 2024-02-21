@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import {
   AfterViewInit,
   Component,
@@ -9,20 +9,17 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatCalendar } from "@angular/material/datepicker";
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterEvent,
-  RoutesRecognized,
-} from "@angular/router";
-import * as moment from "moment";
-import { filter, map, tap } from "rxjs/operators";
-import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
+import { MatIconModule } from "@angular/material/icon";
+import { ActivatedRoute, Router } from "@angular/router";
 import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
+import { DayDateComponent } from "@shared/atoms/day-date/day-date.component";
+import moment from "moment";
+import { map, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-date-picker",
+  standalone: true,
+  imports: [MatIconModule, CommonModule, DayDateComponent],
   templateUrl: "./date-picker.component.html",
   styleUrls: ["./date-picker.component.css"],
 })
@@ -50,7 +47,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
       .pipe(
         map((params) => {
           const date = params.date;
-          if (date) {
+          if (date && !this.isDateSmallerThanYesterday(date)) {
             this.selectedDate = this.removeTimezoneAndTimeFromDate(
               new Date(date)
             );
@@ -145,11 +142,10 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
       // Apply the calculated scroll position
       //container.scrollLeft = scrollPosition;
       element.scrollIntoView({ block: "end", inline: "center" });
-    }, 100);
+    }, 10);
   }
 
   addDates() {
-    // TODO maybe try to add number of dates dynamically
     this.numberOfDates += this.displayNumberOfDates;
     this.createDateList(true);
     this.firstDate += this.displayNumberOfDates;
@@ -158,7 +154,6 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
   removeTimezoneAndTimeFromDate(date) {
     date = moment(date.toISOString()).utcOffset(0, false);
     date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-    // date.toISOString()
     return date;
   }
 
@@ -167,7 +162,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     element.scrollLeft += 160;
     setTimeout(() => {
       this.setScrollMaxBool();
-    }, 100);
+    }, 10);
     // if max scrolled true then true
   }
 
@@ -176,7 +171,7 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
     element.scrollLeft -= 160;
     setTimeout(() => {
       this.setScrollMaxBool();
-    }, 100);
+    }, 10);
   }
 
   @HostListener("window:mouseover", ["$event"])
@@ -194,6 +189,24 @@ export class DatePickerComponent implements OnInit, AfterViewInit {
       relativeTo: this._activatedRoute,
       queryParamsHandling: "merge",
     });
+  }
+
+  private isDateSmallerThanYesterday(date: Date): Boolean {
+    // Get today's date
+    const today = new Date();
+    // Set the time part of today's date to 0 (midnight)
+    today.setHours(0, 0, 0, 0);
+
+    // Get yesterday's date
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    // Set the time part of the input date to 0 (midnight)
+    const adjustedDate = new Date(date);
+    adjustedDate.setHours(0, 0, 0, 0);
+
+    // Compare the adjusted date with yesterday's date
+    return adjustedDate < yesterday;
   }
 }
 

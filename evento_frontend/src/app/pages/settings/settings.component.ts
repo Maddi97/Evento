@@ -1,7 +1,22 @@
+import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
+import { DatenschutzComponent } from "@shared/molecules/datenschutz/datenschutz.component";
+import { FeedbackComponent } from "@shared/molecules/feedback/feedback.component";
+import { InsertEventComponent } from "@shared/molecules/insert-event/insert-event.component";
+import { ImpressumComponent } from "@shared/molecules/impressum/impressum.component";
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
   selector: "app-settings",
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+    InsertEventComponent,
+    FeedbackComponent,
+    DatenschutzComponent,
+    ImpressumComponent,
+  ],
   templateUrl: "./settings.component.html",
   styleUrls: ["./settings.component.css"],
 })

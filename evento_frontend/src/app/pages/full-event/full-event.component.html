@@ -1,8 +1,12 @@
+<ngx-spinner type="ball-scale-multiple" [fullScreen]="false"> </ngx-spinner>
 <div class="full-event-page">
   <div class="event-tile" *ngIf="event">
     <div class="column-container-1 column">
       <div class="event-pic">
-        <app-event-picture [event]="event"></app-event-picture>
+        <app-event-picture
+          [event]="event"
+          [organizer]="organizer"
+        ></app-event-picture>
       </div>
       <div class="event-name">
         <span>
@@ -87,12 +91,14 @@
       >
 
       <div class="map-container">
+        @if(currentPosition) {
         <map-view
           [markerData]="[event]"
           [zoomInput]="14"
           [currentPosition]="currentPosition"
           [centerMapOnPosition]="[event.geoData.lat, event.geoData.lon]"
-        ></map-view>
+        ></map-view
+        >}
       </div>
     </div>
   </div>

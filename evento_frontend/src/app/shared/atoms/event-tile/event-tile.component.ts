@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import {
   Component,
   Inject,
@@ -9,6 +9,7 @@ import {
   SimpleChange,
   SimpleChanges,
 } from "@angular/core";
+import { MatCardModule } from "@angular/material/card";
 import { Event } from "@globals/models/event";
 import { PositionService } from "@services/core/location/position.service";
 import { OrganizerService } from "@services/simple/organizer/organizer.service";
@@ -17,20 +18,23 @@ import {
   openingTimesFormatter,
 } from "@shared/logic/opening-times-format-helpers";
 import { isScreenMinWidth } from "@shared/logic/screen-size-helpers";
-import { first, tap } from "rxjs";
+import { first, map, tap } from "rxjs";
+import { EventPictureComponent } from "../event-picture/event-picture.component";
+import { NominatimGeoService } from "@services/core/location/nominatim-geo.service";
 
 @Component({
   selector: "app-event-tile",
+  standalone: true,
+  imports: [CommonModule, MatCardModule, EventPictureComponent],
   templateUrl: "./event-tile.component.html",
   styleUrls: ["./event-tile.component.css"],
 })
-export class EventTileComponent implements OnInit, OnChanges {
+export class EventTileComponent implements OnInit {
   @Input() event: Event;
-  @Input() distance;
-
+  distance;
   IconURL = null;
   ImageURL = null;
-  organizer = null;
+  organizerOfEvent$;
   isScreemMin1000px;
   hasUserPosition;
   public openingTimesFormatter = openingTimesFormatter;
@@ -40,6 +44,7 @@ export class EventTileComponent implements OnInit, OnChanges {
   constructor(
     private organizerService: OrganizerService,
     private positionService: PositionService,
+    private geoService: NominatimGeoService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -47,22 +52,29 @@ export class EventTileComponent implements OnInit, OnChanges {
     if (isPlatformBrowser(this.platformId)) {
       this.isScreemMin1000px = isScreenMinWidth(1000);
     }
-    this.organizerService
+    this.organizerOfEvent$ = this.organizerService
       .getOrganizerById(this.event._organizerId)
       .pipe(
         first(),
-        tap((organizerResponse) => (this.organizer = organizerResponse[0]))
-      )
-      .subscribe();
+        map((organizerResponse) => organizerResponse[0])
+      );
     this.positionService.isPositionDefault.subscribe(
       (isPositionDefault) => (this.hasUserPosition = !isPositionDefault)
     );
-    this.distance = Math.round(this.distance * 100) / 100; // 2 decimals
+    this.positionService.positionObservable.subscribe((position) => {
+      this.distance = this.get_distance_to_current_position(
+        this.event,
+        position
+      );
+    });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.distance) {
-      this.distance = Math.round(this.distance * 100) / 100; // 2 decimals
-    }
+  get_distance_to_current_position(event, position) {
+    // get distance
+    const dist = this.geoService.get_distance(position, [
+      event.geoData.lat,
+      event.geoData.lon,
+    ]);
+    return Math.round(dist * 100) / 100;
   }
 }

@@ -15,6 +15,7 @@ import {
   timeout,
 } from "rxjs";
 import { NominatimGeoService } from "./nominatim-geo.service";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 
 @Injectable({
   providedIn: "root",
@@ -24,17 +25,24 @@ export class PositionService {
   disableCallLocation = false;
   public positionObservable = new ReplaySubject<Array<number>>(1);
   public isPositionDefault = new BehaviorSubject<Boolean>(true);
-  // New York Center
-  // default_center_position = [40.7142700, -74.0059700]
+
   timeout = 8000;
   constructor(
     private geoService: NominatimGeoService,
     private _snackbar: MatSnackBar,
     private spinner: NgxSpinnerService,
-    private readonly geolocation$: GeolocationService
-  ) {}
+    private readonly geolocation$: GeolocationService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    if (isPlatformServer(platformId)) {
+      this.positionObservable.next(DEFAULT_LOCATION);
+    }
+  }
 
   getPositionByInput(addressInput) {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
     this.spinner.show();
     this.closeSpinnerAfterTimeout();
     this.geoService
@@ -56,6 +64,9 @@ export class PositionService {
   }
 
   getGeoLocation(showSpinner = false) {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
     if (showSpinner) this.spinner.show();
     this.geolocation$
       .pipe(
@@ -107,6 +118,9 @@ export class PositionService {
     });
   }
   closeSpinnerAfterTimeout() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
     setTimeout(() => {
       this.spinner.hide();
     }, this.timeout);

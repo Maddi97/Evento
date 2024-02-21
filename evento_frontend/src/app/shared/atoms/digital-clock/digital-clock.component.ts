@@ -1,15 +1,16 @@
-import {Component, LOCALE_ID, OnInit} from '@angular/core';
+import { Component, LOCALE_ID, OnInit } from "@angular/core";
 // import {Observable} from 'rxjs/Observable';
-import * as moment from 'moment';
-
+import * as moment from "moment";
 
 @Component({
-  selector: 'app-digital-clock',
-  templateUrl: './digital-clock.component.html',
-  styleUrls: ['./digital-clock.component.css']
+  selector: "app-digital-clock",
+  standalone: true,
+  imports: [],
+  templateUrl: "./digital-clock.component.html",
+  styleUrls: ["./digital-clock.component.css"],
 })
 export class DigitalClockComponent {
-  name = 'evento';
+  name = "evento";
   date: string;
   hours: any;
   minutes: any;
@@ -19,13 +20,9 @@ export class DigitalClockComponent {
   isTwelveHrFormat: false;
 
   constructor() {
-
     setInterval(() => {
       const currentDate = new Date();
       this.date = currentDate.toLocaleTimeString();
     }, 1000);
   }
 }
-
-
-

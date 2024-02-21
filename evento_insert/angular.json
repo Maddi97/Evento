@@ -11,13 +11,12 @@
       "schematics": {},
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "baseHref": "/",
             "outputPath": "dist/insert-app",
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "browser": "src/main.ts",
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
@@ -99,21 +98,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "insert-app:build"
+            "buildTarget": "insert-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "insert-app:build:production"
+              "buildTarget": "insert-app:build:production"
             },
             "dev": {
-              "browserTarget": "insert-app:build:dev"
+              "buildTarget": "insert-app:build:dev"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "insert-app:build"
+            "buildTarget": "insert-app:build"
           }
         },
         "test": {
@@ -128,10 +127,7 @@
               "src/styles.css"
             ],
             "scripts": [],
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ]
+            "assets": ["src/favicon.ico", "src/assets"]
           }
         }
       }

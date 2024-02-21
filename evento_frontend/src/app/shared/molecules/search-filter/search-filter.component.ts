@@ -7,7 +7,7 @@ import {
   OnInit,
   PLATFORM_ID,
 } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
 import { EMPTY_SEARCH } from "@globals/constants/search";
@@ -23,12 +23,14 @@ import {
 } from "rxjs";
 @Component({
   selector: "app-search-filter",
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: "./search-filter.component.html",
   styleUrls: ["./search-filter.component.css"],
 })
 export class SearchFilterComponent implements OnInit, OnDestroy {
   search: Search = EMPTY_SEARCH;
-  delay = 300;
+  delay = 750;
   getScreenWidth;
   isFocused = false;
   event$: Subscription;
@@ -43,9 +45,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getScreenWidth = isPlatformBrowser(this.platformId)
-      ? window.innerWidth
-      : 0;
+    this.getScreenWidth = this.getScreenSize();
     this.searchStringForm = this.formBuilder.group({
       searchString: [""],
     });
@@ -83,51 +83,53 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   @HostListener("window:resize")
   getScreenSize() {
-    this.getScreenWidth = isPlatformBrowser(this.platformId)
-      ? window.innerWidth
-      : 0;
+    if (isPlatformBrowser(this.platformId)) {
+      this.getScreenWidth = window.innerWidth;
+    }
   }
   @HostListener("document:scroll")
   hideSearchOnScroll() {
-    const inputElement = document.getElementById("searchright");
+    const inputElement =
+      document.getElementById("search-filter-small") ||
+      document.getElementById("search-filter-big");
     inputElement.classList.remove("focus");
     inputElement.blur();
     this.isFocused = false;
   }
 
-  @HostListener("document:touch", ["$event"])
-  @HostListener("document:mousedown", ["$event"])
+  @HostListener("window:touch", ["$event"])
+  @HostListener("window:mousedown", ["$event"])
   public onMouseDownTrigger(event: any) {
     const inputElement: HTMLInputElement = event.srcElement;
-    if (inputElement.id !== "searchright") {
-      const inputBar = document.getElementById("searchright");
-      if (inputElement.id === "searchlabel") {
-        if (!this.isFocused) {
-          inputBar.classList.add("focus");
-        } else {
-          if (this.search.searchString.length > 0) {
-            this.sharedObservableService.clearSearchFilter();
-          }
-          inputBar.classList.remove("focus");
-          setTimeout(() => {
-            if (Capacitor.isNativePlatform()) {
-              Keyboard.hide();
-            }
-          }, 10);
-        }
+    if (inputElement.id.includes("search-filter")) {
+      return;
+    }
+    const inputBar = document.getElementById("search-filter-small");
+    const isSearchFocused = inputBar?.classList?.contains("focus");
+    if (inputElement.id.includes("searchlabel")) {
+      if (!isSearchFocused) {
+        inputBar.classList.add("focus");
       } else {
-        if (this.isFocused && !inputElement.value) {
-          inputBar.classList.remove("focus");
-          inputBar.blur();
-          setTimeout(() => {
-            if (Capacitor.isNativePlatform()) {
-              Keyboard.hide();
-            }
-          }, 10);
+        inputBar.classList.remove("focus");
+
+        if (this.search.searchString.length > 0) {
+          this.sharedObservableService.clearSearchFilter();
         }
+        setTimeout(() => {
+          if (Capacitor.isNativePlatform()) {
+            Keyboard.hide();
+          }
+        }, 10);
       }
-      if (this.isFocused || event.srcElement.id === "searchlabel") {
-        this.isFocused = !this.isFocused;
+    } else {
+      if (isSearchFocused && !inputElement.value) {
+        inputBar.classList.remove("focus");
+        inputBar.blur();
+        setTimeout(() => {
+          if (Capacitor.isNativePlatform()) {
+            Keyboard.hide();
+          }
+        }, 10);
       }
     }
   }

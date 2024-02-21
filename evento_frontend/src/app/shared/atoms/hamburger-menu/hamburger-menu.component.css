@@ -1,30 +1,32 @@
 button:focus {
-    outline: unset;
+  outline: unset;
 }
 
 .menu-button {
-    width: 29px;
-    height: 28px;
-    border-radius: 4px;
-    cursor: pointer;
+  width: 29px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .menu-button:active {
-    background-color: black;
+  background-color: black;
 }
 
-
-
-.mat-mdc-button>.mat-icon {
-    margin-right: unset !important;
+.mat-mdc-button > .mat-icon {
+  margin-right: unset !important;
 }
 
 .menu-icon {
-    font-size: 30px !important;
-    height: unset !important;
-    width: unset !important;
+  font-size: 30px !important;
+  height: unset !important;
+  width: unset !important;
 }
 
 .menu-icon:active {
-    color: white;
+  color: white;
+}
+
+::ng-deep .cdk-overlay-pane {
+  background-color: white;
 }

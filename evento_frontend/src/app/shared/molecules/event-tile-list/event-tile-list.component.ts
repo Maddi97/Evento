@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import {
   Component,
   EventEmitter,
@@ -10,20 +10,32 @@ import {
   PLATFORM_ID,
   SimpleChanges,
 } from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
+import { Event } from "@globals/models/event";
 import { NominatimGeoService } from "@services/core/location/nominatim-geo.service";
-import { PositionService } from "@services/core/location/position.service";
 import { NgxSpinnerService } from "ngx-spinner";
+import { GoogleAdsComponent } from "../google-ads/google-ads.component";
+import { EventTileComponent } from "@shared/atoms/event-tile/event-tile.component";
+import { RouterModule } from "@angular/router";
+import { MatCardModule } from "@angular/material/card";
 
 @Component({
   selector: "app-event-tile-list",
+  standalone: true,
+  imports: [
+    CommonModule,
+    EventTileComponent,
+    GoogleAdsComponent,
+    RouterModule,
+    MatIconModule,
+    MatCardModule,
+  ],
   templateUrl: "./event-tile-list.component.html",
   styleUrls: ["./event-tile-list.component.css"],
 })
 export class EventTileListComponent implements OnInit, OnChanges {
-  @Input() eventList;
-  @Input() userPosition;
-  @Input() eventToScrollId;
-  @Input() test;
+  @Input() eventList: Event[] = [];
+  @Input() eventToScroll: Event;
   @Output() hoverEventEmitter = new EventEmitter<string>();
 
   emittedEventId = null;
@@ -34,7 +46,6 @@ export class EventTileListComponent implements OnInit, OnChanges {
   showAds = false;
 
   constructor(
-    private geoService: NominatimGeoService,
     private spinner: NgxSpinnerService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
@@ -42,12 +53,30 @@ export class EventTileListComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.eventToScrollId && isPlatformBrowser(this.platformId)) {
+    if (
+      changes.eventList?.currentValue &&
+      changes.eventList?.currentValue[0]?._id !==
+        changes.eventList?.previousValue?.[0]?._id &&
+      isPlatformBrowser(this.platformId)
+    ) {
+      this.scrollEventListToTop();
+    }
+
+    if (changes.eventToScroll && isPlatformBrowser(this.platformId)) {
       this.scrollToEvent(
-        this.eventToScrollId,
-        changes.eventToScrollId.previousValue
+        this.eventToScroll,
+        changes.eventToScroll.previousValue
       );
     }
+  }
+  scrollEventListToTop() {
+    setTimeout(() => {
+      const id = "event-tile-" + this.eventList?.[0]?._id;
+      const element = document.getElementById(id);
+      element?.scrollIntoView(
+        { behavior: "instant", block: "start" } // Use smooth scrolling
+      );
+    }, 1);
   }
 
   scrollToEvent(eventToScroll, previousEventToScroll) {
@@ -84,14 +113,5 @@ export class EventTileListComponent implements OnInit, OnChanges {
 
   hoverLeave() {
     this.hoverEventEmitter.emit(null);
-  }
-
-  get_distance_to_current_position(event) {
-    // get distance
-    const dist = this.geoService.get_distance(this.userPosition, [
-      event.geoData.lat,
-      event.geoData.lon,
-    ]);
-    return dist;
   }
 }

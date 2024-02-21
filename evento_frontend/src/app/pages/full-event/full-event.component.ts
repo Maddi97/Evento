@@ -1,22 +1,32 @@
+import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Event } from "../../globals/models/event";
+import { Organizer } from "../../globals/models/organizer";
+import { PositionService } from "../../services/core/location/position.service";
+import { EventService } from "../../services/simple/events/event.service";
+import { OrganizerService } from "../../services/simple/organizer/organizer.service";
+import {
+  dateTimesFormater,
+  openingTimesFormatter,
+} from "../../shared/logic/opening-times-format-helpers";
+import { MapViewComponent } from "../../shared/molecules/map-view/map-view.component";
 import { GoogleTagManagerService } from "angular-google-tag-manager";
-import { NgxSpinnerService } from "ngx-spinner";
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import { map } from "rxjs";
 import { delay, switchMap, take } from "rxjs/operators";
-import { EventService } from "@services/simple/events/event.service";
-import { Event } from "@globals/models/event";
-import { Organizer } from "@globals/models/organizer";
-import { OrganizerService } from "@services/simple/organizer/organizer.service";
-import {
-  openingTimesFormatter,
-  dateTimesFormater,
-} from "@shared/logic/opening-times-format-helpers";
-import { SessionStorageService } from "@services/core//session-storage/session-storage.service";
-import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
-import { PositionService } from "@services/core/location/position.service";
+import { SocialMediaShareComponent } from "@shared/molecules/social-media-share/social-media-share.component";
+import { EventPictureComponent } from "@shared/atoms/event-picture/event-picture.component";
 @Component({
   selector: "app-full-event",
+  standalone: true,
+  imports: [
+    CommonModule,
+    NgxSpinnerModule,
+    MapViewComponent,
+    SocialMediaShareComponent,
+    EventPictureComponent,
+  ],
   templateUrl: "./full-event.component.html",
   styleUrls: ["./full-event.component.css"],
 })
@@ -45,10 +55,11 @@ export class FullEventComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.position$ = this.positionService.positionObservable.subscribe(
-      (position) => {
+    this.spinner.show();
+    this.position$ = this.positionService.positionObservable.pipe(
+      map((position) => {
         this.currentPosition = position;
-      }
+      })
     );
     this.params$ = this.route.params
       .pipe(
@@ -59,7 +70,7 @@ export class FullEventComponent implements OnInit, OnDestroy {
           this.organizerService.getOrganizerById(event._organizerId)
         ),
         map((organizerResponse) => (this.organizer = organizerResponse[0])),
-        delay(150),
+        switchMap(() => this.position$),
         take(1)
       )
       .subscribe({

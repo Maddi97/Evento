@@ -118,3 +118,5 @@ by backup script images are restored in /home/event/backup/mongodb_back/IMAGE_BA
 container (docker cp)
 
 Right now backend and mongo db are never pushed or recreated
+
+try application builder

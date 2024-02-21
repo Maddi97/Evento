@@ -1,24 +1,31 @@
 import {
+  CommonModule,
+  isPlatformBrowser,
+  isPlatformServer,
+} from "@angular/common";
+import {
   Component,
   EventEmitter,
   HostListener,
+  Inject,
   Input,
   OnChanges,
   OnInit,
   Output,
+  PLATFORM_ID,
   SimpleChanges,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
-import * as L from "leaflet";
-import { skip, switchMap, timer } from "rxjs";
-import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { PositionService } from "@services/core/location/position.service";
 import { LeafletService } from "@services/core/leaflet/leaflet.service";
+import { PositionService } from "@services/core/location/position.service";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 @Component({
   selector: "map-view",
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: "./map-view.component.html",
   styleUrls: ["./map-view.component.css"],
 })
@@ -32,6 +39,8 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Output() emitClickedEventId: EventEmitter<any> = new EventEmitter<any>();
 
   isMapDragged = false;
+  private isMapDraggedTimeoutRunning: boolean = false;
+
   mapInitialized = false;
   private map;
   private markerGroup;
@@ -58,7 +67,8 @@ export class MapViewComponent implements OnInit, OnChanges {
     private positionService: PositionService,
     private leafletService: LeafletService,
     private mapCenterViewService: MapCenterViewService,
-    private sharedObservableService: SharedObservableService
+    private sharedObservableService: SharedObservableService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   sanitizeInput(value) {
@@ -66,16 +76,18 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.LeafIcon = this.leafletService.L.Icon.extend({
-      options: {
-        shadowUrl: this.shadowUrl,
-        iconSize: [16, 24],
-        iconAnchor: [8, 30],
-        popupAnchor: [1, -26],
-        tooltipAnchor: [10, -20],
-        shadowSize: [30, 30],
-      },
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.LeafIcon = this.leafletService.L.Icon.extend({
+        options: {
+          shadowUrl: this.shadowUrl,
+          iconSize: [16, 24],
+          iconAnchor: [8, 30],
+          popupAnchor: [1, -26],
+          tooltipAnchor: [10, -20],
+          shadowSize: [30, 30],
+        },
+      });
+    }
   }
 
   resetCenter() {
@@ -103,6 +115,9 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
     setTimeout(() => {
       this.initMapIfNeeded(); // Use the method to initialize the map
       if (typeof this.map !== "undefined") {
@@ -126,21 +141,27 @@ export class MapViewComponent implements OnInit, OnChanges {
 
         // set blue position marker always to top
 
-        this.updateZIndexPosition("blue");
+        if (isPlatformBrowser(this.platformId))
+          this.updateZIndexPosition("blue");
         this.map.on("moveend", (e) => {
           this.updateZIndexPosition("blue");
           this.isMapDragged = true;
-          setTimeout(() => {
-            this.isMapDragged = false;
-          }, 3000);
+          if (!this.isMapDraggedTimeoutRunning) {
+            this.isMapDraggedTimeoutRunning = true;
+
+            setTimeout(() => {
+              this.isMapDragged = false;
+              this.isMapDraggedTimeoutRunning = false; // Reset the flag after the timeout
+            }, 5000);
+          }
         });
       }
-    }, 200); // Adjust the delay time in milliseconds
+    }, 10); // Adjust the delay time in milliseconds
   }
   private initMapIfNeeded(): void {
     if (
       typeof this.map === "undefined" &&
-      this.centerMapOnPosition.length === 2
+      this.centerMapOnPosition?.length === 2
     ) {
       this.initMap();
       this.mapInitialized = true;
@@ -235,7 +256,7 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private setMarkers(markerData: any[]): void {
     this.markerGroup.clearLayers();
-    markerData.forEach((marker) => {
+    markerData?.forEach((marker) => {
       const adressStringUrl = encodeURIComponent(
         `${marker.address?.street} ${marker.address?.streetNumber} ${marker.address?.city}`
       );

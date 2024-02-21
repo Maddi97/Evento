@@ -1,19 +1,14 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { NavigationEnd, Router } from "@angular/router";
-import { Capacitor } from "@capacitor/core";
-import { filter, take } from "rxjs";
-import { SettingsService } from "./services/simple/settings/settings.service.service";
-import { SharedObservableService } from "./services/core/shared-observables/shared-observables.service";
-import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
 import { isPlatformBrowser } from "@angular/common";
-import { NgxSpinnerService } from "ngx-spinner";
-import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
+import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { Capacitor } from "@capacitor/core";
 import { Settings } from "@globals/models/settings";
-declare interface Window {
-  adsbygoogle: any[];
-}
-declare var adsbygoogle: any[];
+import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
+import { NgxSpinnerService } from "ngx-spinner";
+import { SharedObservableService } from "./services/core/shared-observables/shared-observables.service";
+import { SettingsService } from "./services/simple/settings/settings.service.service";
+import { PositionService } from "@services/core/location/position.service";
+import { SubdomainUrl } from "@globals/types/url.types";
+
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
@@ -28,30 +23,33 @@ export class AppComponent implements OnInit {
   private cookieDismiss = "Verstanden!";
   private cookieLinkText = "Hier gehts zur Datenschutzerklärung";
   settings: Settings;
-  actualSubdomain = "";
+  actualSubdomain: SubdomainUrl = "";
   constructor(
     private settingsService: SettingsService,
     private sharedObservableService: SharedObservableService,
     private customRouterService: CustomRouterService,
-    private spinner: NgxSpinnerService,
+    private positionService: PositionService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
     this.isPlatformBrowser = isPlatformBrowser(this.platformId);
+    if (this.isPlatformBrowser) {
+      this.positionService.getGeoLocation();
+    }
     //only get position on first creation and not on routing inside the spa
     this.settingsService.getSettings().subscribe((settings) => {
       this.sharedObservableService.setSettings(settings);
       this.settings = settings;
     });
-    this.customRouterService.getQueryParams().subscribe(() => {
-      if (isPlatformBrowser(this.platformId)) {
-        this.spinner.show();
-      }
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.customRouterService.getQueryParams().subscribe();
+    }
     this.customRouterService
       .getSubdomain()
-      .subscribe((subdomain) => (this.actualSubdomain = subdomain));
+      .subscribe(
+        (subdomain: SubdomainUrl) => (this.actualSubdomain = subdomain)
+      );
     if (
       Capacitor.getPlatform() === "web" &&
       isPlatformBrowser(this.platformId)

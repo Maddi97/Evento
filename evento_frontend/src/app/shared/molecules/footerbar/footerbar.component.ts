@@ -5,15 +5,17 @@ import {
   OnInit,
   PLATFORM_ID,
 } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { SessionStorageService } from "@services/core/session-storage/session-storage.service";
-import { DOCUMENT, isPlatformBrowser } from "@angular/common";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { CommonModule, DOCUMENT, isPlatformBrowser } from "@angular/common";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
+import { MatIconModule } from "@angular/material/icon";
 
 type FooterPickedField = "/settings" | "/categories" | "/";
 
 @Component({
   selector: "app-footerbar",
+  standalone: true,
+  imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: "./footerbar.component.html",
   styleUrls: ["./footerbar.component.css"],
 })
@@ -25,7 +27,6 @@ export class FooterbarComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private mapCenterViewService: MapCenterViewService,
-    @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 

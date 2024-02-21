@@ -3,12 +3,17 @@
 
 <vents-app-store-banner *ngIf="isPlatformBrowser"></vents-app-store-banner>
 <app-headerbar> </app-headerbar>
+@if (actualSubdomain==="") {
 <app-category-list
-  *ngIf="actualSubdomain === ''"
   id="main-category-container"
   class="main-category-container"
   [settings]="settings"
 ></app-category-list>
+}
+
 <router-outlet></router-outlet>
 
+@if (actualSubdomain!=="full-event") {
+
 <app-footerbar> </app-footerbar>
+}

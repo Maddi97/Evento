@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import {
   Component,
   HostListener,
@@ -7,9 +7,16 @@ import {
   OnInit,
   PLATFORM_ID,
 } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatIconModule } from "@angular/material/icon";
 import { Category, Subcategory } from "@globals/models/category";
 import { Event } from "@globals/models/event";
 import { Settings } from "@globals/models/settings";
+import { ID } from "@globals/types/common.types";
+import {
+  FilterEventsByInput,
+  FilterEventsByParams,
+} from "@globals/types/events.types";
 import { Search } from "@globals/types/search.types";
 import { EventsComplexService } from "@services/complex/events/events.complex.service";
 import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
@@ -17,12 +24,23 @@ import { NominatimGeoService } from "@services/core/location/nominatim-geo.servi
 import { PositionService } from "@services/core/location/position.service";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
-import { CategoriesService } from "@services/simple/categories/categories.service";
-import * as moment from "moment-timezone";
-import { NgxSpinnerService } from "ngx-spinner";
+import { EventTileListComponent } from "@shared/molecules/event-tile-list/event-tile-list.component";
+import { MapViewComponent } from "@shared/molecules/map-view/map-view.component";
+import moment from "moment-timezone";
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import { Subscription, combineLatest, distinctUntilChanged } from "rxjs";
 @Component({
   selector: "app-events",
+  standalone: true,
+  imports: [
+    CommonModule,
+    NgxSpinnerModule,
+    MatIconModule,
+    FormsModule,
+    NgxSpinnerModule,
+    MapViewComponent,
+    EventTileListComponent,
+  ],
   templateUrl: "./events.component.html",
   styleUrls: ["./events.component.css"],
 })
@@ -49,22 +67,22 @@ export class EventsComponent implements OnInit, OnDestroy {
   // Applied filtered Category IDs
 
   categoryList: Category[] = [];
-
   subcategoryList: Subcategory[] = [];
 
   search: Search = { searchString: "", event: "Reset" };
 
   loadMore = false;
   isLoadMoreClicked = false;
-  hasLoadedMore = true;
+  hasRouteChangedRecently = false;
 
-  eventToScrollId = undefined;
+  hasLoadedMore = true;
+  eventToScroll = undefined;
   hoveredEventId = null;
-  filteredCategory;
+  filteredCategoryID: ID;
   lastEventListLength = 0;
   hasMoreEventsToLoad = true;
   // filteredSubcategories
-  filteredSubcategories;
+  filteredSubcategoryIDs: ID[];
   scrollLeftMax: Boolean;
   scrollRightMax: Boolean;
   lastRunningSubscription: "category" | "searchString" | "hot" | "promotion";
@@ -82,7 +100,6 @@ export class EventsComponent implements OnInit, OnDestroy {
   public getScreenWidth: number;
   public settings: Settings;
 
-  mapCenter: number[];
   constructor(
     private eventsComplexService: EventsComplexService,
     private spinner: NgxSpinnerService,
@@ -96,7 +113,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.mapView = this.mapCenterViewService.isMapViewObservable.value;
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe({
       next: (isMapView) => {
-        console.log("Map view next: ", isMapView);
+        //console.log("Map view next: ", isMapView);
         this.mapView = isMapView;
       },
     });
@@ -108,7 +125,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     this.sharedObservables.settingsObservable.subscribe({
       next: (settings) => {
-        console.log("Settings next: ", settings);
+        //console.log("Settings next: ", settings);
       },
       error: (error) => {
         console.error(error);
@@ -120,37 +137,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     this.subscriptions$.push(mapView$, mapCenter$);
   }
-  createRequestObject(hasMapCenterChanged) {
-    const germanyTime = new Date().toLocaleTimeString("en-DE", {
-      timeZone: "Europe/Berlin",
-    });
-    if (this.search.event === "Input") {
-      return {
-        event: "Input",
-        searchString: this.search.searchString,
-        limit: this.actualLoadEventLimit,
-        alreadyReturnedEventIds: [],
-        date: this.filteredDate,
-        categories: this.categoryList.map((cat) => cat._id),
-      };
-    } else {
-      return {
-        event: "Params",
-        date: this.filteredDate,
-        time: germanyTime,
-        cat: [this.filteredCategory],
-        subcat: this.filteredSubcategories,
-        limit: this.actualLoadEventLimit,
-        alreadyReturnedEventIds:
-          this.startLoadEventLimit === this.actualLoadEventLimit
-            ? []
-            : this.eventList.map((event) => event._id),
-        currentPosition: hasMapCenterChanged
-          ? this.mapCenter
-          : this.currentPosition,
-      };
-    }
-  }
+
   ngOnDestroy(): void {
     this.subscriptions$.forEach((subscription$) => {
       if (subscription$) {
@@ -167,16 +154,26 @@ export class EventsComponent implements OnInit, OnDestroy {
     const queryParams$ = this.customRouterService.getQueryParamsEventsComponent(
       this.settings
     );
+
     const combined$ = combineLatest([queryParams$, searchString$, position$])
       .pipe(distinctUntilChanged())
       .subscribe({
         next: ([queryParams, searchString, position]) => {
+          this.spinner.show();
+          this.eventList = [];
           // Handle the combined values here
           [
             this.filteredDate,
-            this.filteredCategory,
-            this.filteredSubcategories,
+            this.filteredCategoryID,
+            this.filteredSubcategoryIDs,
           ] = queryParams;
+          this.resetLoadingLimit();
+          if (isPlatformBrowser(this.platformId)) {
+            this.hasRouteChangedRecently = true;
+            setTimeout(() => {
+              this.hasRouteChangedRecently = false;
+            }, 1000);
+          }
           this.sharedObservables.setSearchString(searchString);
           this.search = searchString;
           this.currentPosition = position;
@@ -190,7 +187,6 @@ export class EventsComponent implements OnInit, OnDestroy {
           console.log("Subscription should never complete");
         },
       });
-    this.positionService.getGeoLocation();
     const settings$ = this.sharedObservables.settingsObservable.subscribe(
       (settings) => {
         if (settings) {
@@ -201,27 +197,52 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.subscriptions$.push(settings$, combined$);
     if (isPlatformBrowser(this.platformId)) {
       this.getScreenSize();
-      this.spinner.show();
     }
   }
-  ngOnChange() {
-    this.spinner.show();
+  createRequestObject(mapCenter): FilterEventsByInput | FilterEventsByParams {
+    const germanyTime = new Date().toLocaleTimeString("en-DE", {
+      timeZone: "Europe/Berlin",
+    });
+    if (this.search.event === "Input") {
+      return {
+        event: "Input",
+        searchString: this.search.searchString,
+        limit: this.actualLoadEventLimit,
+        alreadyReturnedEventIds: [],
+        date: this.filteredDate,
+      } as FilterEventsByInput;
+    } else {
+      return {
+        event: "Params",
+        date: this.filteredDate,
+        cat: [this.filteredCategoryID],
+        subcat: this.filteredSubcategoryIDs,
+        limit: this.actualLoadEventLimit,
+        alreadyReturnedEventIds:
+          this.startLoadEventLimit === this.actualLoadEventLimit
+            ? []
+            : this.eventList.map((event) => event._id),
+        currentPosition: mapCenter ? mapCenter : this.currentPosition,
+      } as FilterEventsByParams;
+    }
   }
   applyFilters(req, loadMore = false) {
-    console.log("apply filters");
     const event$ = this.eventsComplexService
       .getEventsSubscriptionBasedOnTypeAndCategory(req)
       .subscribe({
         next: (events) => {
-          console.log("fetched events: ", events[0]?.name);
+          this.isLoadingMoreEvents = false;
           this.resetEventList = !loadMore;
+          this.spinner.hide();
           this.handlyEventListLoaded(events);
+          this.onFetchEventsCompleted();
         },
         error: (error) => {
           console.error(error);
+          this.spinner.hide();
         },
         complete: () => {
-          this.onFetchEventsCompleted();
+          // console.log("complete");
         },
       });
     this.subscriptions$.push(event$);
@@ -237,11 +258,11 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   loadMoreEvents(mapCenter = undefined) {
     console.log("Load more events");
-    if (this.loadMore) {
+    if (this.loadMore && !this.hasRouteChangedRecently) {
       this.isLoadMoreClicked = mapCenter ? false : true;
       this.actualLoadEventLimit += this.offsetLoadEventLimit;
       this.resetEventList = false;
-      const req = this.createRequestObject(false);
+      const req = this.createRequestObject(mapCenter);
       this.applyFilters(req, true);
     }
   }
@@ -259,7 +280,6 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   onFetchEventsCompleted() {
-    console.log("Fetch events completed");
     this.fetchEventsCompleted = true;
     if (this.lastEventListLength <= this.eventList.length) {
       this.hasMoreEventsToLoad = false;
@@ -272,6 +292,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.eventList = !this.resetEventList
       ? [...this.eventList, ...events]
       : events;
+    // if event more or equal events than limit or event recently resetted
     this.loadMore = this.eventList.length >= this.actualLoadEventLimit;
     if (this.isLoadMoreClicked) {
       this.isLoadMoreClicked = false;
@@ -312,38 +333,37 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   onScroll(event): void {
-    const element = event.target;
-    const distanceToTop: number = element.scrollTop;
-    const distanceToBottom =
-      element.scrollHeight - element.clientHeight - element.scrollTop;
-    if (this.isScrollingDown(element)) {
-      //this.sharedObservables.notifyScrolling("down");
-      const scroll = {
-        direction: "down" as any,
-        distanceTop: distanceToTop,
-        distanceBottom: distanceToBottom,
-      };
-      this.sharedObservables.notifyScrollOutInOfScreen(scroll);
-    } else {
-      const scroll = {
-        direction: "up" as any,
-        distanceTop: distanceToTop,
-        distanceBottom: distanceToBottom,
-      };
-      this.sharedObservables.notifyScrollOutInOfScreen(scroll);
-      // this.sharedObservables.notifyScrolling("up");
-    }
-    // Check if the div is scrolled to the bottom
-    if (
-      this.isScrolledToBottom(element) &&
-      !this.isLoadingMoreEvents &&
-      this.loadMore
-    ) {
-      this.isLoadingMoreEvents = true;
-      this.loadMoreEvents();
-      setTimeout(() => {
-        this.isLoadingMoreEvents = false;
-      }, 750);
+    if (isPlatformBrowser(this.platformId)) {
+      const element = event.target;
+      const distanceToTop: number = element.scrollTop;
+      const distanceToBottom =
+        element.scrollHeight - element.clientHeight - element.scrollTop;
+      if (this.isScrollingDown(element)) {
+        //this.sharedObservables.notifyScrolling("down");
+        const scroll = {
+          direction: "down" as any,
+          distanceTop: distanceToTop,
+          distanceBottom: distanceToBottom,
+        };
+        this.sharedObservables.notifyScrollOutInOfScreen(scroll);
+      } else {
+        const scroll = {
+          direction: "up" as any,
+          distanceTop: distanceToTop,
+          distanceBottom: distanceToBottom,
+        };
+        this.sharedObservables.notifyScrollOutInOfScreen(scroll);
+        // this.sharedObservables.notifyScrolling("up");
+      }
+      // Check if the div is scrolled to the bottom
+      if (
+        this.isScrolledToBottom(element) &&
+        !this.isLoadingMoreEvents &&
+        this.loadMore
+      ) {
+        this.isLoadingMoreEvents = true;
+        this.loadMoreEvents();
+      }
     }
   }
 
@@ -371,16 +391,4 @@ export class EventsComponent implements OnInit, OnDestroy {
   private resetLoadingLimit() {
     this.actualLoadEventLimit = this.startLoadEventLimit;
   }
-
-  //TODO time
-  closeSpinnerAfterTimeout() {
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 1);
-  }
-}
-
-class DateClicked {
-  date: moment.Moment;
-  isClicked: boolean;
 }

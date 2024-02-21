@@ -1,4 +1,6 @@
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
 import { Capacitor } from "@capacitor/core";
 import { AppBannerSettings } from "@globals/models/settings";
 import { CookiesService } from "@services/core/cookie-service/cookies.service";
@@ -14,6 +16,8 @@ export interface AppStoreBannerProperties {
 
 @Component({
   selector: "vents-app-store-banner",
+  standalone: true,
+  imports: [CommonModule, MatIconModule],
   templateUrl: "./app-store-banner.component.html",
   styleUrls: ["./app-store-banner.component.css"],
 })

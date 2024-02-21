@@ -21,7 +21,6 @@ export class EventsComplexService {
         event$ = this.eventService.getEventsOnDate(req.date, req.time);
       }
     } else {
-      console.log("REA: ", req);
       event$ = this.eventService.getEventsBySearchString(req);
     }
     return event$;

@@ -186,5 +186,6 @@ app-event-tile-list {
 }
 
 ::ng-deep .ngx-spinner-overlay {
+  margin-top: 8px !important;
   height: 85vh !important;
 }

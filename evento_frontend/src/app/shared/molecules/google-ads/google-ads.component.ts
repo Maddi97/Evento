@@ -1,8 +1,11 @@
+import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 
 @Component({
   selector: "vents-google-ads",
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: "./google-ads.component.html",
   styleUrls: ["./google-ads.component.css"],
 })

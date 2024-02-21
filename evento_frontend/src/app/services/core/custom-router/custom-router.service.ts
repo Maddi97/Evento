@@ -1,36 +1,26 @@
+import { isPlatformBrowser } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import moment from "moment";
+import { NgxSpinnerService } from "ngx-spinner";
 import {
-  Router,
-  ActivatedRoute,
-  NavigationEnd,
-  NavigationSkipped,
-} from "@angular/router";
-import { Settings } from "@globals/models/settings";
-import * as moment from "moment";
-import {
-  BehaviorSubject,
   Observable,
   ReplaySubject,
   filter,
-  first,
   map,
-  mergeMap,
   of,
-  share,
-  shareReplay,
-  startWith,
   switchMap,
-  take,
   tap,
 } from "rxjs";
 import {
-  PROMOTION_CATEGORY,
   NOW_CATEGORY,
-} from "@globals/constants/categories.c";
-import { CategoriesComplexService } from "@services/complex/categories/categories.complex.service";
-import { isPlatformBrowser } from "@angular/common";
-import { SUBDOMAIN_URLS } from "@globals/constants/subdomainUrls";
-import { NgxSpinner, NgxSpinnerService } from "ngx-spinner";
+  PROMOTION_CATEGORY,
+} from "../../../globals/constants/categories.c";
+import { SUBDOMAIN_URLS } from "../../../globals/constants/subdomainUrls";
+import { Settings } from "../../../globals/models/settings";
+import { CategoriesComplexService } from "../../../services/complex/categories/categories.complex.service";
+import { Category, Subcategory } from "@globals/models/category";
+import { ID } from "@globals/types/common.types";
 @Injectable({
   providedIn: "root",
 })
@@ -66,14 +56,8 @@ export class CustomRouterService {
     return this.router.events.pipe(
       filter(
         (event: any) =>
-          (event instanceof NavigationEnd &&
-            !SUBDOMAIN_URLS.some((subdomain) =>
-              event.url.includes(subdomain)
-            )) ||
-          (event.routerEvent instanceof NavigationEnd &&
-            !SUBDOMAIN_URLS.some((subdomain) =>
-              event.routerEvent.url.includes(subdomain)
-            ))
+          event instanceof NavigationEnd &&
+          !SUBDOMAIN_URLS.some((subdomain) => event.url.includes(subdomain))
 
         // this is the issue
         //||
@@ -88,7 +72,9 @@ export class CustomRouterService {
     return of(this._activatedRoute.snapshot.queryParams);
   }
 
-  getQueryParamsEventsComponent(settings: Settings): Observable<any> {
+  getQueryParamsEventsComponent(
+    settings: Settings
+  ): Observable<[moment.Moment, ID, ID[]]> {
     const categoryList$ =
       this.categoriesComplexService.getCategoriesSortedByWeight();
     return categoryList$.pipe(
@@ -114,22 +100,14 @@ export class CustomRouterService {
           category = NOW_CATEGORY;
         } else {
           category = category
-            ? this.categoryList.find((c) => c._id === category)
-            : this.categoryList[0];
+            ? this.categoryList.find((c: Category) => c._id === category)?._id
+            : this.categoryList[0]._id;
         }
-        let subcategories;
-        if (queryParams.subcategory) {
-          subcategories = category.subcategories?.filter((s) =>
-            queryParams.subcategory.includes(s._id)
-          );
-        } else {
-          subcategories = [];
-        }
+        const subcategories = category.subcategories
+          ?.filter((s: Subcategory) => queryParams.subcategory.includes(s._id))
+          .map((s: Subcategory) => s._id);
 
-        return [date, category, subcategories];
-      }),
-      tap((qp) => {
-        console.log("Query params: ", qp);
+        return [date, category, subcategories || []];
       })
     );
   }
@@ -168,9 +146,6 @@ export class CustomRouterService {
         }
 
         return [this.categoryList, category, subcategories];
-      }),
-      tap((qp) => {
-        console.log("Query params: ", qp);
       })
     );
   }

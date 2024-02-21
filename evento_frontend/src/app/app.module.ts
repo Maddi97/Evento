@@ -5,22 +5,20 @@ import {
   withHttpTransferCacheOptions,
 } from "@angular/platform-browser";
 
-import { MatDialogModule } from "@angular/material/dialog";
-import { MatIconModule } from "@angular/material/icon";
-import { NgxSpinnerModule } from "ngx-spinner";
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
 import { LocationStrategy, PathLocationStrategy } from "@angular/common";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { GoogleTagManagerModule } from "angular-google-tag-manager";
 import {
   HttpClientModule,
   provideHttpClient,
   withFetch,
 } from "@angular/common/http";
-import { FullEventModule } from "./pages/full-event/full-event.module";
-import { MoleculesModule } from "@shared/molecules/molecules.module";
-import { AtomsModule } from "@shared/atoms/atoms.module";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { GoogleTagManagerModule } from "angular-google-tag-manager";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { HeaderbarComponent } from "@shared/molecules/headerbar/headerbar.component";
+import { AppStoreBannerComponent } from "@shared/atoms/app-store-banner/app-store-banner.component";
+import { CategoryListComponent } from "@shared/molecules/category-list/category-list.component";
+import { FooterbarComponent } from "@shared/molecules/footerbar/footerbar.component";
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -30,26 +28,20 @@ import { AtomsModule } from "@shared/atoms/atoms.module";
     /*
     Angular Material
     */
-    MatIconModule,
-    MatDialogModule,
     /*
     Own Modules
     */
-    NgxSpinnerModule,
     GoogleTagManagerModule,
     HttpClientModule,
-    MoleculesModule,
-    AtomsModule,
-    FullEventModule,
+    HeaderbarComponent,
+    AppStoreBannerComponent,
+    CategoryListComponent,
+    FooterbarComponent,
   ],
   providers: [
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     { provide: "googleTagManagerId", useValue: "GTM-KHTB234N" },
-    provideClientHydration(
-      withHttpTransferCacheOptions({
-        includePostRequests: true,
-      })
-    ),
+    provideClientHydration(),
     provideHttpClient(withFetch()),
   ],
   schemas: [],

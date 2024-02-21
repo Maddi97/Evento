@@ -1,38 +1,54 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Observable, of, throwError } from "rxjs";
+import { catchError, map, switchMap, take, tap } from "rxjs/operators";
 import { WebService } from "../../core/web/web.service";
-import { catchError, delay, map, share, tap } from "rxjs/operators";
-import {
-  Observable,
-  throwError as observableThrowError,
-  BehaviorSubject,
-  of,
-  throwError,
-} from "rxjs";
+import { isPlatformServer } from "@angular/common";
 
 @Injectable({
   providedIn: "root",
 })
 export class FileService {
-  private cachedFiles: Map<string, Blob> = new Map();
+  private fileCache: { [path: string]: string } = {};
 
-  constructor(private webService: WebService) {}
+  constructor(
+    private webService: WebService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
-  downloadFile(path: string): Observable<Blob> {
-    if (this.cachedFiles.has(path)) {
-      return of(this.cachedFiles.get(path)!);
+  downloadFile(path: string): Observable<string> {
+    if (isPlatformServer(this.platformId)) {
+      return of(null);
+    }
+    if (this.fileCache[path]) {
+      return of(this.fileCache[path]);
     }
 
-    const obs = this.webService.get_file("downloadFile", { path }).pipe(
-      map((response) => response as unknown as Blob),
+    const obs = this.webService.downloadFile("downloadFile", { path }).pipe(
+      switchMap((response) => this.blobToBase64(response as Blob)),
       catchError((error: any) => {
         console.error("An error occurred", error);
-        return throwError(error.error.message || error);
+        return throwError(error?.error?.message || error);
       }),
-      tap((blob) => {
-        this.cachedFiles.set(path, blob);
-      }),
-      share()
+      tap((response) => (this.fileCache[path] = response)),
+      take(1)
     );
+
     return obs;
+  }
+  private blobToBase64(blob: Blob): Observable<string> {
+    if (isPlatformServer(this.platformId)) {
+      return of(null);
+    }
+    return new Observable<string>((observer) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        observer.next(reader.result as string);
+        observer.complete();
+      };
+      reader.onerror = (error) => {
+        observer.error(error);
+      };
+      reader.readAsDataURL(blob);
+    });
   }
 }
