@@ -1,26 +1,43 @@
 import { Component, OnInit } from "@angular/core";
-import * as moment from "moment";
-import { NgxSpinnerService } from "ngx-spinner";
+import { crawlerConfig } from "@globals/constants/browseAi";
+import { Event } from "@globals/models/event";
+import { Organizer } from "@globals/models/organizer";
+import { CrawlerApiService } from "@shared/services/crawler/crawler-api.service";
+import { OrganizerService } from "@shared/services/organizer/organizer.web.service";
+import { SnackbarService } from "@shared/services/utils/snackbar.service";
+import moment from "moment";
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import { finalize, forkJoin, map, of } from "rxjs";
-import { Event } from "src/app/models/event";
-import { Organizer } from "src/app/models/organizer";
-import { OrganizerService } from "src/app/services/organizer.web.service";
-import { SnackbarService } from "src/app/services/utils/snackbar.service";
-import { crawlerConfig } from "../../../constants/browseAi";
-import { CrawlerApiService } from "../../services/crawler/crawler-api.service";
-import {
-  crawlBrowseAi,
-  getResultOfRobot,
-  getResultsOfBulkrun,
-} from "./specific-crawler/browseAI.subscription";
-import { mapIfzToEvents } from "./specific-crawler/ifz-helper";
-import { mapLeipzigToEvents } from "./specific-crawler/leipzig-helper";
-import { mapUrbaniteToEvents } from "./specific-crawler/urbanite-helper";
+import { crawlBrowseAi } from "../../globals/constants/specific-crawler/browseAI.subscription";
+import { mapIfzToEvents } from "../../globals/constants/specific-crawler/ifz-helper";
+import { mapLeipzigToEvents } from "../../globals/constants/specific-crawler/leipzig-helper";
+import { mapUrbaniteToEvents } from "../../globals/constants/specific-crawler/urbanite-helper";
+import { CommonModule } from "@angular/common";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { CrawledEventsToEventComponent } from "../../shared/molecules/crawled-events-to-event/crawled-events-to-event.component";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatSelectModule } from "@angular/material/select";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
 
 export type PossibleCrawlerNames = keyof typeof crawlerConfig | "All";
 
 @Component({
   selector: "app-crawl-events",
+  standalone: true,
+  imports: [
+    CommonModule,
+    NgxSpinnerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    CrawledEventsToEventComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: "./crawl-events.component.html",
   styleUrls: ["./crawl-events.component.css"],
 })

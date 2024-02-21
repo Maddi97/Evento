@@ -1,30 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { TokenStorageService } from "./services/sessionStorage/token-storage.service";
-
+import { Component, OnInit } from "@angular/core";
+import { TokenStorageService } from "@shared/services/sessionStorage/token-storage.service";
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements OnInit {
-    title = 'insert-app';
-    isLoggedIn = false;
-    username?: string;
+  title = "insert-app";
+  isLoggedIn = false;
+  username?: string;
 
-    constructor(private tokenStorageService: TokenStorageService) {
-    }
+  constructor(private tokenStorageService: TokenStorageService) {}
 
-    ngOnInit(): void {
-        this.isLoggedIn = !!this.tokenStorageService.getToken();
-        if (this.isLoggedIn) {
-            const user = this.tokenStorageService.getUser();
-            this.username = user.username;
-        }
+  ngOnInit(): void {
+    this.isLoggedIn = !!this.tokenStorageService.getToken();
+    if (this.isLoggedIn) {
+      const user = this.tokenStorageService.getUser();
+      this.username = user.username;
     }
+  }
 
-    logout(): void {
-        this.tokenStorageService.signOut();
-        window.location.reload();
-    }
+  logout(): void {
+    this.tokenStorageService.signOut();
+    window.location.reload();
+  }
 }

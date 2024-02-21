@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import {
   Component,
   EventEmitter,
@@ -7,11 +8,32 @@ import {
   Output,
   SimpleChanges,
 } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { AppBannerSettings, Settings } from "src/app/models/settings";
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { AppBannerSettings, Settings } from "@globals/models/settings";
 
 @Component({
   selector: "app-global-settings-form",
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatExpansionModule,
+    MatButtonModule,
+    MatCheckboxModule,
+  ],
   templateUrl: "./global-settings-form.component.html",
   styleUrls: ["./global-settings-form.component.css"],
 })

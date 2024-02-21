@@ -1,8 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { SettingsService } from "../../../services/settings.service.service";
-import { Settings } from "src/app/models/settings";
+import { SettingsService } from "@shared/services/settings/settings.service.service";
+import { Settings } from "@globals/models/settings";
+import { CommonModule } from "@angular/common";
+import { GlobalSettingsFormComponent } from "../global-settings-form/global-settings-form.component";
 @Component({
   selector: "app-global-settings",
+  standalone: true,
+  imports: [CommonModule, GlobalSettingsFormComponent],
   templateUrl: "./global-settings.component.html",
   styleUrls: ["./global-settings.component.css"],
 })
