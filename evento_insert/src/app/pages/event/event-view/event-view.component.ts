@@ -4,7 +4,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import * as moment from "moment";
 import { Observable, forkJoin, of } from "rxjs";
 import { catchError, concatMap, map, switchMap } from "rxjs/operators";
-import { CustomDialogComponent } from "src/app/custom-dialog/custom-dialog.component";
+import { CustomDialogComponent } from "src/app/atoms/custom-dialog/custom-dialog.component";
 import { Category } from "src/app/models/category";
 import { Organizer } from "src/app/models/organizer";
 import { CategoryService } from "src/app/services/category.service";

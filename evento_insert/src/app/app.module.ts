@@ -38,7 +38,7 @@ import {
 } from "@angular/common";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatNativeDateModule } from "@angular/material/core";
-import { CustomDialogComponent } from "./custom-dialog/custom-dialog.component";
+import { CustomDialogComponent } from "./atoms/custom-dialog/custom-dialog.component";
 import { LoginComponent } from "./login/login.component";
 import { CategorySelectComponent } from "./pages/category/category-select/category-select.component";
 import { CategoryViewComponent } from "./pages/category/category-view/category-view.component";

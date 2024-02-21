@@ -32,7 +32,8 @@
     "rxjs": "~7.5.2",
     "tslib": "^2.3.1",
     "webpack": "^5.88.2",
-    "zone.js": "~0.13.1"
+    "zone.js": "~0.13.1",
+    "typescript": "^5.1.6"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.2.0",
@@ -54,7 +55,6 @@
     "karma-jasmine": "~4.0.1",
     "karma-jasmine-html-reporter": "^1.7.0",
     "leaflet": "^1.7.1",
-    "ts-node": "~10.4.0",
-    "typescript": "^5.1.6"
+    "ts-node": "~10.4.0"
   }
 }
