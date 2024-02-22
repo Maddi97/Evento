@@ -28,7 +28,14 @@ import { EventTileListComponent } from "@shared/molecules/event-tile-list/event-
 import { MapViewComponent } from "@shared/molecules/map-view/map-view.component";
 import moment from "moment-timezone";
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
-import { Subscription, combineLatest, distinctUntilChanged } from "rxjs";
+import {
+  Subscription,
+  combineLatest,
+  distinctUntilChanged,
+  timeout,
+} from "rxjs";
+import { SnackbarService } from "@services/core/snackbar/snackbar.service";
+
 @Component({
   selector: "app-events",
   standalone: true,
@@ -108,6 +115,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     private sharedObservables: SharedObservableService,
     private customRouterService: CustomRouterService,
     private mapCenterViewService: MapCenterViewService,
+    private snackbarService: SnackbarService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.mapView = this.mapCenterViewService.isMapViewObservable.value;
@@ -229,6 +237,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   applyFilters(req, loadMore = false) {
     const event$ = this.eventsComplexService
       .getEventsSubscriptionBasedOnTypeAndCategory(req)
+      .pipe(timeout(10000))
       .subscribe({
         next: (events) => {
           this.isLoadingMoreEvents = false;
@@ -239,6 +248,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error(error);
+          this.snackbarService.openSnackBar(error, "error");
           this.spinner.hide();
         },
         complete: () => {

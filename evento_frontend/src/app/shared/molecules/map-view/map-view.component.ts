@@ -22,6 +22,7 @@ import { LeafletService } from "@services/core/leaflet/leaflet.service";
 import { PositionService } from "@services/core/location/position.service";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: "map-view",
   standalone: true,
@@ -68,6 +69,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     private leafletService: LeafletService,
     private mapCenterViewService: MapCenterViewService,
     private sharedObservableService: SharedObservableService,
+    private spinner: NgxSpinnerService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -253,6 +255,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     this.isMapDragged = false;
     this.sharedObservableService.clearSearchFilter();
     this.mapCenterViewService.setMapCenter(this.map.getCenter());
+    this.spinner.show();
   }
 
   private setMarkers(markerData: any[]): void {
