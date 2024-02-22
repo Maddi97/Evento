@@ -100,14 +100,15 @@ export class CustomRouterService {
           category = NOW_CATEGORY;
         } else {
           category = category
-            ? this.categoryList.find((c: Category) => c._id === category)?._id
-            : this.categoryList[0]._id;
+            ? this.categoryList.find((c: Category) => c._id === category)
+            : this.categoryList[0];
         }
-        const subcategories = category.subcategories
+        const subcategoryIds = category.subcategories
           ?.filter((s: Subcategory) => queryParams.subcategory.includes(s._id))
           .map((s: Subcategory) => s._id);
+        const categoryId = category._id;
 
-        return [date, category, subcategories || []];
+        return [date, categoryId, subcategoryIds || []];
       })
     );
   }
