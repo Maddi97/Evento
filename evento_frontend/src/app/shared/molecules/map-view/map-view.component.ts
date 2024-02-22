@@ -108,6 +108,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     this.sharedObservableService.clearSearchFilter();
     const address = this.sanitizeInput(this.address);
     this.positionService.getPositionByInput(address);
+    this.address = "";
   }
 
   async setCurrentPositionOfUserToStorage() {
