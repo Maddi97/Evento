@@ -72,6 +72,7 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
   }
 
   addNewOrganizer(organizer) {
+    console.log("addNewOrganizer", organizer.category);
     this.organizerOnservableService
       .addNewOrganizer(organizer)
       .then((organizerResponse) => {
@@ -131,12 +132,12 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadOrganizerOfCategory(category) {
+  loadOrganizerOfCategory(category: Category) {
     this.organizerService
-      .filterOrganizerByEventsCategory(category)
+      .getOrganizerByCategoryId(category._id)
       .pipe(
-        map((o) => {
-          this.organizers = o;
+        map((organizerList) => {
+          this.organizers = organizerList;
           this.downloadImage();
         })
       )

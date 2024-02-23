@@ -8,6 +8,7 @@ import {
 } from "rxjs";
 import { catchError, map, share } from "rxjs/operators";
 import { WebService } from "../web/web.service";
+import { ID } from "@globals/types/common.types";
 
 @Injectable({
   providedIn: "root",
@@ -36,6 +37,17 @@ export class OrganizerService {
       this._organizers.next(response);
     });
     return obs;
+  }
+
+  getOrganizerByCategoryId(categoryId: ID): Observable<Organizer[]> {
+    return this.webService.get(`organizerByCategory/${categoryId}`).pipe(
+      map((r: HttpRequest<any>) => r as unknown as Organizer[]),
+      catchError((error: any) => {
+        console.error("an error occurred", error);
+        return observableThrowError(error.error.message || error);
+      }),
+      share()
+    );
   }
 
   filterOrganizerByEventsCategory(category: any): Observable<Organizer[]> {

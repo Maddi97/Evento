@@ -133,7 +133,6 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
   }
 
   addAlias(alias: any) {
-    console.log(alias);
     if (!this.organizerIn.alias) {
       this.organizerIn.alias = [alias];
     } else {
@@ -146,6 +145,7 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
   }
 
   setOrganizerForm(org: Organizer, isOrganizerAlias = "false"): void {
+    console.log(org.category);
     const streetName = org.address?.street
       ? org.address.street + " " + org.address?.streetNumber
       : "";
@@ -188,6 +188,7 @@ export class OrganizerFormComponent implements OnInit, OnChanges {
   }
 
   setCategory(category) {
+    console.log("Select", category);
     this.category = category;
   }
 }
