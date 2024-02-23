@@ -2,12 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": ["node"],
-    "paths": {
-      "@shared/*": ["src/app/shared/*"],
-      "@services/*": ["src/app/services/*"],
-      "@globals/*": ["src/app/globals/*"]
-    }
+    "types": ["node"]
   },
   "files": ["src/main.ts", "src/polyfills.ts"],
   "include": ["src/**/*.d.ts"],

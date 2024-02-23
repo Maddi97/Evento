@@ -14,7 +14,12 @@
     "importHelpers": true,
     "target": "ES2022",
     "typeRoots": ["node_modules/@types"],
-    "lib": ["ES2022", "dom"]
+    "lib": ["ES2022", "dom"],
+    "paths": {
+      "@shared/*": ["src/app/shared/*"],
+      "@services/*": ["src/app/services/*"],
+      "@globals/*": ["src/app/globals/*"]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
