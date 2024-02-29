@@ -140,10 +140,7 @@
 
     <div class="category">
       <mat-card appearance="outlined">
-        <app-category-select
-          [loadedCategory]="category"
-          (newCategorySelect)="setCategory($event)"
-        >
+        <app-category-select (newCategorySelect)="setCategory($event)">
         </app-category-select>
       </mat-card>
     </div>

@@ -1,0 +1,10 @@
+<div class="image-upload">
+  <div class="image-upload text">
+    Select event image:
+    <input
+      class="image-upload input"
+      type="file"
+      (input)="selectFile($event.target.files[0])"
+    />
+  </div>
+</div>

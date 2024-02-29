@@ -4,6 +4,8 @@ import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatSelectModule } from "@angular/material/select";
 import { Organizer } from "@globals/models/organizer";
+import { OrganizerService } from "@shared/services/organizer/organizer.web.service";
+import { take } from "rxjs";
 
 @Component({
   selector: "app-autocomplete-organizer",
@@ -19,13 +21,17 @@ import { Organizer } from "@globals/models/organizer";
   styleUrls: ["./autocomplete-organizer.component.css"],
 })
 export class AutocompleteOrganizerComponent implements OnInit {
-  @Input() organizersIn: Organizer[] = [];
   @Output() emitOrganizer: EventEmitter<Organizer> =
     new EventEmitter<Organizer>();
 
+  organizersIn: Organizer[] = [];
   organizerName = new FormControl("");
   filteredOrganizers: Organizer[];
+
+  constructor(private organizerService: OrganizerService) {}
+
   ngOnInit(): void {
+    this.organizerService.getOrganizer().pipe(take(1)).subscribe();
     this.filteredOrganizers = this.organizersIn;
     this.organizerName.valueChanges.subscribe((oNameStart) => {
       this.filteredOrganizers = this.filterOrganizerByNameAndAlias(oNameStart);

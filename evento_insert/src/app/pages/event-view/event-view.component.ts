@@ -15,9 +15,9 @@ import { SnackbarService } from "@shared/services/utils/snackbar.service";
 import moment from "moment";
 import { Observable, forkJoin, of } from "rxjs";
 import { catchError, concatMap, map, switchMap } from "rxjs/operators";
-import { MapViewComponent } from "../../shared/molecules/map-view/map-view.component";
+import { MapViewComponent } from "@shared/molecules/map-view/map-view.component";
 import { CategoryEventExpansionPanelComponent } from "@shared/molecules/category-event-expansion-panel/category-event-expansion-panel.component";
-import { EventFormComponent } from "../../shared/molecules/event-form/event-form.component";
+import { EventFormComponent } from "@forms/event/event-form/event-form.component";
 
 @Component({
   selector: "app-event-view",

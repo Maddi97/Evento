@@ -10,25 +10,9 @@ mat-form-field {
   flex-direction: column;
 }
 
-.address {
-}
-
-.plz {
-}
-
-.city {
-}
-
-.street {
-  flex-grow: 1;
-}
-
 .additional-information {
   display: flex;
   flex-direction: column;
-}
-
-.category {
 }
 
 .radio-group-organizer-is-event {

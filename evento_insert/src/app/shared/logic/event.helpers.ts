@@ -1,7 +1,7 @@
 import { FormControl, Validators } from "@angular/forms";
 import moment from "moment";
 import { Event } from "@globals/models/event";
-import { Address } from "@globals/models/organizer";
+import { Address } from "@globals/models/address";
 
 export function getEventFromForm(
   eventForm,
@@ -20,17 +20,7 @@ export function getEventFromForm(
   event.name = eventForm.get("name").value;
   address.plz = eventForm.get("plz").value;
   address.city = eventForm.get("city").value;
-  const adressSplit = eventForm.get("street").value.split(" ");
-  if (adressSplit[0] === "" && adressSplit.length === 2) {
-    address.street = adressSplit[1];
-    address.streetNumber = "";
-  } else if (adressSplit.length === 1) {
-    address.street = adressSplit[0];
-    address.streetNumber = "";
-  } else {
-    address.street = adressSplit.slice(0, -1).join(" ");
-    address.streetNumber = adressSplit.slice(-1)[0];
-  }
+  address.street = eventForm.get("street").value;
   address.country = eventForm.get("country").value;
 
   event.address = address;

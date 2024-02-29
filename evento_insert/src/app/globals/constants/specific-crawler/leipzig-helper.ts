@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Address } from "@globals/models/organizer";
+import { Address } from "@globals/models/address";
 import { Event } from "@globals/models/event";
 
 export type LeipzigEvent = {
@@ -90,12 +90,10 @@ function parseAddress(address: string): Address {
 
   // Initialize an array to store parsed information
   const a = new Address();
-  console.log(a);
   // Check if the match is found
   if (match) {
-    a.street = match[1].trim();
     const streetNumber = match[2] || "";
-    a.streetNumber = streetNumber;
+    a.street = match[1].trim() + " " + streetNumber;
     a.plz = match[3].trim();
     a.city = match[4].trim();
   }

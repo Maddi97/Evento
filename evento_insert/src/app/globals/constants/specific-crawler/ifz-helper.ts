@@ -19,8 +19,7 @@ function mapPropertiesOfCrawledEvent(eventIn: IFZEvent) {
   const e = new Event();
   e._organizerId = undefined;
   e.address = {
-    street: "An den Tierkliniken",
-    streetNumber: "38-40",
+    street: "An den Tierkliniken 38-40",
     city: "Leipzig",
     plz: "04103",
     country: "Deutschland",

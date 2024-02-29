@@ -9,8 +9,8 @@ import { FileUploadService } from "@shared/services/files/file-upload.service";
 import { OrganizerObservableService } from "@shared/services/organizer/organizer.observable.service";
 import { SnackbarService } from "@shared/services/utils/snackbar.service";
 import { CommonModule } from "@angular/common";
-import { EventFormComponent } from "../event-form/event-form.component";
-import { OrganizerFormComponent } from "../organizer-form/organizer-form.component";
+import { EventFormComponent } from "@forms/event/event-form/event-form.component";
+import { OrganizerFormComponent } from "../../forms/organizer/organizer-form/organizer-form.component";
 import { EventCrawledComponent } from "../../atoms/atom-event-crawled/event-crawled.component";
 
 @Component({

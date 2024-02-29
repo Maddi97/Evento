@@ -57,7 +57,7 @@ export class GlobalSettingsFormComponent implements OnInit, OnChanges {
       isAdsActivated: this.settings?.isAdsActivated || false,
       isPromotionActivated: this.settings?.isPromotionActivated || false,
       percentagOfAd: this.settings?.percentagOfAd || 0,
-      appBannerSettings: this.formBuilder.group({
+      appBannerSettings: this.formBuilder.group<AppBannerSettings>({
         isAppBannerActivated:
           this.settings?.appBannerSettings.isAppBannerActivated || true,
         appStoreLink: this.settings?.appBannerSettings.appStoreLink || "",

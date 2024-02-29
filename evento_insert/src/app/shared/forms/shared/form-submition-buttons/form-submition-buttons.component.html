@@ -1,0 +1,13 @@
+<div class="confirm-buttons">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="emitConfirm.emit()"
+    [disabled]="isDisabled"
+  >
+    {{ confirmButtonLabel }}
+  </button>
+  <button mat-raised-button color="accent" (click)="emitClear.emit()">
+    Clear
+  </button>
+</div>

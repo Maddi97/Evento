@@ -33,7 +33,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import {
   getEventFormTemplate,
   getEventFromForm,
-} from "../../logic/event.helpers";
+} from "@shared/logic/event.helpers";
 import { CommonModule } from "@angular/common";
 import { EventFrequencyFormComponent } from "@shared/atoms/event-frequency-form/event-frequency-form.component";
 import { SelectionListComponent } from "@shared/atoms/selection-list/selection-list.component";
@@ -42,7 +42,7 @@ import { NgxMaterialTimepickerModule } from "ngx-material-timepicker";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
-import { CategorySelectComponent } from "../category-select/category-select.component";
+import { CategorySelectComponent } from "@forms/shared/category-select/category-select.component";
 import { MatCardModule } from "@angular/material/card";
 import { MatNativeDateModule, MatOptionModule } from "@angular/material/core";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
@@ -164,7 +164,7 @@ export class EventFormComponent implements OnInit, OnChanges {
       event.geoData = this.geoData;
       // first fetch geo data from osm API and than emit event data
       this.geoService
-        .get_geo_data(address.city, address.street, address.streetNumber)
+        .get_geo_data(address.city, address.street)
         .pipe(
           map((geoData) => {
             event.geoData = geoData;
@@ -232,7 +232,7 @@ export class EventFormComponent implements OnInit, OnChanges {
     if (this.toggleIsChecked.value) {
       event.geoData = this.geoData;
       this.geoService
-        .get_geo_data(address.city, address.street, address.streetNumber)
+        .get_geo_data(address.city, address.street)
         .pipe(
           map((geoData) => {
             event.geoData = geoData;
@@ -287,16 +287,12 @@ export class EventFormComponent implements OnInit, OnChanges {
     );
     this.organizerName.setValue(organizer.name);
     this.updateOrganizerId = organizer._id;
-    const streetName = this.eventIn.address?.street
-      ? this.eventIn.address.street + " " + this.eventIn.address?.streetNumber
-      : "";
 
     const eventFormValues = {
       name: this.eventIn.name || "",
       city: this.eventIn.address.city || "",
       plz: this.eventIn.address.plz || "",
-      street: streetName,
-      streetNumber: this.eventIn.address.streetNumber || "",
+      street: this.eventIn.address.street || "",
       country: this.eventIn.address.country || "",
       description: this.eventIn.description || "",
       link: this.eventIn.link || "",
@@ -330,9 +326,7 @@ export class EventFormComponent implements OnInit, OnChanges {
   insertOrgInfo(org: Organizer) {
     this.eventForm.get("plz").setValue(org.address.plz);
     this.eventForm.get("city").setValue(org.address.city);
-    this.eventForm
-      .get("street")
-      .setValue(org.address.street + " " + org.address.streetNumber);
+    this.eventForm.get("street").setValue(org.address.street);
     // set category to organizers category but leave subcat empty
     this.eventForm.get("description").setValue(org.description);
     const cat = org.category;

@@ -19,18 +19,11 @@ export class NominatimGeoService {
     this.osmApiUrlEnd = ".json";
   }
 
-  get_geo_data(city, street, streetNumber) {
+  get_geo_data(city, street) {
     return this.http
-      .get(
-        this.ROOT_URL +
-          street +
-          "+" +
-          streetNumber +
-          "+," +
-          city +
-          "&limit=2&format=json",
-        { headers: { skip: "true" } }
-      )
+      .get(this.ROOT_URL + street + "+," + city + "&limit=2&format=json", {
+        headers: { skip: "true" },
+      })
       .pipe(
         take(1),
         map((geoData) => {

@@ -8,7 +8,8 @@
       "@services/*": ["src/app/services/*"],
       "@globals/*": ["src/app/globals/*"],
       "@atoms/*": ["src/app/shared/atoms/*"],
-      "@molecules/*": ["src/app/shared/molecules*"]
+      "@molecules/*": ["src/app/shared/molecules/*"],
+      "@forms/*": ["src/app/shared/forms/*"]
     }
   },
   "files": ["src/main.ts", "src/polyfills.ts"],

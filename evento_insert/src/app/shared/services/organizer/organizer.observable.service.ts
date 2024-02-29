@@ -29,11 +29,7 @@ export class OrganizerObservableService {
         const address = org.address;
 
         const geoData = await lastValueFrom(
-          this.geoService.get_geo_data(
-            address.city,
-            address.street,
-            address.streetNumber
-          )
+          this.geoService.get_geo_data(address.city, address.street)
         );
         org.geoData = geoData;
 
@@ -82,11 +78,7 @@ export class OrganizerObservableService {
         org._id = organizer._id;
 
         org.geoData = await lastValueFrom(
-          this.geoService.get_geo_data(
-            address.city,
-            address.street,
-            address.streetNumber
-          )
+          this.geoService.get_geo_data(address.city, address.street)
         );
         const updateOrganizerResponse = await lastValueFrom(
           this.organizerService.updateOrganizer(org._id, org)

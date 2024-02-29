@@ -1,6 +1,7 @@
 import moment from "moment";
 import { Category } from "./category";
-import { Day } from "./organizer";
+import { Day } from "../types/date.types";
+import { Address } from "./address";
 
 export class Event {
   _id: string;
@@ -38,12 +39,4 @@ export class Event {
   eventImageTemporaryURL: string;
   eventImagePath: string;
   frequency;
-}
-
-export class Address {
-  city: string;
-  plz: string;
-  street: string;
-  streetNumber: string;
-  country: string = "Deutschland";
 }

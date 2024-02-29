@@ -1,0 +1,34 @@
+<div class="form-container">
+  @if (page==='crawler') {
+  <app-form-submition-buttons
+    [confirmButtonLabel]="updateOrganizerId ? 'Update' : 'Submit'"
+    [confirmFunction]="updateOrganizerId ? emitUpdate : emitAddOrganizer"
+    [isDisabled]="organizerForm.invalid"
+  ></app-form-submition-buttons>
+  }
+  <form [formGroup]="organizerForm">
+    <app-add-name-and-alias-form
+      [isOrganizerForm]="true"
+    ></app-add-name-and-alias-form>
+
+    <app-address-form></app-address-form>
+
+    <app-category-select></app-category-select>
+
+    <app-organizer-additional-info-form></app-organizer-additional-info-form>
+
+    <app-select-files-form></app-select-files-form>
+
+    <mat-checkbox [formControl]="isOpeningTimesRequired"
+      >Opening times required?
+    </mat-checkbox>
+    <app-opening-times-form *ngIf="isOpeningTimesRequired.value">
+    </app-opening-times-form>
+  </form>
+  <app-form-submition-buttons
+    [confirmButtonLabel]="updateOrganizerId ? 'Update' : 'Submit'"
+    [isDisabled]="organizerForm.invalid"
+    (emitConfirm)="submitForm()"
+    (emitClear)="resetForm()"
+  ></app-form-submition-buttons>
+</div>

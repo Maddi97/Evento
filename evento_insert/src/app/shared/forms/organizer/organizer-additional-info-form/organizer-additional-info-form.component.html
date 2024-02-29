@@ -1,0 +1,58 @@
+<form [formGroup]="organizerAdditionalInfoForm">
+  <div class="additional-information">
+    <mat-form-field appearance="fill">
+      <mat-label>E-Mail</mat-label>
+      <input matInput formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Telephone</mat-label>
+      <input matInput formControlName="telephone" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        placeholder="Beschreibung"
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="6"
+      ></textarea>
+      <mat-error
+        *ngIf="
+          organizerAdditionalInfoForm.get('description').hasError('required')
+        "
+        >Description is required
+      </mat-error>
+      <mat-error
+        *ngIf="
+          organizerAdditionalInfoForm
+            .get('description')
+            .hasError('minlength') &&
+          !organizerAdditionalInfoForm.get('description').hasError('required')
+        "
+      >
+        Description minlength is 3
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Link of Organizer page</mat-label>
+      <input matInput formControlName="link" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Update Frequency in Days</mat-label>
+      <input matInput required formControlName="frequency" />
+    </mat-form-field>
+  </div>
+  <div class="radio-group-organizer-is-event">
+    <label id="permanent-radio-group-label"
+      >Is Organizer itself an event?</label
+    >
+    <mat-radio-group formControlName="isEvent">
+      <mat-radio-button [value]="true">Yes</mat-radio-button>
+      <mat-radio-button [value]="false">No</mat-radio-button>
+    </mat-radio-group>
+  </div>
+</form>

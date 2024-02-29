@@ -312,9 +312,6 @@ export class CrawlEventsComponent implements OnInit {
       this.organizerIn.address.street = this.eventIn.address?.street
         ? this.eventIn.address.street
         : "";
-      this.organizerIn.address.streetNumber = this.eventIn.address?.streetNumber
-        ? this.eventIn.address.streetNumber
-        : "";
       this.organizerIn.address.country = this.eventIn.address?.country
         ? this.eventIn.address.country
         : "Deutschland";
