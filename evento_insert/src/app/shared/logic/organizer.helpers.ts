@@ -1,24 +1,7 @@
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormGroup } from "@angular/forms";
 import { Event } from "@globals/models/event";
 import { Organizer } from "@globals/models/organizer";
 import moment from "moment";
-
-export function getOrganizerFormTemplate() {
-  // return organizer Form
-  return {
-    name: new FormControl("", [Validators.required, Validators.minLength(3)]),
-    email: new FormControl("", []),
-    telephone: new FormControl("", []),
-    description: new FormControl("", [
-      Validators.required,
-      Validators.minLength(3),
-    ]),
-    link: new FormControl("", []),
-    frequency: new FormControl(7, []),
-    isEvent: new FormControl("false", []),
-    isOrganizerAlias: new FormControl("false", []),
-  };
-}
 
 export function transformFormFieldToOrganizer(
   organizerForm: FormGroup,

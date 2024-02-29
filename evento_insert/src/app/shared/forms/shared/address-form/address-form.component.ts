@@ -4,12 +4,14 @@ import {
   ControlContainer,
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { Address, AddressForm } from "src/app/globals/models/address";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 
 @Component({
   selector: "app-address-form",
@@ -19,6 +21,7 @@ import { Address, AddressForm } from "src/app/globals/models/address";
     MatFormFieldModule,
     ReactiveFormsModule,
     MatInputModule,
+    MatSlideToggleModule,
   ],
   viewProviders: [
     {
@@ -34,6 +37,9 @@ export class AddressFormComponent {
   addressForm: FormGroup<AddressForm>;
   private initialAddress: Address = new Address();
 
+  coordinatesForm: FormGroup;
+
+  public isAddressViewForm: FormControl<boolean> = new FormControl(true);
   get parentFormGroup() {
     return this.parentContainer.control as FormGroup;
   }
@@ -51,10 +57,24 @@ export class AddressFormComponent {
         Validators.required,
       ]),
     });
+    this.coordinatesForm = new FormGroup({
+      lat: new FormControl("", [Validators.required]),
+      lon: new FormControl("", [Validators.required]),
+    });
     this.parentFormGroup.addControl("address", this.addressForm);
   }
 
   ngOnDestroy() {
     this.parentFormGroup.removeControl("address");
+  }
+
+  changeAddressView() {
+    if (this.isAddressViewForm.value) {
+      this.parentFormGroup.removeControl("coordinates");
+      this.parentFormGroup.addControl("address", this.addressForm);
+    } else {
+      this.parentFormGroup.removeControl("address");
+      this.parentFormGroup.addControl("coordinates", this.coordinatesForm);
+    }
   }
 }

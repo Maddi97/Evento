@@ -12,6 +12,7 @@ import {
 import {
   FormBuilder,
   FormControl,
+  FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -47,7 +48,9 @@ import { MatCardModule } from "@angular/material/card";
 import { MatNativeDateModule, MatOptionModule } from "@angular/material/core";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatInputModule } from "@angular/material/input";
-
+import { AddressFormComponent } from "@forms/shared/address-form/address-form.component";
+import { EventAdditionalInformationFormComponent } from "@forms/event/event-additional-information-form/event-additional-information-form.component";
+import { AutocompleteOrganizerComponent } from "@shared/atoms/autocomplete-organizer/autocomplete-organizer.component";
 @Component({
   selector: "app-event-form",
   standalone: true,
@@ -59,7 +62,6 @@ import { MatInputModule } from "@angular/material/input";
     MatInputModule,
     NgxMaterialTimepickerModule,
     MatCheckboxModule,
-    FormsModule,
     ReactiveFormsModule,
     MatRadioButton,
     MatRadioGroup,
@@ -69,6 +71,9 @@ import { MatInputModule } from "@angular/material/input";
     CategorySelectComponent,
     MatCardModule,
     MatNativeDateModule,
+    AddressFormComponent,
+    EventAdditionalInformationFormComponent,
+    AutocompleteOrganizerComponent,
   ],
   templateUrl: "./event-form.component.html",
   styleUrls: ["./event-form.component.css"],
@@ -85,6 +90,7 @@ export class EventFormComponent implements OnInit, OnChanges {
   updateOrganizerId = "";
   updateEventId = "";
 
+  geoData: any;
   date = new FormControl(new Date());
   category: Category;
   toggleIsChecked = new FormControl(true);
@@ -95,10 +101,8 @@ export class EventFormComponent implements OnInit, OnChanges {
     end: new FormControl("00:00"),
   };
 
-  geoData = {
-    lat: "",
-    lon: "",
-  };
+  eventForm: FormGroup;
+
   isHot = false;
   hasUnkownOpeningTimes = false;
   isPromotion = false;
@@ -110,21 +114,21 @@ export class EventFormComponent implements OnInit, OnChanges {
   filteredOrganizers: Organizer[];
 
   image: any;
-  eventForm;
   constructor(
     private fb: FormBuilder,
     private geoService: NominatimGeoService,
     private organizerService: OrganizerService,
     private _snackbar: MatSnackBar
   ) {
-    this.eventForm = this.fb.group(getEventFormTemplate());
+    this.eventForm = new FormGroup({
+      name: new FormControl("", [Validators.required, Validators.minLength(3)]),
+      permanent: new FormControl("false", []),
+      start: new FormControl("", [Validators.required]),
+      end: new FormControl("", [Validators.required]),
+    });
   }
 
   ngOnInit(): void {
-    this.filteredOrganizers = this.organizersIn;
-    this.organizerName.valueChanges.subscribe((oNameStart) =>
-      this.filterOrganizerByName(oNameStart)
-    );
     if (this.eventIn !== undefined) {
       this.setEventForm();
     }
@@ -323,15 +327,13 @@ export class EventFormComponent implements OnInit, OnChanges {
     this.frequency = this.eventIn.frequency;
   }
 
-  insertOrgInfo(org: Organizer) {
-    this.eventForm.get("plz").setValue(org.address.plz);
-    this.eventForm.get("city").setValue(org.address.city);
-    this.eventForm.get("street").setValue(org.address.street);
+  insertInformationFromOrganizer(organizer: Organizer) {
     // set category to organizers category but leave subcat empty
-    this.eventForm.get("description").setValue(org.description);
-    const cat = org.category;
-    cat.subcategories = [];
-    this.category = cat;
+    this.eventForm.get("description").setValue(organizer.description);
+    this.eventForm.get("category").setValue(organizer.category);
+    this.eventForm.get("address").setValue(organizer.address);
+
+    console.log(this.eventForm.value);
   }
 
   iconChosen(event: any) {
@@ -344,16 +346,6 @@ export class EventFormComponent implements OnInit, OnChanges {
   }
   emitEndTime(endTime) {
     this.times.end.setValue(endTime);
-  }
-
-  switchAddressCoords() {
-    if (this.toggleIsChecked.value) {
-      this.eventForm.get("coord").setValue("");
-    } else {
-      this.insertOrgInfo(
-        this.organizersIn.find((org) => org._id === this.updateOrganizerId)
-      );
-    }
   }
 
   nullFormField() {
@@ -406,5 +398,9 @@ export class EventFormComponent implements OnInit, OnChanges {
       horizontalPosition: "center",
       panelClass: [state !== "error" ? "green-snackbar" : "red-snackbar"],
     });
+  }
+
+  test(value) {
+    console.log(value);
   }
 }

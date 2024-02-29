@@ -2,6 +2,7 @@ import { Category } from "./category";
 import { Day } from "../types/date.types";
 import { Address, AddressForm } from "./address";
 import { FormControl, FormGroup } from "@angular/forms";
+import { Coordinates } from "@globals/types/location.types";
 
 export class Organizer {
   _id: string; // Set to an empty string by default
@@ -18,7 +19,7 @@ export class Organizer {
   openingTimes: Day[] = [];
   isEvent: boolean = false; // Set to false by default
   ifEventId: string = "";
-  geoData: { lat: string; lon: string } = { lat: "", lon: "" };
+  geoData: Coordinates = { lat: "", lon: "" };
   organizerImageTemporaryURL: string;
   organizerImagePath: string;
 }

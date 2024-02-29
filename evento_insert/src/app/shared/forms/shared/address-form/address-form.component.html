@@ -1,4 +1,14 @@
-<ng-container class="address" formGroupName="address">
+<mat-slide-toggle
+  [formControl]="isAddressViewForm"
+  (ngModelChange)="changeAddressView()"
+  >Address or coordinates?</mat-slide-toggle
+>
+
+<ng-container
+  class="address"
+  formGroupName="address"
+  *ngIf="isAddressViewForm.value"
+>
   <div class="plz">
     <mat-form-field appearance="fill">
       <mat-label>Plz</mat-label>
@@ -60,4 +70,25 @@
       </mat-error>
     </mat-form-field>
   </div>
+</ng-container>
+
+<ng-container
+  class="coordinates"
+  formGroupName="coordinates"
+  *ngIf="!isAddressViewForm.value"
+>
+  <mat-form-field appearance="fill">
+    <mat-label>Latitude</mat-label>
+    <input matInput required name="lat" formControlName="lat" />
+    <mat-error *ngIf="coordinatesForm.get('lat').hasError('required')"
+      >Latitude is required</mat-error
+    >
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Longitude</mat-label>
+    <input matInput required formControlName="lon" />
+    <mat-error *ngIf="coordinatesForm.get('lon').hasError('required')"
+      >Longitude is required</mat-error
+    >
+  </mat-form-field>
 </ng-container>
