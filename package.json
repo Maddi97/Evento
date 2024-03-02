@@ -20,7 +20,10 @@
     "build:backend:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build backend",
     "build:mongodb:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build mongodb",
     "build:frontend:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build evento_frontend",
-    "build:insert:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build evento_insert"
+    "build:insert:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build evento_insert",
+    "BACKUP": "",
+    "backup:netcup-to-local": "cd backend/backup_script && sh load_db_local_dev.sh"
+
   },
   "author": "Maximilian Schaller"
 }
