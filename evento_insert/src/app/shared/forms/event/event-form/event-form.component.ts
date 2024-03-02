@@ -74,9 +74,6 @@ export class EventFormComponent implements OnChanges {
   updateEventId = "";
 
   eventForm: FormGroup;
-
-  organizerName = new FormControl("", [Validators.required]);
-
   constructor(private geoService: NominatimGeoService) {
     this.eventForm = new FormGroup({
       name: new FormControl("", [Validators.required, Validators.minLength(3)]),
@@ -92,7 +89,6 @@ export class EventFormComponent implements OnChanges {
   }
 
   submitForm() {
-    console.log(this.eventForm.value);
     if (this.updateEventId) {
       this.emitUpdateEvent();
     } else {
@@ -166,6 +162,7 @@ export class EventFormComponent implements OnChanges {
   }
 
   insertInformationFromOrganizer(organizer: Organizer) {
+    console.log(organizer);
     this.eventForm.get("organizerName").setValue(organizer.name);
     this.eventForm.get("_organizerId").setValue(organizer._id);
     this.eventForm.get("description").setValue(organizer.description);

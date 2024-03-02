@@ -6,12 +6,18 @@ import {
   ViewChild,
   inject,
 } from "@angular/core";
-import { ControlContainer, FormControl, FormGroup } from "@angular/forms";
+import {
+  ControlContainer,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from "@angular/forms";
 
 @Component({
   selector: "app-select-files-form",
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule, FormsModule],
   templateUrl: "./select-files-form.component.html",
   styleUrl: "./select-files-form.component.css",
   viewProviders: [
@@ -31,6 +37,11 @@ export class SelectFilesFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.parentFormGroup.addControl("fd", this.formDataControl);
+    this.parentFormGroup.get("fd").valueChanges.subscribe((value) => {
+      if (!value) {
+        this.reset();
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -44,6 +55,13 @@ export class SelectFilesFormComponent implements OnInit, OnDestroy {
       this.formDataControl.setValue(formdata);
     } else {
       this.formDataControl.setValue(undefined);
+    }
+  }
+  reset() {
+    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+
+    if (fileInput) {
+      fileInput.value = "";
     }
   }
 }

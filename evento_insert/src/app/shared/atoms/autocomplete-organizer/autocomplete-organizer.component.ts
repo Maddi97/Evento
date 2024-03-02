@@ -46,15 +46,17 @@ export class AutocompleteOrganizerComponent implements OnInit {
     this.organizerService
       .getOrganizer()
       .pipe(
-        take(1),
         tap((organizers: Organizer[]) => {
           this.organizersIn = organizers;
           this.filteredOrganizers = organizers;
         })
       )
       .subscribe();
-    this.organizerNameControl.valueChanges.subscribe((oNameStart) => {
-      this.filteredOrganizers = this.filterOrganizerByNameAndAlias(oNameStart);
+    this.organizerNameControl.valueChanges.subscribe((oNameStart: string) => {
+      if (oNameStart) {
+        this.filteredOrganizers =
+          this.filterOrganizerByNameAndAlias(oNameStart);
+      }
     });
   }
 
@@ -70,14 +72,15 @@ export class AutocompleteOrganizerComponent implements OnInit {
     );
   }
 
-  filterOrganizerByNameAndAlias(oNameStart): Organizer[] {
-    return this.organizersIn.filter(
-      (organizer) =>
+  filterOrganizerByNameAndAlias(oNameStart: string): Organizer[] {
+    return this.organizersIn.filter((organizer: Organizer) => {
+      return (
         organizer.name.toLowerCase().startsWith(oNameStart.toLowerCase()) ||
         organizer.alias.some((aliasName) =>
           aliasName.toLowerCase().startsWith(oNameStart.toLowerCase())
         )
-    );
+      );
+    });
   }
 
   onOrganizerSelected(organizerName: string) {

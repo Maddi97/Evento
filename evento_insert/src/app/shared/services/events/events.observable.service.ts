@@ -46,11 +46,46 @@ export class EventsObservableService {
           }
         }
 
-        const eventWithImagePath = await lastValueFrom(
+        await lastValueFrom(
           this.eventService.updateEvent(event._organizerId, event._id, event)
         );
-        console.log(eventWithImagePath);
-        console.log(createEventResponse);
+        resolve(createEventResponse);
+      } catch (error) {
+        console.error("Error:", error);
+        reject(error);
+      }
+    });
+  }
+
+  updateEvent(event): Promise<Event> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const createEventResponse = await lastValueFrom(
+          this.eventService.updateEvent(event._organizerId, event._id, event)
+        );
+        const formdata = event.fd;
+        delete event.fd;
+
+        if (formdata) {
+          const fullEventImagePath =
+            this.eventImagePath + createEventResponse._id;
+          formdata.append("eventImagePath", fullEventImagePath);
+
+          try {
+            const uploadImageResponse = await lastValueFrom(
+              this.fileService.uploadEventImage(formdata)
+            );
+            if (uploadImageResponse) {
+              event.eventImagePath = uploadImageResponse.eventImage.path;
+            }
+          } catch (uploadImageError) {
+            console.error("Error uploading event image:", uploadImageError);
+          }
+        }
+
+        await lastValueFrom(
+          this.eventService.updateEvent(event._organizerId, event._id, event)
+        );
         resolve(createEventResponse);
       } catch (error) {
         console.error("Error:", error);

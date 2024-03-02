@@ -98,7 +98,7 @@ export class EventDatesFormComponent {
   }
   addValidators(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((key) => {
-      formGroup.get[key].setValidators([Validators.required]);
+      formGroup.get(key).setValidators([Validators.required]);
       formGroup.get(key).updateValueAndValidity();
     });
   }

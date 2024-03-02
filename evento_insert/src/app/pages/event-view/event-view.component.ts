@@ -105,48 +105,17 @@ export class EventViewComponent implements OnInit {
   }
 
   updateEvent(event) {
-    this.eventService
-      .updateEvent(event._organizerId, event._id, event)
-      .pipe(
-        map((createEventResponse) => {
-          // upload image
-          const formdata = event.fd;
-          delete event.fd;
-          if (formdata) {
-            const fullEventImagePath = this.eventImagePath + event._id;
-            formdata.append("eventImagePath", fullEventImagePath);
-            this.fileService
-              .uploadEventImage(formdata)
-              .pipe(
-                map((uploadImageResponse) => {
-                  event.eventImagePath = uploadImageResponse.eventImage.path;
-                }),
-                switchMap(() =>
-                  this.eventService.updateEvent(
-                    event._organizerId,
-                    event._id,
-                    event
-                  )
-                )
-              )
-              .subscribe({
-                next: (event) => {
-                  this.snackbar.openSnackBar(
-                    "Successfully updated Event: " + event.name,
-                    "success"
-                  );
-                },
-                error: (error) => {
-                  this.snackbar.openSnackBar(error.message, "error");
-                },
-                complete: () => {
-                  console.log("complete");
-                },
-              });
-          }
-        })
-      )
-      .subscribe();
+    this.eventObservableService
+      .updateEvent(event)
+      .then((event) => {
+        this.snackbar.openSnackBar(
+          "Successfully updated Event: " + event.name,
+          "success"
+        );
+      })
+      .catch((error) => {
+        this.snackbar.openSnackBar(error.message, "error");
+      });
   }
 
   getEventsRightNow = () => {
