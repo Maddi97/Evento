@@ -1,6 +1,6 @@
-import { Day } from "../types/date.types";
+import { DayWithTimes } from "../types/date.types";
 
-export const OPENING_TIMES_TEMPLATE: Day[] = [
+export const OPENING_TIMES_TEMPLATE: DayWithTimes[] = [
   { day: "Monday", start: "00:00", end: "00:00" },
   { day: "Tuesday", start: "00:00", end: "00:00" },
   { day: "Wednesday", start: "00:00", end: "00:00" },

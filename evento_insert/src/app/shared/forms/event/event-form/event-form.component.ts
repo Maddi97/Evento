@@ -5,80 +5,63 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   ViewChild,
 } from "@angular/core";
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import moment from "moment";
 import { catchError, map } from "rxjs/operators";
 
 // import models
-import { Category } from "@globals/models/category";
 import { Event } from "@globals/models/event";
 import { Organizer } from "@globals/models/organizer";
 
 // import services
 import { NominatimGeoService } from "@shared/services/location/nominatim-geo.service";
-import { OrganizerService } from "@shared/services/organizer/organizer.web.service";
 
 // import helper functions
-import { MatSnackBar } from "@angular/material/snack-bar";
-import {
-  getEventFormTemplate,
-  getEventFromForm,
-} from "@shared/logic/event.helpers";
 import { CommonModule } from "@angular/common";
-import { EventFrequencyFormComponent } from "@shared/atoms/event-frequency-form/event-frequency-form.component";
-import { SelectionListComponent } from "@shared/atoms/selection-list/selection-list.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { NgxMaterialTimepickerModule } from "ngx-material-timepicker";
-import { MatCheckboxModule } from "@angular/material/checkbox";
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
-import { CategorySelectComponent } from "@forms/shared/category-select/category-select.component";
-import { MatCardModule } from "@angular/material/card";
-import { MatNativeDateModule, MatOptionModule } from "@angular/material/core";
-import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatInputModule } from "@angular/material/input";
-import { AddressFormComponent } from "@forms/shared/address-form/address-form.component";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { EventAdditionalInformationFormComponent } from "@forms/event/event-additional-information-form/event-additional-information-form.component";
+import { EventDatesFormComponent } from "@forms/event/event-dates-form/event-dates-form.component";
+import { EventFeatureFlagsFormComponent } from "@forms/event/event-feature-flags-form/event-feature-flags-form.component";
+import { EventTimesFormComponent } from "@forms/event/event-times-form/event-times-form.component";
+import { AddressFormComponent } from "@forms/shared/address-form/address-form.component";
+import { CategorySelectComponent } from "@forms/shared/category-select/category-select.component";
 import { AutocompleteOrganizerComponent } from "@shared/atoms/autocomplete-organizer/autocomplete-organizer.component";
+import { SelectionListComponent } from "@shared/atoms/selection-list/selection-list.component";
+import { FormSubmitionButtonsComponent } from "@shared/forms/shared/form-submition-buttons/form-submition-buttons.component";
+import { SelectFilesFormComponent } from "@shared/forms/shared/select-files-form/select-files-form.component";
+import { getEventFromForm } from "@shared/logic/event.helpers";
 @Component({
   selector: "app-event-form",
   standalone: true,
   imports: [
     CommonModule,
-    EventFrequencyFormComponent,
     SelectionListComponent,
     MatFormFieldModule,
     MatInputModule,
-    NgxMaterialTimepickerModule,
-    MatCheckboxModule,
     ReactiveFormsModule,
-    MatRadioButton,
-    MatRadioGroup,
-    MatOptionModule,
-    MatAutocompleteModule,
-    MatDatepickerModule,
     CategorySelectComponent,
-    MatCardModule,
-    MatNativeDateModule,
     AddressFormComponent,
     EventAdditionalInformationFormComponent,
     AutocompleteOrganizerComponent,
+    EventDatesFormComponent,
+    EventTimesFormComponent,
+    SelectFilesFormComponent,
+    EventFeatureFlagsFormComponent,
+    FormSubmitionButtonsComponent,
   ],
   templateUrl: "./event-form.component.html",
   styleUrls: ["./event-form.component.css"],
 })
-export class EventFormComponent implements OnInit, OnChanges {
+export class EventFormComponent implements OnChanges {
   @Input() eventIn: Event;
   @Input() organizersIn: Organizer[];
   @Input() page: "crawler" | "insert" = "insert";
@@ -90,48 +73,16 @@ export class EventFormComponent implements OnInit, OnChanges {
   updateOrganizerId = "";
   updateEventId = "";
 
-  geoData: any;
-  date = new FormControl(new Date());
-  category: Category;
-  toggleIsChecked = new FormControl(true);
-  frequency = undefined;
-
-  times = {
-    start: new FormControl("00:00"),
-    end: new FormControl("00:00"),
-  };
-
   eventForm: FormGroup;
 
-  isHot = false;
-  hasUnkownOpeningTimes = false;
-  isPromotion = false;
-  isFrequent = false;
-  isEndTime = true;
-  isPermanent = "false";
-
   organizerName = new FormControl("", [Validators.required]);
-  filteredOrganizers: Organizer[];
 
-  image: any;
-  constructor(
-    private fb: FormBuilder,
-    private geoService: NominatimGeoService,
-    private organizerService: OrganizerService,
-    private _snackbar: MatSnackBar
-  ) {
+  constructor(private geoService: NominatimGeoService) {
     this.eventForm = new FormGroup({
       name: new FormControl("", [Validators.required, Validators.minLength(3)]),
-      permanent: new FormControl("false", []),
-      start: new FormControl("", [Validators.required]),
-      end: new FormControl("", [Validators.required]),
+      _organizerId: new FormControl("", [Validators.required]),
+      organizerName: new FormControl("", [Validators.required]),
     });
-  }
-
-  ngOnInit(): void {
-    if (this.eventIn !== undefined) {
-      this.setEventForm();
-    }
   }
 
   ngOnChanges(): void {
@@ -140,267 +91,95 @@ export class EventFormComponent implements OnInit, OnChanges {
     }
   }
 
-  emitAddNewEvent() {
-    const organizer = this.organizersIn.find(
-      (org) => org.name === this.organizerName.value
-    );
-    const event = getEventFromForm(
-      this.eventForm,
-      organizer,
-      this.category,
-      this.times,
-      this.updateEventId,
-      this.isHot,
-      this.isPromotion,
-      this.hasUnkownOpeningTimes
-    );
-    event.frequency = this.frequency;
-    const address = event.address;
-    const formdata: FormData = new FormData();
-    if (this.image !== undefined) {
-      formdata.append("files", this.image);
-      event["fd"] = formdata;
+  submitForm() {
+    console.log(this.eventForm.value);
+    if (this.updateEventId) {
+      this.emitUpdateEvent();
     } else {
-      event["fd"] = undefined;
+      this.emitAddNewEvent();
     }
-
-    if (this.toggleIsChecked.value) {
-      event.geoData = this.geoData;
-      // first fetch geo data from osm API and than emit event data
-      this.geoService
-        .get_geo_data(address.city, address.street)
-        .pipe(
-          map((geoData) => {
-            event.geoData = geoData;
-            this.addNewEvent.emit(event);
-          }),
-          catchError((err) => {
-            this.openSnackBar("Error: " + err, "error");
-            throw err;
-          })
-        )
-        .subscribe();
-    } else {
-      const coord = this.eventForm.get("coord").value;
-      this.geoData.lat = coord.split(",")[0].trim();
-      this.geoData.lon = coord.split(",")[1].trim();
-      event.geoData = this.geoData;
-      this.geoService
-        .get_address_from_coordinates(this.geoData)
-        .pipe(
-          map((geoJSON: any) => {
-            event.address.plz = geoJSON.address.postcode;
-            event.address.street = geoJSON.address.road;
-            // name land in response ist englisch, deshalb erstmal auf Deutschland gesetzt
-            event.address.country = this.eventForm.get("country").value;
-            this.addNewEvent.emit(event);
-          }),
-          catchError((err) => {
-            this.openSnackBar("Error: " + err, "error");
-            throw err;
-          })
-        )
-        .subscribe();
-    }
-    // geoData is observable
-    organizer.lastUpdated = new Date();
-    this.organizerService.updateOrganizer(organizer._id, organizer).subscribe();
-    this.nullFormField();
   }
 
-  emitUpdateEvent() {
-    const organizer = this.organizersIn.find(
-      (org) => org.name === this.organizerName.value
-    );
-    const event = getEventFromForm(
-      this.eventForm,
-      organizer,
-      this.category,
-      this.times,
-      this.updateEventId,
-      this.isHot,
-      this.isPromotion,
-      this.hasUnkownOpeningTimes
-    );
-    event.frequency = this.frequency;
+  async emitAddNewEvent() {
+    const event = getEventFromForm(this.eventForm, this.updateEventId);
     const address = event.address;
 
-    const formdata: FormData = new FormData();
-    if (this.image !== undefined) {
-      formdata.append("files", this.image);
-      event["fd"] = formdata;
-    } else {
-      event["fd"] = undefined;
+    if (this.eventForm.get("address").value) {
+      try {
+        // first fetch geo data from osm API and than emit event data
+        event.coordinates = await this.geoService.getCoordinates(
+          address.city,
+          address.street
+        );
+      } catch (err) {
+        throw err;
+      }
+    } else if (this.eventForm.get("coordinates").value) {
+      try {
+        event.coordinates = await this.geoService.getAddressFromCoordinates(
+          event.coordinates
+        );
+      } catch (err) {
+        throw err;
+      }
     }
+    this.addNewEvent.emit(event);
+    this.resetForm();
+  }
 
-    if (this.toggleIsChecked.value) {
-      event.geoData = this.geoData;
-      this.geoService
-        .get_geo_data(address.city, address.street)
-        .pipe(
-          map((geoData) => {
-            event.geoData = geoData;
-            this.updateEvent.emit(event);
-          }),
-          catchError((err) => {
-            this.openSnackBar("Error: " + err, "error");
-            throw err;
-          })
-        )
-        .subscribe();
-    } else {
-      const coord = this.eventForm.get("coord").value;
-      this.geoData.lat = coord.split(",")[0].trim();
-      this.geoData.lon = coord.split(",")[1].trim();
-      event.geoData = this.geoData;
-      this.geoService
-        .get_address_from_coordinates(this.geoData)
-        .pipe(
-          map((geoJSON: any) => {
-            event.address.plz = geoJSON.address.postcode;
-            event.address.street = geoJSON.address.road;
-            // name land in response ist englisch, deshalb erstmal auf Deutschland gesetzt
-            event.address.country = this.eventForm.get("country").value;
-            this.updateEvent.emit(event);
-          }),
-          catchError((err) => {
-            this.openSnackBar("Error: " + err, "error");
-            throw err;
-          })
-        )
-        .subscribe();
+  async emitUpdateEvent() {
+    const event = getEventFromForm(this.eventForm, this.updateEventId);
+
+    if (event.address) {
+      try {
+        const coordinates: any = await this.geoService.getCoordinates(
+          event.address.city,
+          event.address.street
+        );
+        event.coordinates = coordinates;
+      } catch (err) {
+        throw err;
+      }
+    } else if (event.coordinates.lat && event.coordinates.lon) {
+      try {
+        const geoJSON: any = await this.geoService.getAddressFromCoordinates(
+          event.coordinates
+        );
+        event.address.plz = geoJSON.address.postcode;
+        event.address.street = geoJSON.address.road;
+        // Assuming the 'country' control exists in the 'eventForm'
+        event.address.country = this.eventForm.get("country").value;
+      } catch (err) {
+        throw err;
+      }
     }
+    this.updateEvent.emit(event);
 
-    // geoData is observable
-    organizer.lastUpdated = new Date();
-    this.organizerService.updateOrganizer(organizer._id, organizer).subscribe();
-    this.nullFormField();
+    this.resetForm();
   }
 
   setEventForm(): void {
-    // prepare dates
     this.updateEventId = this.eventIn._id;
-    const start: any = this.eventIn?.date?.start
-      ? moment(this.eventIn.date.start).toDate()
-      : "";
-    const end: any = this.eventIn?.date?.end
-      ? moment(this.eventIn.date.end).toDate()
-      : "";
-    const organizer = this.organizersIn.find(
-      (org) => org._id === this.eventIn._organizerId
-    );
-    this.organizerName.setValue(organizer.name);
-    this.updateOrganizerId = organizer._id;
-
-    const eventFormValues = {
-      name: this.eventIn.name || "",
-      city: this.eventIn.address.city || "",
-      plz: this.eventIn.address.plz || "",
-      street: this.eventIn.address.street || "",
-      country: this.eventIn.address.country || "",
-      description: this.eventIn.description || "",
-      link: this.eventIn.link || "",
-      permanent: String(this.eventIn.permanent),
-      price: this.eventIn.price || "",
-      coord:
-        (this.eventIn.geoData?.lat || "") +
-        ", " +
-        (this.eventIn.geoData?.lon || ""),
-    };
-    if (!this.eventIn.permanent) {
-      eventFormValues["start"] = start;
-      eventFormValues["end"] = end;
-    } else {
-      this.eventForm.removeControl("start");
-      this.eventForm.removeControl("end");
-    }
-    this.times.start.setValue(this.eventIn.times.start);
-    this.times.end.setValue(this.eventIn.times.end);
-
-    this.eventForm.setValue(eventFormValues);
-    this.category = this.eventIn.category;
-    this.isHot = this.eventIn.hot;
-    this.hasUnkownOpeningTimes = this.eventIn.hasUnkownOpeningTimes;
-    this.isPromotion = this.eventIn.promotion;
-    this.isFrequent = !!this.eventIn.frequency;
-    this.isEndTime = !!this.eventIn.times.end;
-    this.frequency = this.eventIn.frequency;
+    this.eventForm.patchValue(this.eventIn);
+    this.eventForm.get("organizerName").setValue(this.eventIn.organizerName);
+    this.eventForm.get("_organizerId").setValue(this.eventIn._organizerId);
   }
 
   insertInformationFromOrganizer(organizer: Organizer) {
-    // set category to organizers category but leave subcat empty
+    this.eventForm.get("organizerName").setValue(organizer.name);
+    this.eventForm.get("_organizerId").setValue(organizer._id);
     this.eventForm.get("description").setValue(organizer.description);
     this.eventForm.get("category").setValue(organizer.category);
     this.eventForm.get("address").setValue(organizer.address);
-
-    console.log(this.eventForm.value);
   }
 
-  iconChosen(event: any) {
-    if (event.target.value) {
-      this.image = event.target.files[0] as File;
-    }
-  }
-  emitFrequency(frequency) {
-    this.frequency = frequency;
-  }
-  emitEndTime(endTime) {
-    this.times.end.setValue(endTime);
+  resetForm() {
+    this.updateEventId = undefined;
+    this.eventIn = undefined;
+    this.eventForm.reset(new Event());
   }
 
-  nullFormField() {
-    this.updateEventId = "";
-    this.organizerName.setValue("");
-    this.organizerName.markAsUntouched();
-    this.eventForm = this.fb.group(getEventFormTemplate());
-    this.category = undefined;
-    this.times.start.setValue("00:00");
-    this.times.end.setValue("00:00");
-    this.inputImage.nativeElement.value = "";
-    this.isHot = false;
-    this.hasUnkownOpeningTimes = false;
-    this.isPromotion = false;
-    this.isFrequent = false;
-    this.isEndTime = true;
-    this.frequency = undefined;
-  }
-
-  setCategory(value) {
-    this.category = value;
-  }
-
-  checkDisabled() {
-    return !(!this.eventForm.invalid && this.category !== undefined);
-  }
-  filterOrganizerByName(oNameStart) {
-    this.filteredOrganizers = this.organizersIn.filter((organizer) =>
-      organizer.name.toLowerCase().startsWith(oNameStart.toLowerCase())
-    );
-  }
-  isPermanentChange() {
-    this.isPermanent = this.eventForm.get("permanent").value;
-    if (this.isPermanent === "true") {
-      this.eventForm.removeControl("start");
-      this.eventForm.removeControl("end");
-    } else {
-      this.eventForm.addControl(
-        "start",
-        this.fb.control("", [Validators.required])
-      );
-      this.eventForm.addControl("end", this.fb.control("", []));
-    }
-  }
-
-  openSnackBar(message, state) {
-    this._snackbar.open(message, "", {
-      duration: 1000,
-      verticalPosition: "top",
-      horizontalPosition: "center",
-      panelClass: [state !== "error" ? "green-snackbar" : "red-snackbar"],
-    });
-  }
-
-  test(value) {
-    console.log(value);
+  test() {
+    console.log(this.eventForm);
   }
 }

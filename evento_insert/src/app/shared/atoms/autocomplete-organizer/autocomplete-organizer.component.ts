@@ -1,5 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -25,11 +32,12 @@ import { take, tap } from "rxjs";
   styleUrls: ["./autocomplete-organizer.component.css"],
 })
 export class AutocompleteOrganizerComponent implements OnInit {
+  @Input() organizerName: string;
   @Output() emitOrganizer: EventEmitter<Organizer> =
     new EventEmitter<Organizer>();
 
   organizersIn: Organizer[] = [];
-  organizerName = new FormControl("");
+  organizerNameControl = new FormControl("");
   filteredOrganizers: Organizer[];
 
   constructor(private organizerService: OrganizerService) {}
@@ -45,9 +53,15 @@ export class AutocompleteOrganizerComponent implements OnInit {
         })
       )
       .subscribe();
-    this.organizerName.valueChanges.subscribe((oNameStart) => {
+    this.organizerNameControl.valueChanges.subscribe((oNameStart) => {
       this.filteredOrganizers = this.filterOrganizerByNameAndAlias(oNameStart);
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.organizerName) {
+      this.organizerNameControl.setValue(changes.organizerName.currentValue);
+    }
   }
 
   filterOrganizerByName(oNameStart): Organizer[] {

@@ -1,4 +1,5 @@
-import { ID, PositionCoords } from "./common.types";
+import { ID } from "./common.types";
+import { PositionCoordsArray } from "./location.types";
 
 export type FilterInputType = "Input";
 export type FilterParamsType = "Params";
@@ -19,7 +20,7 @@ export type FilterEventsByParams = {
   subcat: ID[];
   limit: number;
   alreadyReturnedEventIds: ID[];
-  currentPosition: PositionCoords;
+  currentPosition: PositionCoordsArray;
 };
 
 export type FilterEvents = FilterEventsByInput | FilterEventsByParams;

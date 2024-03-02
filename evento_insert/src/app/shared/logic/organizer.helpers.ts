@@ -34,7 +34,7 @@ export function createEventFromOrg(org) {
   event.openingTimes = org.openingTimes;
   event.times = times;
   event.link = org.link;
-  event.geoData = org.geoData;
+  event.coordinates = org.geoData;
   event.date = date;
   event.price = "";
   event.hasUnkownOpeningTimes = true;

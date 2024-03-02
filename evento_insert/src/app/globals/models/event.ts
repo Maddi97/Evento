@@ -1,7 +1,8 @@
 import moment from "moment";
 import { Category } from "./category";
-import { Day } from "../types/date.types";
+import { DayWithTimes, Frequency } from "../types/date.types";
 import { Address } from "./address";
+import { CoordinatesObject } from "@globals/types/location.types";
 
 export class Event {
   _id: string;
@@ -17,11 +18,11 @@ export class Event {
     start: string;
     end: string;
   } = {
-    start: "",
-    end: "",
+    start: "00:00",
+    end: "00:00",
   };
-  category: Category;
-  openingTimes?: Day[];
+  category: Category = new Category();
+  openingTimes?: DayWithTimes[];
   description: string;
   link: string = "";
   price: string = "";
@@ -29,14 +30,11 @@ export class Event {
   hasUnkownOpeningTimes: boolean;
   hot: boolean = false;
   promotion: boolean;
-  geoData: {
-    lat: string;
-    lon: string;
-  } = {
+  coordinates: CoordinatesObject = {
     lat: "",
     lon: "",
   };
   eventImageTemporaryURL: string;
   eventImagePath: string;
-  frequency;
+  frequency: Frequency;
 }

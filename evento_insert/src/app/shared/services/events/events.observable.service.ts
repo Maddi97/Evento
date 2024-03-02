@@ -29,7 +29,7 @@ export class EventsObservableService {
         const formdata = event.fd;
         delete event.fd;
 
-        if (formdata !== undefined) {
+        if (formdata) {
           const fullEventImagePath =
             this.eventImagePath + createEventResponse._id;
           formdata.append("eventImagePath", fullEventImagePath);

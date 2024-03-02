@@ -1,0 +1,16 @@
+.opening-times {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.timepicker {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+label {
+  align-self: center;
+  margin-right: 10px;
+}

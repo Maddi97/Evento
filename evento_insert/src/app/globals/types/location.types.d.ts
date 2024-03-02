@@ -1,1 +1,2 @@
-export type Coordinates = { lat: string; lon: string };
+export type PositionCoordsArray = [number, number];
+export type CoordinatesObject = { lat: string; lon: string };

@@ -54,21 +54,8 @@ export class EventsService {
         catchError((error: any) => {
           console.error("an error occurred", error);
           return observableThrowError(error.error.message || error);
-        }),
-        share()
+        })
       );
-
-    obs.toPromise().then((response: Event) => {
-      const tempEvent = this._events.getValue();
-      let indeX: number;
-      tempEvent.map((eventResponse: Event, index) => {
-        if (eventResponse._id === eventId) {
-          indeX = index;
-        }
-      });
-      tempEvent[indeX] = response;
-      this._events.next(tempEvent);
-    });
     return obs;
   }
 

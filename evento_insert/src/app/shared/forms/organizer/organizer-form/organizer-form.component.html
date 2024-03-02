@@ -2,8 +2,9 @@
   @if (page==='crawler') {
   <app-form-submition-buttons
     [confirmButtonLabel]="updateOrganizerId ? 'Update' : 'Submit'"
-    [confirmFunction]="updateOrganizerId ? emitUpdate : emitAddOrganizer"
     [isDisabled]="organizerForm.invalid"
+    (emitConfirm)="submitForm()"
+    (emitClear)="resetForm()"
   ></app-form-submition-buttons>
   }
   <form [formGroup]="organizerForm">

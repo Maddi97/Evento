@@ -18,7 +18,7 @@ import { SelectionListComponent } from "@shared/atoms/selection-list/selection-l
 import { transformFormFieldToOrganizer } from "../../../logic/organizer.helpers";
 
 import { AddNameAndAliasFormComponent } from "@forms/organizer/add-name-and-alias-form/add-name-andalias-form.component";
-import { OpeningTimesFormComponent } from "@forms/organizer/opening-times-form/opening-times-form.component";
+import { OpeningTimesFormComponent } from "@shared/forms/shared/opening-times-form/opening-times-form.component";
 import { OrganizerAdditionalInfoFormComponent } from "@forms/organizer/organizer-additional-info-form/organizer-additional-info-form.component";
 import { ID } from "@globals/types/common.types";
 import { AddressFormComponent } from "@shared/forms/shared/address-form/address-form.component";

@@ -58,23 +58,53 @@ export class AddressFormComponent {
       ]),
     });
     this.coordinatesForm = new FormGroup({
-      lat: new FormControl("", [Validators.required]),
-      lon: new FormControl("", [Validators.required]),
+      lat: new FormControl(null, []),
+      lon: new FormControl(null, []),
     });
     this.parentFormGroup.addControl("address", this.addressForm);
+    this.parentFormGroup.addControl("coordinates", this.coordinatesForm);
   }
 
   ngOnDestroy() {
     this.parentFormGroup.removeControl("address");
   }
-
   changeAddressView() {
-    if (this.isAddressViewForm.value) {
-      this.parentFormGroup.removeControl("coordinates");
-      this.parentFormGroup.addControl("address", this.addressForm);
+    if (!this.isAddressViewForm.value) {
+      this.removeValidators(this.addressForm);
+      this.addValidators("coordinatesForm", this.coordinatesForm);
     } else {
-      this.parentFormGroup.removeControl("address");
-      this.parentFormGroup.addControl("coordinates", this.coordinatesForm);
+      this.addValidators("addressForm", this.addressForm);
+      this.removeValidators(this.coordinatesForm);
     }
+  }
+  removeValidators(formGroup: FormGroup) {
+    // Loop through each control in the form group
+    Object.keys(formGroup.controls).forEach((key) => {
+      // Get the control
+      const control = formGroup.get(key);
+      // Clear validators
+      control.clearValidators();
+      // Update value and validity
+      control.updateValueAndValidity();
+    });
+  }
+  addValidators(
+    formGroupName: "addressForm" | "coordinatesForm",
+    formGroup: FormGroup
+  ) {
+    if (formGroupName === "addressForm") {
+      formGroup.get("city").setValidators([Validators.required]);
+      formGroup.get("plz").setValidators([Validators.pattern("[0-9]{5}")]);
+      formGroup.get("street").setValidators([Validators.required]);
+      formGroup.get("country").setValidators([Validators.required]);
+    } else if (formGroupName === "coordinatesForm") {
+      formGroup.get("lat").setValidators([Validators.required]);
+      formGroup.get("lon").setValidators([Validators.required]);
+    }
+
+    // Update value and validity after adding validators
+    Object.keys(formGroup.controls).forEach((key) => {
+      formGroup.get(key).updateValueAndValidity();
+    });
   }
 }

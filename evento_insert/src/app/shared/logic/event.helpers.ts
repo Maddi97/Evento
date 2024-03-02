@@ -1,54 +1,12 @@
 import { FormControl, Validators } from "@angular/forms";
 import moment from "moment";
 import { Event } from "@globals/models/event";
-import { Address } from "@globals/models/address";
 
-export function getEventFromForm(
-  eventForm,
-  organizer,
-  category,
-  times,
-  updateEventId,
-  hot,
-  promotion,
-  hasUnkownOpeningTimes
-) {
+export function getEventFromForm(eventForm, updateEventId) {
   const event = new Event();
-  const address = new Address();
-  event._organizerId = organizer._id;
-  event.organizerName = organizer.name;
-  event.name = eventForm.get("name").value;
-  address.plz = eventForm.get("plz").value;
-  address.city = eventForm.get("city").value;
-  address.street = eventForm.get("street").value;
-  address.country = eventForm.get("country").value;
-
-  event.address = address;
-
-  event.description = eventForm.get("description").value;
-  event.link = eventForm.get("link").value;
-  event.price = eventForm.get("price").value;
-  event.permanent = eventForm.get("permanent").value;
-  event.hot = hot;
-  event.promotion = promotion;
-  event.hasUnkownOpeningTimes = hasUnkownOpeningTimes;
-
-  event.category = category;
-  event.date = {
-    start: moment(new Date()).utcOffset(0, true),
-    end: moment(new Date()).utcOffset(0, true),
-  };
-
-  if (eventForm.get("permanent").value === "false") {
-    event.date.start = formatDate(eventForm.get("start").value);
-
-    event.date.end = formatDate(eventForm.get("end").value);
-  } else {
-    event.date.start = moment(new Date()).utcOffset(0, true);
-    event.date.end = moment(new Date()).utcOffset(0, true);
-  }
-
-  event.times = { start: times.start.value, end: times.end.value };
+  Object.keys(eventForm.controls).forEach((key) => {
+    event[key] = eventForm.controls[key].value;
+  });
   event._id = updateEventId;
   return event;
 }

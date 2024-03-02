@@ -17,6 +17,12 @@ MONGO_PORT='27017'
 DB_NAME="db_evento"
 AUTH_PARAM=""
 
+check_and_create_dir() {
+    if [ ! -d "$1" ]; then
+        mkdir -p "$1"
+    fi
+}
+
 #remove dump before
 ssh ${SERVER} "rm -f -r ${DB_BACKUP_PATH}/instant_dump/"
 #dump live database and copy it instant dump folder
@@ -26,6 +32,10 @@ docker cp mongodb:/${BACKUP_PATH_MONGO}/. ${DB_BACKUP_PATH}/instant_dump/"
 # dump images from backend
 ssh ${SERVER} "docker cp ${DOCKER_CONTAINER_SERVER}:/${IMAGE_PATH_SERVER} ${DB_BACKUP_PATH}/instant_dump/IMAGE_BACKUP/
 "
+
+# Check and create directories
+check_and_create_dir "../backup_local_dev/db_backup/"
+check_and_create_dir "../backup_local_dev/image_backup/"
 
 #copy files to local pc
 scp -r ${SERVER}:${DB_BACKUP_PATH}/instant_dump/${DB_NAME}/ ../backup_local_dev/db_backup/

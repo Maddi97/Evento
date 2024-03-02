@@ -83,7 +83,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   searchForLocationInput() {
     const address = this.sanitizeInput(this.address);
 
-    this.positionService.getPositionByInput(address).subscribe(() => {
+    this.positionService.getPositionByInput(address).then(() => {
       this.resetCenter();
     });
   }

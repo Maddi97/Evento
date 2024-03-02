@@ -112,7 +112,7 @@ export class EventViewComponent implements OnInit {
           // upload image
           const formdata = event.fd;
           delete event.fd;
-          if (formdata !== undefined) {
+          if (formdata) {
             const fullEventImagePath = this.eventImagePath + event._id;
             formdata.append("eventImagePath", fullEventImagePath);
             this.fileService
@@ -120,19 +120,30 @@ export class EventViewComponent implements OnInit {
               .pipe(
                 map((uploadImageResponse) => {
                   event.eventImagePath = uploadImageResponse.eventImage.path;
+                }),
+                switchMap(() =>
                   this.eventService.updateEvent(
                     event._organizerId,
                     event._id,
                     event
-                  );
-                })
+                  )
+                )
               )
-              .subscribe();
+              .subscribe({
+                next: (event) => {
+                  this.snackbar.openSnackBar(
+                    "Successfully updated Event: " + event.name,
+                    "success"
+                  );
+                },
+                error: (error) => {
+                  this.snackbar.openSnackBar(error.message, "error");
+                },
+                complete: () => {
+                  console.log("complete");
+                },
+              });
           }
-          this.snackbar.openSnackBar(
-            "Successfully updated Event: " + event.name,
-            "success"
-          );
         })
       )
       .subscribe();

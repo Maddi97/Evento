@@ -1,163 +1,40 @@
-<div class="confirm-buttons top" *ngIf="page === 'crawler'">
-  <button
-    mat-raised-button
-    color="primary"
-    (click)="updateEventId ? emitUpdateEvent() : emitAddNewEvent()"
-    [disabled]="checkDisabled()"
-  >
-    {{ updateEventId ? "Update" : "Submit" }}
-  </button>
-  <button mat-raised-button color="accent" (click)="nullFormField()">
-    Clear
-  </button>
-</div>
-<div class="event-form-container">
+@if (page==='crawler') {
+<app-form-submition-buttons
+  [confirmButtonLabel]="updateEventId ? 'Update' : 'Submit'"
+  [isDisabled]="eventForm.invalid"
+  (emitConfirm)="submitForm()"
+  (emitClear)="resetForm()"
+></app-form-submition-buttons>
+}
+<form class="form-container" [formGroup]="eventForm">
   <app-autocomplete-organizer
+    [organizerName]="eventForm.get('organizerName').value"
     (emitOrganizer)="insertInformationFromOrganizer($event)"
   ></app-autocomplete-organizer>
-  <form class="form-container" [formGroup]="eventForm">
-    <mat-form-field appearance="fill" class="event-name">
-      <mat-label>Event Name</mat-label>
-      <input matInput required formControlName="name" />
-      <mat-error *ngIf="eventForm.get('name').hasError('required')"
-        >Event name is required</mat-error
-      >
-      <mat-error *ngIf="eventForm.get('name').hasError('minlength')"
-        >Event name minlength is 3</mat-error
-      >
-    </mat-form-field>
-
-    <app-address-form></app-address-form>
-
-    <app-category-select></app-category-select>
-
-    <app-event-additional-information-form></app-event-additional-information-form>
-
-    <div class="radio-group-permanent-event">
-      <label id="permanent-radio-group-label">Is event permanent?</label>
-      <mat-radio-group
-        formControlName="permanent"
-        (ngModelChange)="isPermanentChange()"
-      >
-        <mat-radio-button value="true">Yes</mat-radio-button>
-        <mat-radio-button value="false">No</mat-radio-button>
-      </mat-radio-group>
-      <div *ngIf="this.isPermanent === 'true'">
-        Permanent, but not 24/open?
-        <mat-checkbox
-          [checked]="hasUnkownOpeningTimes"
-          (change)="hasUnkownOpeningTimes = !hasUnkownOpeningTimes"
-        >
-        </mat-checkbox>
-      </div>
-    </div>
-
-    <div class="is-permanent" *ngIf="isPermanent === 'false'">
-      <div class="is-event-frequent">
-        <mat-checkbox
-          [checked]="isFrequent"
-          (change)="
-            isFrequent = !isFrequent;
-            !isFrequent ? emitFrequency(undefined) : null
-          "
-          >Frequent Event
-        </mat-checkbox>
-      </div>
-      <div class="frequency-form" *ngIf="isFrequent">
-        <app-event-frequency-form
-          [frequencyIn]="frequency"
-          (emitFrequency)="emitFrequency($event)"
-        ></app-event-frequency-form>
-      </div>
-      <mat-form-field appearance="fill">
-        <mat-label>Enter a date range</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-          <input
-            matStartDate
-            formControlName="start"
-            placeholder="Start date"
-          />
-          <input matEndDate formControlName="end" placeholder="End date" />
-        </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
-    </div>
-
-    <div class="time">
-      <div class="start">
-        <span>Start :</span>
-        <div class="ngx-timepicker-field-example">
-          <ngx-timepicker-field
-            #startTime
-            [formControl]="times.start"
-            [format]="24"
-            [defaultTime]="'00:00'"
-          >
-          </ngx-timepicker-field>
-        </div>
-      </div>
-      <div class="end" *ngIf="isEndTime">
-        <span>Ende:</span>
-        <div class="ngx-timepicker-field-example">
-          <ngx-timepicker-field
-            #endTime
-            [formControl]="times.end"
-            [format]="24"
-            [defaultTime]="'00:00'"
-          >
-          </ngx-timepicker-field>
-        </div>
-      </div>
-      <div class="has-event-end-time">
-        <mat-checkbox
-          [checked]="isEndTime"
-          (change)="
-            isEndTime = !isEndTime; !isEndTime ? emitEndTime(undefined) : null
-          "
-        >
-        </mat-checkbox>
-      </div>
-    </div>
-    <div class="image-upload">
-      <div class="image-upload text">
-        Select event image:
-        <input
-          class="image-upload input"
-          type="file"
-          #imageUpload
-          (input)="iconChosen($event)"
-        />
-      </div>
-    </div>
-    <div class="is-event-props">
-      <div class="is-event-hot">
-        <mat-checkbox [checked]="isHot" (change)="isHot = !isHot"
-          >Hot
-        </mat-checkbox>
-      </div>
-      <div class="is-event-promotion">
-        <mat-checkbox
-          [checked]="isPromotion"
-          (change)="isPromotion = !isPromotion"
-          >Promotion
-        </mat-checkbox>
-      </div>
-    </div>
-  </form>
-
-  <div class="confirm-buttons bottom">
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="updateEventId ? emitUpdateEvent() : emitAddNewEvent()"
-      [disabled]="checkDisabled()"
+  <mat-form-field appearance="fill" class="event-name">
+    <mat-label>Event Name</mat-label>
+    <input matInput required formControlName="name" />
+    <mat-error *ngIf="eventForm.get('name').hasError('required')"
+      >Event name is required</mat-error
     >
-      {{ updateEventId ? "Update" : "Submit" }}
-    </button>
-    <button mat-raised-button color="accent" (click)="nullFormField()">
-      Clear
-    </button>
-  </div>
-  <div class="crawl-events"></div>
-</div>
+    <mat-error *ngIf="eventForm.get('name').hasError('minlength')"
+      >Event name minlength is 3</mat-error
+    >
+  </mat-form-field>
+
+  <app-address-form></app-address-form>
+  <app-category-select></app-category-select>
+  <app-event-additional-information-form></app-event-additional-information-form>
+  <app-event-dates-form></app-event-dates-form>
+  <app-event-times-form></app-event-times-form>
+  <app-select-files-form></app-select-files-form>
+  <app-event-feature-flags-form></app-event-feature-flags-form>
+</form>
+
+<app-form-submition-buttons
+  [confirmButtonLabel]="updateEventId ? 'Update' : 'Submit'"
+  [isDisabled]="eventForm.invalid"
+  (emitConfirm)="submitForm()"
+  (emitClear)="resetForm()"
+></app-form-submition-buttons>
+<button (click)="test()">Test</button>

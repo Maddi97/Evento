@@ -110,7 +110,7 @@ const EventSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     default: undefined,
   },
-  geoData: {
+  coordinates: {
     lat: {
       type: String,
     },

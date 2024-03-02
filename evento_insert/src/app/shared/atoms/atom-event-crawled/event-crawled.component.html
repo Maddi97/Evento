@@ -45,9 +45,9 @@
     </span>
     <span
       class="event-property"
-      *ngIf="eventIn.geoData.lat || eventIn.geoData.lon"
+      *ngIf="eventIn.coordinates.lat || eventIn.coordinates.lon"
     >
-      Geo Data: {{ eventIn.geoData | json }}
+      Geo Data: {{ eventIn.coordinates | json }}
     </span>
   </div>
 </div>
