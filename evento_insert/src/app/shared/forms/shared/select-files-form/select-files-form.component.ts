@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  Input,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -28,6 +29,8 @@ import {
   ],
 })
 export class SelectFilesFormComponent implements OnInit, OnDestroy {
+  @Input({ required: true }) formControlRegisterName: string;
+
   parentContainer = inject(ControlContainer);
   formDataControl = new FormControl(null);
 
@@ -36,16 +39,21 @@ export class SelectFilesFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.parentFormGroup.addControl("fd", this.formDataControl);
-    this.parentFormGroup.get("fd").valueChanges.subscribe((value) => {
-      if (!value) {
-        this.reset();
-      }
-    });
+    this.parentFormGroup.addControl(
+      this.formControlRegisterName,
+      this.formDataControl
+    );
+    this.parentFormGroup
+      .get(this.formControlRegisterName)
+      .valueChanges.subscribe((value) => {
+        if (!value) {
+          this.reset();
+        }
+      });
   }
 
   ngOnDestroy() {
-    this.parentFormGroup.removeControl("fd");
+    this.parentFormGroup.removeControl(this.formControlRegisterName);
   }
 
   selectFile(file: File) {

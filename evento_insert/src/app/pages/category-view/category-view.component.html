@@ -1,120 +1,18 @@
 <div class="category-view-container">
+  <app-category-form
+    [type]="'Category'"
+    [categoryIn]="updateCategoryObject"
+    (addNewCategory)="addNewCategory($event)"
+  ></app-category-form>
 
-    <div class="add-category-form">
-        <mat-form-field appearance="fill">
-            <mat-label *ngIf="!update">Add Category</mat-label>
-            <mat-label *ngIf="update">Update Category</mat-label>
-
-            <input matInput #target required="true" minlength="2" [formControl]="categoryName"
-                (keydown.enter)="!update ? addNewCategory() :  updateCategory(); target.value = ''">
-            <mat-error *ngIf="categoryName.invalid">Category name minimum length is 2</mat-error>
-        </mat-form-field>
-         <div class="weight">
-            <mat-form-field appearance="fill">
-                <mat-label>Add Category Alias</mat-label>
-                <input matInput #target [formControl]="currentAlias"
-                    (keydown.enter)="addAlias(currentAlias.value)">
-            </mat-form-field>
-             <app-selection-list [listTitle]="'Alias'" [namesList]="alias" 
-                    (updatedNamesList)="alias = $event"></app-selection-list>
-        </div>
-        <div class="weight">
-            <mat-form-field appearance="fill">
-                <mat-label>Weight: 0 - 100</mat-label>
-                <input matInput #target [formControl]="weightFormValue"
-                    (keydown.enter)="!update ? addNewCategory() :  updateCategory(); target.value = '0'">
-            </mat-form-field>
-        </div>
-        <img *ngIf="update" class="category-icon" [src]="updateCategoryObject.iconTemporaryURL">
-
-        <div class='image-upload'>Select category icon: <input class="input" type='file' #iconUpload
-                (input)=iconChosen($event)></div>
-        <div class='image-upload'>Select category stock foto: <input class="input" type='file' #stockFotoUpload
-                (input)=stockImageChosen($event)>
-        </div>
-
-        <button *ngIf="!update" class="add-button" mat-raised-button color="primary" (click)="addNewCategory()">Add
-            Category</button>
-        <button class="add-button update-category-button" mat-raised-button color="primary" *ngIf="update"
-            (click)="updateCategory()">Update Category
-        </button>
-    </div>
-
-    <div class="category-container">
-        <div class="category-headline">Categories</div>
-        <div class="category-panel-collection" *ngFor="let category of categories">
-            <mat-accordion>
-                <div class="category-panel">
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                {{category.name}}
-                                <img class="category-icon" [src]="category.iconTemporaryURL">
-                                <img class="category-icon" [src]="category.stockImageTemporaryURL">
-                            </mat-panel-title>
-                            <div class="category-edit-button"
-                                (click)="$event.stopPropagation(); editCategoryClicked(category)">
-                                Edit
-                            </div>
-                            <div class="category-delete-button" (click)="deleteCategory(category)">
-                                Delete
-                            </div>
-                        </mat-expansion-panel-header>
-
-                        <div class="subcategory-container">
-                            <mat-card appearance="outlined" class="subcategory-form">
-                                <mat-form-field appearance="fill">
-                                    <mat-label>Add Subcategory</mat-label>
-                                    <input matInput #target required="true" [formControl]="subcategoryName"
-                                        (keydown.enter)="!updateSub ? addNewSubcategory(category) : updateSubcategory(category); target.value = '' ">
-                                    <mat-error *ngIf="subcategoryName.invalid">Subcategory name minimum length is 2
-                                    </mat-error>
-                                </mat-form-field>
-                                <div class="weight-subcategory">
-                                    <mat-form-field appearance="fill">
-                                        <mat-label>Weight: 0 - 100</mat-label>
-                                        <input matInput #target [formControl]="weightFormValueSubcat"
-                                            (keydown.enter)="!update ? addNewCategory() :  updateCategory(); target.value = '0'">
-                                    </mat-form-field>
-                                </div>
-                                <div class='image-upload'>Select category icon: <input class="input" type='file'
-                                        #iconUpload (input)=iconChosen($event)>
-                                </div>
-                                <div class='image-upload'>Select category stock foto: <input class="input" type='file'
-                                        #stockFotoUpload (input)=stockImageChosen($event)>
-                                </div>
-                                <button *ngIf="!updateSub" class="add-button" mat-raised-button color="primary"
-                                    (click)="addNewSubcategory(category)">Add Subcategory
-                                </button>
-                                <button *ngIf="updateSub" (click)="updateSubcategory(category)">Update
-                                    Subcategory</button>
-
-                            </mat-card>
-                        </div>
-
-                        <div class="subcategory-panel-collection" *ngFor="let sub of category.subcategories ">
-                            <div class="subcategory-panel">
-                                <div (click)="this.clickSubcategory(sub._id)">
-                                    {{sub.name}}
-                                    <img class="category-icon" [src]="sub.iconTemporaryURL">
-                                    <img class="category-icon" [src]="sub.stockImageTemporaryURL">
-
-                                </div>
-                                <button class="category-edit-button"
-                                    (click)="$event.stopPropagation(); editSubcategoryClicked(category, sub)">Edit
-                                </button>
-                                <div class="category-delete-button"
-                                    (click)="deleteSubcategory(category, sub).subscribe()">
-                                    Delete
-                                </div>
-                            </div>
-                        </div>
-                    </mat-expansion-panel>
-                </div>
-
-            </mat-accordion>
-        </div>
-    </div>
-    <div>
-    </div>
+  <div class="category-container">
+    <div class="category-headline">Categories</div>
+    @for(category of categories; track category){
+    <app-category-expansion-panel
+      [categoryIn]="category"
+      (deleteCategory)="deleteCategory($event)"
+      (editCategory)="updateCategoryObject = $event"
+    ></app-category-expansion-panel>
+    }
+  </div>
 </div>

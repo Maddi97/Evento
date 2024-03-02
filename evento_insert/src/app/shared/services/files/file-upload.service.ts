@@ -66,7 +66,7 @@ export class FileUploadService {
   }
 
   downloadFile(path: string): Observable<Blob> {
-    const obs = this.webService.get_file("downloadFile", { path }).pipe(
+    const obs = this.webService.downloadFile("downloadFile", { path }).pipe(
       map((r) => r as unknown as any),
       catchError((error: any) => {
         console.error("an error occurred", error);
@@ -75,7 +75,6 @@ export class FileUploadService {
       shareReplay(1),
       share()
     );
-    obs.toPromise().then((response: any) => {});
     return obs;
   }
 

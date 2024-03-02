@@ -248,7 +248,6 @@ router.post(
 router.post("/downloadFile", limiter, function (req, res) {
   try {
     const filePath = req.body.path;
-
     // Validate file path
     if (!filePath) {
       return res.status(400).json({ error: "File path is required." });

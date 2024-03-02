@@ -18,7 +18,9 @@
 
     <app-organizer-additional-info-form></app-organizer-additional-info-form>
 
-    <app-select-files-form></app-select-files-form>
+    <app-select-files-form
+      [formControlRegisterName]="'fd'"
+    ></app-select-files-form>
 
     <mat-checkbox [formControl]="isOpeningTimesRequired"
       >Opening times required?

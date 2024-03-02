@@ -1,0 +1,38 @@
+.subcategory-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 2rem;
+  background-color: rgb(214 214 214);
+  margin-bottom: 0.2rem;
+  border-radius: 5px;
+}
+.subcategory-panel > label {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 12px;
+  width: 50%;
+}
+
+.category-edit-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  background-color: blue;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.category-delete-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  background-color: red;
+  border-radius: 5px;
+  cursor: pointer;
+}

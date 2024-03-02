@@ -165,11 +165,11 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
         // If neither should be promoted, compare by distance
         else {
           const distance1 = get_distance(
-            [ev1.geoData.lat, ev1.geoData.lon],
+            [ev1.coordinates.lat, ev1.coordinates.lon],
             userPosition
           );
           const distance2 = get_distance(
-            [ev2.geoData.lat, ev2.geoData.lon],
+            [ev2.coordinates.lat, ev2.coordinates.lon],
             userPosition
           );
           return distance1 - distance2;

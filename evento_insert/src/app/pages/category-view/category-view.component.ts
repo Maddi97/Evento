@@ -19,7 +19,8 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatAccordion, MatExpansionModule } from "@angular/material/expansion";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
-
+import { CategoryFormComponent } from "@shared/forms/category/category-form/category-form.component";
+import { CategoryExpansionPanelComponent } from "@shared/molecules/category-expansion-panel/category-expansion-panel.component";
 // constants
 const TYPE_ADD = "add";
 const TYPE_UPDATE = "update";
@@ -40,33 +41,19 @@ const TYPE_SUBCATEGORY = "subcategory";
     MatAccordion,
     MatExpansionModule,
     MatButtonModule,
+    CategoryFormComponent,
+    CategoryExpansionPanelComponent,
   ],
   templateUrl: "./category-view.component.html",
   styleUrls: ["./category-view.component.css"],
 })
 export class CategoryViewComponent implements OnInit {
-  @ViewChild("iconUpload")
-  inputCat: ElementRef;
-  @ViewChild("stockFotoUpload")
-  inputCat2: ElementRef;
-
-  @ViewChild("iconUploadSubcat")
-  inputSubcat: ElementRef;
-  @ViewChild("stockFotoUploadSubcat")
-  inputUpdateSubcat: ElementRef;
+  @ViewChild(CategoryFormComponent)
+  categoryFormComponent: CategoryFormComponent;
 
   stockImagePath = "images/category_stockImages/";
   iconPath = "images/category_icons/";
 
-  categoryName = new FormControl("");
-  weightFormValue = new FormControl("0", [
-    Validators.min(0),
-    Validators.max(100),
-  ]);
-  alias: string[] = [];
-  currentAlias = new FormControl("");
-  weightFormValueSubcat = new FormControl("0");
-  subcategoryName = new FormControl("");
   categories: Category[];
   category$;
   updateCategory$;
@@ -89,14 +76,13 @@ export class CategoryViewComponent implements OnInit {
   constructor(
     private categoryService: CategoryService,
     private fileService: FileUploadService,
-    private sanitizer: DomSanitizer,
     private _snackbar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.category$ = this.categoryService.getCategories().pipe(
       map((cat) => {
-        this.downloadImage(cat);
+        //this.downloadImage(cat);
         this.categories = cat;
       })
     );
@@ -221,29 +207,24 @@ export class CategoryViewComponent implements OnInit {
     );
 
   // functions
-  addNewCategory(): void {
-    if (this.check_if_icon_and_stock_foto_valid(TYPE_ADD)) {
-      const category = new Category();
-      category.name = this.categoryName.value;
-      category.weight = this.weightFormValue.value;
-      this.completeAddCategory$(category).subscribe({
-        complete: () => {
-          this.openSnackBar(
-            "Successfully uploaded category: " + category.name,
-            "success"
-          );
-          this.resetForms();
-        },
-        error: (err) => this.openSnackBar("An error occurred: " + err, "error"),
-      });
-    }
+  addNewCategory(category): void {
+    console.log(category);
+    // if (this.check_if_icon_and_stock_foto_valid(TYPE_ADD)) {
+    this.completeAddCategory$(category).subscribe({
+      complete: () => {
+        this.openSnackBar(
+          "Successfully uploaded category: " + category.name,
+          "success"
+        );
+        this.resetForm();
+      },
+      error: (err) => this.openSnackBar("An error occurred: " + err, "error"),
+    });
+    // }
   }
 
-  addNewSubcategory(category: Category): void {
+  addNewSubcategory(category: Category, subcategory: Subcategory): void {
     if (this.check_if_icon_and_stock_foto_valid(TYPE_ADD)) {
-      const subcategory = new Subcategory();
-      subcategory.name = this.subcategoryName.value;
-      subcategory.weight = this.weightFormValueSubcat.value;
       category.subcategories.push(subcategory);
       this.completeAddSubcategory$(category, subcategory).subscribe({
         complete: () => {
@@ -251,21 +232,17 @@ export class CategoryViewComponent implements OnInit {
             "Successfully uploaded subcategory: " + subcategory.name,
             "success"
           );
-          this.resetForms();
+          this.resetForm();
         },
         error: (err) => this.openSnackBar("An error occurred: " + err, "error"),
       });
     }
   }
 
-  updateCategory() {
+  updateCategory(category: Category) {
     if (!this.check_if_icon_and_stock_foto_valid(TYPE_UPDATE)) {
       return;
     }
-
-    const category = this.updateCategoryObject;
-    category.name = this.categoryName.value;
-    category.weight = this.weightFormValue.value;
 
     if (this.icon && !this.stockImage) {
       const categoryImagePath = this.iconPath + category._id;
@@ -279,7 +256,7 @@ export class CategoryViewComponent implements OnInit {
             "Successfully uploaded category: " + category.name,
             "success"
           );
-          this.resetForms();
+          this.resetForm();
         },
 
         error: (err) => this.openSnackBar("An error occurred: " + err, "error"),
@@ -297,7 +274,7 @@ export class CategoryViewComponent implements OnInit {
             "Successfully uploaded category: " + category.name,
             "success"
           );
-          this.resetForms();
+          this.resetForm();
         },
 
         error: (err) => this.openSnackBar("An error occurred: " + err, "error"),
@@ -324,7 +301,7 @@ export class CategoryViewComponent implements OnInit {
             "Successfully uploaded category: " + category.name,
             "success"
           );
-          this.resetForms();
+          this.resetForm();
         },
 
         error: (err) => this.openSnackBar("An error occurred: " + err, "error"),
@@ -338,18 +315,14 @@ export class CategoryViewComponent implements OnInit {
           ),
         (err) => this.openSnackBar("An error occurred: " + err, "error")
       );
-      this.resetForms();
+      this.resetForm();
     }
   }
 
-  updateSubcategory(category) {
+  updateSubcategory(category: Category, subcategory: Subcategory) {
     if (!this.check_if_icon_and_stock_foto_valid(TYPE_UPDATE)) {
       return;
     }
-    const updateCategory = category;
-    const subcategory = this.updateSubcategoryObject;
-    subcategory.name = this.subcategoryName.value;
-    subcategory.weight = this.weightFormValueSubcat.value;
     if (this.icon && !this.stockImage) {
       this.uploadIconUpdateSubcategory$(category, subcategory).subscribe({
         complete: () => {
@@ -357,7 +330,7 @@ export class CategoryViewComponent implements OnInit {
             "Successfully uploaded subcategory: " + subcategory.name,
             "success"
           );
-          this.resetForms();
+          this.resetForm();
         },
         error: (err) => this.openSnackBar("An error occurred: " + err, "error"),
       });
@@ -369,7 +342,7 @@ export class CategoryViewComponent implements OnInit {
             "Successfully uploaded subcategory: " + subcategory.name,
             "success"
           );
-          this.resetForms();
+          this.resetForm();
         },
         error: (err) => this.openSnackBar("An error occurred: " + err, "error"),
       });
@@ -384,13 +357,12 @@ export class CategoryViewComponent implements OnInit {
             "Successfully uploaded subcategory: " + subcategory.name,
             "success"
           );
-          this.resetForms();
+          this.resetForm();
         },
         error: (err) => this.openSnackBar("An error occurred: " + err, "error"),
       });
     } else if (!this.icon && !this.stockImage) {
-      console.log(updateCategory);
-      this.updateCategory$(updateCategory._id, updateCategory).subscribe(
+      this.updateCategory$(category._id, category).subscribe(
         (categoryResponse) =>
           this.openSnackBar(
             "Successfully uploaded category: " + categoryResponse.name,
@@ -398,7 +370,7 @@ export class CategoryViewComponent implements OnInit {
           ),
         (err) => this.openSnackBar("An error occurred: " + err, "error")
       );
-      this.resetForms();
+      this.resetForm();
     }
   }
 
@@ -435,7 +407,7 @@ export class CategoryViewComponent implements OnInit {
     const valid = false;
     if (this.icon && this.icon.size > this.uploadedIconSize) {
       this.openSnackBar("Icon size too big!", "error");
-      this.resetForms();
+      this.resetForm();
       return valid;
     }
     if (this.icon && !this.allowedImageTypes.includes(this.icon.type)) {
@@ -443,12 +415,12 @@ export class CategoryViewComponent implements OnInit {
         "File type of icon " + this.icon.type + " is not allowed",
         "error"
       );
-      this.resetForms();
+      this.resetForm();
       return valid;
     }
     if (this.stockImage && this.stockImage.size > this.uploadedStockImageSize) {
       this.openSnackBar("Stock foto size too big!", "error");
-      this.resetForms();
+      this.resetForm();
       return valid;
     }
     if (
@@ -459,7 +431,7 @@ export class CategoryViewComponent implements OnInit {
         "File type " + this.icon.type + " is not allowed for stock foto",
         "error"
       );
-      this.resetForms();
+      this.resetForm();
       return valid;
     }
     if (type === TYPE_ADD) {
@@ -468,7 +440,7 @@ export class CategoryViewComponent implements OnInit {
           "No image uploaded, but its necessary for a category!",
           "error"
         );
-        this.resetForms();
+        this.resetForm();
         return valid;
       }
       if (!this.stockImage) {
@@ -476,7 +448,7 @@ export class CategoryViewComponent implements OnInit {
           "No image uploaded, but its necessary for a category!",
           "error"
         );
-        this.resetForms();
+        this.resetForm();
         return valid;
       }
     }
@@ -548,97 +520,6 @@ export class CategoryViewComponent implements OnInit {
     }
   }
 
-  iconChosen(event: any) {
-    if (event.target.value) {
-      this.icon = event.target.files[0] as File;
-      this.chosen = true;
-    }
-  }
-
-  stockImageChosen(event: any) {
-    if (event.target.value) {
-      this.stockImage = event.target.files[0] as File;
-      // this.chosen = true
-    }
-  }
-
-  downloadImage(categories) {
-    categories.forEach((cat) => {
-      if (cat.iconPath !== undefined) {
-        if (cat.iconTemporaryURL === undefined) {
-          this.fileService.downloadFile(cat.iconPath).subscribe((imageData) => {
-            // create temporary Url for the downloaded image and bypass security
-            const unsafeImg = URL.createObjectURL(imageData);
-            cat.iconTemporaryURL =
-              this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-          });
-          this.fileService
-            .downloadFile(cat.stockImagePath)
-            .subscribe((imageData) => {
-              // create temporary Url for the downloaded image and bypass security
-              const unsafeImg = URL.createObjectURL(imageData);
-              cat.stockImageTemporaryURL =
-                this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-            });
-        }
-      }
-      if (cat.subcategories.length > 0) {
-        cat.subcategories.forEach((sub) => {
-          if (sub.iconPath !== undefined) {
-            if (sub.iconTemporaryURL === undefined) {
-              this.fileService
-                .downloadFile(sub.iconPath)
-                .subscribe((imageData) => {
-                  // create temporary Url for the downloaded image and bypass security
-                  const unsafeImg = URL.createObjectURL(imageData);
-                  sub.iconTemporaryURL =
-                    this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-                });
-              this.fileService
-                .downloadFile(sub.stockImagePath)
-                .subscribe((imageData) => {
-                  // create temporary Url for the downloaded image and bypass security
-                  const unsafeImg = URL.createObjectURL(imageData);
-                  sub.stockImageTemporaryURL =
-                    this.sanitizer.bypassSecurityTrustResourceUrl(unsafeImg);
-                });
-            }
-          }
-        });
-      }
-    });
-  }
-
-  clickSubcategory(id) {
-    if (id === this.clickedSubcategory) {
-      this.clickedSubcategory = 0;
-    } else {
-      this.clickedSubcategory = id;
-    }
-  }
-
-  editCategoryClicked(category) {
-    const value =
-      this.categoryName.value !== category.name ? category.name : "";
-    const weight =
-      this.weightFormValue.value !== category.weight ? category.weight : "0";
-    this.update = !this.update;
-    this.updateCategoryObject = category;
-    this.categoryName.setValue(value);
-    this.weightFormValue.setValue(weight);
-  }
-
-  editSubcategoryClicked(category, sub) {
-    const value = this.subcategoryName.value !== sub.name ? sub.name : "";
-    const weight =
-      this.weightFormValueSubcat.value !== sub.weight ? sub.weight : "0";
-
-    this.updateSub = !this.updateSub;
-    this.updateSubcategoryObject = sub;
-    this.subcategoryName.setValue(value);
-    this.weightFormValueSubcat.setValue(weight);
-  }
-
   openSnackBar(message, state) {
     this._snackbar.open(message, "", {
       duration: 3000,
@@ -648,24 +529,7 @@ export class CategoryViewComponent implements OnInit {
     });
   }
 
-  resetForms() {
-    this.categoryName.reset();
-    this.weightFormValue.reset();
-    this.subcategoryName.reset();
-    this.weightFormValueSubcat.reset();
-    this.icon = null;
-    this.stockImage = null;
-    this.inputCat.nativeElement.value = "";
-    this.inputCat2.nativeElement.value = "";
-    this.updateCategoryObject = null;
-    this.update = false;
-    this.updateSubcategoryObject = null;
-    this.updateSub = false;
-  }
-  addAlias(alias: string) {
-    console.log(alias);
-    if (this.alias.find((name) => name === alias)) {
-      this.alias = this.alias.filter((name) => name !== alias);
-    } else this.alias.push(alias);
+  resetForm() {
+    this.categoryFormComponent.resetForm();
   }
 }

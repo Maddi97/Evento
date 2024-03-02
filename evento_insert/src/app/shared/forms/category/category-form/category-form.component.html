@@ -1,0 +1,29 @@
+<form [formGroup]="categoryForm">
+  <mat-form-field>
+    <mat-label>{{ categoryIn ? "Update" : "Add" }} Category</mat-label>
+    <input
+      matInput
+      placeholder="Category Name"
+      name="name"
+      required
+      formControlName="name"
+    />
+  </mat-form-field>
+  <app-category-additional-info-form></app-category-additional-info-form>
+  <app-category-alias-form></app-category-alias-form>
+  <label>Category Icon</label>
+  <app-select-files-form
+    [formControlRegisterName]="'iconFd'"
+  ></app-select-files-form>
+  <label>Stock Photo</label>
+  <app-select-files-form
+    [formControlRegisterName]="'stockPhotoFd'"
+  ></app-select-files-form>
+</form>
+<app-form-submition-buttons
+  [confirmButtonLabel]="categoryIn ? 'Update' : 'Submit'"
+  [isDisabled]="categoryForm.invalid"
+  (emitConfirm)="submitForm()"
+  (emitClear)="resetForm()"
+></app-form-submition-buttons>
+<button (click)="test()">test</button>

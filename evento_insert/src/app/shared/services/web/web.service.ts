@@ -21,7 +21,7 @@ export class WebService {
     return this.http.post(`${this.ROOT_URL}/${uri}`, payload);
   }
 
-  get_file(uri: string, payload: object) {
+  downloadFile(uri: string, payload: object) {
     return this.http.post(`${this.ROOT_URL}/${uri}`, payload, {
       responseType: "blob",
     });

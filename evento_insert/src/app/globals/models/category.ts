@@ -14,7 +14,7 @@ export class Subcategory {
   _id: string;
   name: string;
   alias: string[];
-  weight: string;
+  weight: string = "0";
   iconTemporaryURL: string;
   iconPath: string;
   stockImageTemporaryURL: string;

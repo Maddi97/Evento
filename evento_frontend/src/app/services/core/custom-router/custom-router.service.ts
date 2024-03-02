@@ -103,10 +103,10 @@ export class CustomRouterService {
             ? this.categoryList.find((c: Category) => c._id === category)
             : this.categoryList[0];
         }
-        const subcategoryIds = category.subcategories
+        const subcategoryIds = category?.subcategories
           ?.filter((s: Subcategory) => queryParams.subcategory?.includes(s._id))
           .map((s: Subcategory) => s._id);
-        const categoryId = category._id;
+        const categoryId = category?._id;
 
         return [date, categoryId, subcategoryIds || []];
       })
