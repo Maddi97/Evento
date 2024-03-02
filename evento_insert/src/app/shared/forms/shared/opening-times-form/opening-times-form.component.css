@@ -1,0 +1,20 @@
+.opening-times-form {
+  display: flex;
+  flex-direction: column;
+}
+form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+form > p {
+  width: 100px;
+}
+
+.opening-times {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}

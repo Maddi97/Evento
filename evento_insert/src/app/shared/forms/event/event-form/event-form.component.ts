@@ -14,7 +14,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { catchError, map } from "rxjs/operators";
 
 // import models
 import { Event } from "@globals/models/event";
