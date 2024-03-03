@@ -5,7 +5,7 @@ import { Organizer } from "@globals/models/organizer";
 import { OrganizerService } from "@shared/services/organizer/organizer.web.service";
 
 import { DomSanitizer } from "@angular/platform-browser";
-import { CategoryService } from "@shared/services/category/category.service";
+import { CategoryService } from "@shared/services/category/category.web.service";
 import { OrganizerObservableService } from "@shared/services/organizer/organizer.observable.service";
 import { SnackbarService } from "@shared/services/utils/snackbar.service";
 import { FileUploadService } from "@shared/services/files/file-upload.service";

@@ -6,7 +6,7 @@ import { Category } from "@globals/models/category";
 import { Event } from "@globals/models/event";
 import { Organizer } from "@globals/models/organizer";
 import { ExpansionPanelComponent } from "@shared/molecules/expansion-panel/expansion-panel.component";
-import { CategoryService } from "@shared/services/category/category.service";
+import { CategoryService } from "@shared/services/category/category.web.service";
 import { EventsObservableService } from "@shared/services/events/events.observable.service";
 import { EventsService } from "@shared/services/events/events.web.service";
 import { FileUploadService } from "@shared/services/files/file-upload.service";

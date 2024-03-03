@@ -3,6 +3,7 @@
     [type]="'Category'"
     [categoryIn]="updateCategoryObject"
     (addNewCategory)="addNewCategory($event)"
+    (updateCategory)="updateCategory($event)"
   ></app-category-form>
 
   <div class="category-container">
@@ -12,6 +13,9 @@
       [categoryIn]="category"
       (deleteCategory)="deleteCategory($event)"
       (editCategory)="updateCategoryObject = $event"
+      (addNewSubategory)="addNewSubcategory(category, $event)"
+      (updateSubcategory)="updateSubcategory(category, $event)"
+      (deleteSubcategory)="deleteSubcategory(category, $event).subscribe()"
     ></app-category-expansion-panel>
     }
   </div>

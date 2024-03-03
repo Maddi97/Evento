@@ -32,127 +32,42 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post(
-  "/uploadCategoryFiles",
+  "/uploadCategoryImage",
   upload.array("files"),
   limiter,
   function (req, res, next) {
-    destinationIcon = req.body.file_path;
-    let icon = undefined;
-    //in case update updates only stockImage the Icon stays undefined
-    if (destinationIcon !== undefined) {
-      icon = req.files[0];
-    }
+    const destinationCategoryImage = req.body.categoryImagePath;
+    const categoryImage = req.files[0];
+    console.log(destinationCategoryImage);
+    console.log(categoryImage);
+    fs.mkdirSync(destinationCategoryImage, { recursive: true });
 
-    destinationStockImage = req.body.stockImagePath;
-    let stockImage = undefined;
-    //case both are updated
-    if (destinationStockImage !== undefined && destinationIcon !== undefined) {
-      stockImage = req.files[1];
-    }
-    if (destinationStockImage !== undefined && destinationIcon === undefined) {
-      stockImage = req.files[0];
-    }
-    //check if dest path exists otherwise create
-
-    if (icon !== undefined && stockImage === undefined) {
-      destinationIcon = destinationIcon;
-      fs.mkdirSync(destinationIcon, { recursive: true });
-      //move icon from temp dir to destination
-
-      fs.copyFile(
-        icon.path,
-        path.join(destinationIcon, sanitizeFilename(icon.filename)),
-        function (err) {
-          console.log(err);
-          if (err) {
-            return console.error(err);
-          } else {
-            fs.rm(icon.path, function (err) {
-              if (err) {
-                return console.error(err);
-              }
-              icon.path = path.join(String(destinationIcon), icon.filename);
-              res.json({ icon: icon, stockImage: stockImage });
-            });
-          }
+    //move icon from temp dir to destination
+    fs.copyFile(
+      categoryImage.path,
+      path.join(
+        destinationCategoryImage,
+        sanitizeFilename(categoryImage.filename)
+      ),
+      function (err) {
+        if (err) {
+          res.status(500).json({ message: "File Service Error: ", err });
+          return console.error(err);
+        } else {
+          fs.rm(categoryImage.path, function (err) {
+            if (err) {
+              res.status(500).json({ message: "File Service Error: ", err });
+              return console.error(err);
+            }
+            categoryImage.path = path.join(
+              destinationCategoryImage,
+              categoryImage.filename
+            );
+            res.json({ categoryImage: categoryImage });
+          });
         }
-      );
-    }
-
-    if (stockImage !== undefined && icon === undefined) {
-      destinationStockImage = destinationStockImage;
-
-      fs.mkdirSync(destinationStockImage, { recursive: true });
-      //move icon from temp dir to destination
-      fs.copyFile(
-        stockImage.path,
-        path.join(destinationStockImage, sanitizeFilename(stockImage.filename)),
-        function (err) {
-          if (err) {
-            return console.error(err);
-          } else {
-            fs.rm(stockImage.path, function (err) {
-              if (err) {
-                return console.error(err);
-              }
-              stockImage.path = path.join(
-                String(destinationStockImage),
-                stockImage.filename
-              );
-              res.json({ icon: icon, stockImage: stockImage });
-            });
-          }
-        }
-      );
-    }
-    if (icon !== undefined && stockImage !== undefined) {
-      //check if dest path exists otherwise create
-      fs.mkdirSync(destinationIcon, { recursive: true });
-      //move icon from temp dir to destination
-      fs.copyFile(
-        icon.path,
-        path.join(destinationIcon, sanitizeFilename(icon.filename)),
-        function (err) {
-          if (err) {
-            return console.error(err);
-          } else {
-            fs.rm(icon.path, function (err) {
-              if (err) {
-                return console.error(err);
-              }
-              icon.path = path.join(String(destinationIcon), icon.filename);
-            });
-          }
-        }
-      );
-      destinationStockImage = destinationStockImage;
-
-      fs.mkdirSync(destinationStockImage, { recursive: true });
-
-      //move icon from temp dir to destination
-      fs.copyFile(
-        stockImage.path,
-        path.join(destinationStockImage, stockImage.filename),
-        function (err) {
-          if (err) {
-            res.status(500).json({ message: "File Service Error: ", err });
-            return console.error(err);
-          } else {
-            fs.rm(stockImage.path, function (err) {
-              if (err) {
-                res.status(500).json({ message: "File Service Error: ", err });
-                return console.error(err);
-              }
-              stockImage.path = path.join(
-                String(destinationStockImage),
-                sanitizeFilename(stockImage.filename)
-              );
-              res.json({ icon: icon, stockImage: stockImage });
-            });
-          }
-        }
-      );
-    }
+      }
+    );
   }
 );
 
@@ -248,6 +163,7 @@ router.post(
 router.post("/downloadFile", limiter, function (req, res) {
   try {
     const filePath = req.body.path;
+    console.log(filePath);
     // Validate file path
     if (!filePath) {
       return res.status(400).json({ error: "File path is required." });

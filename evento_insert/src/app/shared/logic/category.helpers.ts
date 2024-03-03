@@ -12,6 +12,7 @@ export const transformFormFieldToCategory = (
     category = new Subcategory();
   }
   console.log(categoryForm.value);
+  console.log("category", category);
   Object.keys(categoryForm.controls).forEach((key) => {
     category[key] = categoryForm.controls[key].value;
   });

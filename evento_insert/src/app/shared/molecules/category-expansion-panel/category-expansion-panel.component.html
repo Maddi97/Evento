@@ -26,11 +26,14 @@
     <app-category-form
       [type]="'Subcategory'"
       [categoryIn]="subcategoryIn"
+      (addNewCategory)="addNewSubategory.emit($event)"
+      (updateCategory)="updateSubcategory.emit($event)"
     ></app-category-form>
     @for(subcategory of categoryIn.subcategories; track subcategory){
     <app-subcategory-panel
       [subcategoryIn]="subcategory"
       (updateSubcategory)="subcategoryIn = $event"
+      (deleteSubcategory)="deleteSubcategory.emit($event)"
     ></app-subcategory-panel>
     }
   </mat-expansion-panel>

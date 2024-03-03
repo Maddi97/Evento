@@ -8,6 +8,8 @@ export class Category {
   stockImageTemporaryURL: string;
   stockImagePath: string;
   subcategories: Subcategory[] = [];
+  iconFd?: FormData;
+  stockPhotoFd?: FormData;
 }
 
 export class Subcategory {
@@ -19,4 +21,6 @@ export class Subcategory {
   iconPath: string;
   stockImageTemporaryURL: string;
   stockImagePath: string;
+  iconFd?: FormData;
+  stockPhotoFd?: FormData;
 }

@@ -7,5 +7,14 @@
       type="file"
       (input)="selectFile($event.target.files[0])"
     />
+    <div class="error" *ngIf="formDataControl.hasError('required')">
+      File is required.
+    </div>
+    <div class="error" *ngIf="formDataControl.hasError('invalidFileType')">
+      Invalid file type.
+    </div>
+    <div class="error" *ngIf="formDataControl.hasError('invalidFileSize')">
+      File size exceeds the limit.
+    </div>
   </div>
 </div>

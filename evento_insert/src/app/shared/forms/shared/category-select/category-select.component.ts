@@ -19,7 +19,7 @@ import {
 import { Observable } from "rxjs";
 import { map, startWith, tap } from "rxjs/operators";
 import { Category, Subcategory } from "@globals/models/category";
-import { CategoryService } from "@shared/services/category/category.service";
+import { CategoryService } from "@shared/services/category/category.web.service";
 import { CommonModule } from "@angular/common";
 import { MatSelectModule } from "@angular/material/select";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";

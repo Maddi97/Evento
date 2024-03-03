@@ -8,114 +8,19 @@
   margin-bottom: 1rem;
 }
 
-.add-category-form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 90%;
-}
-
-.update-category-button {
-  width: 20%;
-  background-color: blue;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 1em;
-}
-
-.category-panel-collection {
-  margin: 1rem;
-}
-
-.category-panel {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.category-edit-button {
-  width: 20%;
-  background-color: blue;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 8px;
-}
-
-.category-delete-button {
-  width: 20%;
-  background-color: red;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 1em;
-}
-
-.subcategory-panel-collection {
-  display: flex;
-  flex-direction: column;
-  border-radius: 10px;
-  border-style: groove;
-  margin: 1rem;
-  width: 85%;
-}
-
-.subcategory-form {
-  box-shadow: 0 0 0 4px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%),
-    0 1px 3px 0 rgb(0 0 0 / 12%) !important;
-}
-
-.upload-buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.category-icon {
-  width: 2rem;
-  height: 100%;
-  padding-left: 1rem;
-}
-
 mat-form-field {
   width: 100%;
 }
 
-.category-container {
-  width: 95%;
-}
-
-.mat-expansion-panel {
-  width: 100%;
-}
-
-.image-upload {
-  display: flex;
-  flex-direction: column;
-  /* justify-content: center; */
-  align-items: center;
-  margin: 0.5rem;
-}
-
-.input {
-  margin-left: 4rem;
-}
-
-.add-button {
-  margin: 1rem;
-}
-
-.category-headline {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin: 0.8rem;
-  font-size: 20px;
-}
-
 @media screen and (min-width: 900px) {
+  app-category-form {
+    width: 45%;
+    margin: 32px;
+    margin-top: 48px;
+  }
+  app-category-expansion-panel {
+    width: 90%;
+  }
   .category-view-container {
     flex-direction: row;
     align-items: flex-start;
@@ -124,9 +29,9 @@ mat-form-field {
   .category-container {
     width: 70%;
     margin: 1rem;
-  }
-
-  .add-category-form {
-    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 }

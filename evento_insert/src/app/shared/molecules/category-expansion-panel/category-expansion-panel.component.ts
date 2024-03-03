@@ -22,6 +22,12 @@ export class CategoryExpansionPanelComponent {
   @Output() editCategory: EventEmitter<Category> = new EventEmitter<Category>();
   @Output() deleteCategory: EventEmitter<Category> =
     new EventEmitter<Category>();
+  @Output() addNewSubategory: EventEmitter<Subcategory> =
+    new EventEmitter<Subcategory>();
+  @Output() updateSubcategory: EventEmitter<Subcategory> =
+    new EventEmitter<Subcategory>();
+  @Output() deleteSubcategory: EventEmitter<Subcategory> =
+    new EventEmitter<Subcategory>();
 
   subcategoryIn: Subcategory;
 }

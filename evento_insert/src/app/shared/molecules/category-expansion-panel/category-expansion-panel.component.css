@@ -3,6 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 12px;
 }
 
 .category-edit-button {
@@ -28,4 +29,8 @@
   border-radius: 5px;
   cursor: pointer;
   margin-right: 1em;
+}
+
+mat-expansion-panel {
+  width: 100%;
 }
