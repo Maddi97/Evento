@@ -11,7 +11,8 @@ RUN npm ci
 
 COPY . /app
 
+RUN npm run build:ssr:prod
+
 EXPOSE 4200
 
-RUN npm run build:ssr:prod
 CMD npm run serve:ssr
