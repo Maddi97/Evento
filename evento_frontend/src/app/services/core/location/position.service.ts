@@ -16,6 +16,7 @@ import {
 } from "rxjs";
 import { NominatimGeoService } from "./nominatim-geo.service";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
+import { CoordinatesArray } from "@globals/types/location.types";
 
 @Injectable({
   providedIn: "root",
@@ -23,7 +24,9 @@ import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 export class PositionService {
   searchedCenter: Array<number>;
   disableCallLocation = false;
-  public positionObservable = new ReplaySubject<Array<number>>(1);
+  public positionObservable = new BehaviorSubject<CoordinatesArray>(
+    DEFAULT_LOCATION
+  );
   public isPositionDefault = new BehaviorSubject<Boolean>(true);
 
   timeout = 8000;
@@ -48,7 +51,10 @@ export class PositionService {
     this.geoService
       .get_geo_data_address(addressInput)
       .then((coordinatesObject) => {
-        const coordinates = [coordinatesObject.lat, coordinatesObject.lon];
+        const coordinates: CoordinatesArray = [
+          coordinatesObject.lat,
+          coordinatesObject.lon,
+        ];
         this.searchedCenter = coordinates;
         this.positionObservable.next(coordinates);
         this.isPositionDefault.next(false);
@@ -74,7 +80,7 @@ export class PositionService {
         map((position) => [position.coords.latitude, position.coords.longitude])
       )
       .subscribe({
-        next: (position) => {
+        next: (position: CoordinatesArray) => {
           console.log("Position requested: ", position);
           this.positionObservable.next(position),
             this.isPositionDefault.next(false);
