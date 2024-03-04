@@ -26,7 +26,7 @@ import { MapCenterViewService } from "@services/core/map-center-view/map-center-
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 import { EventTileListComponent } from "@shared/molecules/event-tile-list/event-tile-list.component";
 import { MapViewComponent } from "@shared/molecules/map-view/map-view.component";
-import moment from "moment-timezone";
+import moment from "moment";
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import {
   Subscription,
@@ -121,7 +121,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.mapView = this.mapCenterViewService.isMapViewObservable.value;
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe({
       next: (isMapView) => {
-        //console.log("Map view next: ", isMapView);
+        console.log("Map view next: ", isMapView);
         this.mapView = isMapView;
       },
     });

@@ -6,9 +6,7 @@ import {
   Inject,
   OnInit,
   PLATFORM_ID,
-  ViewChild,
 } from "@angular/core";
-import { MatCalendar } from "@angular/material/datepicker";
 import { MatIconModule } from "@angular/material/icon";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
@@ -24,8 +22,6 @@ import { map, tap } from "rxjs/operators";
   styleUrls: ["./date-picker.component.css"],
 })
 export class DatePickerComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatCalendar) datePicker: MatCalendar<Date>;
-
   public getScreenWidth: any;
 
   public listOfDisplayedDates: DateClicked[] = [];

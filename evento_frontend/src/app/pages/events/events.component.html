@@ -22,9 +22,9 @@
         </div>
       </div>
 
+      @if(isPlatformBrowser){
       <div class="map-container">
         <map-view
-          *ngIf="isPlatformBrowser"
           [markerData]="eventList"
           [hoveredData]="getEventFromId()"
           [currentPosition]="currentPosition"
@@ -33,6 +33,7 @@
           (emitClickedEventId)="eventToScroll = $event"
         ></map-view>
       </div>
+      }
     </div>
 
     <div
@@ -59,24 +60,26 @@
           <img class="pic" [src]="'assets/design-elements/loading-image.svg'" />
         </div>
       </div>
-
-      <div class="map-container" *ngIf="mapView">
+      @defer(when mapView; prefetch on idle){ @if(mapView){
+      <div class="map-container">
         <div class="switchViewButton" (click)="changeToMapView()">
           <p>Zu den Events</p>
           <mat-icon class="change-view-icon" (click)="changeToMapView()"
             >event</mat-icon
           >
         </div>
+        @if(isPlatformBrowser){
         <map-view
-          *ngIf="isPlatformBrowser"
           [markerData]="eventList"
           [hoveredData]="getEventFromId()"
           [currentPosition]="currentPosition"
           [centerMapOnPosition]="currentPosition"
           [hasMoreEvents]="loadMore"
           (emitClickedEventId)="eventToScroll = $event"
-        ></map-view>
+        ></map-view
+        >}
       </div>
+      } } @loading { Loading... } @error { Failed to load dependencies }
     </div>
   </div>
 </div>
