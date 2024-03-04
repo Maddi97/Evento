@@ -47,10 +47,9 @@ export class PositionService {
     this.closeSpinnerAfterTimeout();
     this.geoService
       .get_geo_data_address(addressInput)
-      .then((geoData) => {
-        const coordinates = [geoData.lat, geoData.lon];
+      .then((coordinatesObject) => {
+        const coordinates = [coordinatesObject.lat, coordinatesObject.lon];
         this.searchedCenter = coordinates;
-        console.log("location from input");
         this.positionObservable.next(coordinates);
         this.isPositionDefault.next(false);
       })

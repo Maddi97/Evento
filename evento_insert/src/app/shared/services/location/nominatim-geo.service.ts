@@ -1,7 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { of, throwError } from "rxjs";
-import { map, take } from "rxjs/operators";
+import { lastValueFrom, of, throwError } from "rxjs";
+import { catchError, map, take } from "rxjs/operators";
+import { SnackbarService } from "../utils/snackbar.service";
+import { CoordinatesObject } from "@globals/types/location.types";
 
 @Injectable({
   providedIn: "root",
@@ -12,73 +14,98 @@ export class NominatimGeoService {
   readonly osmApiUrlStart;
   readonly osmApiUrlEnd;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private snackBarService: SnackbarService
+  ) {
     this.ROOT_URL = "https://nominatim.openstreetmap.org/search?q=";
     this.URL_END = "&limit=2&format=json";
     this.osmApiUrlStart = "https://router.project-osrm.org/route/v1/foot/";
     this.osmApiUrlEnd = ".json";
   }
 
-  get_geo_data(city, street, streetNumber) {
-    return this.http
-      .get(
-        this.ROOT_URL +
-          street +
-          "+" +
-          streetNumber +
-          "+," +
-          city +
-          "&limit=2&format=json",
-        { headers: { skip: "true" } }
-      )
-      .pipe(
-        take(1),
-        map((geoData) => {
-          if (Object.keys(geoData).length < 1) {
-            throw new Error("No coordinates found for the given address");
-          }
-          return {
-            lat: geoData[0].lat,
-            lon: geoData[0].lon,
-          };
+  async getCoordinates(
+    street: string,
+    city: string
+  ): Promise<CoordinatesObject> {
+    try {
+      const coordinates$ = this.http
+        .get(this.ROOT_URL + street + "+," + city + "&limit=2&format=json", {
+          headers: { skip: "true" },
         })
-      );
+        .pipe(
+          map((response: CoordinatesObject) => {
+            if (Object.keys(response).length < 1) {
+              throw new Error("No coordinates found for the given address");
+            }
+            return {
+              lat: response[0].lat,
+              lon: response[0].lon,
+            };
+          })
+        );
+      const coordinates: CoordinatesObject = await lastValueFrom(coordinates$);
+      return coordinates;
+    } catch (err) {
+      this.snackBarService.openSnackBar("Error: " + err, "error");
+      throwError(err);
+    }
   }
 
-  get_geo_data_address(address) {
-    return this.http
-      .get(this.ROOT_URL + address + this.URL_END, {
-        headers: { skip: "true" },
-      })
-      .pipe(
-        take(1),
-        map((geoData) => {
-          if (Object.keys(geoData).length < 1) {
-            return throwError(() => "No coordinates found to given address");
-          }
-          return geoData;
+  async getGeoDataAddress(address: string): Promise<CoordinatesObject> {
+    try {
+      const coordinates$ = this.http
+        .get(this.ROOT_URL + address + this.URL_END, {
+          headers: { skip: "true" },
         })
-      );
+        .pipe(
+          take(1),
+          map((response: CoordinatesObject) => {
+            if (Object.keys(response).length < 1) {
+              throw new Error("No coordinates found for the given address");
+            }
+            return response;
+          }),
+          catchError((err) => {
+            return throwError(err);
+          })
+        );
+
+      const coordinates = await lastValueFrom(coordinates$);
+      return coordinates;
+    } catch (err) {
+      throw err; // Rethrow the error for handling at the caller's level
+    }
   }
 
-  get_address_from_coordinates(coord) {
-    return this.http
-      .get(
-        "https://nominatim.openstreetmap.org/reverse?lat=" +
-          coord.lat +
-          "&lon=" +
-          coord.lon +
-          "&limit=2&format=json",
-        { headers: { skip: "true" } }
-      )
-      .pipe(
-        take(1),
-        map((geoData) => {
-          if (Object.keys(geoData).length < 1) {
-            return throwError(() => "No adress found to given coordinates");
-          }
-          return geoData;
-        })
-      );
+  async getAddressFromCoordinates(coord: CoordinatesObject): Promise<any> {
+    try {
+      const addres$ = this.http
+        .get(
+          "https://nominatim.openstreetmap.org/reverse?lat=" +
+            coord.lat +
+            "&lon=" +
+            coord.lon +
+            "&limit=2&format=json",
+          { headers: { skip: "true" } }
+        )
+        .pipe(
+          take(1),
+          map((response: any) => {
+            if (Object.keys(response).length < 1) {
+              throw new Error("No address found for the given coordinates");
+            }
+            return response;
+          }),
+          catchError((err) => {
+            this.snackBarService.openSnackBar("Error: " + err, "error");
+            return throwError(err);
+          })
+        );
+      const geoData = await lastValueFrom(addres$);
+      return geoData;
+    } catch (err) {
+      throw err; // Rethrow the error for handling at the caller's level
+    }
   }
 }

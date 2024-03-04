@@ -6,7 +6,7 @@ import { Category } from "@globals/models/category";
 import { Event } from "@globals/models/event";
 import { Organizer } from "@globals/models/organizer";
 import { ExpansionPanelComponent } from "@shared/molecules/expansion-panel/expansion-panel.component";
-import { CategoryService } from "@shared/services/category/category.service";
+import { CategoryService } from "@shared/services/category/category.web.service";
 import { EventsObservableService } from "@shared/services/events/events.observable.service";
 import { EventsService } from "@shared/services/events/events.web.service";
 import { FileUploadService } from "@shared/services/files/file-upload.service";
@@ -15,9 +15,9 @@ import { SnackbarService } from "@shared/services/utils/snackbar.service";
 import moment from "moment";
 import { Observable, forkJoin, of } from "rxjs";
 import { catchError, concatMap, map, switchMap } from "rxjs/operators";
-import { MapViewComponent } from "../../shared/molecules/map-view/map-view.component";
+import { MapViewComponent } from "@shared/molecules/map-view/map-view.component";
 import { CategoryEventExpansionPanelComponent } from "@shared/molecules/category-event-expansion-panel/category-event-expansion-panel.component";
-import { EventFormComponent } from "../../shared/molecules/event-form/event-form.component";
+import { EventFormComponent } from "@forms/event/event-form/event-form.component";
 
 @Component({
   selector: "app-event-view",
@@ -105,37 +105,17 @@ export class EventViewComponent implements OnInit {
   }
 
   updateEvent(event) {
-    this.eventService
-      .updateEvent(event._organizerId, event._id, event)
-      .pipe(
-        map((createEventResponse) => {
-          // upload image
-          const formdata = event.fd;
-          delete event.fd;
-          if (formdata !== undefined) {
-            const fullEventImagePath = this.eventImagePath + event._id;
-            formdata.append("eventImagePath", fullEventImagePath);
-            this.fileService
-              .uploadEventImage(formdata)
-              .pipe(
-                map((uploadImageResponse) => {
-                  event.eventImagePath = uploadImageResponse.eventImage.path;
-                  this.eventService.updateEvent(
-                    event._organizerId,
-                    event._id,
-                    event
-                  );
-                })
-              )
-              .subscribe();
-          }
-          this.snackbar.openSnackBar(
-            "Successfully updated Event: " + event.name,
-            "success"
-          );
-        })
-      )
-      .subscribe();
+    this.eventObservableService
+      .updateEvent(event)
+      .then((event) => {
+        this.snackbar.openSnackBar(
+          "Successfully updated Event: " + event.name,
+          "success"
+        );
+      })
+      .catch((error) => {
+        this.snackbar.openSnackBar(error.message, "error");
+      });
   }
 
   getEventsRightNow = () => {

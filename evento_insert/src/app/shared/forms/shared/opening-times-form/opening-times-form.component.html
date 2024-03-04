@@ -1,0 +1,24 @@
+<div class="opening-times-form" formArrayName="openingTimes">
+  @for(dayGroup of openingTimes.controls; track dayGroup) {
+  <mat-divider></mat-divider>
+  <form [formGroupName]="$index">
+    <p>{{ dayGroup.value.day }}</p>
+    <div class="opening-times start">
+      <p>Start :</p>
+      <ngx-timepicker-field
+        [format]="24"
+        formControlName="start"
+        [defaultTime]="dayGroup.value.start"
+      ></ngx-timepicker-field>
+    </div>
+    <div class="opening-times end">
+      <p>Ende:</p>
+      <ngx-timepicker-field
+        [format]="24"
+        formControlName="end"
+        [defaultTime]="dayGroup.value.end"
+      ></ngx-timepicker-field>
+    </div>
+  </form>
+  }
+</div>

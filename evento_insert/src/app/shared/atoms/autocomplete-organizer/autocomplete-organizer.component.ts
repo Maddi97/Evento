@@ -1,15 +1,28 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { Organizer } from "@globals/models/organizer";
+import { OrganizerService } from "@shared/services/organizer/organizer.web.service";
+import { take, tap } from "rxjs";
 
 @Component({
   selector: "app-autocomplete-organizer",
   standalone: true,
   imports: [
     CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
     MatAutocompleteModule,
     FormsModule,
@@ -19,17 +32,38 @@ import { Organizer } from "@globals/models/organizer";
   styleUrls: ["./autocomplete-organizer.component.css"],
 })
 export class AutocompleteOrganizerComponent implements OnInit {
-  @Input() organizersIn: Organizer[] = [];
+  @Input() organizerName: string;
   @Output() emitOrganizer: EventEmitter<Organizer> =
     new EventEmitter<Organizer>();
 
-  organizerName = new FormControl("");
+  organizersIn: Organizer[] = [];
+  organizerNameControl = new FormControl("");
   filteredOrganizers: Organizer[];
+
+  constructor(private organizerService: OrganizerService) {}
+
   ngOnInit(): void {
-    this.filteredOrganizers = this.organizersIn;
-    this.organizerName.valueChanges.subscribe((oNameStart) => {
-      this.filteredOrganizers = this.filterOrganizerByNameAndAlias(oNameStart);
+    this.organizerService
+      .getOrganizer()
+      .pipe(
+        tap((organizers: Organizer[]) => {
+          this.organizersIn = organizers;
+          this.filteredOrganizers = organizers;
+        })
+      )
+      .subscribe();
+    this.organizerNameControl.valueChanges.subscribe((oNameStart: string) => {
+      if (oNameStart) {
+        this.filteredOrganizers =
+          this.filterOrganizerByNameAndAlias(oNameStart);
+      }
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.organizerName) {
+      this.organizerNameControl.setValue(changes.organizerName.currentValue);
+    }
   }
 
   filterOrganizerByName(oNameStart): Organizer[] {
@@ -38,14 +72,15 @@ export class AutocompleteOrganizerComponent implements OnInit {
     );
   }
 
-  filterOrganizerByNameAndAlias(oNameStart): Organizer[] {
-    return this.organizersIn.filter(
-      (organizer) =>
+  filterOrganizerByNameAndAlias(oNameStart: string): Organizer[] {
+    return this.organizersIn.filter((organizer: Organizer) => {
+      return (
         organizer.name.toLowerCase().startsWith(oNameStart.toLowerCase()) ||
         organizer.alias.some((aliasName) =>
           aliasName.toLowerCase().startsWith(oNameStart.toLowerCase())
         )
-    );
+      );
+    });
   }
 
   onOrganizerSelected(organizerName: string) {

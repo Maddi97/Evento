@@ -1,5 +1,6 @@
 import moment from "moment";
-import { Address, Event } from "@globals/models/event";
+import { Event } from "@globals/models/event";
+import { Address } from "@globals/models/address";
 
 export type UrbaniteEvent = {
   date: string;
@@ -53,8 +54,7 @@ function createAddressFromInput(address: any): Address {
   a.city = address.city;
   a.plz = address.plz;
   //divide street and street number from street input
-  a.street = address.street?.split(" ").slice(0, -1).join(" ") || "";
-  a.streetNumber = address.street?.split(" ").slice(-1)[0] || "";
+  a.street = address.street || "";
   a.country = address.country;
   return a;
 }

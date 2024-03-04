@@ -1,5 +1,7 @@
 // modules =================================================
 const express = require("express");
+const compression = require("compression");
+
 // set our port
 const port = 3000;
 const app = express();
@@ -52,6 +54,7 @@ app.get("/", cors(corsOptions), (req, res, next) => {
 app.use(express.json());
 app.use(cors());
 app.use(mongoSanitize({}));
+app.use(compression());
 //app.use(xss)
 var organizerRouter = require("./routes/organizer.routes");
 app.use(organizerRouter);

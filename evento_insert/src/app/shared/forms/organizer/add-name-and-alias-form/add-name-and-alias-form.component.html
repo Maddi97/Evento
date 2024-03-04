@@ -1,0 +1,36 @@
+<ng-container class="organizer-name">
+  @if (isOrganizerForm) {
+  <mat-form-field appearance="fill">
+    <mat-label>Organizer</mat-label>
+    <input matInput required formControlName="name" />
+    <mat-error *ngIf="nameFormControl.hasError('required')"
+      >Organizer is required</mat-error
+    >
+    <mat-error
+      *ngIf="
+        nameFormControl.hasError('minlength') &&
+        !nameFormControl.hasError('required')
+      "
+    >
+      Organizer name requires minimum length of 3
+    </mat-error>
+  </mat-form-field>
+  } @else {
+  <app-autocomplete-organizer
+    (emitOrganizer)="this.nameFormControl.patchValue($event)"
+  ></app-autocomplete-organizer>
+  }
+</ng-container>
+<mat-form-field appearance="fill">
+  <mat-label>Alias</mat-label>
+  <input
+    matInput
+    [formControl]="aliasInputControl"
+    (keydown.enter)="pushAliasToForm()"
+  />
+</mat-form-field>
+<app-selection-list
+  [listTitle]="'Alias'"
+  [namesList]="aliasFormControl.value"
+  (updatedNamesList)="aliasFormControl.patchValue($event)"
+></app-selection-list>

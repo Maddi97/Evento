@@ -1,22 +1,26 @@
-<ul class="wrapper" *ngIf="!isDeviceMobile">
-  <li [cdkCopyToClipboard]="url" [cdkCopyToClipboardAttempts]="5" (click)="openSnackBar('Copied!')"
-      class="icon clipboard">
+@if(!isDeviceMobile){
+<ul class="wrapper">
+  <li
+    [cdkCopyToClipboard]="url"
+    [cdkCopyToClipboardAttempts]="5"
+    (click)="openSnackBar('Copied!')"
+    class="icon clipboard"
+  >
     <span class="tooltip">Copy link!</span>
     <span><i class="fab gg-clipboard"></i></span>
   </li>
 
-  <a [href]="sanitize(whatsappLink)"
-     title="Share On Whatsapp"
-  >
+  <a [href]="sanitize(whatsappLink)" title="Share On Whatsapp">
     <li class="icon whatsapp">
       <span class="tooltip">WhatsApp</span>
-      <span>
-      <fa-icon [icon]="faWhatsapp"></fa-icon>      </span>
+      <span> <fa-icon [icon]="faWhatsapp"></fa-icon> </span>
     </li>
   </a>
 
-  <a href="https://t.me/share/url?url={{url}}&text={{shareText}}"
-     class="tel-link">
+  <a
+    href="https://t.me/share/url?url={{ url }}&text={{ shareText }}"
+    class="tel-link"
+  >
     <li class="icon telegram">
       <span class="tooltip">Telegram</span>
       <span>
@@ -36,9 +40,9 @@
   <!--    <span class="tooltip">Instagram</span>-->
   <!--    <span><i class="fab gg-instagram"></i></span>-->
   <!--  </li>-->
-
-
 </ul>
-<div *ngIf="isDeviceMobile">
+} @else if(isDeviceMobile){
+<div>
   <button class="share-button" (click)="shareOnPhone()">Event teilen!</button>
 </div>
+}

@@ -1,0 +1,41 @@
+@if (page==='crawler') {
+<app-form-submition-buttons
+  [confirmButtonLabel]="updateEventId ? 'Update' : 'Submit'"
+  [isDisabled]="eventForm.invalid"
+  (emitConfirm)="submitForm()"
+  (emitClear)="resetForm()"
+></app-form-submition-buttons>
+}
+<form class="form-container" [formGroup]="eventForm">
+  <app-autocomplete-organizer
+    [organizerName]="eventForm.get('organizerName').value"
+    (emitOrganizer)="insertInformationFromOrganizer($event)"
+  ></app-autocomplete-organizer>
+  <mat-form-field appearance="fill" class="event-name">
+    <mat-label>Event Name</mat-label>
+    <input matInput required formControlName="name" />
+    <mat-error *ngIf="eventForm.get('name').hasError('required')"
+      >Event name is required</mat-error
+    >
+    <mat-error *ngIf="eventForm.get('name').hasError('minlength')"
+      >Event name minlength is 3</mat-error
+    >
+  </mat-form-field>
+
+  <app-address-form></app-address-form>
+  <app-category-select></app-category-select>
+  <app-event-additional-information-form></app-event-additional-information-form>
+  <app-event-dates-form></app-event-dates-form>
+  <app-event-times-form></app-event-times-form>
+  <app-select-files-form
+    [formControlRegisterName]="'fd'"
+  ></app-select-files-form>
+  <app-event-feature-flags-form></app-event-feature-flags-form>
+</form>
+
+<app-form-submition-buttons
+  [confirmButtonLabel]="updateEventId ? 'Update' : 'Submit'"
+  [isDisabled]="eventForm.invalid"
+  (emitConfirm)="submitForm()"
+  (emitClear)="resetForm()"
+></app-form-submition-buttons>

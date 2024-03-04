@@ -26,9 +26,16 @@ import { MapCenterViewService } from "@services/core/map-center-view/map-center-
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 import { EventTileListComponent } from "@shared/molecules/event-tile-list/event-tile-list.component";
 import { MapViewComponent } from "@shared/molecules/map-view/map-view.component";
-import moment from "moment-timezone";
+import moment from "moment";
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
-import { Subscription, combineLatest, distinctUntilChanged } from "rxjs";
+import {
+  Subscription,
+  combineLatest,
+  distinctUntilChanged,
+  timeout,
+} from "rxjs";
+import { SnackbarService } from "@services/core/snackbar/snackbar.service";
+
 @Component({
   selector: "app-events",
   standalone: true,
@@ -108,12 +115,12 @@ export class EventsComponent implements OnInit, OnDestroy {
     private sharedObservables: SharedObservableService,
     private customRouterService: CustomRouterService,
     private mapCenterViewService: MapCenterViewService,
+    private snackbarService: SnackbarService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.mapView = this.mapCenterViewService.isMapViewObservable.value;
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe({
       next: (isMapView) => {
-        //console.log("Map view next: ", isMapView);
         this.mapView = isMapView;
       },
     });
@@ -229,16 +236,17 @@ export class EventsComponent implements OnInit, OnDestroy {
   applyFilters(req, loadMore = false) {
     const event$ = this.eventsComplexService
       .getEventsSubscriptionBasedOnTypeAndCategory(req)
+      .pipe(timeout(10000))
       .subscribe({
         next: (events) => {
           this.isLoadingMoreEvents = false;
           this.resetEventList = !loadMore;
-          this.spinner.hide();
           this.handlyEventListLoaded(events);
           this.onFetchEventsCompleted();
         },
         error: (error) => {
           console.error(error);
+          this.snackbarService.openSnackBar(error, "error");
           this.spinner.hide();
         },
         complete: () => {
@@ -247,11 +255,11 @@ export class EventsComponent implements OnInit, OnDestroy {
       });
     this.subscriptions$.push(event$);
   }
-  get_distance_to_current_position(event) {
+  get_distance_to_current_position(event: Event) {
     // get distance
     const dist = this.geoService.get_distance(this.currentPosition, [
-      event.geoData.lat,
-      event.geoData.lon,
+      event.coordinates.lat,
+      event.coordinates.lon,
     ]);
     return dist;
   }

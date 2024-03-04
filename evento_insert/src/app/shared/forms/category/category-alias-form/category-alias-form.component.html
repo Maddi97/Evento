@@ -1,0 +1,13 @@
+<mat-form-field appearance="fill">
+  <mat-label>Add Category Alias</mat-label>
+  <input
+    matInput
+    [formControl]="aliasInputControl"
+    (keydown.enter)="pushAliasToForm()"
+  />
+</mat-form-field>
+<app-selection-list
+  [listTitle]="'Alias'"
+  [namesList]="aliasFormControl.value"
+  (updatedNamesList)="aliasFormControl.patchValue($event)"
+></app-selection-list>

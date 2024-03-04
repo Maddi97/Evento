@@ -22,20 +22,17 @@ export class OrganizerObservableService {
     public dialog: MatDialog
   ) {}
 
-  addNewOrganizer(organizer): Promise<Organizer> {
+  addNewOrganizer(organizer: Organizer & { fd }): Promise<Organizer> {
     return new Promise(async (resolve, reject) => {
       try {
         const org = organizer;
         const address = org.address;
 
-        const geoData = await lastValueFrom(
-          this.geoService.get_geo_data(
-            address.city,
-            address.street,
-            address.streetNumber
-          )
+        const coordinates = await this.geoService.getCoordinates(
+          address.city,
+          address.street
         );
-        org.geoData = geoData;
+        org.coordinates = coordinates;
 
         const createOrganizerResponse = await lastValueFrom(
           this.organizerService.createOrganizer(org)
@@ -74,19 +71,16 @@ export class OrganizerObservableService {
     });
   }
 
-  updateOrganizer(organizer): Promise<Organizer> {
+  updateOrganizer(organizer: Organizer & { fd }): Promise<Organizer> {
     return new Promise(async (resolve, reject) => {
       try {
         const org = organizer;
         const address = org.address;
         org._id = organizer._id;
 
-        org.geoData = await lastValueFrom(
-          this.geoService.get_geo_data(
-            address.city,
-            address.street,
-            address.streetNumber
-          )
+        org.coordinates = await this.geoService.getCoordinates(
+          address.city,
+          address.street
         );
         const updateOrganizerResponse = await lastValueFrom(
           this.organizerService.updateOrganizer(org._id, org)

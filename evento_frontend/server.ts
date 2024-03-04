@@ -10,6 +10,8 @@ import cors from "cors";
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
+  const compression = require("compression");
+  server.use(compression());
   server.use(cors({ origin: "*" }));
   const distFolder = join(process.cwd(), "dist/evento/browser");
   const indexHtml = existsSync(join(distFolder, "index.original.html"))

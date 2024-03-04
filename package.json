@@ -6,21 +6,24 @@
     "DEVELOPEMENT": "",
     "build:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build",
     "build:backend:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build backend",
-    "build:mongodb:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build mongodb",
+    "build:mongo:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build mongodb",
     "build:frontend:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build evento_frontend",
     "build:insert:dev": "docker-compose --env-file .env.dev -f docker-compose-local-developement.yml up -d --build evento_insert",
     "STAGING": "",
     "build:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build",
     "build:backend:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build backend",
-    "build:mongodb:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build mongodb",
+    "build:mongo:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build mongodb",
     "build:frontend:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build evento_frontend",
     "build:insert:staging": "docker-compose --env-file .env.prod -f docker-compose-staging.yml up -d --build evento_insert",
     "PRODUCTION": "",
     "build:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build",
     "build:backend:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build backend",
-    "build:mongodb:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build mongodb",
+    "build:mongo:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build mongodb",
     "build:frontend:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build evento_frontend",
-    "build:insert:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build evento_insert"
+    "build:insert:prod": "docker-compose --env-file .env.prod -f docker-compose-prod.yml up -d --build evento_insert",
+    "BACKUP": "",
+    "backup:netcup-to-local": "cd backend/backup_script && sh load_db_local_dev.sh"
+
   },
   "author": "Maximilian Schaller"
 }

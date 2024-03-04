@@ -1,0 +1,7 @@
+.confirm-buttons {
+  display: flex;
+  justify-content: center;
+}
+.confirm-buttons > button {
+  margin: 12px;
+}

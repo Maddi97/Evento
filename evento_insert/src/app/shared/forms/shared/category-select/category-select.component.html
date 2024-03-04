@@ -1,0 +1,31 @@
+<div class="category">
+  <mat-form-field appearance="fill">
+    <mat-label>Category</mat-label>
+    <input
+      matInput
+      required
+      [matAutocomplete]="auto"
+      type="text"
+      [value]="categoryFormControl.value?.name"
+    />
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+      @for(category of categoryList; track category) {
+      <mat-option (onSelectionChange)="onSelectCategory(category)">
+        {{ category?.name }} </mat-option
+      >}
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="subcategoryList.length > 0" appearance="fill">
+    <mat-label>Subcategory</mat-label>
+
+    <mat-select
+      multiple
+      [compareWith]="compareWith"
+      [(value)]="categoryFormControl.value.subcategories"
+    >
+      @for (subcategory of subcategoryList; track subcategory) {
+      <mat-option [value]="subcategory"> {{ subcategory?.name }} </mat-option>}
+    </mat-select>
+  </mat-form-field>
+</div>

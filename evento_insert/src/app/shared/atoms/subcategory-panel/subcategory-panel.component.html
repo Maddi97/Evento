@@ -1,0 +1,19 @@
+<div class="subcategory-panel">
+  <label>{{ subcategoryIn.name }}</label>
+  <app-category-image [imagePath]="subcategoryIn.iconPath"></app-category-image>
+  <app-category-image
+    [imagePath]="subcategoryIn.stockImagePath"
+  ></app-category-image>
+  <button
+    class="category-edit-button"
+    (click)="updateSubcategory.emit(subcategoryIn)"
+  >
+    Edit
+  </button>
+  <div
+    class="category-delete-button"
+    (click)="deleteSubcategory.emit(subcategoryIn)"
+  >
+    Delete
+  </div>
+</div>

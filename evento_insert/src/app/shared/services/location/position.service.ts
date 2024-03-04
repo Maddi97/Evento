@@ -29,11 +29,9 @@ export class PositionService {
   }
 
   getPositionByInput(addressInput) {
-    return this.geoService.get_geo_data_address(addressInput).pipe(
-      map((geoData) => {
-        this.searchedCenter = [geoData[0].lat, geoData[0].lon];
-      })
-    );
+    return this.geoService.getGeoDataAddress(addressInput).then((geoData) => {
+      this.searchedCenter = [geoData[0].lat, geoData[0].lon];
+    });
   }
 
   getPositionByLocation() {

@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import * as L from "leaflet";
 import { PositionService } from "../../services/location/position.service";
-
+import { Event } from "@globals/models/event";
 @Component({
   selector: "app-map-view",
   standalone: true,
@@ -17,8 +17,8 @@ import { PositionService } from "../../services/location/position.service";
   styleUrls: ["./map-view.component.css"],
 })
 export class MapViewComponent implements OnInit, OnChanges {
-  @Input() markerData = [];
-  @Input() hoveredData = null;
+  @Input() markerData: Event[] = [];
+  @Input() hoveredData: Event = null;
   @Input() zoomInput = 12;
   @Input() centerInput = null;
 
@@ -83,7 +83,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   searchForLocationInput() {
     const address = this.sanitizeInput(this.address);
 
-    this.positionService.getPositionByInput(address).subscribe(() => {
+    this.positionService.getPositionByInput(address).then(() => {
       this.resetCenter();
     });
   }
@@ -110,8 +110,8 @@ export class MapViewComponent implements OnInit, OnChanges {
           this.clearHoverMarker();
         } else {
           this.setHoverMarker(
-            this.hoveredData.geoData.lat,
-            this.hoveredData.geoData.lon
+            this.hoveredData.coordinates.lat,
+            this.hoveredData.coordinates.lon
           );
         }
       }
@@ -183,13 +183,13 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private setMarkers(markerData: any[]): void {
     this.markerGroup.clearLayers();
-    markerData.forEach((marker) => {
+    markerData.forEach((marker: Event) => {
       const adressStringUrl = encodeURIComponent(
-        `${marker.address?.street} ${marker.address?.streetNumber} ${marker.address?.city}`
+        `${marker.address?.street} ${marker.address?.city}`
       );
       const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
-      if (marker.geoData) {
-        const mark = L.marker([marker.geoData.lat, marker.geoData.lon])
+      if (marker.coordinates) {
+        const mark = L.marker([marker.coordinates.lat, marker.coordinates.lon])
           .setIcon(
             new this.LeafIcon({
               iconUrl: this.defaultIcon,
@@ -200,7 +200,7 @@ export class MapViewComponent implements OnInit, OnChanges {
           .bindPopup(
             `<div>${marker.name}</div>` +
               `<div class="popup-org-name">${marker.organizerName}</div>` +
-              `<div>${marker.address?.street} ${marker.address?.streetNumber}</div>` +
+              `<div>${marker.address?.street}</div>` +
               `<a href="full-event/${marker._id}">Zum Event!</a>` +
               `<hr>` +
               `<a target="_blank" rel="noopener noreferrer" href=${gmapsUrl} >Google Maps</a>`

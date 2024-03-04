@@ -1,0 +1,27 @@
+.date-form-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  height: 56px;
+}
+
+.is-permanent-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin-right: 24px;
+}
+
+.is-permanent-radio-group > * {
+  display: flex;
+  flex-direction: row;
+}
+
+.frequent-event-checkbox {
+  margin-right: 24px;
+}
+
+app-event-frequency-form {
+  display: flex;
+  width: 45%;
+}

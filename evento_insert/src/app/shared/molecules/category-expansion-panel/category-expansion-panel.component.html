@@ -1,0 +1,40 @@
+<div class="category-panel">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ categoryIn.name }}
+        <app-category-image
+          [imagePath]="categoryIn.iconPath"
+        ></app-category-image>
+        <app-category-image
+          [imagePath]="categoryIn.stockImagePath"
+        ></app-category-image>
+      </mat-panel-title>
+      <div
+        class="category-edit-button"
+        (click)="$event.stopPropagation(); editCategory.emit(categoryIn)"
+      >
+        Edit
+      </div>
+      <div
+        class="category-delete-button"
+        (click)="$event.stopPropagation(); deleteCategory.emit(categoryIn)"
+      >
+        Delete
+      </div>
+    </mat-expansion-panel-header>
+    <app-category-form
+      [type]="'Subcategory'"
+      [categoryIn]="subcategoryIn"
+      (addNewCategory)="addNewSubategory.emit($event)"
+      (updateCategory)="updateSubcategory.emit($event)"
+    ></app-category-form>
+    @for(subcategory of categoryIn.subcategories; track subcategory){
+    <app-subcategory-panel
+      [subcategoryIn]="subcategory"
+      (updateSubcategory)="subcategoryIn = $event"
+      (deleteSubcategory)="deleteSubcategory.emit($event)"
+    ></app-subcategory-panel>
+    }
+  </mat-expansion-panel>
+</div>

@@ -24,7 +24,7 @@ export class Event {
   description: string;
   link: string;
   price: string;
-  geoData: {
+  coordinates: {
     lat: string;
     lon: string;
   };
@@ -38,6 +38,5 @@ export class Address {
   city: string;
   plz: string;
   street: string;
-  streetNumber: string;
   country: string;
 }

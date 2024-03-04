@@ -1,0 +1,92 @@
+<mat-slide-toggle [formControl]="isAddressViewForm"
+  >Address or coordinates?</mat-slide-toggle
+>
+
+<ng-container
+  class="address"
+  formGroupName="address"
+  *ngIf="isAddressViewForm.value"
+>
+  <div class="plz">
+    <mat-form-field appearance="fill">
+      <mat-label>Plz</mat-label>
+      <input
+        id="plz"
+        name="plz"
+        matInput
+        required
+        minlength="5"
+        maxlength="5"
+        formControlName="plz"
+      />
+      <mat-error *ngIf="addressForm.get('plz').hasError('required')"
+        >Plz is required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          addressForm.get('plz').hasError('minlength') ||
+          addressForm.get('plz').hasError('maxlength')
+        "
+      >
+        Plz length has to equal 5
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="city">
+    <mat-form-field appearance="fill">
+      <mat-label>City</mat-label>
+      <input matInput required minlength="3" formControlName="city" />
+      <mat-error *ngIf="addressForm.get('city').hasError('required')"
+        >City is required</mat-error
+      >
+      <mat-error *ngIf="addressForm.get('city').hasError('minlength')"
+        >This is not a city name
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div class="street">
+    <mat-form-field appearance="fill">
+      <mat-label>Street</mat-label>
+      <input
+        matInput
+        required
+        id="street"
+        ngDefaultControl
+        formControlName="street"
+      />
+      <mat-error *ngIf="addressForm.get('street').hasError('required')"
+        >Street is required
+      </mat-error>
+      <mat-error
+        *ngIf="
+          addressForm.get('street').hasError('minlength') &&
+          !addressForm.get('street').hasError('required')
+        "
+      >
+        Street input minlength is 3
+      </mat-error>
+    </mat-form-field>
+  </div>
+</ng-container>
+
+<ng-container
+  class="coordinates"
+  formGroupName="coordinates"
+  *ngIf="!isAddressViewForm.value"
+>
+  <mat-form-field appearance="fill">
+    <mat-label>Latitude</mat-label>
+    <input matInput required name="lat" formControlName="lat" />
+    <mat-error *ngIf="coordinatesForm.get('lat').hasError('required')"
+      >Latitude is required</mat-error
+    >
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Longitude</mat-label>
+    <input matInput required formControlName="lon" />
+    <mat-error *ngIf="coordinatesForm.get('lon').hasError('required')"
+      >Longitude is required</mat-error
+    >
+  </mat-form-field>
+</ng-container>

@@ -1,0 +1,42 @@
+<div class="date-form-container">
+  <mat-radio-group
+    [formControl]="isEventPermanentForm"
+    (ngModelChange)="isPermanentChanged()"
+    class="is-permanent-radio-group"
+  >
+    <label id="permanent-radio-group-label">Is event permanent?</label>
+    <div class="radio-buttons">
+      <mat-radio-button [value]="true">Yes</mat-radio-button>
+      <mat-radio-button [value]="false">No</mat-radio-button>
+    </div>
+  </mat-radio-group>
+
+  @if(isEventPermanentForm.value) {
+  <mat-checkbox
+    class="frequent-event-checkbox"
+    [formControl]="isFrequentCheck"
+    (ngModelChange)="isFrequencyChanged($event)"
+    >Frequent Event
+  </mat-checkbox>
+  @if(isFrequentCheck.value){
+  <app-event-frequency-form
+    [frequencyIn]="frequencyForm.value"
+    (emitFrequency)="frequencyForm.patchValue($event)"
+  ></app-event-frequency-form>
+  } } @if(!isEventPermanentForm.value) {
+  <mat-form-field [formGroup]="dateFormGroup" appearance="fill">
+    <mat-label>Enter a date range</mat-label>
+    <mat-date-range-input [rangePicker]="picker">
+      <input
+        matStartDate
+        required
+        formControlName="start"
+        placeholder="Start date"
+      />
+      <input matEndDate required formControlName="end" placeholder="End date" />
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+  }
+</div>

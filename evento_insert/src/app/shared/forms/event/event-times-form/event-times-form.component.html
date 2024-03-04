@@ -1,0 +1,26 @@
+<form class="opening-times" [formGroup]="eventTimesForm">
+  <div class="timepicker start">
+    <label>Start:</label>
+    <ngx-timepicker-field
+      [format]="24"
+      formControlName="start"
+      [defaultTime]="'00:00'"
+    ></ngx-timepicker-field>
+  </div>
+  <div class="timepicker end">
+    <mat-checkbox
+      [formControl]="isEndTimeControl"
+      (ngModelChange)="isEndChange()"
+    >
+    </mat-checkbox>
+    <label> Ende: </label>
+
+    @if(isEndTimeControl.value){
+    <ngx-timepicker-field
+      [format]="24"
+      formControlName="end"
+      [defaultTime]="'00:00'"
+    ></ngx-timepicker-field>
+    }
+  </div>
+</form>

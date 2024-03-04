@@ -1,4 +1,5 @@
 <div class="map-container">
+  @if(showInputBar){
   <div class="input-line">
     <div>
       <input
@@ -20,6 +21,7 @@
       </span>
     </div>
   </div>
+  }
   <div class="map-frame">
     <button
       *ngIf="isMapDragged && hasMoreEvents"

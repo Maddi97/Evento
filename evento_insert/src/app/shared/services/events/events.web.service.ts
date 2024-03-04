@@ -28,22 +28,15 @@ export class EventsService {
   }
 
   createEvent(event: Event): Observable<Event> {
-    const obs = this.webService
+    return this.webService
       .post("organizer/" + event._organizerId + "/events", { event })
       .pipe(
         map((r: HttpRequest<any>) => r as unknown as Event),
         catchError((error: any) => {
           console.error("an error occurred", error);
           return observableThrowError(error.error.message || error);
-        }),
-        share()
+        })
       );
-    obs.toPromise().then((response: Event) => {
-      const tempEvent = this._events.getValue();
-      tempEvent.push(response);
-      this._events.next(tempEvent);
-    });
-    return obs;
   }
 
   updateEvent(organizerId: string, eventId: string, event: Event) {
@@ -54,21 +47,8 @@ export class EventsService {
         catchError((error: any) => {
           console.error("an error occurred", error);
           return observableThrowError(error.error.message || error);
-        }),
-        share()
+        })
       );
-
-    obs.toPromise().then((response: Event) => {
-      const tempEvent = this._events.getValue();
-      let indeX: number;
-      tempEvent.map((eventResponse: Event, index) => {
-        if (eventResponse._id === eventId) {
-          indeX = index;
-        }
-      });
-      tempEvent[indeX] = response;
-      this._events.next(tempEvent);
-    });
     return obs;
   }
 

@@ -4,7 +4,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { RouterModule } from "@angular/router";
-import { CategoryService } from "@shared/services/category/category.service";
+import { CategoryService } from "@shared/services/category/category.web.service";
 import { OrganizerService } from "@shared/services/organizer/organizer.web.service";
 
 @Component({

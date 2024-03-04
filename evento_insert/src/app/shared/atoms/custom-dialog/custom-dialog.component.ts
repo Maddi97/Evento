@@ -1,11 +1,13 @@
 import { Component, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { dateTimesFormater } from "../../logic/opening-times-format-helpers";
+import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-custom-dialog",
   standalone: true,
-  imports: [],
+  imports: [CommonModule, MatButtonModule],
   templateUrl: "./custom-dialog.component.html",
   styleUrls: ["./custom-dialog.component.css"],
 })

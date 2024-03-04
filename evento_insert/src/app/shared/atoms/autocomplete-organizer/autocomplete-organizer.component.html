@@ -1,12 +1,26 @@
 <mat-form-field appearance="fill">
-    <mat-label>Organizer</mat-label>
-    <input matInput [formControl]="organizerName" [matAutocomplete]="auto" required type="text">
+  <mat-label>Organizer</mat-label>
+  <input
+    matInput
+    [formControl]="organizerNameControl"
+    [matAutocomplete]="auto"
+    required
+    type="text"
+  />
 
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
-        (optionSelected)="onOrganizerSelected($event.option.value)">
-        <mat-option *ngFor="let organizer of filteredOrganizers" [value]="organizer.name">
-            {{organizer.name}}
-        </mat-option>
-    </mat-autocomplete>
-    <mat-error *ngIf="organizerName.hasError('required')">Organizer is required</mat-error>
+  <mat-autocomplete
+    autoActiveFirstOption
+    #auto="matAutocomplete"
+    (optionSelected)="onOrganizerSelected($event.option.value)"
+  >
+    <mat-option
+      *ngFor="let organizer of filteredOrganizers"
+      [value]="organizer.name"
+    >
+      {{ organizer.name }}
+    </mat-option>
+  </mat-autocomplete>
+  <mat-error *ngIf="organizerNameControl.hasError('required')"
+    >Organizer is required</mat-error
+  >
 </mat-form-field>

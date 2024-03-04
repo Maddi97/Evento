@@ -5,14 +5,14 @@ import { Organizer } from "@globals/models/organizer";
 import { OrganizerService } from "@shared/services/organizer/organizer.web.service";
 
 import { DomSanitizer } from "@angular/platform-browser";
-import { CategoryService } from "@shared/services/category/category.service";
+import { CategoryService } from "@shared/services/category/category.web.service";
 import { OrganizerObservableService } from "@shared/services/organizer/organizer.observable.service";
 import { SnackbarService } from "@shared/services/utils/snackbar.service";
 import { FileUploadService } from "@shared/services/files/file-upload.service";
 import { CommonModule } from "@angular/common";
-import { OrganizerFormComponent } from "../../shared/molecules/organizer-form/organizer-form.component";
+import { OrganizerFormComponent } from "@shared/forms/organizer/organizer-form/organizer-form.component";
 import { MatExpansionModule } from "@angular/material/expansion";
-import { MapViewComponent } from "../../shared/molecules/map-view/map-view.component";
+import { MapViewComponent } from "@shared/molecules/map-view/map-view.component";
 
 @Component({
   selector: "app-organizer-view",
@@ -131,12 +131,12 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadOrganizerOfCategory(category) {
+  loadOrganizerOfCategory(category: Category) {
     this.organizerService
-      .filterOrganizerByEventsCategory(category)
+      .getOrganizerByCategoryId(category._id)
       .pipe(
-        map((o) => {
-          this.organizers = o;
+        map((organizerList) => {
+          this.organizers = organizerList;
           this.downloadImage();
         })
       )

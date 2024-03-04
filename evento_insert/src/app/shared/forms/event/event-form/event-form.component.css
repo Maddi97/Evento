@@ -1,0 +1,24 @@
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+form > * {
+  margin-top: 16px;
+  width: 100%;
+}
+
+.event-name {
+  display: flex;
+}
+
+.confirm-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+mat-form-field {
+  width: 100%;
+}
