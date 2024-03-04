@@ -23,6 +23,7 @@ import { PositionService } from "@services/core/location/position.service";
 import { MapCenterViewService } from "@services/core/map-center-view/map-center-view.service";
 import { SharedObservableService } from "@services/core/shared-observables/shared-observables.service";
 import { NgxSpinnerService } from "ngx-spinner";
+import { Event } from "@globals/models/event";
 @Component({
   selector: "map-view",
   standalone: true,
@@ -260,15 +261,15 @@ export class MapViewComponent implements OnInit, OnChanges {
 
   private setMarkers(markerData: any[]): void {
     this.markerGroup.clearLayers();
-    markerData?.forEach((marker) => {
+    markerData?.forEach((marker: Event) => {
       const adressStringUrl = encodeURIComponent(
-        `${marker.address?.street} ${marker.address?.streetNumber} ${marker.address?.city}`
+        `${marker.address?.street} ${marker.address?.city}`
       );
       const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
-      if (marker.geoData) {
+      if (marker.coordinates) {
         const mark = this.leafletService.L.marker([
-          marker.geoData.lat,
-          marker.geoData.lon,
+          marker.coordinates.lat,
+          marker.coordinates.lon,
         ])
           .setIcon(
             new this.LeafIcon({
@@ -280,7 +281,7 @@ export class MapViewComponent implements OnInit, OnChanges {
           .bindPopup(
             `<div>${marker.name}</div>` +
               //`<div *ngIf="false" class="popup-org-name">${marker.organizerName}</div>` +
-              `<div>${marker.address?.street} ${marker.address?.streetNumber}</div>` +
+              `<div>${marker.address?.street}</div>` +
               `<a href="full-event/${marker._id}">Zur Location</a>` +
               `<hr>` +
               `<a target="_blank" rel="noopener noreferrer" href=${gmapsUrl} >Google Maps</a>`

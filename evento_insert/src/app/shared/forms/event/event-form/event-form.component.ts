@@ -26,7 +26,6 @@ import { NominatimGeoService } from "@shared/services/location/nominatim-geo.ser
 import { CommonModule } from "@angular/common";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { EventAdditionalInformationFormComponent } from "@forms/event/event-additional-information-form/event-additional-information-form.component";
 import { EventDatesFormComponent } from "@forms/event/event-dates-form/event-dates-form.component";
 import { EventFeatureFlagsFormComponent } from "@forms/event/event-feature-flags-form/event-feature-flags-form.component";
@@ -80,8 +79,11 @@ export class EventFormComponent implements OnChanges {
       organizerName: new FormControl("", [Validators.required]),
     });
   }
-
+  ngOnInit() {
+    console.log(this.eventForm.value);
+  }
   ngOnChanges(): void {
+    console.log(this.eventIn);
     if (this.eventIn !== undefined) {
       this.setEventForm();
     }
@@ -154,14 +156,17 @@ export class EventFormComponent implements OnChanges {
   }
 
   setEventForm(): void {
-    this.updateEventId = this.eventIn._id;
-    this.eventForm.patchValue(this.eventIn);
-    this.eventForm.get("organizerName").setValue(this.eventIn.organizerName);
-    this.eventForm.get("_organizerId").setValue(this.eventIn._organizerId);
+    // Timeout is needed to register child components
+    setTimeout(() => {
+      this.updateEventId = this.eventIn._id;
+      this.eventForm.patchValue(this.eventIn);
+      this.eventForm.get("organizerName").setValue(this.eventIn.organizerName);
+      this.eventForm.get("_organizerId").setValue(this.eventIn._organizerId);
+      console.log(this.eventForm);
+    }, 100);
   }
 
   insertInformationFromOrganizer(organizer: Organizer) {
-    console.log(organizer);
     this.eventForm.get("organizerName").setValue(organizer.name);
     this.eventForm.get("_organizerId").setValue(organizer._id);
     this.eventForm.get("description").setValue(organizer.description);
@@ -173,9 +178,5 @@ export class EventFormComponent implements OnChanges {
     this.updateEventId = undefined;
     this.eventIn = undefined;
     this.eventForm.reset(new Event());
-  }
-
-  test() {
-    console.log(this.eventForm);
   }
 }

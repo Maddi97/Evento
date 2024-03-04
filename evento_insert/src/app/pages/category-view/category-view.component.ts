@@ -46,9 +46,7 @@ export class CategoryViewComponent implements OnInit {
 
   categories: Category[];
   category$;
-
-  updateCategoryObject;
-  updateSubcategoryObject;
+  categoryIn: Category | Subcategory;
 
   icon;
   stockImage;
@@ -170,14 +168,26 @@ export class CategoryViewComponent implements OnInit {
         },
         of(null)
       );
-
       deleteSubcategories$
         .pipe(
           concatMap(() => this.categoryService.deleteCategory(category._id)),
           concatMap(() => this.fileService.deleteFile(category.stockImagePath)),
           concatMap(() => this.fileService.deleteFile(category.iconPath))
         )
-        .subscribe();
+        .subscribe({
+          complete: () => {
+            this.snackbarService.openSnackBar(
+              "Successfully deleted category: " + category.name,
+              "success"
+            );
+            this.category$.subscribe();
+          },
+          error: (err) =>
+            this.snackbarService.openSnackBar(
+              "An error occurred: " + err,
+              "error"
+            ),
+        });
     } else {
       return;
     }
@@ -219,7 +229,19 @@ export class CategoryViewComponent implements OnInit {
       }
     });
   }
-
+  deleteSubcategoryClick(category: Category, subcategory: Subcategory) {
+    this.deleteSubcategory(category, subcategory).subscribe({
+      complete: () => {
+        this.snackbarService.openSnackBar(
+          "Successfully deleted category: " + subcategory.name,
+          "success"
+        );
+        this.category$.subscribe();
+      },
+      error: (err) =>
+        this.snackbarService.openSnackBar("An error occurred: " + err, "error"),
+    });
+  }
   resetForm() {
     this.categoryFormComponent.resetForm();
   }

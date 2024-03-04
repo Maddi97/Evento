@@ -1,5 +1,12 @@
 import { of, throwError } from "rxjs";
-import { catchError, first, map, mergeMap, repeat } from "rxjs/operators";
+import {
+  catchError,
+  concatMap,
+  first,
+  map,
+  mergeMap,
+  repeat,
+} from "rxjs/operators";
 import { InputParameter } from "@shared/services/crawler/crawler-api.service";
 
 export function crawlBrowseAi(crawler, url, crawlerService, crawlerName) {
@@ -35,19 +42,43 @@ export function crawlBrowseAi(crawler, url, crawlerService, crawlerName) {
             return res;
           }),
           // list of input paramters from link extraction response
-          map((res: any) => {
+          concatMap((res: any) => {
             console.log("Task 1 Result: ", res);
             const linkList = res["capturedLists"]?.linklist || [];
             console.log(linkList);
             if (linkList.length === 0) {
               console.error("No links found of task", res);
+              // Repeat the former mergeMap logic
+              return of(res).pipe(
+                concatMap((retryRes: any) => {
+                  console.log("Retrying Task 1 response: ", retryRes);
+                  retryRes = waitForRobotToFinish(
+                    "task",
+                    crawler.robotId,
+                    retryRes["result"].id,
+                    crawlerService
+                  );
+                  if (retryRes["status"] === "failed") {
+                    console.log("Task failed again, retrying");
+                    retryRes = waitForRobotToFinish(
+                      "task",
+                      crawler.robotId,
+                      retryRes["result"].retriedByTaskId,
+                      crawlerService
+                    );
+                  }
+                  return retryRes;
+                })
+              );
             }
-            return linkList.map((event) => {
-              const inputParameter: InputParameter = {
-                originUrl: event.link,
-              };
-              return inputParameter;
-            });
+            return of(
+              linkList
+                .filter(
+                  (event: any) =>
+                    event.link !== undefined && event.link !== null
+                )
+                .map((event: any) => ({ originUrl: event.link }))
+            );
           }),
           // run a bulk task of the second robot with the links as input parameters
           mergeMap((inputParameters: InputParameter[]) => {

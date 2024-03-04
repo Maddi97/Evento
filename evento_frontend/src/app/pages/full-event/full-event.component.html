@@ -79,8 +79,8 @@
 
     <div class="column-container-4">
       <div class="address">
-        {{ event?.address?.street }} {{ event?.address?.streetNumber }},
-        {{ event?.address?.plz }} {{ event?.address?.city }}
+        {{ event?.address?.street }}, {{ event?.address?.plz }}
+        {{ event?.address?.city }}
       </div>
       <a
         class="gmaps-link"
@@ -96,7 +96,7 @@
           [markerData]="[event]"
           [zoomInput]="14"
           [currentPosition]="currentPosition"
-          [centerMapOnPosition]="[event.geoData.lat, event.geoData.lon]"
+          [centerMapOnPosition]="[event.coordinates.lat, event.coordinates.lon]"
         ></map-view
         >}
       </div>

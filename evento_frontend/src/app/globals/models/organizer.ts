@@ -1,4 +1,4 @@
-import {Category} from "./category";
+import { Category } from "./category";
 
 export class Organizer {
   _id: string;
@@ -17,7 +17,6 @@ export class Address {
   city: string;
   plz: string;
   street: string;
-  streetNumber: string;
   country: string;
 }
 

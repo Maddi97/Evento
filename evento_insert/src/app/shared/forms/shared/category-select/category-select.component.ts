@@ -9,11 +9,13 @@ import {
   inject,
 } from "@angular/core";
 import {
+  AbstractControl,
   ControlContainer,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidatorFn,
   Validators,
 } from "@angular/forms";
 import { Observable } from "rxjs";
@@ -53,7 +55,10 @@ export class CategorySelectComponent {
     return this.parentContainer.control as FormGroup;
   }
 
-  categoryFormControl = new FormControl(null, [Validators.required]);
+  categoryFormControl = new FormControl<Category>(new Category(), [
+    Validators.required,
+    this.nameRequiredValidator(),
+  ]);
   categoryList: Category[] = [];
   subcategoryList: Subcategory[] = [];
 
@@ -88,5 +93,14 @@ export class CategorySelectComponent {
   }
   onSelectCategory(category: Category) {
     this.categoryFormControl.setValue({ ...category, subcategories: [] });
+  }
+  nameRequiredValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const value = control.value;
+      if (!value || !value.name) {
+        return { nameRequired: true };
+      }
+      return null;
+    };
   }
 }

@@ -53,6 +53,7 @@ export class CategoryService {
   }
 
   deleteCategory(categoryId: string) {
+    console.log(categoryId);
     const obs = this.webService.delete(`category/${categoryId}`).pipe(
       map((r) => r as unknown as Category),
       catchError((error: any) => {

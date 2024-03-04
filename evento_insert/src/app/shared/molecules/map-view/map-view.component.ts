@@ -185,7 +185,7 @@ export class MapViewComponent implements OnInit, OnChanges {
     this.markerGroup.clearLayers();
     markerData.forEach((marker) => {
       const adressStringUrl = encodeURIComponent(
-        `${marker.address?.street} ${marker.address?.streetNumber} ${marker.address?.city}`
+        `${marker.address?.street} ${marker.address?.city}`
       );
       const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
       if (marker.geoData) {
@@ -200,7 +200,7 @@ export class MapViewComponent implements OnInit, OnChanges {
           .bindPopup(
             `<div>${marker.name}</div>` +
               `<div class="popup-org-name">${marker.organizerName}</div>` +
-              `<div>${marker.address?.street} ${marker.address?.streetNumber}</div>` +
+              `<div>${marker.address?.street}</div>` +
               `<a href="full-event/${marker._id}">Zum Event!</a>` +
               `<hr>` +
               `<a target="_blank" rel="noopener noreferrer" href=${gmapsUrl} >Google Maps</a>`

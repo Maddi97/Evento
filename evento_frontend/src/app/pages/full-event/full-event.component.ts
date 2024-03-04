@@ -88,7 +88,7 @@ export class FullEventComponent implements OnInit, OnDestroy {
           };
           this.gtmService.pushTag(gtmTag);
           const adressStringUrl = encodeURIComponent(
-            `${this.event.address?.street} ${this.event.address?.streetNumber} ${this.event.address?.city}`
+            `${this.event.address?.street} ${this.event.address?.city}`
           );
           this.gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${adressStringUrl}`;
         },

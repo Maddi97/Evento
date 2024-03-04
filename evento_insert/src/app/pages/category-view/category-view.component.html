@@ -1,7 +1,7 @@
 <div class="category-view-container">
   <app-category-form
     [type]="'Category'"
-    [categoryIn]="updateCategoryObject"
+    [categoryIn]="categoryIn"
     (addNewCategory)="addNewCategory($event)"
     (updateCategory)="updateCategory($event)"
   ></app-category-form>
@@ -12,10 +12,10 @@
     <app-category-expansion-panel
       [categoryIn]="category"
       (deleteCategory)="deleteCategory($event)"
-      (editCategory)="updateCategoryObject = $event"
+      (editCategory)="categoryIn = $event"
       (addNewSubategory)="addNewSubcategory(category, $event)"
       (updateSubcategory)="updateSubcategory(category, $event)"
-      (deleteSubcategory)="deleteSubcategory(category, $event).subscribe()"
+      (deleteSubcategory)="deleteSubcategoryClick(category, $event)"
     ></app-category-expansion-panel>
     }
   </div>

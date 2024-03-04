@@ -39,8 +39,9 @@ check_and_create_dir "../backup_local_dev/image_backup/"
 
 #copy files to local pc
 scp -r ${SERVER}:${DB_BACKUP_PATH}/instant_dump/${DB_NAME}/ ../backup_local_dev/db_backup/
-scp -r ${SERVER}:${DB_BACKUP_PATH}/instant_dump/IMAGE_BACKUP/ ../backup_local_dev/image_backup
+scp -r ${SERVER}:${DB_BACKUP_PATH}/instant_dump/IMAGE_BACKUP/. ../backup_local_dev/image_backup
 
+#copy images to docker container
 docker cp ../backup_local_dev/image_backup/. ${DOCKER_CONTAINER}:/${IMAGE_PATH} 
 
 docker exec -it mongodb bash -c 'mkdir -p /backup/db_evento'
