@@ -1,5 +1,5 @@
-<ngx-spinner type="ball-scale-multiple" [fullScreen]="false"> </ngx-spinner>
 <div class="full-event-page">
+  <ngx-spinner type="ball-scale-multiple" [fullScreen]="false"></ngx-spinner>
   <div class="event-tile" *ngIf="event">
     <div class="column-container-1 column">
       <div class="event-pic">
@@ -97,6 +97,7 @@
           [zoomInput]="14"
           [currentPosition]="currentPosition"
           [centerMapOnPosition]="[event.coordinates.lat, event.coordinates.lon]"
+          [showInputBar]="false"
         ></map-view
         >}
       </div>

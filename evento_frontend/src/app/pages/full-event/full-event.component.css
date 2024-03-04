@@ -72,15 +72,12 @@
 }
 
 .event-tile {
-}
-
-.event-tile {
   display: flex;
   flex-direction: column !important;
   width: 100% !important;
   min-width: 300px;
-  margin-bottom: calc(8em + constant(safe-area-inset-bottom)) !important;
-  margin-bottom: calc(8em + env(safe-area-inset-bottom));
+  margin-bottom: calc(0px + constant(safe-area-inset-bottom)) !important;
+  margin-bottom: calc(0px + env(safe-area-inset-bottom));
 }
 
 .event-pic {

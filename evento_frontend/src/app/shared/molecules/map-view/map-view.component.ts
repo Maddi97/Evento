@@ -32,12 +32,13 @@ import { Event } from "@globals/models/event";
   styleUrls: ["./map-view.component.css"],
 })
 export class MapViewComponent implements OnInit, OnChanges {
-  @Input() markerData = [];
-  @Input() hoveredData = null;
+  @Input() markerData: Event[] = [];
+  @Input() hoveredData: Event = null;
   @Input() zoomInput = 13;
   @Input() currentPosition: Array<Number>;
   @Input() centerMapOnPosition: Array<Number>;
   @Input() hasMoreEvents: boolean;
+  @Input() showInputBar: boolean = true;
   @Output() emitClickedEventId: EventEmitter<any> = new EventEmitter<any>();
 
   isMapDragged = false;
@@ -134,8 +135,8 @@ export class MapViewComponent implements OnInit, OnChanges {
             this.clearHoverMarker();
           } else {
             this.setHoverMarker(
-              this.hoveredData.geoData.lat,
-              this.hoveredData.geoData.lon
+              this.hoveredData.coordinates.lat,
+              this.hoveredData.coordinates.lon
             );
           }
         }

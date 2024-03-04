@@ -2,9 +2,9 @@
   class="header header-{{ getClassOnFullEvent() }}"
   [class.animate-off-screen]="scrollOut && getScreenWidth < 1000"
 >
+  @if(isNotEventsPage){
   <img
     src="assets/static-icons/icon-back.png"
-    *ngIf="isNotEventsPage"
     alt="arrow back"
     class="arrow-back"
     routerLink="/"
@@ -12,7 +12,7 @@
     (click)="changeMapView()"
   />
 
-  <div *ngIf="isNotEventsPage" class="logo-container logo-fullevent">
+  <div class="logo-container logo-fullevent">
     <img
       class="logo-full"
       src="assets/branding/logo_name.png"
@@ -22,7 +22,8 @@
       (click)="changeMapView()"
     />
   </div>
-  <div *ngIf="!isNotEventsPage" class="logo-container">
+  } @else if(!isNotEventsPage){
+  <div class="logo-container">
     <img
       class="logo-small"
       src="assets/icon/icon.png"
@@ -42,10 +43,10 @@
   </div>
 
   <app-date-picker
-    *ngIf="!isNotEventsPage"
     class="date-picker"
     (clickedDate)="searchForDay($event)"
-  ></app-date-picker>
+  ></app-date-picker
+  >}
   <div class="search-container-{{ getClassOnFullEvent() }}">
     <app-search-filter></app-search-filter>
   </div>

@@ -18,7 +18,7 @@ export function transformFormFieldToOrganizer(
   return org;
 }
 
-export function createEventFromOrg(org) {
+export function createEventFromOrg(org: Organizer) {
   const event = new Event();
   const date = {
     start: moment(new Date()).utcOffset(0, false),
@@ -34,7 +34,7 @@ export function createEventFromOrg(org) {
   event.openingTimes = org.openingTimes;
   event.times = times;
   event.link = org.link;
-  event.coordinates = org.geoData;
+  event.coordinates = org.coordinates;
   event.date = date;
   event.price = "";
   event.hasUnkownOpeningTimes = true;

@@ -121,7 +121,6 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.mapView = this.mapCenterViewService.isMapViewObservable.value;
     const mapView$ = this.mapCenterViewService.isMapViewObservable.subscribe({
       next: (isMapView) => {
-        console.log("Map view next: ", isMapView);
         this.mapView = isMapView;
       },
     });
@@ -242,7 +241,6 @@ export class EventsComponent implements OnInit, OnDestroy {
         next: (events) => {
           this.isLoadingMoreEvents = false;
           this.resetEventList = !loadMore;
-          this.spinner.hide();
           this.handlyEventListLoaded(events);
           this.onFetchEventsCompleted();
         },

@@ -50,7 +50,6 @@ export class PositionService {
       .then((coordinatesObject) => {
         const coordinates = [coordinatesObject.lat, coordinatesObject.lon];
         this.searchedCenter = coordinates;
-        console.log("location from input");
         this.positionObservable.next(coordinates);
         this.isPositionDefault.next(false);
       })

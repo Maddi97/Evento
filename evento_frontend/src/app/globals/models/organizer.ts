@@ -1,3 +1,4 @@
+import { CoordinatesObject } from "@globals/types/location.types";
 import { Category } from "./category";
 
 export class Organizer {
@@ -9,6 +10,7 @@ export class Organizer {
   category: Category;
   description: string;
   openingTimes?: Day[];
+  coordinates?: CoordinatesObject;
   organizerImageTemporaryURL: string;
   organizerImagePath: string;
 }
