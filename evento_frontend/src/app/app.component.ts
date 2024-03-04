@@ -27,14 +27,14 @@ export class AppComponent implements OnInit {
     private settingsService: SettingsService,
     private sharedObservableService: SharedObservableService,
     private customRouterService: CustomRouterService,
-    private positionService: PositionService,
+
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
     this.isPlatformBrowser = isPlatformBrowser(this.platformId);
     if (this.isPlatformBrowser) {
-      this.positionService.getGeoLocation();
+      //this.positionService.getGeoLocation();
     }
     //only get position on first creation and not on routing inside the spa
     this.settingsService.getSettings().subscribe((settings) => {
