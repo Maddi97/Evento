@@ -97,7 +97,7 @@ export class FullEventComponent implements OnInit, OnDestroy {
         },
         complete: () => {
           //this.clearQueryParams(); not working
-          //this.spinner.hide();
+          this.spinner.hide();
         },
       });
   }
