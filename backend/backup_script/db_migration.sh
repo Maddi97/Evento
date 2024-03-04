@@ -1,6 +1,6 @@
 docker exec -it mongodb mongosh
-use db_evento;
-show collections;
+use db_evento
+show collections
 
 db.events.updateMany({}, { $rename: { "geoData": "coordinates" } });
 
