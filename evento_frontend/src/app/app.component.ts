@@ -2,12 +2,11 @@ import { isPlatformBrowser } from "@angular/common";
 import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { Capacitor } from "@capacitor/core";
 import { Settings } from "@globals/models/settings";
+import { SubdomainUrl } from "@globals/types/url.types";
 import { CustomRouterService } from "@services/core/custom-router/custom-router.service";
-import { NgxSpinnerService } from "ngx-spinner";
+import { PositionService } from "@services/core/location/position.service";
 import { SharedObservableService } from "./services/core/shared-observables/shared-observables.service";
 import { SettingsService } from "./services/simple/settings/settings.service.service";
-import { PositionService } from "@services/core/location/position.service";
-import { SubdomainUrl } from "@globals/types/url.types";
 
 @Component({
   selector: "app-root",
