@@ -72,7 +72,4 @@ export class CategoryFormComponent {
     this.categoryForm.reset(new Category());
     this.categoryIn = undefined;
   }
-  test() {
-    console.log(this.categoryForm.value);
-  }
 }

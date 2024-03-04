@@ -23,11 +23,11 @@ export class NominatimGeoService {
       .get(this.ROOT_URL + street + "+," + city + this.URL_END)
       .pipe(
         take(1),
-        map((geoData) => {
-          if (Object.keys(geoData).length < 1) {
+        map((coordinates) => {
+          if (Object.keys(coordinates).length < 1) {
             throw console.error("No coordinates found to given address");
           }
-          return geoData;
+          return coordinates;
         })
       );
   }
@@ -36,11 +36,11 @@ export class NominatimGeoService {
     return this.http
       .get(this.ROOT_URL + address + this.URL_END)
       .toPromise() // Convert the observable to a promise
-      .then((geoData) => {
-        if (Object.keys(geoData).length < 1) {
+      .then((coordinates) => {
+        if (Object.keys(coordinates).length < 1) {
           throw new Error("No coordinates found for the given address");
         }
-        return geoData[0];
+        return coordinates[0];
       });
   }
 

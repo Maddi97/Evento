@@ -257,11 +257,11 @@ export class EventsComponent implements OnInit, OnDestroy {
       });
     this.subscriptions$.push(event$);
   }
-  get_distance_to_current_position(event) {
+  get_distance_to_current_position(event: Event) {
     // get distance
     const dist = this.geoService.get_distance(this.currentPosition, [
-      event.geoData.lat,
-      event.geoData.lon,
+      event.coordinates.lat,
+      event.coordinates.lon,
     ]);
     return dist;
   }

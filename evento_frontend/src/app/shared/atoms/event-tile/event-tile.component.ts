@@ -69,11 +69,11 @@ export class EventTileComponent implements OnInit {
     });
   }
 
-  get_distance_to_current_position(event, position) {
+  get_distance_to_current_position(event: Event, position) {
     // get distance
     const dist = this.geoService.get_distance(position, [
-      event.geoData.lat,
-      event.geoData.lon,
+      event.coordinates.lat,
+      event.coordinates.lon,
     ]);
     return Math.round(dist * 100) / 100;
   }
