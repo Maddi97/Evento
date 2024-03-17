@@ -29,7 +29,7 @@ services:
     volumes:
       - ./evento_frontend:/app
       - /app/node_modules
-    #  - /app/dist
+      - /app/dist
     # depends_on:
     #   - letsencrypt
 
