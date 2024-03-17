@@ -73,6 +73,7 @@ export class OrganizerFormComponent implements OnChanges {
       this.organizerForm.patchValue(changes.organizerIn?.currentValue);
       this.updateOrganizerId = changes.organizerIn?.currentValue._id;
     }
+    console.log("organizerIn: ", changes.organizerIn.currentValue);
   }
 
   submitForm() {

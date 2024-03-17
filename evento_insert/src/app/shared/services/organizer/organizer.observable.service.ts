@@ -42,8 +42,7 @@ export class OrganizerObservableService {
 
         const formdata = org.fd;
         delete org.fd;
-
-        if (formdata !== undefined) {
+        if (formdata) {
           const fullOrganizerImagePath =
             this.organizerImagePath + createOrganizerResponse._id;
           formdata.append("organizerImagePath", fullOrganizerImagePath);
@@ -54,7 +53,7 @@ export class OrganizerObservableService {
           await lastValueFrom(this.organizerService.updateOrganizer(_id, org));
         }
 
-        if (createOrganizerResponse.isEvent === true) {
+        if (createOrganizerResponse.isEvent) {
           const event = createEventFromOrg(org);
           event._organizerId = _id;
           const eventResponse = await lastValueFrom(
@@ -90,7 +89,7 @@ export class OrganizerObservableService {
         const formdata = org.fd;
         delete org.fd;
 
-        if (formdata !== undefined) {
+        if (formdata) {
           const fullOrganizerImagePath =
             this.organizerImagePath + updateOrganizerResponse._id;
           formdata.append("organizerImagePath", fullOrganizerImagePath);

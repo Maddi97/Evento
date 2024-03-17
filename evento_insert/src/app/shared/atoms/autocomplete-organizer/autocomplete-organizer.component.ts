@@ -76,7 +76,7 @@ export class AutocompleteOrganizerComponent implements OnInit {
     return this.organizersIn.filter((organizer: Organizer) => {
       return (
         organizer.name.toLowerCase().startsWith(oNameStart.toLowerCase()) ||
-        organizer.alias.some((aliasName) =>
+        organizer.alias?.some((aliasName) =>
           aliasName.toLowerCase().startsWith(oNameStart.toLowerCase())
         )
       );

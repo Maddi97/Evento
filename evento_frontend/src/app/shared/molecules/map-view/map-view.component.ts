@@ -41,6 +41,8 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Input() showInputBar: boolean = true;
   @Output() emitClickedEventId: EventEmitter<any> = new EventEmitter<any>();
 
+  isPositionDefault: boolean;
+
   isMapDragged = false;
   private isMapDraggedTimeoutRunning: boolean = false;
 
@@ -92,6 +94,9 @@ export class MapViewComponent implements OnInit, OnChanges {
         },
       });
     }
+    this.positionService.isPositionDefault.subscribe((isDefault) => {
+      this.isPositionDefault = isDefault;
+    });
   }
 
   resetCenter() {
@@ -239,6 +244,7 @@ export class MapViewComponent implements OnInit, OnChanges {
   }
 
   private setPositionMarker(): void {
+    if (this.isPositionDefault) return;
     this.positionMarkerGroup.clearLayers();
     const positionMarker = this.leafletService.L.marker(
       this.currentPosition
