@@ -108,7 +108,11 @@ export class CustomRouterService {
           .map((s: Subcategory) => s._id);
         const categoryId = category?._id;
 
-        return [date, categoryId, subcategoryIds || []];
+        return [
+          date,
+          categoryId,
+          subcategoryIds || [undefined, undefined, undefined],
+        ];
       })
     );
   }

@@ -1,22 +1,13 @@
+import { isPlatformServer } from "@angular/common";
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { DEFAULT_LOCATION } from "@globals/constants/position";
+import { CoordinatesArray } from "@globals/types/location.types";
 import { GeolocationService } from "@ng-web-apis/geolocation";
 import { NgxSpinnerService } from "ngx-spinner";
-import {
-  BehaviorSubject,
-  ReplaySubject,
-  Subject,
-  filter,
-  map,
-  take,
-  takeUntil,
-  tap,
-  timeout,
-} from "rxjs";
+import { BehaviorSubject, map, take, timeout } from "rxjs";
 import { NominatimGeoService } from "./nominatim-geo.service";
-import { isPlatformBrowser, isPlatformServer } from "@angular/common";
-import { CoordinatesArray } from "@globals/types/location.types";
+import { CookiesService } from "../cookie-service/cookies.service";
 
 @Injectable({
   providedIn: "root",
@@ -24,22 +15,34 @@ import { CoordinatesArray } from "@globals/types/location.types";
 export class PositionService {
   searchedCenter: Array<number>;
   disableCallLocation = false;
-  public positionObservable = new BehaviorSubject<CoordinatesArray>(
-    DEFAULT_LOCATION
-  );
-  public isPositionDefault = new BehaviorSubject<Boolean>(true);
+  private cookieKey = "position";
+  private cookieExpireHours = 6;
+
+  public positionObservable: BehaviorSubject<CoordinatesArray>;
+  public isPositionDefault: BehaviorSubject<boolean>;
 
   timeout = 8000;
   constructor(
     private geoService: NominatimGeoService,
     private _snackbar: MatSnackBar,
     private spinner: NgxSpinnerService,
+    private readonly cookieService: CookiesService,
     private readonly geolocation$: GeolocationService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     if (isPlatformServer(platformId)) {
       this.positionObservable.next(DEFAULT_LOCATION);
     }
+
+    const postionFromCookie = this.cookieService.getCookie(this.cookieKey)
+      ? JSON.parse(this.cookieService.getCookie(this.cookieKey))
+      : null;
+
+    this.positionObservable = new BehaviorSubject<CoordinatesArray>(
+      postionFromCookie || DEFAULT_LOCATION
+    );
+
+    this.isPositionDefault = new BehaviorSubject<boolean>(!postionFromCookie);
   }
 
   getPositionByInput(addressInput) {
@@ -82,6 +85,11 @@ export class PositionService {
       .subscribe({
         next: (position: CoordinatesArray) => {
           console.log("Position requested: ", position);
+          this.cookieService.setCookie(
+            this.cookieKey,
+            JSON.stringify(position),
+            this.cookieExpireHours
+          );
           this.positionObservable.next(position),
             this.isPositionDefault.next(false);
         },
