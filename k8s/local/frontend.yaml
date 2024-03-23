@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: evento-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: evento-evento_frontend
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: evento-dev
+spec:
+  selector:
+    tier: frontend
+  type: NodePort
+  ports:
+    - port: 4200
+      targetPort: 4200
+      nodePort: 30001

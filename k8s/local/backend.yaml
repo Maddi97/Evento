@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: evento-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: backend
+  template:
+    metadata:
+      labels:
+        tier: backend
+    spec:
+      containers:
+        - name: evento-backend
+          image: evento-backend
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: evento-dev
+spec:
+  selector:
+    tier: backend
+  ports:
+    - port: 3000
+      targetPort: 3000

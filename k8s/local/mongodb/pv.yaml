@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv-volume
+  namespace: evento-dev
+  labels:
+    app: mongodb
+    type: local
+spec:
+  storageClassName: manual
+  claimRef:
+    name: mongodb-pvc
+    namespace: evento-dev
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/Users/mschaller/data/mongodb"
