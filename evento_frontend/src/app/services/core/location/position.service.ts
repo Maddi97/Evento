@@ -30,10 +30,6 @@ export class PositionService {
     private readonly geolocation$: GeolocationService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    if (isPlatformServer(platformId)) {
-      this.positionObservable.next(DEFAULT_LOCATION);
-    }
-
     const postionFromCookie = this.cookieService.getCookie(this.cookieKey)
       ? JSON.parse(this.cookieService.getCookie(this.cookieKey))
       : null;
@@ -43,6 +39,9 @@ export class PositionService {
     );
 
     this.isPositionDefault = new BehaviorSubject<boolean>(!postionFromCookie);
+    if (isPlatformServer(platformId)) {
+      this.positionObservable.next(DEFAULT_LOCATION);
+    }
   }
 
   getPositionByInput(addressInput) {
