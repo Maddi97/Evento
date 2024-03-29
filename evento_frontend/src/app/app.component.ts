@@ -32,6 +32,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log("app component init");
     this.isPlatformBrowser = isPlatformBrowser(this.platformId);
     if (this.isPlatformBrowser) {
       //this.positionService.getGeoLocation();
