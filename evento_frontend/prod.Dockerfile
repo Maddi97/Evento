@@ -1,25 +1,26 @@
-FROM --platform=$BUILDPLATFORM node:20.10-alpine AS builder
+# Stage 1: Build the Angular app
+FROM node:18-alpine as build
+WORKDIR /app/src
 
-ENV INSTALL_PATH /app
-RUN mkdir -p $INSTALL_PATH
-WORKDIR $INSTALL_PATH
-COPY ./package.json ./package-lock.json $INSTALL_PATH/
-RUN npm install
-COPY . $INSTALL_PATH
-RUN npm run build:ssr:prod
+# Copy package.json and install dependencies
+COPY package*.json ./
+RUN npm ci
 
-FROM node:20.10-alpine AS runner
+# Copy the entire app source code
+COPY . ./
 
-ENV NODE_ENV production
-ENV PORT 4200
+# Build the Angular app
+RUN npm run build
 
-ENV INSTALL_PATH /app
-RUN mkdir -p $INSTALL_PATH
-WORKDIR $INSTALL_PATH
-# COPY --from=builder $INSTALL_PATH/package.json $INSTALL_PATH/package-lock.json $INSTALL_PATH/
-# RUN npm install --production
-COPY --from=builder $INSTALL_PATH/dist $INSTALL_PATH/dist
+# Stage 2: Create the production image
+FROM node:18-alpine
+WORKDIR /usr/app
 
+# Copy the compiled output from the build stage
+COPY --from=build /app/src/dist/evento/server ./dist
+
+# Specify the command to run the SSR server (adjust the entry point name)
+CMD node dist/main.js
+
+# Expose the port (adjust as needed)
 EXPOSE 4200
-
-CMD ["npm", "run", "serve:ssr"]
