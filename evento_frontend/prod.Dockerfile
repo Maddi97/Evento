@@ -10,7 +10,7 @@ RUN npm ci
 COPY . ./
 
 # Build the Angular app
-RUN npm run build
+RUN npm run build:ssr:prod
 
 # Stage 2: Create the production image
 FROM node:18-alpine
