@@ -40,7 +40,7 @@ export class PositionService {
 
     this.isPositionDefault = new BehaviorSubject<boolean>(!postionFromCookie);
     if (isPlatformServer(platformId)) {
-      this.positionObservable.next(DEFAULT_LOCATION);
+      this.positionObservable?.next(DEFAULT_LOCATION);
     }
   }
 
