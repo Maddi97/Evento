@@ -1,32 +1,25 @@
-# Stage 1: Build the Angular app
-FROM node:18.17.1 as build
-WORKDIR /app
+FROM --platform=$BUILDPLATFORM node:20.10-alpine AS builder
 
-# Set the PATH to include node_modules binaries
-ENV PATH /app/node_modules/.bin:$PATH
-
-# Copy package.json and package-lock.json
-COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
-
-# Install dependencies
-RUN npm ci
-
-# Copy the rest of the app
-COPY . /app
-
-# Expose port 4200
-EXPOSE 4200
-
-# Build the app with SSR
+ENV INSTALL_PATH /app
+RUN mkdir -p $INSTALL_PATH
+WORKDIR $INSTALL_PATH
+COPY ./package.json ./package-lock.json $INSTALL_PATH/
+RUN npm install
+COPY . $INSTALL_PATH
 RUN npm run build:ssr:prod
 
-# Stage 2: Create the final image
-FROM node:18.17.1
-WORKDIR /app
+FROM node:20.10-alpine AS runner
 
-# Copy the SSR build output from the previous stage
-COPY --from=build /app/dist/evento/server ./dist/evento/server
+ENV NODE_ENV production
+ENV PORT 4200
 
-# Start the SSR server
-CMD npm run serve:ssr
+ENV INSTALL_PATH /app
+RUN mkdir -p $INSTALL_PATH
+WORKDIR $INSTALL_PATH
+# COPY --from=builder $INSTALL_PATH/package.json $INSTALL_PATH/package-lock.json $INSTALL_PATH/
+# RUN npm install --production
+COPY --from=builder $INSTALL_PATH/dist $INSTALL_PATH/dist
+
+EXPOSE 4200
+
+CMD ["npm", "run", "serve:ssr"]
