@@ -45,6 +45,7 @@ function parseDate(date: string): Date {
 
 function parseTime(time: string) {
   // Split the time string into hours and AM/PM
+  if (!time) return;
   const [hoursStr, period] = time.split(" ");
 
   // Convert hours to 24-hour format

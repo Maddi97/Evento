@@ -8,10 +8,10 @@ import { SnackbarService } from "@shared/services/utils/snackbar.service";
 import moment from "moment";
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import { finalize, forkJoin, map, of } from "rxjs";
-import { crawlBrowseAi } from "../../globals/constants/specific-crawler/browseAI.subscription";
-import { mapIfzToEvents } from "../../globals/constants/specific-crawler/ifz-helper";
-import { mapLeipzigToEvents } from "../../globals/constants/specific-crawler/leipzig-helper";
-import { mapUrbaniteToEvents } from "../../globals/constants/specific-crawler/urbanite-helper";
+import { crawlBrowseAi } from "../../shared/logic/browse-ai-subscription-helpers/browseAI.subscription";
+import { mapIfzToEvents } from "../../shared/logic/specific-crawler/ifz-helper";
+import { mapLeipzigToEvents } from "../../shared/logic/specific-crawler/leipzig-helper";
+import { mapUrbaniteToEvents } from "../../shared/logic/specific-crawler/urbanite-helper";
 import { CommonModule } from "@angular/common";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { CrawledEventsToEventComponent } from "../../shared/molecules/crawled-events-to-event/crawled-events-to-event.component";
@@ -133,7 +133,7 @@ export class CrawlEventsComponent implements OnInit {
             "error",
             2000
           );
-          console.error("An error occurred while fetching", error.error);
+          console.error("An error occurred while fetching", error);
         },
         complete: () => {
           console.log("complete");
@@ -286,18 +286,19 @@ export class CrawlEventsComponent implements OnInit {
     return [crawlings$, mapCrawledEventsFunction];
   }
   findOrganizer() {
-    const filteredOrganizer = this.allOrganizer.filter(
-      (organizer) =>
-        organizer.name.toLowerCase() ===
-          this.eventIn.organizerName?.toLowerCase() ||
-        organizer.alias.some(
-          (aliasName) =>
-            aliasName.toLowerCase() ===
-            this.eventIn?.organizerName.toLowerCase()
-        )
-    );
-
-    if (filteredOrganizer.length < 1) {
+    const filteredOrganizer = this.allOrganizer
+      .filter(
+        (organizer) =>
+          organizer.name?.toLowerCase() ===
+            this.eventIn.organizerName?.toLowerCase() ||
+          organizer.alias?.some(
+            (aliasName: string) =>
+              aliasName.toLowerCase() ===
+              this.eventIn?.organizerName?.toLowerCase()
+          )
+      )
+      .pop();
+    if (!filteredOrganizer) {
       this.organizerIn = new Organizer();
       this.organizerIn.name = this.eventIn.organizerName || "NO ORGANIZER NAME";
       this.organizerIn.category = this.eventIn.category
@@ -320,7 +321,7 @@ export class CrawlEventsComponent implements OnInit {
         : this.eventIn?.link;
     } else {
       //wenn es organizer gibt dann baue direkt das event
-      this.organizerIn = filteredOrganizer[0];
+      this.organizerIn = filteredOrganizer;
       //todo Event befüllen
 
       const e = this.eventIn;

@@ -28,11 +28,12 @@ export class CrawlerApiService {
       robotId: robotId,
       originUrl: originUrl,
     };
+    console.log("body: ", body);
     return this.webService.post("runTaskOfRobot/", body).pipe(
       map((r: HttpRequest<any>) => r as unknown),
-      catchError((error: any) => {
+      catchError((error: Error) => {
         console.error("an error occurred", error);
-        return throwError(error.error.message || error);
+        throw error;
       }),
       share()
     );
