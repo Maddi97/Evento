@@ -162,7 +162,6 @@ export class EventFormComponent implements OnChanges {
       this.eventForm.patchValue(this.eventIn);
       this.eventForm.get("organizerName").setValue(this.eventIn.organizerName);
       this.eventForm.get("_organizerId").setValue(this.eventIn._organizerId);
-      console.log(this.eventForm);
     }, 100);
   }
 

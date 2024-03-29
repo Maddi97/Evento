@@ -9,11 +9,14 @@
 </div>
 <div *ngIf="eventIn && !organizerIn._id" class="organizer-input">
   <app-event-crawled [organizerIn]="organizerIn"></app-event-crawled>
+
+  @if(organizerIn){
   <app-organizer-form
     [page]="'crawler'"
     [organizerIn]="organizerIn"
     [allOrganizerIn]="allOrganizer"
     (addNewOrganizer)="addNewOrganizer($event)"
     (updateOrganizer)="updateOrganizer($event)"
-  ></app-organizer-form>
+  ></app-organizer-form
+  >}
 </div>

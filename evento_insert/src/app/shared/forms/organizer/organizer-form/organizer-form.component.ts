@@ -70,10 +70,12 @@ export class OrganizerFormComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.organizerIn?.currentValue) {
-      this.organizerForm.patchValue(changes.organizerIn?.currentValue);
-      this.updateOrganizerId = changes.organizerIn?.currentValue._id;
+      // first need to regirster subcontrols to fill the form automatically
+      setTimeout(() => {
+        this.organizerForm.patchValue(changes.organizerIn?.currentValue);
+        this.updateOrganizerId = changes.organizerIn?.currentValue._id;
+      }, 10);
     }
-    console.log("organizerIn: ", changes.organizerIn.currentValue);
   }
 
   submitForm() {
