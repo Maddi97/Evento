@@ -7,7 +7,7 @@ import { OrganizerService } from "@shared/services/organizer/organizer.web.servi
 import { SnackbarService } from "@shared/services/utils/snackbar.service";
 import moment from "moment";
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
-import { finalize, forkJoin, map, of } from "rxjs";
+import { catchError, finalize, forkJoin, map, of } from "rxjs";
 import { crawlBrowseAi } from "../../shared/logic/browse-ai-subscription-helpers/browseAI.subscription";
 import { mapIfzToEvents } from "../../shared/logic/specific-crawler/ifz-helper";
 import { mapLeipzigToEvents } from "../../shared/logic/specific-crawler/leipzig-helper";
@@ -114,26 +114,19 @@ export class CrawlEventsComponent implements OnInit {
         this.crawlEventsOfSpecificCrawler(crawlerKey, crawler);
       crawling$.subscribe({
         next: (eventList) => {
-          console.log("Final crawled events: ", eventList.flat());
+          eventList = eventList.flat();
+          console.log("Final crawled events: ", eventList);
           this.spinner.hide();
-          if (eventList.length !== 0) {
-            this.crawledEventList = mapCrawledEventsFunction(eventList.flat());
-            this.index = 0;
-            this.eventIn = this.crawledEventList[this.index];
-            this.findOrganizer();
-          } else {
-            throw new Error("No events found");
-          }
+          this.crawledEventList = mapCrawledEventsFunction(eventList.flat());
+          this.index = 0;
+          this.eventIn = this.crawledEventList[this.index];
+          this.findOrganizer();
         },
         error: (error) => {
           // Handle error here
           this.spinner.hide();
-          this.snackbar.openSnackBar(
-            error.message || error.error.text || error.error || error,
-            "error",
-            2000
-          );
-          console.error("An error occurred while fetching", error);
+          this.snackbar.openSnackBar(error, "error", 5000);
+          console.error(error);
         },
         complete: () => {
           console.log("complete");
@@ -143,8 +136,8 @@ export class CrawlEventsComponent implements OnInit {
     }
   }
   crawlAllCrawler() {
-    const observables = this.crawlerNames.map(
-      (crawlerName: PossibleCrawlerNames) => {
+    const observables = this.crawlerNames
+      .map((crawlerName: PossibleCrawlerNames) => {
         if (crawlerName !== "All" && crawlerName !== "leipzig") {
           const crawler = crawlerConfig[crawlerName];
 
@@ -155,18 +148,15 @@ export class CrawlEventsComponent implements OnInit {
             // Map the result using mapCrawledEventsFunction
             map((eventList: any) => {
               return mapCrawledEventsFunction(eventList.flat());
-            }),
-            finalize(() => {
-              console.log("Finished crawling for", crawlerName);
             })
           );
         }
-
         return of(null); // Return an empty observable for 'All' crawler
-      }
-    );
+      })
+      .filter((obs) => obs !== null);
     const forkedSubscription = forkJoin(observables).subscribe({
       next: (results) => {
+        console.log("Results of ForkedSubscription return: ", results);
         let filteredResult = results
           .filter((result) => result !== null && Object.keys(result).length > 0)
           .flat();
@@ -177,6 +167,7 @@ export class CrawlEventsComponent implements OnInit {
             ) === index
           );
         });
+        if (filteredResult.length === 0) return;
         this.crawledEventList = filteredResult;
         this.index = 0;
         this.eventIn = this.crawledEventList[this.index];
@@ -195,7 +186,6 @@ export class CrawlEventsComponent implements OnInit {
           "error",
           2000
         );
-        console.error("An error occurred while fetching", error.error);
         forkedSubscription.unsubscribe();
         console.error("An error occurred while combining results", error);
       },
@@ -257,7 +247,14 @@ export class CrawlEventsComponent implements OnInit {
       case "urbanite":
         crawlings$ = forkJoin(
           urls.map((url) =>
-            crawlBrowseAi(crawler, url, this.crawlerService, crawlerName)
+            //creates an observable for every date
+            // if one observable fails it needs to return an empty list
+            crawlBrowseAi(crawler, url, this.crawlerService, crawlerName).pipe(
+              catchError((error) => {
+                console.error(error);
+                return of([]);
+              })
+            )
           )
         );
         mapCrawledEventsFunction = mapUrbaniteToEvents;

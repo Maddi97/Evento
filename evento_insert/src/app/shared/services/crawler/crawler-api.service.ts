@@ -1,6 +1,6 @@
 import { HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { catchError, map, share, throwError } from "rxjs";
+import { catchError, map, of, share, throwError } from "rxjs";
 import { WebService } from "../web/web.service";
 
 export type InputParameter = {
@@ -15,10 +15,6 @@ export class CrawlerApiService {
   getRobots() {
     return this.webService.get("robots/").pipe(
       map((r: HttpRequest<any>) => r as unknown),
-      catchError((error: any) => {
-        console.error("an error occurred", error);
-        return throwError(error.error.message || error);
-      }),
       share()
     );
   }
@@ -28,12 +24,16 @@ export class CrawlerApiService {
       robotId: robotId,
       originUrl: originUrl,
     };
-    console.log("body: ", body);
     return this.webService.post("runTaskOfRobot/", body).pipe(
       map((r: HttpRequest<any>) => r as unknown),
-      catchError((error: Error) => {
-        console.error("an error occurred", error);
-        throw error;
+      map((response) => {
+        if (response["name"] === "Error") {
+          throw new Error(
+            `Error response from API: ${response["message"]}`,
+            response
+          );
+        }
+        return response;
       }),
       share()
     );
@@ -44,11 +44,20 @@ export class CrawlerApiService {
       robotId: robotId,
       inputParameters: inputParameters,
     };
+    if (inputParameters[0].originUrl.includes("7")) {
+      throw new Error("i throw a error on date");
+    }
+
     return this.webService.post("runBulkTaskOfRobot/", body).pipe(
       map((r: HttpRequest<any>) => r as unknown),
-      catchError((error: any) => {
-        console.error("an error occurred", error);
-        return throwError(error.error.message || error);
+      map((response) => {
+        if (response["name"] === "Error") {
+          throw new Error(
+            `Error response from API: ${response["message"]}`,
+            response
+          );
+        }
+        return response;
       }),
       share()
     );
@@ -60,9 +69,14 @@ export class CrawlerApiService {
     };
     return this.webService.post("getTaskResultsOfRobot/", body).pipe(
       map((r: HttpRequest<any>) => r as unknown),
-      catchError((error: any) => {
-        console.error("an error occurred", error);
-        return throwError(error.error.message || error);
+      map((response) => {
+        if (response["name"] === "Error") {
+          throw new Error(
+            `Error response from API: ${response["message"]}`,
+            response
+          );
+        }
+        return response;
       }),
       share()
     );
@@ -76,10 +90,14 @@ export class CrawlerApiService {
       map((response) => {
         return response["capturedTexts"];
       }),
-      map((r: HttpRequest<any>) => r as unknown),
-      catchError((error: any) => {
-        console.error("an error occurred", error);
-        return throwError(error.error.message || error);
+      map((response) => {
+        if (response["name"] === "Error") {
+          throw new Error(
+            `Error response from API: ${response["message"]}`,
+            response
+          );
+        }
+        return response;
       }),
       share()
     );
@@ -91,9 +109,14 @@ export class CrawlerApiService {
     return this.webService.post("getTasksOfRobot/", body).pipe(
       map((r: HttpRequest<any>) => r as unknown),
       map((r) => r[Object.keys(r)[0]]),
-      catchError((error: any) => {
-        console.error("an error occurred", error);
-        return throwError(error.error.message || error);
+      map((response) => {
+        if (response["name"] === "Error") {
+          throw new Error(
+            `Error response from API: ${response["message"]}`,
+            response
+          );
+        }
+        return response;
       }),
       share()
     );
@@ -103,10 +126,14 @@ export class CrawlerApiService {
       robotId: robotId,
     };
     return this.webService.post("getBulkRunsOfRobot/", body).pipe(
-      map((r: HttpRequest<any>) => r as unknown),
-      catchError((error: any) => {
-        console.error("an error occurred", error);
-        return throwError(error.error.message || error);
+      map((response) => {
+        if (response["name"] === "Error") {
+          throw new Error(
+            `Error response from API: ${response["message"]}`,
+            response
+          );
+        }
+        return response;
       }),
       share()
     );
@@ -117,15 +144,16 @@ export class CrawlerApiService {
       taskId: taskId,
       page: pageNumber,
     };
+
     return this.webService.post("getBulkTaskOfRobot/", body).pipe(
       map((response) => {
-        console.log("bulk run result: ", response);
+        if (response["name"] === "Error") {
+          throw new Error(
+            `Error response from API: ${response["message"]}`,
+            response
+          );
+        }
         return response;
-      }),
-      map((r: HttpRequest<any>) => r as unknown),
-      catchError((error: any) => {
-        console.error("an error occurred", error);
-        return throwError(error.error.message || error);
       }),
       share()
     );
