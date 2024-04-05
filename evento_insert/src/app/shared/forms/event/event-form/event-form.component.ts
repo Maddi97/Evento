@@ -83,7 +83,6 @@ export class EventFormComponent implements OnChanges {
     console.log(this.eventForm.value);
   }
   ngOnChanges(): void {
-    console.log(this.eventIn);
     if (this.eventIn !== undefined) {
       this.setEventForm();
     }
