@@ -7,9 +7,10 @@
       [matAutocomplete]="auto"
       type="text"
       [value]="categoryFormControl.value?.name"
+      (input)="filterCategoriesOnInputChange($event.target.value)"
     />
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-      @for(category of categoryList; track category) {
+      @for(category of filteredCategoryList; track category) {
       <mat-option (onSelectionChange)="onSelectCategory(category)">
         {{ category?.name }} </mat-option
       >}
