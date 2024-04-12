@@ -1,5 +1,12 @@
+import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { crawlerConfig } from "@globals/constants/browseAi";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { CRAWLER_CONFIG } from "@globals/constants/crawlerConfig";
 import { Event } from "@globals/models/event";
 import { Organizer } from "@globals/models/organizer";
 import { CrawlerApiService } from "@shared/services/crawler/crawler-api.service";
@@ -7,22 +14,14 @@ import { OrganizerService } from "@shared/services/organizer/organizer.web.servi
 import { SnackbarService } from "@shared/services/utils/snackbar.service";
 import moment from "moment";
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
-import { catchError, finalize, forkJoin, map, of } from "rxjs";
+import { catchError, forkJoin, map, of } from "rxjs";
 import { crawlBrowseAi } from "../../shared/logic/browse-ai-subscription-helpers/browseAI.subscription";
 import { mapIfzToEvents } from "../../shared/logic/specific-crawler/ifz-helper";
 import { mapLeipzigToEvents } from "../../shared/logic/specific-crawler/leipzig-helper";
 import { mapUrbaniteToEvents } from "../../shared/logic/specific-crawler/urbanite-helper";
-import { CommonModule } from "@angular/common";
-import { MatFormFieldModule } from "@angular/material/form-field";
 import { CrawledEventsToEventComponent } from "../../shared/molecules/crawled-events-to-event/crawled-events-to-event.component";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatSelectModule } from "@angular/material/select";
-import { MatInputModule } from "@angular/material/input";
-import { MatButtonModule } from "@angular/material/button";
-import { url } from "inspector";
 
-export type PossibleCrawlerNames = keyof typeof crawlerConfig | "All";
+export type PossibleCrawlerNames = keyof typeof CRAWLER_CONFIG | "All";
 
 @Component({
   selector: "app-crawl-events",
@@ -44,8 +43,7 @@ export type PossibleCrawlerNames = keyof typeof crawlerConfig | "All";
 })
 export class CrawlEventsComponent implements OnInit {
   message;
-  crawlerConfig = crawlerConfig;
-  crawlerNames = [...Object.keys(crawlerConfig), "All"];
+  crawlerNames = [...Object.keys(CRAWLER_CONFIG), "All"];
   selectedInputDate = new Date();
   crawledEventList: Event[] = [];
   allOrganizer: Organizer[] = [];
@@ -110,7 +108,7 @@ export class CrawlEventsComponent implements OnInit {
     if (crawlerKey === "All") {
       this.crawlAllCrawler();
     } else {
-      const crawler = crawlerConfig[crawlerKey];
+      const crawler = CRAWLER_CONFIG[crawlerKey];
       const [crawling$, mapCrawledEventsFunction] =
         this.crawlEventsOfSpecificCrawler(crawlerKey, crawler);
       crawling$.subscribe({
@@ -140,7 +138,7 @@ export class CrawlEventsComponent implements OnInit {
     const observables = this.crawlerNames
       .map((crawlerName: PossibleCrawlerNames) => {
         if (crawlerName !== "All" && crawlerName !== "leipzig") {
-          const crawler = crawlerConfig[crawlerName];
+          const crawler = CRAWLER_CONFIG[crawlerName];
 
           const [crawling$, mapCrawledEventsFunction] =
             this.crawlEventsOfSpecificCrawler(crawlerName, crawler);
@@ -330,8 +328,8 @@ export class CrawlEventsComponent implements OnInit {
       const e = this.eventIn;
       e._organizerId = this.organizerIn._id;
       e.organizerName = this.organizerIn.name;
-      if (!e.category) e.category = this.organizerIn.category;
-      if (!e.address) e.address = this.organizerIn.address;
+      if (!e.category._id) e.category = this.organizerIn.category;
+      if (!e.address.street) e.address = this.organizerIn.address;
       if (!e.description) e.description = this.organizerIn.description;
       this.eventIn = e;
     }

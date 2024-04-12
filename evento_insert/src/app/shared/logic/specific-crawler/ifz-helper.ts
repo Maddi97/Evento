@@ -28,12 +28,11 @@ function mapPropertiesOfCrawledEvent(eventIn: IFZEvent) {
   e.organizerName = "Institut für Zukunft";
   e.description = eventIn.description;
   e.link = eventIn.link;
-  (e.times.start = parseTime(eventIn.time)),
-    (e.date = {
-      start: moment(parseDate(eventIn.date)),
-      end: moment(parseDate(eventIn.date)),
-    });
-
+  e.times.start = parseTime(eventIn.time);
+  const date = { start: undefined, end: undefined };
+  date.start = moment(parseDate(eventIn.date)).toISOString();
+  date.end = moment(parseDate(eventIn.date)).toISOString();
+  e.date = date;
   return e;
 }
 

@@ -11,7 +11,8 @@
       Address: {{ eventIn.address | json }}
     </span>
     <span class="event-property" *ngIf="eventIn.date">
-      Date: {{ eventIn.date | json }}
+      Date: {{ eventIn.date?.start | toUSDateFormat }} -
+      {{ eventIn.date?.end | toUSDateFormat }}
     </span>
     <span class="event-property" *ngIf="eventIn.times">
       Times: {{ eventIn.times | json }}
