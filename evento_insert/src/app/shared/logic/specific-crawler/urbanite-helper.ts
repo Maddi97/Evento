@@ -39,6 +39,7 @@ function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
     e.times.end = "00:00";
   } else {
     e.times.start = parseTimeFormat(eventIn.start_time);
+    e.times.end = undefined;
   }
   const date = { start: undefined, end: undefined };
   date.start = moment(new Date(parseEventDateUrbanite(eventIn.date)))
