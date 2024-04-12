@@ -60,6 +60,7 @@ export class CategorySelectComponent {
     this.nameRequiredValidator(),
   ]);
   categoryList: Category[] = [];
+  filteredCategoryList: Category[];
   subcategoryList: Subcategory[] = [];
 
   constructor(private categoryService: CategoryService) {}
@@ -81,8 +82,10 @@ export class CategorySelectComponent {
           }
         });
       });
+
     this.categoryService.getCategories().subscribe((category: Category[]) => {
       this.categoryList = category;
+      this.filteredCategoryList = category;
     });
   }
   ngOnDestroy() {
@@ -102,5 +105,10 @@ export class CategorySelectComponent {
       }
       return null;
     };
+  }
+  filterCategoriesOnInputChange(name) {
+    this.filteredCategoryList = this.categoryList.filter((category) =>
+      category.name.toLowerCase().startsWith(name.toLowerCase())
+    );
   }
 }

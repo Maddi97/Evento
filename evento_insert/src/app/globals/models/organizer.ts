@@ -7,7 +7,7 @@ import { CoordinatesObject } from "@globals/types/location.types";
 export class Organizer {
   _id: string; // Set to an empty string by default
   name: string = "";
-  alias: string[];
+  alias: string[] = [];
   address: Address = new Address();
   email: string = "";
   telephone: string = "";
