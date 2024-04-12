@@ -37,6 +37,13 @@ import { SelectionListComponent } from "@shared/atoms/selection-list/selection-l
 import { FormSubmitionButtonsComponent } from "@shared/forms/shared/form-submition-buttons/form-submition-buttons.component";
 import { SelectFilesFormComponent } from "@shared/forms/shared/select-files-form/select-files-form.component";
 import { getEventFromForm } from "@shared/logic/event.helpers";
+import { MatDialog } from "@angular/material/dialog";
+import { CustomDialogComponent } from "@shared/atoms/custom-dialog/custom-dialog.component";
+import { EventsObservableService } from "@shared/services/events/events.observable.service";
+import { EventsService } from "@shared/services/events/events.web.service";
+import { OrganizerObservableService } from "@shared/services/organizer/organizer.observable.service";
+import { SnackbarService } from "@shared/services/utils/snackbar.service";
+import { map, catchError, of, switchMap } from "rxjs";
 @Component({
   selector: "app-event-form",
   standalone: true,
@@ -72,7 +79,13 @@ export class EventFormComponent implements OnChanges {
   updateEventId = "";
 
   eventForm: FormGroup;
-  constructor(private geoService: NominatimGeoService) {
+  constructor(
+    private geoService: NominatimGeoService,
+    private snackbar: SnackbarService,
+
+    private eventService: EventsService,
+    public dialog: MatDialog
+  ) {
     this.eventForm = new FormGroup({
       name: new FormControl("", [Validators.required, Validators.minLength(3)]),
       _organizerId: new FormControl("", [Validators.required]),
@@ -83,7 +96,8 @@ export class EventFormComponent implements OnChanges {
     console.log(this.eventForm.value);
   }
   ngOnChanges(): void {
-    if (this.eventIn !== undefined) {
+    if (this.eventIn) {
+      console.log(this.eventIn);
       this.setEventForm();
     }
   }
@@ -92,14 +106,12 @@ export class EventFormComponent implements OnChanges {
     if (this.updateEventId) {
       this.emitUpdateEvent();
     } else {
-      this.emitAddNewEvent();
+      this.addEventCheckDuplicate();
     }
   }
 
-  async emitAddNewEvent() {
-    const event = getEventFromForm(this.eventForm, this.updateEventId);
+  async emitAddNewEvent(event: Event) {
     const address = event.address;
-
     if (this.eventForm.get("address").value) {
       try {
         // first fetch geo data from osm API and than emit event data
@@ -107,16 +119,16 @@ export class EventFormComponent implements OnChanges {
           address.city,
           address.street
         );
-      } catch (err) {
-        throw err;
+      } catch (error) {
+        throw Error(error);
       }
     } else if (this.eventForm.get("coordinates").value) {
       try {
         event.coordinates = await this.geoService.getAddressFromCoordinates(
           event.coordinates
         );
-      } catch (err) {
-        throw err;
+      } catch (error) {
+        throw Error(error);
       }
     }
     this.addNewEvent.emit(event);
@@ -153,7 +165,48 @@ export class EventFormComponent implements OnChanges {
 
     this.resetForm();
   }
+  addEventCheckDuplicate() {
+    const event = getEventFromForm(this.eventForm, this.updateEventId);
+    this.eventService
+      .checkIfEventsExistsInDB(event)
+      .pipe(
+        map((existingEvents) => {
+          if (existingEvents.length > 0) {
+            this.openDialogIfDuplicate(existingEvents, event);
+          } else {
+            this.emitAddNewEvent(event);
+          }
+        }),
+        catchError((error) => {
+          console.error("Error checking duplicate", error);
+          this.snackbar.openSnackBar(error.message, "error");
+          return of(null); // Continue with null eventImagePath
+        })
+      )
+      .subscribe();
+  }
+  openDialogIfDuplicate(events: Event[], event) {
+    const dialogRef = this.dialog.open(CustomDialogComponent, {
+      data: { currentEvent: event, events: events },
+    });
 
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (result) {
+            return this.emitAddNewEvent(event);
+          } else {
+            throw Error("Event not added " + event.name);
+          }
+        }),
+        catchError((error) => {
+          this.snackbar.openSnackBar(error, "error");
+          return of(null);
+        })
+      )
+      .subscribe();
+  }
   setEventForm(): void {
     // Timeout is needed to register child components
     setTimeout(() => {

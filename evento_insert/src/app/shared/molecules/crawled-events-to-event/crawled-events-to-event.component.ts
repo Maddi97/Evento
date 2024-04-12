@@ -12,6 +12,7 @@ import { CommonModule } from "@angular/common";
 import { EventFormComponent } from "@forms/event/event-form/event-form.component";
 import { OrganizerFormComponent } from "../../forms/organizer/organizer-form/organizer-form.component";
 import { EventCrawledComponent } from "../../atoms/atom-event-crawled/event-crawled.component";
+import { EventsObservableService } from "@shared/services/events/events.observable.service";
 
 @Component({
   selector: "app-crawled-events-to-event",
@@ -45,11 +46,10 @@ export class CrawledEventsToEventComponent {
   eventImagePath = "images/eventImages/";
 
   constructor(
-    private snackbarService: SnackbarService,
-    private eventService: EventsService,
-    private fileService: FileUploadService,
-    public dialog: MatDialog,
-    private organizerOnservableService: OrganizerObservableService
+    private snackbar: SnackbarService,
+    private eventObservableService: EventsObservableService,
+    private organizerOnservableService: OrganizerObservableService,
+    public dialog: MatDialog
   ) {}
 
   nextEvent() {
@@ -65,128 +65,53 @@ export class CrawledEventsToEventComponent {
       .then((organizerResponse) => {
         this.emitOrganizer.emit(organizerResponse);
         // TODO his.findOrganizer()
-        this.snackbarService.openSnackBar(
+        this.snackbar.openSnackBar(
           "Successfully added: " + organizerResponse.name,
           "success"
         );
       })
-      .catch((error) => this.snackbarService.openSnackBar(error, "error"));
+      .catch((error) => this.snackbar.openSnackBar(error, "error"));
   }
   updateOrganizer(organizer): void {
     this.organizerOnservableService
       .updateOrganizer(organizer)
       .then((organizerResponse) => {
         this.nextEvent();
-        this.snackbarService.openSnackBar(
+        this.snackbar.openSnackBar(
           "Successfully added: " + organizerResponse.name,
           "success"
         );
       })
-      .catch((error) => this.snackbarService.openSnackBar(error, "error"));
+      .catch((error) => this.snackbar.openSnackBar(error, "error"));
   }
-
-  addEventCheckDuplicate(event) {
-    this.eventService
-      .checkIfEventsExistsInDB(event)
-      .pipe(
-        map((existingEvents) => {
-          if (existingEvents.length > 0) {
-            this.openDialogIfDuplicate(existingEvents, event);
-            this.emitNextEvent.emit();
-          } else {
-            this.addNewEvent(event);
-          }
-        }),
-        catchError((error) => {
-          console.error("Error checking duplicate", error);
-          this.snackbarService.openSnackBar(error.message, "error");
-          return of(null); // Continue with null eventImagePath
-        })
-      )
-      .subscribe();
-  }
-
-  openDialogIfDuplicate(events: Event[], event) {
-    const dialogRef = this.dialog.open(CustomDialogComponent, {
-      data: { currentEvent: event, events: events },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.addNewEvent(event);
-      } else {
-        this.snackbarService.openSnackBar(
-          "Event not added " + event.name,
-          "error"
+  updateEvent(event) {
+    this.eventObservableService
+      .updateEvent(event)
+      .then((event) => {
+        this.snackbar.openSnackBar(
+          "Successfully updated Event: " + event.name,
+          "success"
         );
-      }
-    });
+      })
+      .catch((error) => {
+        this.snackbar.openSnackBar(error.message, "error");
+      });
   }
-  addNewEvent(event) {
-    // set _id undefined otherwise error occurs
-    event._id = undefined;
 
-    this.eventService
-      .createEvent(event)
-      .pipe(
-        switchMap((createEventResponse) => {
-          event._id = createEventResponse._id;
-          const formdata = event.fd;
-          delete event.fd;
-          if (formdata !== undefined) {
-            const fullEventImagePath =
-              this.eventImagePath + createEventResponse._id;
-            formdata.append("eventImagePath", fullEventImagePath);
-            return this.fileService.uploadEventImage(formdata).pipe(
-              catchError((uploadImageError) => {
-                console.error("Error uploading event image:", uploadImageError);
-                this.snackbarService.openSnackBar(
-                  uploadImageError.message,
-                  "error"
-                );
-                return of(null); // Continue with null eventImagePath
-              }),
-              tap((uploadImageResponse) => {
-                if (uploadImageResponse) {
-                  event.eventImagePath = uploadImageResponse.eventImage.path;
-                }
-              })
-            );
-          }
-          return of(null); // Continue with null eventImagePath
-        }),
-        switchMap((eventWithImagePath) => {
-          return this.eventService
-            .updateEvent(event._organizerId, event._id, event)
-            .pipe(
-              catchError((updateEventError) => {
-                console.error("Error updating event:", updateEventError);
-                this.snackbarService.openSnackBar(
-                  updateEventError.message,
-                  "error"
-                );
-                return of(null); // Continue without showing success message
-              }),
-              tap(() => {
-                this.emitAddEvent.emit(this.eventIn);
-                this.snackbarService.openSnackBar(
-                  "Successfully added Event: " + event.name,
-                  "success"
-                );
-              })
-            );
-        })
-      )
-      .subscribe(
-        () => {
-          // Success
-        },
-        (error) => {
-          console.error("Error:", error);
-          this.snackbarService.openSnackBar(error.message, "error");
-
-          // Handle error here, e.g., show an error message to the user.
-        }
-      );
+  addNewEvent(event: Event) {
+    console.log("Add new event");
+    this.eventObservableService
+      .addNewEvent(event)
+      .then((event) => {
+        this.snackbar.openSnackBar(
+          "Successfully added Event: " + event.name,
+          "success"
+        );
+      })
+      .catch((error) => {
+        this.snackbar.openSnackBar(error.message, "error");
+        this.eventIn = null;
+        setTimeout(() => (this.eventIn = event), 10);
+      });
   }
 }

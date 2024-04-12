@@ -20,6 +20,7 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
+import { url } from "inspector";
 
 export type PossibleCrawlerNames = keyof typeof crawlerConfig | "All";
 
@@ -251,7 +252,7 @@ export class CrawlEventsComponent implements OnInit {
             // if one observable fails it needs to return an empty list
             crawlBrowseAi(crawler, url, this.crawlerService, crawlerName).pipe(
               catchError((error) => {
-                console.error(error);
+                console.error(`Error while crawling ${url}`, error);
                 return of([]);
               })
             )
@@ -277,6 +278,11 @@ export class CrawlEventsComponent implements OnInit {
           urls[0],
           this.crawlerService,
           crawlerName
+        ).pipe(
+          catchError((error) => {
+            console.error(`Error while crawling ${urls[0]}`, error);
+            return of([]);
+          })
         );
         mapCrawledEventsFunction = mapIfzToEvents;
     }

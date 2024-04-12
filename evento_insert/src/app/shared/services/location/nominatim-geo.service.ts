@@ -45,10 +45,11 @@ export class NominatimGeoService {
           })
         );
       const coordinates: CoordinatesObject = await lastValueFrom(coordinates$);
+      console.log(coordinates);
       return coordinates;
-    } catch (err) {
-      this.snackBarService.openSnackBar("Error: " + err, "error");
-      throwError(err);
+    } catch (error) {
+      console.error(error);
+      throw Error(error);
     }
   }
 

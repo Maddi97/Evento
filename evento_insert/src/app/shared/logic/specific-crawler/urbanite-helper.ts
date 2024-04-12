@@ -41,10 +41,11 @@ function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
     e.times.start = parseTimeFormat(eventIn.start_time);
   }
   const date = { start: undefined, end: undefined };
-  date.start = moment(new Date(parseEventDateUrbanite(eventIn.date)));
+  date.start = moment(
+    new Date(parseEventDateUrbanite(eventIn.date))
+  ).toISOString();
   date.end = date.start;
   e.date = date;
-
   e.permanent = false;
   return e;
 }
