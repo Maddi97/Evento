@@ -1,3 +1,4 @@
+import { MAX_RETRIES_TASK_FAILED } from "@globals/constants/browseAI.c";
 import {
   CrawlerApiService,
   InputParameter,
@@ -8,15 +9,12 @@ import {
   concatMap,
   delay,
   map,
-  mergeMap,
-  retry,
   retryWhen,
   switchMap,
   take,
   tap,
 } from "rxjs/operators";
 import { waitForRobotToFinish } from "./waitForRobotToFinish";
-import { URL, Url } from "url";
 
 export function crawlBrowseAi(
   crawler,
@@ -112,7 +110,6 @@ export function retryWaitingForResultIfFailed(
   crawlerService: CrawlerApiService,
   url
 ) {
-  const maxRetries = 3;
   return waitForRobotToFinish(
     taskOrBulk,
     crawlerId,
@@ -140,9 +137,9 @@ export function retryWaitingForResultIfFailed(
           console.error("Error occurred, retrying...", error || error.message)
         ),
         delay(5000), // Adjust the delay time as needed
-        take(maxRetries), // Maximum number of retry attempts
+        take(MAX_RETRIES_TASK_FAILED), // Maximum number of retry attempts
         concatMap((error, attemptNumber) => {
-          if (attemptNumber === maxRetries - 1) {
+          if (attemptNumber === MAX_RETRIES_TASK_FAILED - 1) {
             return throwError(
               () => new Error("Maximum retry attempts reached")
             );

@@ -361,10 +361,10 @@ router.post("/checkIfEventExists", limiter, (req, res) => {
       {
         $and: [
           {
-            "date.start": { $gte: startMinus1, $lte: startPlus1 },
+            "date.start": { $gt: startMinus1, $lt: startPlus1 },
           },
           {
-            "date.end": { $gte: endMinus1, $lte: endPlus1 },
+            "date.end": { $gt: endMinus1, $lt: endPlus1 },
           },
         ],
       },

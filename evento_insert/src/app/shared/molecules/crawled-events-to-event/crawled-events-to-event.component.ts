@@ -103,6 +103,7 @@ export class CrawledEventsToEventComponent {
     this.eventObservableService
       .addNewEvent(event)
       .then((event) => {
+        this.emitNextEvent.emit();
         this.snackbar.openSnackBar(
           "Successfully added Event: " + event.name,
           "success"
