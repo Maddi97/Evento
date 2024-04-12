@@ -30,8 +30,8 @@ function mapPropertiesOfCrawledEvent(eventIn: IFZEvent) {
   e.link = eventIn.link;
   e.times.start = parseTime(eventIn.time);
   const date = { start: undefined, end: undefined };
-  date.start = moment(parseDate(eventIn.date)).toISOString();
-  date.end = moment(parseDate(eventIn.date)).toISOString();
+  date.start = moment(parseDate(eventIn.date)).utcOffset(0, true).toISOString();
+  date.end = moment(parseDate(eventIn.date)).utcOffset(0, true).toISOString();
   e.date = date;
   return e;
 }
