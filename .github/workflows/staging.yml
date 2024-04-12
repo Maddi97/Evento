@@ -2,7 +2,7 @@ name: Staging
 
 on:
   push:
-    branches: [develop]
+    branches: []
   workflow_dispatch:
 
 jobs:
