@@ -17,7 +17,7 @@ import { AutocompleteOrganizerComponent } from "@shared/atoms/autocomplete-organ
 import { SelectionListComponent } from "@shared/atoms/selection-list/selection-list.component";
 import { transformFormFieldToOrganizer } from "../../../logic/organizer.helpers";
 
-import { AddNameAndAliasFormComponent } from "@forms/organizer/add-name-and-alias-form/add-name-andalias-form.component";
+import { AddNameAndAliasFormComponent } from "@forms/organizer/add-name-and-alias-form/add-name-and-alias-form.component";
 import { OpeningTimesFormComponent } from "@shared/forms/shared/opening-times-form/opening-times-form.component";
 import { OrganizerAdditionalInfoFormComponent } from "@forms/organizer/organizer-additional-info-form/organizer-additional-info-form.component";
 import { ID } from "@globals/types/common.types";
@@ -52,7 +52,7 @@ import { SelectFilesFormComponent } from "@shared/forms/shared/select-files-form
 export class OrganizerFormComponent implements OnChanges {
   @Input() organizerIn: Organizer;
   @Input() allOrganizerIn: Organizer[] = [];
-  @Input() page: "crawler" | "insert" = "insert";
+  @Input({ required: true }) page: "crawler" | "insert" = "insert";
   @Output() updateOrganizer: EventEmitter<Organizer> =
     new EventEmitter<Organizer>();
   @Output() addNewOrganizer: EventEmitter<Organizer> =

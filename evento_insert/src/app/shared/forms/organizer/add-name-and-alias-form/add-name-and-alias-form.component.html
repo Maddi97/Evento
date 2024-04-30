@@ -1,5 +1,4 @@
 <ng-container class="organizer-name">
-  @if (isOrganizerForm) {
   <mat-form-field appearance="fill">
     <mat-label>Organizer</mat-label>
     <input matInput required formControlName="name" />
@@ -15,7 +14,7 @@
       Organizer name requires minimum length of 3
     </mat-error>
   </mat-form-field>
-  } @else {
+  @if(!isOrganizerInsertView){
   <app-autocomplete-organizer
     (emitOrganizer)="this.nameFormControl.patchValue($event)"
   ></app-autocomplete-organizer>

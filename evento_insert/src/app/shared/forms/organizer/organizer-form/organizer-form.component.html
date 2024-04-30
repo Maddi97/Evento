@@ -9,7 +9,7 @@
   }
   <form [formGroup]="organizerForm">
     <app-add-name-and-alias-form
-      [isOrganizerForm]="true"
+      [isOrganizerInsertView]="page === 'insert'"
     ></app-add-name-and-alias-form>
 
     <app-address-form></app-address-form>
