@@ -7,10 +7,12 @@ import { environment } from "../../../../environments/environment";
 })
 export class WebService {
   readonly ROOT_URL;
+  readonly DATASERVER_ROOT_URL;
   env = environment;
 
   constructor(private http: HttpClient) {
     this.ROOT_URL = this.env.apiBaseUrl;
+    this.DATASERVER_ROOT_URL = this.env.dataServerBaseUrl;
   }
 
   get(uri: string) {
@@ -37,5 +39,8 @@ export class WebService {
 
   delete(uri: string) {
     return this.http.delete(`${this.ROOT_URL}/${uri}`);
+  }
+  postDataset(uri: string, payload) {
+    return this.http.post(`${this.DATASERVER_ROOT_URL}/${uri}`, payload);
   }
 }

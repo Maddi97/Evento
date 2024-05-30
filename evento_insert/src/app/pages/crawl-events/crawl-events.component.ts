@@ -20,6 +20,7 @@ import { mapIfzToEvents } from "../../shared/logic/specific-crawler/ifz-helper";
 import { mapLeipzigToEvents } from "../../shared/logic/specific-crawler/leipzig-helper";
 import { mapUrbaniteToEvents } from "../../shared/logic/specific-crawler/urbanite-helper";
 import { CrawledEventsToEventComponent } from "../../shared/molecules/crawled-events-to-event/crawled-events-to-event.component";
+import { StoreDatasetService } from "@shared/services/store-dataset/store-dataset.service";
 
 export type PossibleCrawlerNames = keyof typeof CRAWLER_CONFIG | "All";
 
@@ -59,7 +60,8 @@ export class CrawlEventsComponent implements OnInit {
     private crawlerService: CrawlerApiService,
     private snackbar: SnackbarService,
     private organizerService: OrganizerService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private storeDatasetService: StoreDatasetService
   ) {}
   ngOnInit(): void {
     this.organizerService.getOrganizer().subscribe((org) => {
@@ -248,7 +250,13 @@ export class CrawlEventsComponent implements OnInit {
           urls.map((url) =>
             //creates an observable for every date
             // if one observable fails it needs to return an empty list
-            crawlBrowseAi(crawler, url, this.crawlerService, crawlerName).pipe(
+            crawlBrowseAi(
+              crawler,
+              url,
+              this.crawlerService,
+              this.storeDatasetService,
+              crawlerName
+            ).pipe(
               catchError((error) => {
                 console.error(`Error while crawling ${url}`, error);
                 return of([]);
@@ -265,6 +273,7 @@ export class CrawlEventsComponent implements OnInit {
               crawler,
               url,
               this.crawlerService,
+              this.storeDatasetService,
               crawlerName
             );
           })
@@ -275,6 +284,7 @@ export class CrawlEventsComponent implements OnInit {
           crawler,
           urls[0],
           this.crawlerService,
+          this.storeDatasetService,
           crawlerName
         ).pipe(
           catchError((error) => {
