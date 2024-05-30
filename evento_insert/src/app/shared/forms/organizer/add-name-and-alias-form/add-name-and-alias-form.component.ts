@@ -34,8 +34,8 @@ import { AutocompleteOrganizerComponent } from "@shared/atoms/autocomplete-organ
   styleUrl: "./add-name-and-alias-form.component.css",
 })
 export class AddNameAndAliasFormComponent {
-  @Input({ required: true }) isOrganizerForm: boolean;
-
+  @Input({ required: true }) isOrganizerInsertView: boolean;
+  isOrganizerView;
   nameFormControl: FormControl<string>;
   aliasFormControl: FormControl<Array<string>>;
   aliasInputControl: FormControl<string> = new FormControl("");

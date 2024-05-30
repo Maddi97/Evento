@@ -77,6 +77,9 @@ app.use(crawlerRouter);
 const settingsRouter = require("./routes/settings.routes");
 app.use(settingsRouter);
 
+const storeDatasetRouter = require("./routes/storeDataset.routes");
+app.use(storeDatasetRouter);
+
 app.set("trust proxy", 1);
 
 // startup our app at http://localhost:3000

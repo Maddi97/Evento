@@ -7,6 +7,7 @@ export const environment = {
   //apiBaseUrl: 'https://backend.staging.evento-leipzig.de'
   //apiBaseUrl: "https://backend.evento-leipzig.de",
   apiBaseUrl: "http://localhost:3000",
+  dataServerBaseUrl: "http://localhost:3001",
 };
 
 /*

@@ -15,11 +15,13 @@ import {
   tap,
 } from "rxjs/operators";
 import { waitForRobotToFinish } from "./waitForRobotToFinish";
+import { StoreDatasetService } from "@shared/services/store-dataset/store-dataset.service";
 
 export function crawlBrowseAi(
   crawler,
   url,
   crawlerService: CrawlerApiService,
+  storeDatasetService: StoreDatasetService,
   crawlerName
 ) {
   const storedValue = sessionStorage.getItem(url);
@@ -47,6 +49,17 @@ export function crawlBrowseAi(
           catchError((error) => {
             console.error("Error when waiting for tasks - ", error);
             return of({ capturedLists: { linklist: [] } });
+          }),
+          // store crawled information in dataset
+          switchMap((res) => {
+            let linkList = res["capturedLists"]?.linklist || [];
+            linkList = linkList
+              .filter((event) => !!event.link)
+              .map((event) => event.link);
+            storeDatasetService
+              .storeLinklistDataset(url, linkList)
+              .subscribe((r) => console.log(r));
+            return of(res);
           }),
           map((res) => {
             let linkList = res["capturedLists"]?.linklist || [];
@@ -79,6 +92,19 @@ export function crawlBrowseAi(
               crawlerService,
               url
             );
+          }),
+          switchMap((res) => {
+            const crawledEvents = res["robotTasks"]?.items || [];
+            const events = crawledEvents.map((item) => {
+              return {
+                ...item.capturedTexts,
+                link: item.inputParameters.originUrl,
+              };
+            });
+            storeDatasetService
+              .storeEventDetailsDataset(events)
+              .subscribe((r) => console.log(r));
+            return of(res);
           }),
           // get the task ids of the single tasks finished  by the bulk task of the robot
           // map the task ids as list

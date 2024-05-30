@@ -1,63 +1,78 @@
 <div class="organizer-view-container">
-    <div class="organizer-page">
-        <app-organizer-form class="organizer-form" [organizerIn]="organizerInformation"
-            [allOrganizerIn]="allOrganizer"
-            (addNewOrganizer)="addNewOrganizer($event)"
-            (updateOrganizer)="updateOrganizer($event)"></app-organizer-form>
+  <div class="organizer-page">
+    <app-organizer-form
+      class="organizer-form"
+      [page]="'insert'"
+      [organizerIn]="organizerInformation"
+      [allOrganizerIn]="allOrganizer"
+      (addNewOrganizer)="addNewOrganizer($event)"
+      (updateOrganizer)="updateOrganizer($event)"
+    ></app-organizer-form>
 
+    <div class="organizer-container">
+      <div class="map-container">
+        <app-map-view [markerData]="organizers"></app-map-view>
+      </div>
 
-        <div class="organizer-container">
-            <div class="map-container">
-                <app-map-view [markerData]="organizers"></app-map-view>
+      <div
+        class="all-organizer-expansion-panel"
+        *ngFor="let category of categories"
+      >
+        <mat-expansion-panel (afterExpand)="loadOrganizerOfCategory(category)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ category.name }}
+            </mat-panel-title>
+            <mat-panel-description>
+              Open to see all events
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div *ngFor="let organizer of organizers">
+            <div class="organizer-panel">
+              <div
+                class="organizer-name"
+                (click)="organizerInformation = organizer"
+              >
+                {{ organizer.name }}
+              </div>
+              <img
+                class="organizer-image"
+                [src]="organizer.organizerImageTemporaryURL"
+              />
+              <div class="delete-button" (click)="deleteOrganizer(organizer)">
+                Delete
+              </div>
             </div>
+          </div>
+        </mat-expansion-panel>
+      </div>
 
-
-            <div class="all-organizer-expansion-panel" *ngFor="let category of categories">
-                <mat-expansion-panel (afterExpand)="loadOrganizerOfCategory(category)">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            {{category.name}}
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            Open to see all events
-                        </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <div *ngFor="let organizer of organizers">
-                        <div class="organizer-panel">
-                            <div class="organizer-name" (click)="organizerInformation=organizer">
-                                {{organizer.name}}
-                            </div>
-                            <img class="organizer-image" [src]="organizer.organizerImageTemporaryURL">
-                            <div class="delete-button" (click)="deleteOrganizer(organizer)">
-                                Delete
-                            </div>
-                        </div>
-                    </div>
-                </mat-expansion-panel>
+      ALL
+      <mat-expansion-panel (afterExpand)="loadAllOrganizer()">
+        <mat-expansion-panel-header>
+          <mat-panel-title> ALL organizer </mat-panel-title>
+          <mat-panel-description>
+            Open to see all organizer
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div *ngFor="let organizer of organizers">
+          <div class="organizer-panel">
+            <div
+              class="organizer-name"
+              (click)="organizerInformation = organizer"
+            >
+              {{ organizer.name }}
             </div>
-
-            ALL
-            <mat-expansion-panel (afterExpand)="loadAllOrganizer()">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        ALL organizer
-                    </mat-panel-title>
-                    <mat-panel-description>
-                        Open to see all organizer
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-                <div *ngFor="let organizer of organizers">
-                    <div class="organizer-panel">
-                        <div class="organizer-name" (click)="organizerInformation=organizer">
-                            {{organizer.name}}
-                        </div>
-                        <img class="organizer-image" [src]="organizer.organizerImageTemporaryURL">
-                        <div class="delete-button" (click)="deleteOrganizer(organizer)">
-                            Delete
-                        </div>
-                    </div>
-                </div>
-            </mat-expansion-panel>
+            <img
+              class="organizer-image"
+              [src]="organizer.organizerImageTemporaryURL"
+            />
+            <div class="delete-button" (click)="deleteOrganizer(organizer)">
+              Delete
+            </div>
+          </div>
         </div>
+      </mat-expansion-panel>
     </div>
+  </div>
 </div>

@@ -35,6 +35,17 @@ services:
       - SIGNUPKEY=${SIGNUPKEY}
       - SECRET=${SECRET}
       - BROWSE_AI_API_KEY=${BROWSE_AI_API_KEY}
+
   mongodb:
     image: mongo
     container_name: mongodb
+
+  ai_crawler_server:
+    build:
+      context: ai_crawler_server
+      dockerfile: dev.Dockerfile
+    container_name: crawler_container
+    ports:
+      - 3001:3001
+    volumes:
+      - ./ai_crawler_server:/app

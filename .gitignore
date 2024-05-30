@@ -10,6 +10,10 @@ node_modules
 mongodb_backup
 backup_local_dev
 
+venv
+__pycache__
+datasets
+
 .idea
 .env.prod
 .env.dev
