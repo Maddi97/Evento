@@ -1,23 +1,23 @@
 version: "3"
 
 services:
-  # letsencrypt:
-  #   image: linuxserver/swag
-  #   container_name: swag
-  #   restart: always
-  #   volumes:
-  #     - ./letsencryptStrato/config:/config/
-  #   ports:
-  #     - "443:443"
-  #     - "80:80"
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=Europe/Berlin
-  #     - URL=evento-leipzig.de
-  #     - SUBDOMAINS=www, insert, backend
-  #     - VALIDATION=http
-  #     - EMAIL=business@evento-leipzig.de
+  letsencrypt:
+    image: linuxserver/swag
+    container_name: swag
+    restart: always
+    volumes:
+      - ./letsencryptStrato/config:/config/
+    ports:
+      - "443:443"
+      - "80:80"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - URL=evento-leipzig.de
+      - SUBDOMAINS=www, insert, backend, dataserver
+      - VALIDATION=http
+      - EMAIL=business@evento-leipzig.de
 
   evento_frontend:
     image: eventodockerhub/evento_frontend:latest
@@ -29,8 +29,8 @@ services:
     volumes:
       - ./evento_frontend:/app
       - /app/node_modules
-    # depends_on:
-    #   - letsencrypt
+    depends_on:
+      - letsencrypt
 
   evento_insert:
     image: eventodockerhub/evento_insert:latest
@@ -41,8 +41,8 @@ services:
     volumes:
       - ./evento_insert:/app
       - /app/node_modules
-    # depends_on:
-    #   - letsencrypt
+    depends_on:
+      - letsencrypt
 
   backend:
     image: eventodockerhub/evento_backend:latest
@@ -75,3 +75,5 @@ services:
       - 3001:3001
     volumes:
       - ./ai_crawler_server:/app
+    depends_on:
+      - letsencrypt
