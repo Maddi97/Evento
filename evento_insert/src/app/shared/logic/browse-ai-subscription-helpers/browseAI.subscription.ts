@@ -160,17 +160,15 @@ export function retryWaitingForResultIfFailed(
     retryWhen((errors) =>
       errors.pipe(
         tap((error) =>
-          console.error("Error occurred, retrying...", error || error.message)
+          console.error("Error occurred, retrying...", error.message || error)
         ),
-        delay(5000), // Adjust the delay time as needed
-        take(MAX_RETRIES_TASK_FAILED), // Maximum number of retry attempts
         concatMap((error, attemptNumber) => {
           if (attemptNumber === MAX_RETRIES_TASK_FAILED - 1) {
             return throwError(
               () => new Error("Maximum retry attempts reached")
             );
           }
-          return of(error);
+          return of(error).pipe(delay(5000)); // Wait 3 seconds before retrying
         })
       )
     )
