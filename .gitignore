@@ -13,6 +13,7 @@ backup_local_dev
 venv
 __pycache__
 datasets
+datasets_server
 
 .idea
 .env.prod

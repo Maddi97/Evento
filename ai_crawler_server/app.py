@@ -21,9 +21,10 @@ directory = 'datasets'
 csv_file_path_linklist = os.path.join(directory, 'linklist.csv')
 csv_file_path_event_details = os.path.join(directory, 'event_details.csv')
 
-if not os.path.exists(directory):
-    os.makedirs(directory)
-    print(f"Directory '{directory}' created.")
+def create_dir_if_not_exist():
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        print(f"Directory '{directory}' created.")
     
 @app.route('/storeLinklist', methods=['POST'])
 def storeLinklist():
@@ -47,6 +48,7 @@ def storeLinklist():
                 'linklist': [str(linklist)]
             }
         df = None
+        create_dir_if_not_exist()
         if os.path.exists(csv_file_path_linklist):
             # If the CSV file exists, read it into a DataFrame
             df = pd.read_csv(csv_file_path_linklist)
@@ -64,6 +66,7 @@ def storeLinklist():
         return jsonify({'message': 'Linklist Data received successfully'})
     except Exception as e:
         print(f"An error occured while storing linklist: \n\n {e}")
+        return jsonify({'error': 'Linklist Data storing failed'})
 
 @app.route('/storeEventDetails', methods=['POST'])
 def storeEventDetails():
@@ -90,7 +93,9 @@ def storeEventDetails():
                     'event_details': str(event)
                 }
             data_rows.append(data)
+            
         df = None
+        create_dir_if_not_exist()
         if os.path.exists(csv_file_path_event_details):
             # If the CSV file exists, read it into a DataFrame
             df = pd.read_csv(csv_file_path_event_details)
@@ -108,6 +113,7 @@ def storeEventDetails():
         return jsonify({'message': 'Data event details received successfully'})
     except Exception as e:
         print(f"An error occured while storing event details: \n\n {e}")
+        return jsonify({'error': 'event details Data storing failed'})
 
 if __name__ == "__main__":
   app.run(port=3001)
