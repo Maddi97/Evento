@@ -29,13 +29,16 @@
     }"
   >
     <button
-      *ngIf="isMapDragged && hasMoreEvents"
+      *ngIf="isMapDragged && hasMoreEvents && showHasMoreEvents"
       (click)="searchEventsInNewArea()"
       class="address-search map-dragged-button"
     >
       In diesem Bereich suchen
     </button>
-    <div *ngIf="isMapDragged && !hasMoreEvents" class="no-more-events">
+    <div
+      *ngIf="isMapDragged && !hasMoreEvents && showHasMoreEvents"
+      class="no-more-events"
+    >
       Keine weiteren Events
     </div>
     <div
