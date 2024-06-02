@@ -39,6 +39,8 @@ export class MapViewComponent implements OnInit, OnChanges {
   @Input() centerMapOnPosition: Array<Number>;
   @Input() hasMoreEvents: boolean;
   @Input() showInputBar: boolean = true;
+  @Input() isFullEventPage: boolean = false;
+
   @Output() emitClickedEventId: EventEmitter<any> = new EventEmitter<any>();
 
   isPositionDefault: boolean;

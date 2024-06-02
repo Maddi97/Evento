@@ -22,7 +22,12 @@
     </div>
   </div>
   }
-  <div class="map-frame">
+  <div
+    [ngClass]="{
+      'map-frame-fullevent': isFullEventPage,
+      'map-frame': !isFullEventPage
+    }"
+  >
     <button
       *ngIf="isMapDragged && hasMoreEvents"
       (click)="searchEventsInNewArea()"
@@ -33,6 +38,12 @@
     <div *ngIf="isMapDragged && !hasMoreEvents" class="no-more-events">
       Keine weiteren Events
     </div>
-    <div id="map"></div>
+    <div
+      id="map"
+      [ngClass]="{
+        'map-fullevent': isFullEventPage,
+        map: !isFullEventPage
+      }"
+    ></div>
   </div>
 </div>
