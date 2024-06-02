@@ -88,9 +88,6 @@ export class CustomRouterService {
       }),
       map((queryParams) => {
         const date = moment(queryParams.date);
-        // append the hours of the current time zone because the post request will automatically
-        // change to time with time zone an this could change the date
-        date.add(moment(new Date()).utcOffset() / 60, "hours");
         let category = queryParams.category;
         if (category === "1") {
           category = settings.isPromotionActivated
