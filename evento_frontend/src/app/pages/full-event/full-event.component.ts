@@ -75,6 +75,7 @@ export class FullEventComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: () => {
+          console.log(this.event);
           const gtmTag = {
             event: "eventOfOrganizer",
             organizerName: this.organizer.name,

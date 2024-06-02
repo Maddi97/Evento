@@ -22,12 +22,20 @@
 }
 
 @media screen and (min-width: 1000px) {
-  #map {
+  .map {
+    width: 55vw !important;
+  }
+  .map-frame {
     width: 55vw;
   }
 
-  .map-frame {
-    width: 55vw;
+  .map-fullevent {
+    width: 35vw !important;
+    padding-top: 40vh !important;
+  }
+
+  .map-frame-fullevent {
+    width: 35vw;
   }
 }
 
