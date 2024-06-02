@@ -344,7 +344,12 @@ export class CrawlEventsComponent implements OnInit {
       this.eventIn = e;
     }
   }
+  selectOrganizerForCrawledEvent(organizer: Organizer) {
+    this.eventIn.organizerName = organizer.name;
+    this.findOrganizer();
+  }
   newOrganizer(organizer) {
+    this.eventIn.organizerName = organizer.name;
     this.allOrganizer.push(organizer);
     this.findOrganizer();
   }

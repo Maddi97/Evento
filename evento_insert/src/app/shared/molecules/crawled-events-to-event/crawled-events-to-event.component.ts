@@ -35,7 +35,8 @@ export class CrawledEventsToEventComponent {
   @Output() emitPreviousEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() emitOrganizer: EventEmitter<Organizer> =
     new EventEmitter<Organizer>();
-
+  @Output() emitSelectOrganizerForCrawledEvent: EventEmitter<Organizer> =
+    new EventEmitter<Organizer>();
   // subscriptions
   category$;
   categories;

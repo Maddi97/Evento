@@ -1,11 +1,21 @@
 <div class="confirm-buttons">
   <button
+    *ngIf="!isCrawledSet"
     mat-raised-button
     color="primary"
     (click)="emitConfirm.emit()"
     [disabled]="isDisabled"
   >
     {{ confirmButtonLabel }}
+  </button>
+  <button
+    *ngIf="isCrawledSet"
+    mat-raised-button
+    color="primary"
+    (click)="emitSetCrawled.emit()"
+    [disabled]="!isCrawledSet"
+  >
+    Set Organizer for Crawled Event
   </button>
   <button mat-raised-button color="accent" (click)="emitClear.emit()">
     Clear

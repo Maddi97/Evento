@@ -74,5 +74,8 @@
     (emitNextEvent)="nextEvent()"
     (emitPreviousEvent)="previousEvent()"
     (emitOrganizer)="newOrganizer($event)"
+    (emitSelectOrganizerForCrawledEvent)="
+      selectOrganizerForCrawledEvent($event)
+    "
   ></app-crawled-events-to-event>
 </div>

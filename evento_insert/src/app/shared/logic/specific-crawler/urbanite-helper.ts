@@ -42,10 +42,12 @@ function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
     e.times.end = undefined;
   }
   const date = { start: undefined, end: undefined };
-  date.start = moment(new Date(parseEventDateUrbanite(eventIn.date)))
-    .utcOffset(0, true)
-    .toISOString();
-  date.end = date.start;
+  if (eventIn.date) {
+    date.start = moment(new Date(parseEventDateUrbanite(eventIn.date)))
+      .utcOffset(0, true)
+      .toISOString();
+    date.end = date.start;
+  }
   e.date = date;
   e.permanent = false;
   return e;

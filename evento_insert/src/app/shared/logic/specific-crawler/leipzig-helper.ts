@@ -48,8 +48,10 @@ export function createEventLeipzig(event, organizer) {
     e.times.end = endTimeLeipzig(event.times.start);
   }
   const date = { start: undefined, end: undefined };
-  date.start = moment(new Date(parseEventDateLeipzig(event.date.start)));
-  date.end = endDateLeipzig(date.start);
+  if (event.date.start) {
+    date.start = moment(new Date(parseEventDateLeipzig(event.date.start)));
+    date.end = endDateLeipzig(date.start);
+  }
   e.date = date;
 
   e.permanent = false;

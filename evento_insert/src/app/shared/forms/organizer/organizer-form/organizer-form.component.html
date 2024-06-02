@@ -2,14 +2,18 @@
   @if (page==='crawler') {
   <app-form-submition-buttons
     [confirmButtonLabel]="updateOrganizerId ? 'Update' : 'Submit'"
+    [isCrawledSet]="selectedOrganizerForCrawler"
     [isDisabled]="organizerForm.invalid"
     (emitConfirm)="submitForm()"
     (emitClear)="resetForm()"
+    (emitSetCrawled)="selectOrganizerForCrawledEvent()"
   ></app-form-submition-buttons>
   }
   <form [formGroup]="organizerForm">
     <app-add-name-and-alias-form
       [isOrganizerInsertView]="page === 'insert'"
+      [isOrganizerCrawlerView]="page === 'crawler'"
+      (emitOrganizer)="organizerSetByAutoComplete($event)"
     ></app-add-name-and-alias-form>
 
     <app-address-form></app-address-form>
@@ -30,8 +34,10 @@
   </form>
   <app-form-submition-buttons
     [confirmButtonLabel]="updateOrganizerId ? 'Update' : 'Submit'"
+    [isCrawledSet]="selectedOrganizerForCrawler"
     [isDisabled]="organizerForm.invalid"
     (emitConfirm)="submitForm()"
     (emitClear)="resetForm()"
+    (emitSetCrawled)="selectOrganizerForCrawledEvent()"
   ></app-form-submition-buttons>
 </div>

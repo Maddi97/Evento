@@ -1,4 +1,4 @@
-import { Component, Input, inject } from "@angular/core";
+import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
 import {
   ControlContainer,
   FormBuilder,
@@ -13,6 +13,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { SelectionListComponent } from "@shared/atoms/selection-list/selection-list.component";
 import { AutocompleteOrganizerComponent } from "@shared/atoms/autocomplete-organizer/autocomplete-organizer.component";
+import { Organizer } from "@globals/models/organizer";
 @Component({
   selector: "app-add-name-and-alias-form",
   standalone: true,
@@ -35,6 +36,11 @@ import { AutocompleteOrganizerComponent } from "@shared/atoms/autocomplete-organ
 })
 export class AddNameAndAliasFormComponent {
   @Input({ required: true }) isOrganizerInsertView: boolean;
+  @Input() isOrganizerCrawlerView: boolean = false;
+
+  @Output() emitOrganizer: EventEmitter<Organizer> =
+    new EventEmitter<Organizer>();
+
   isOrganizerView;
   nameFormControl: FormControl<string>;
   aliasFormControl: FormControl<Array<string>>;
@@ -55,6 +61,15 @@ export class AddNameAndAliasFormComponent {
   ngOnDestroy() {
     this.parentFormGroup.removeControl("name");
     this.parentFormGroup.removeControl("alias");
+  }
+
+  updateOrganizerNameFromAutocomplete(organizer: Organizer) {
+    if (this.isOrganizerCrawlerView) {
+      organizer.alias.push(this.nameFormControl.value);
+      this.emitOrganizer.emit(organizer);
+    } else {
+      this.nameFormControl.patchValue(organizer.name);
+    }
   }
 
   pushAliasToForm() {
