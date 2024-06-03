@@ -400,7 +400,7 @@ router.post(
   "/getUpcomingventsOnCategoryAndSubcategory",
   limiter,
   (req, res) => {
-    let date = new Date();
+    let date = req.body.date;
     const id = String(req.body.subcategory._id);
     Event.find({
       $or: [
@@ -447,7 +447,7 @@ router.post(
 );
 
 router.post("/getUpcomingventsOnCategory", limiter, (req, res) => {
-  let date = new Date();
+  const date = req.body.date;
   const id = String(req.body.category._id);
   Event.find({
     $and: [
