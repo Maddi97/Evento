@@ -132,7 +132,6 @@ export class EventFormComponent implements OnChanges {
       }
     }
     this.addNewEvent.emit(event);
-    this.resetForm();
   }
 
   async emitUpdateEvent() {
@@ -162,8 +161,6 @@ export class EventFormComponent implements OnChanges {
       }
     }
     this.updateEvent.emit(event);
-
-    this.resetForm();
   }
   addEventCheckDuplicate() {
     const event = getEventFromForm(this.eventForm, this.updateEventId);

@@ -18,4 +18,10 @@ export const CRAWLER_CONFIG = {
     inputValue: null,
     secondRobotId: "1f0b7146-3dd2-4d29-a5cc-305eed6d198b",
   },
+  meineFlohmaerkte: {
+    robotId: "9865ebe8-b3f7-4473-be43-4155d9dadc54",
+    inputUrl: "https://meine-flohmarkt-termine.de/ort/leipzig",
+    inputValue: null,
+    secondRobotId: "7c61ab48-b42a-4552-ba4b-4779092aa10d",
+  },
 };

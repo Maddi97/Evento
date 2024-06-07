@@ -4,7 +4,7 @@
     matInput
     [formControl]="organizerNameControl"
     [matAutocomplete]="auto"
-    required
+    [required]="!isOrganizerCrawlerView"
     type="text"
   />
 
@@ -20,7 +20,8 @@
       {{ organizer.name }}
     </mat-option>
   </mat-autocomplete>
-  <mat-error *ngIf="organizerNameControl.hasError('required')"
+  <mat-error
+    *ngIf="organizerNameControl.hasError('required') && !isOrganizerCrawlerView"
     >Organizer is required</mat-error
   >
 </mat-form-field>

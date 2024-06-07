@@ -1,6 +1,7 @@
 <div class="event-container">
   <div class="form-and-image-upload" *ngIf="allOrganizers.length > 0">
     <app-event-form
+      #eventFormComponent
       (updateEvent)="updateEvent($event)"
       (addNewEvent)="addEventCheckDuplicate($event)"
       [organizersIn]="allOrganizers"

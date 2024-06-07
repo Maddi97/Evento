@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { CustomDialogComponent } from "@atoms/custom-dialog/custom-dialog.component";
 import { Category } from "@globals/models/category";
@@ -33,6 +33,9 @@ import { EventFormComponent } from "@forms/event/event-form/event-form.component
   styleUrls: ["./event-view.component.css"],
 })
 export class EventViewComponent implements OnInit {
+  @ViewChild("eventFormComponent")
+  eventFormComponent: EventFormComponent;
+
   eventIn: Event;
 
   categories: Category[];
@@ -94,6 +97,7 @@ export class EventViewComponent implements OnInit {
     this.eventObservableService
       .addNewEvent(event)
       .then((event) => {
+        this.eventFormComponent?.resetForm();
         this.snackbar.openSnackBar(
           "Successfully added Event: " + event.name,
           "success"
@@ -108,6 +112,7 @@ export class EventViewComponent implements OnInit {
     this.eventObservableService
       .updateEvent(event)
       .then((event) => {
+        this.eventFormComponent?.resetForm();
         this.snackbar.openSnackBar(
           "Successfully updated Event: " + event.name,
           "success"

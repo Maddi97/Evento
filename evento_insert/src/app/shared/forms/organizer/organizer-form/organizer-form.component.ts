@@ -100,7 +100,6 @@ export class OrganizerFormComponent implements OnChanges {
       this.updateOrganizerId
     );
     this.updateOrganizer.emit(organizer);
-    this.resetForm();
   }
   selectOrganizerForCrawledEvent() {
     const organizer = transformFormFieldToOrganizer(
@@ -115,7 +114,6 @@ export class OrganizerFormComponent implements OnChanges {
   emitAddOrganizer() {
     const organizer = transformFormFieldToOrganizer(this.organizerForm, "");
     this.addNewOrganizer.emit(organizer);
-    this.resetForm();
   }
 
   resetForm() {

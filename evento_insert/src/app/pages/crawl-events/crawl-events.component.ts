@@ -19,6 +19,8 @@ import { crawlBrowseAi } from "../../shared/logic/browse-ai-subscription-helpers
 import { mapIfzToEvents } from "../../shared/logic/specific-crawler/ifz-helper";
 import { mapLeipzigToEvents } from "../../shared/logic/specific-crawler/leipzig-helper";
 import { mapUrbaniteToEvents } from "../../shared/logic/specific-crawler/urbanite-helper";
+import { mapMeineFlohmaerkteToEvents } from "../../shared/logic/specific-crawler/meine-flohmaerkte-helper";
+
 import { CrawledEventsToEventComponent } from "../../shared/molecules/crawled-events-to-event/crawled-events-to-event.component";
 import { StoreDatasetService } from "@shared/services/store-dataset/store-dataset.service";
 
@@ -223,7 +225,7 @@ export class CrawlEventsComponent implements OnInit {
 
       return newUrl;
     }
-    if (crawlerName === "ifz") {
+    if (crawlerName === "ifz" || crawlerName === "meineFlohmaerkte") {
       return crawler.inputUrl;
     }
   }
@@ -293,6 +295,20 @@ export class CrawlEventsComponent implements OnInit {
           })
         );
         mapCrawledEventsFunction = mapIfzToEvents;
+      case "meineFlohmaerkte":
+        crawlings$ = crawlBrowseAi(
+          crawler,
+          urls[0],
+          this.crawlerService,
+          this.storeDatasetService,
+          crawlerName
+        ).pipe(
+          catchError((error) => {
+            console.error(`Error while crawling ${urls[0]}`, error);
+            return of([]);
+          })
+        );
+        mapCrawledEventsFunction = mapMeineFlohmaerkteToEvents;
     }
     return [crawlings$, mapCrawledEventsFunction];
   }
