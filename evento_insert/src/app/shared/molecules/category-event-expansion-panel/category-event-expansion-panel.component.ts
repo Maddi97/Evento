@@ -22,12 +22,17 @@ export class CategoryEventExpansionPanelComponent {
   constructor(private eventService: EventsService) {}
 
   getEventsOnSubcategory = (subcategory) => {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
     return this.eventService.getUpcomingventsOnCategoryAndSubcategory(
-      subcategory
+      subcategory,
+      date
     );
   };
 
   getEventsOnCategory = (category) => {
-    return this.eventService.getUpcomingventsOnCategory(category);
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    return this.eventService.getUpcomingventsOnCategory(category, date);
   };
 }

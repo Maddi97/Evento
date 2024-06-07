@@ -44,8 +44,10 @@ export class CrawlerApiService {
       robotId: robotId,
       inputParameters: inputParameters,
     };
-    if (inputParameters[0].originUrl.includes("7")) {
-      throw new Error("i throw a error on date");
+    if (inputParameters[0].originUrl === "") {
+      throw new Error(
+        `Date in bulkrun is empty: ${inputParameters[0].originUrl}`
+      );
     }
 
     return this.webService.post("runBulkTaskOfRobot/", body).pipe(

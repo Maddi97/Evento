@@ -13,7 +13,9 @@ export class FormSubmitionButtonsComponent {
   @Input() confirmButtonLabel: string;
   @Input() confirmFunction: () => {};
   @Input() isDisabled = false;
+  @Input() isCrawledSet = false;
 
   @Output() emitClear: EventEmitter<void> = new EventEmitter<void>();
   @Output() emitConfirm: EventEmitter<void> = new EventEmitter();
+  @Output() emitSetCrawled: EventEmitter<void> = new EventEmitter();
 }

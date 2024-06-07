@@ -24,6 +24,7 @@ import { ID } from "@globals/types/common.types";
 import { AddressFormComponent } from "@shared/forms/shared/address-form/address-form.component";
 import { FormSubmitionButtonsComponent } from "@shared/forms/shared/form-submition-buttons/form-submition-buttons.component";
 import { SelectFilesFormComponent } from "@shared/forms/shared/select-files-form/select-files-form.component";
+import { MatButtonModule } from "@angular/material/button";
 @Component({
   selector: "app-organizer-form",
   standalone: true,
@@ -45,6 +46,7 @@ import { SelectFilesFormComponent } from "@shared/forms/shared/select-files-form
     OrganizerAdditionalInfoFormComponent,
     FormSubmitionButtonsComponent,
     SelectFilesFormComponent,
+    MatButtonModule,
   ],
   templateUrl: "./organizer-form.component.html",
   styleUrls: ["./organizer-form.component.css"],
@@ -57,17 +59,19 @@ export class OrganizerFormComponent implements OnChanges {
     new EventEmitter<Organizer>();
   @Output() addNewOrganizer: EventEmitter<Organizer> =
     new EventEmitter<Organizer>();
+  @Output() emitSelectOrganizerForCrawledEvent: EventEmitter<Organizer> =
+    new EventEmitter<Organizer>();
 
   updateOrganizerId: ID = "";
 
   organizerForm: FormGroup;
   isOpeningTimesRequired = new FormControl(false, []);
+  selectedOrganizerForCrawler = false;
 
   constructor() {
     // will be filled by the child components
     this.organizerForm = new FormGroup({});
   }
-
   ngOnChanges(changes: SimpleChanges) {
     if (changes.organizerIn?.currentValue) {
       // first need to regirster subcontrols to fill the form automatically
@@ -82,12 +86,28 @@ export class OrganizerFormComponent implements OnChanges {
     if (this.updateOrganizerId) this.emitUpdate();
     else this.emitAddOrganizer();
   }
+  organizerSetByAutoComplete(organizer: Organizer) {
+    setTimeout(() => {
+      this.organizerForm.patchValue(organizer);
+      this.updateOrganizerId = organizer._id;
+      this.selectedOrganizerForCrawler = true;
+    }, 10);
+  }
 
   emitUpdate() {
     const organizer = transformFormFieldToOrganizer(
       this.organizerForm,
       this.updateOrganizerId
     );
+    this.updateOrganizer.emit(organizer);
+    this.resetForm();
+  }
+  selectOrganizerForCrawledEvent() {
+    const organizer = transformFormFieldToOrganizer(
+      this.organizerForm,
+      this.updateOrganizerId
+    );
+    this.emitSelectOrganizerForCrawledEvent.emit(organizer);
     this.updateOrganizer.emit(organizer);
     this.resetForm();
   }

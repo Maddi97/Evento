@@ -17,6 +17,9 @@
     [allOrganizerIn]="allOrganizer"
     (addNewOrganizer)="addNewOrganizer($event)"
     (updateOrganizer)="updateOrganizer($event)"
+    (emitSelectOrganizerForCrawledEvent)="
+      emitSelectOrganizerForCrawledEvent.emit($event)
+    "
   ></app-organizer-form
   >}
 </div>

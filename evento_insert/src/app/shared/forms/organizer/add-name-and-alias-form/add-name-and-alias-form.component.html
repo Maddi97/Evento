@@ -16,7 +16,7 @@
   </mat-form-field>
   @if(!isOrganizerInsertView){
   <app-autocomplete-organizer
-    (emitOrganizer)="this.nameFormControl.patchValue($event)"
+    (emitOrganizer)="updateOrganizerNameFromAutocomplete($event)"
   ></app-autocomplete-organizer>
   }
 </ng-container>

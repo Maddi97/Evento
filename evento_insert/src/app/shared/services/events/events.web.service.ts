@@ -132,9 +132,12 @@ export class EventsService {
     );
   }
 
-  getUpcomingventsOnCategory(category: Category): Observable<Event[]> {
+  getUpcomingventsOnCategory(
+    category: Category,
+    date: Date
+  ): Observable<Event[]> {
     const obs = this.webService
-      .post("getUpcomingventsOnCategory", { category })
+      .post("getUpcomingventsOnCategory", { category, date })
       .pipe(
         map((res: HttpRequest<any>) => res as unknown as Event[]),
         catchError((error: any) => {
@@ -149,10 +152,11 @@ export class EventsService {
     return obs;
   }
   getUpcomingventsOnCategoryAndSubcategory(
-    subcategory: Subcategory
+    subcategory: Subcategory,
+    date: Date
   ): Observable<Event[]> {
     return this.webService
-      .post("getUpcomingventsOnCategoryAndSubcategory", { subcategory })
+      .post("getUpcomingventsOnCategoryAndSubcategory", { subcategory, date })
       .pipe(
         map((res: HttpRequest<any>) => res as unknown as Event[]),
         catchError((error: any) => {
