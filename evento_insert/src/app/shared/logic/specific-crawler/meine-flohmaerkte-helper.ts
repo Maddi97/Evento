@@ -11,6 +11,7 @@ export type MeineFlohmaerkteEvent = {
   crawlerName: string;
 };
 export function mapMeineFlohmaerkteToEvents(events: MeineFlohmaerkteEvent[]) {
+  console.log(events);
   return events.map((event) => {
     return mapPropertiesOfCrawledEvent(event);
   });
@@ -49,6 +50,6 @@ function parseTime(timeAndDate: string) {
 function parseDate(timeAndDate: string) {
   const [day, date, startTime, _, endTime] = timeAndDate.split(" ");
   let momentDate = moment(date, "DD.MM.YYYY");
-  const eventDate = momentDate;
-  return { start: eventDate.toISOString(), end: eventDate.toISOString() };
+  const eventDate = momentDate.toISOString();
+  return { start: eventDate, end: eventDate };
 }

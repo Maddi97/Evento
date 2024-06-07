@@ -73,5 +73,5 @@ function parseEventDateUrbanite(dateString: string): Date | null {
 }
 
 function parseTimeFormat(time: string) {
-  return time?.split(" ")[0];
+  return time?.split(" ")[0] || undefined;
 }

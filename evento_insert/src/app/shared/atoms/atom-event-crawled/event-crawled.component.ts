@@ -14,4 +14,8 @@ import { USDateFormatPipe } from "@shared/pipes/DateToUSFormat.pipe";
 export class EventCrawledComponent {
   @Input() eventIn: Event;
   @Input() organizerIn: Organizer;
+  ngOnInit() {
+    console.log("1", this.eventIn);
+    console.log("2", this.organizerIn);
+  }
 }
