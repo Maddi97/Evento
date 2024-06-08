@@ -45,7 +45,7 @@ export class NominatimGeoService {
           })
         );
       const coordinates: CoordinatesObject = await lastValueFrom(coordinates$);
-      console.log(coordinates);
+
       return coordinates;
     } catch (error) {
       console.error(error);

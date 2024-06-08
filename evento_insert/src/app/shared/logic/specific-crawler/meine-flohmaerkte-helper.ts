@@ -11,7 +11,6 @@ export type MeineFlohmaerkteEvent = {
   crawlerName: string;
 };
 export function mapMeineFlohmaerkteToEvents(events: MeineFlohmaerkteEvent[]) {
-  console.log(events);
   return events.map((event) => {
     return mapPropertiesOfCrawledEvent(event);
   });
@@ -27,7 +26,6 @@ function mapPropertiesOfCrawledEvent(eventIn: MeineFlohmaerkteEvent) {
   e.address = parseAdress(eventIn.address);
   e.times = parseTime(eventIn.timeAndDate);
   e.date = parseDate(eventIn.timeAndDate);
-  console.log("Flohmarkt: ", e);
   return e;
 }
 

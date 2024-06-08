@@ -68,6 +68,7 @@ export class AddNameAndAliasFormComponent {
 
   updateOrganizerNameFromAutocomplete(organizer: Organizer) {
     if (this.isOrganizerCrawlerView) {
+      if (!organizer.alias) organizer.alias = [];
       organizer.alias.push(this.nameFormControl.value);
       this.emitOrganizer.emit(organizer);
     } else {

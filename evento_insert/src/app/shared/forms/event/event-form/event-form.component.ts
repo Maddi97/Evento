@@ -92,12 +92,9 @@ export class EventFormComponent implements OnChanges {
       organizerName: new FormControl("", [Validators.required]),
     });
   }
-  ngOnInit() {
-    console.log(this.eventForm.value);
-  }
+
   ngOnChanges(): void {
     if (this.eventIn) {
-      console.log(this.eventIn);
       this.setEventForm();
     }
   }

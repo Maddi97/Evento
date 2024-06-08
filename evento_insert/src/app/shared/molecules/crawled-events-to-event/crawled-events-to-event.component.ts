@@ -90,9 +90,8 @@ export class CrawledEventsToEventComponent {
       .updateOrganizer(organizer)
       .then((organizerResponse) => {
         this.organizerFormComponent?.resetForm();
-        this.nextEvent();
         this.snackbar.openSnackBar(
-          "Successfully added: " + organizerResponse.name,
+          "Successfully updated: " + organizerResponse.name,
           "success"
         );
       })

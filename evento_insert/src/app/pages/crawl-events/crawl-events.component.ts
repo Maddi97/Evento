@@ -24,6 +24,7 @@ import { mapRausgegangenToEvents } from "../../shared/logic/specific-crawler/rau
 
 import { CrawledEventsToEventComponent } from "../../shared/molecules/crawled-events-to-event/crawled-events-to-event.component";
 import { StoreDatasetService } from "@shared/services/store-dataset/store-dataset.service";
+import { EventsService } from "@shared/services/events/events.web.service";
 
 export type PossibleCrawlerNames = keyof typeof CRAWLER_CONFIG | "All";
 
@@ -53,6 +54,7 @@ export class CrawlEventsComponent implements OnInit {
   );
   selectedInputDate = new Date();
   crawledEventList: Event[] = [];
+  actualEventsList: Event[] = [];
   allOrganizer: Organizer[] = [];
   inputNumberOfDays: number = 1;
   organizerIn: Organizer;
@@ -67,11 +69,15 @@ export class CrawlEventsComponent implements OnInit {
     private snackbar: SnackbarService,
     private organizerService: OrganizerService,
     private spinner: NgxSpinnerService,
-    private storeDatasetService: StoreDatasetService
+    private storeDatasetService: StoreDatasetService,
+    private eventService: EventsService
   ) {}
   ngOnInit(): void {
     this.organizerService.getOrganizer().subscribe((org) => {
       this.allOrganizer = org;
+    });
+    this.eventService.getAllUpcomingEvents().subscribe((events) => {
+      this.actualEventsList = events;
     });
   }
 
@@ -122,9 +128,26 @@ export class CrawlEventsComponent implements OnInit {
       crawling$.subscribe({
         next: (eventList) => {
           eventList = eventList.flat();
+
           console.log("Final crawled events: ", eventList);
           this.spinner.hide();
           this.crawledEventList = mapCrawledEventsFunction(eventList.flat());
+          let filteredOut = [];
+
+          // check if event exists in database
+          this.crawledEventList = this.crawledEventList.reduce((acc, event) => {
+            const exists = this.actualEventsList.some(
+              (e) => e.name === event.name && e.date.start === event.date.start
+            );
+            if (!exists) {
+              acc.push(event);
+            } else {
+              filteredOut.push(event);
+            }
+            return acc;
+          }, []);
+          console.log("Filtered events: ", this.crawledEventList.length);
+          console.log("filtered out events ", filteredOut);
           this.index = 0;
           this.eventIn = this.crawledEventList[this.index];
           this.findOrganizer();
@@ -167,13 +190,24 @@ export class CrawlEventsComponent implements OnInit {
         let filteredResult = results
           .filter((result) => result !== null && Object.keys(result).length > 0)
           .flat();
-        filteredResult = filteredResult.filter((event, index, array) => {
-          return (
-            array.findIndex(
+
+        let filteredOut = [];
+        filteredResult = filteredResult.reduce((acc, event) => {
+          const exists =
+            filteredResult.some(
               (e) => e.name === event.name && e.date.start === event.date.start
-            ) === index
-          );
-        });
+            ) &&
+            this.actualEventsList.some(
+              (e) => e.name === event.name && e.date.start === event.date.start
+            );
+          if (!exists) {
+            acc.push(event);
+          } else {
+            filteredOut.push(event);
+          }
+          return acc;
+        }, []);
+        console.log(`Filtered out ${filteredOut.length} events:`, filteredOut);
         if (filteredResult.length === 0) return;
         this.crawledEventList = filteredResult;
         this.index = 0;
@@ -198,7 +232,6 @@ export class CrawlEventsComponent implements OnInit {
       },
       complete: () => {
         this.spinner.hide();
-        console.log("COMPLETED All Subscriptions");
       },
     });
   }

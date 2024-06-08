@@ -33,8 +33,7 @@ function mapPropertiesOfCrawledEvent(eventIn: RausgegangenEvent) {
 }
 
 function parseDate(datestr: string) {
-  console.log(datestr);
-  const date = datestr.split(",").pop()?.trim();
+  const date = datestr.split(",")[1]?.trim();
   let momentDate = parseDateStr(date);
   return { start: momentDate, end: momentDate };
 }
@@ -46,7 +45,6 @@ function parseTime(startStr: string, endStr: string) {
       .replaceAll(" ", "")
       .replace("-", "")
       .replaceAll("\n", "") || undefined;
-  console.log(start);
   if (!start) return { start: parseEndTime(endStr), end: undefined };
   else {
     return { start: start, end: parseEndTime(endStr) };
@@ -68,7 +66,6 @@ function parseAddress(street: string, plzCity: string): Address {
 
 function parseDateStr(datestr: string) {
   const [day, monthStr, year] = datestr.split(" ");
-
   // Create an object to map month abbreviations to their numeric equivalents
   const months = {
     Jan: "01",
