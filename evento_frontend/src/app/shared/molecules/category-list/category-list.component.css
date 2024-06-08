@@ -46,6 +46,7 @@
   }
   .category-list-container {
     margin-bottom: 0px !important;
+    width: auto !important;
   }
   .search-category-replacement {
     width: 100% !important;

@@ -117,9 +117,8 @@ export function crawlBrowseAi(
                 crawlerName,
               };
             });
+            sessionStorage.setItem(url, JSON.stringify(events));
             if (events.length !== 0) {
-              sessionStorage.setItem(url, JSON.stringify(events));
-            } else {
               throw new Error(`No Events found for crawler: ${url}`);
             }
             return events;
