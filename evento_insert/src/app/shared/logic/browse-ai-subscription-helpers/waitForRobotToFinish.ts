@@ -14,10 +14,10 @@ export function waitForRobotToFinish(
     return crawlerService.getResultOfRobotList(robotId, taskId).pipe(
       map((res: any) => {
         if (res["status"] === "successful" || res["status"] === "failed") {
-          console.count(`Collecting links: ${res["status"]} \nof ${url}`);
+          //console.count(`Collecting links: ${res["status"]} \nof ${url}`);
         }
         if (res["status"] === "failed") {
-          console.error("A task failed", res);
+          //console.error("A task failed", res);
         }
         return res;
       }),

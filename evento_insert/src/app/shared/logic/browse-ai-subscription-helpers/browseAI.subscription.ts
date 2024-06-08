@@ -123,6 +123,10 @@ export function crawlBrowseAi(
               throw new Error(`No Events found for crawler: ${url}`);
             }
             return events;
+          }),
+          catchError((error) => {
+            console.error(error);
+            return of([]);
           })
         )
     );
@@ -160,7 +164,8 @@ export function retryWaitingForResultIfFailed(
     retryWhen((errors) =>
       errors.pipe(
         tap((error) =>
-          console.error(url, "Error occurred, retrying...", error.message || error)
+          //console.error(url, "Error occurred, retrying...", error.message || error)
+          console.log("")
         ),
         concatMap((error, attemptNumber) => {
           if (attemptNumber === MAX_RETRIES_TASK_FAILED - 1) {

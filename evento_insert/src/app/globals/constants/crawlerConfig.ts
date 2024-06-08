@@ -8,9 +8,10 @@ export const CRAWLER_CONFIG = {
   leipzig: {
     robotId: "4fdc80d2-0187-4337-acba-aab100b74245",
     inputUrl:
-      "https://www.leipzig.de/searchresults?mksearch%5Bcategory%5D=&mksearch%5Bdate_from%5D=20.12.2023&mksearch%5Bdate_to%5D=20.12.2023&mksearch%5Bterm%5D=&mksearch%5Bsubmit%5D=Veranstaltung+suchen&mksearch%5Bsubmitted%5D=1",
+      "https://www.leipzig.de/searchresults?mksearch%5Bcategory%5D=412&mksearch%5Bdate_from%5D=10.06.2024&mksearch%5Bdate_to%5D=10.06.2024&mksearch%5Bterm%5D=&mksearch%5Bsubmit%5D=Veranstaltung+suchen&mksearch%5Bsubmitted%5D=1",
     inputValue: new Date(),
     secondRobotId: "8e1af8a9-9c60-428f-a1cc-f1e27e4c4eb4",
+    categories: [164, 152, 116, 407, 412], // 164: Bühne, 152: Sport, 116: Wissenschaft, 407: Lesung, 412: Konzert
   },
   ifz: {
     robotId: "ecb29737-7885-4521-85b9-feb7929b4d0b",
