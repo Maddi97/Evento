@@ -104,9 +104,12 @@ export class EventsService {
   }
 
   getAllUpcomingEvents(): Observable<Event[]> {
-    const date = moment(new Date())
-      .utcOffset(0, false)
-      .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+    const date = moment(new Date()).set({
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+    });
     const obs = this.webService.post("upcomingEvents", { date }).pipe(
       map((res: HttpRequest<any>) => res as unknown as Event[]),
       catchError((error: any) => {

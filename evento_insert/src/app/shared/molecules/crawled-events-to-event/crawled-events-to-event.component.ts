@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { catchError, map, of, switchMap, tap } from "rxjs";
 import { CustomDialogComponent } from "@atoms/custom-dialog/custom-dialog.component";
@@ -27,6 +33,11 @@ import { EventsObservableService } from "@shared/services/events/events.observab
   styleUrls: ["./crawled-events-to-event.component.css"],
 })
 export class CrawledEventsToEventComponent {
+  @ViewChild("organizerFormComponent")
+  organizerFormComponent: OrganizerFormComponent;
+  @ViewChild("eventFormComponent")
+  eventFormComponent: EventFormComponent;
+
   @Input() eventIn;
   @Input() organizerIn: Organizer;
   @Input() allOrganizer: Organizer[];
@@ -64,6 +75,7 @@ export class CrawledEventsToEventComponent {
     this.organizerOnservableService
       .addNewOrganizer(organizer)
       .then((organizerResponse) => {
+        this.organizerFormComponent?.resetForm();
         this.emitOrganizer.emit(organizerResponse);
         // TODO his.findOrganizer()
         this.snackbar.openSnackBar(
@@ -77,9 +89,9 @@ export class CrawledEventsToEventComponent {
     this.organizerOnservableService
       .updateOrganizer(organizer)
       .then((organizerResponse) => {
-        this.nextEvent();
+        this.organizerFormComponent?.resetForm();
         this.snackbar.openSnackBar(
-          "Successfully added: " + organizerResponse.name,
+          "Successfully updated: " + organizerResponse.name,
           "success"
         );
       })
@@ -89,6 +101,7 @@ export class CrawledEventsToEventComponent {
     this.eventObservableService
       .updateEvent(event)
       .then((event) => {
+        this.eventFormComponent?.resetForm();
         this.snackbar.openSnackBar(
           "Successfully updated Event: " + event.name,
           "success"
@@ -104,6 +117,7 @@ export class CrawledEventsToEventComponent {
     this.eventObservableService
       .addNewEvent(event)
       .then((event) => {
+        this.eventFormComponent.resetForm();
         this.emitNextEvent.emit();
         this.snackbar.openSnackBar(
           "Successfully added Event: " + event.name,

@@ -92,12 +92,9 @@ export class EventFormComponent implements OnChanges {
       organizerName: new FormControl("", [Validators.required]),
     });
   }
-  ngOnInit() {
-    console.log(this.eventForm.value);
-  }
+
   ngOnChanges(): void {
     if (this.eventIn) {
-      console.log(this.eventIn);
       this.setEventForm();
     }
   }
@@ -132,7 +129,6 @@ export class EventFormComponent implements OnChanges {
       }
     }
     this.addNewEvent.emit(event);
-    this.resetForm();
   }
 
   async emitUpdateEvent() {
@@ -162,8 +158,6 @@ export class EventFormComponent implements OnChanges {
       }
     }
     this.updateEvent.emit(event);
-
-    this.resetForm();
   }
   addEventCheckDuplicate() {
     const event = getEventFromForm(this.eventForm, this.updateEventId);

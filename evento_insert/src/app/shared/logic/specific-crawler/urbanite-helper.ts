@@ -43,9 +43,9 @@ function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
   }
   const date = { start: undefined, end: undefined };
   if (eventIn.date) {
-    date.start = moment(new Date(parseEventDateUrbanite(eventIn.date)))
-      .utcOffset(0, true)
-      .toISOString();
+    date.start = moment(
+      new Date(parseEventDateUrbanite(eventIn.date))
+    ).toISOString();
     date.end = date.start;
   }
   e.date = date;
@@ -73,5 +73,5 @@ function parseEventDateUrbanite(dateString: string): Date | null {
 }
 
 function parseTimeFormat(time: string) {
-  return time?.split(" ")[0];
+  return time?.split(" ")[0] || undefined;
 }

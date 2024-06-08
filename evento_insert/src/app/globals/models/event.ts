@@ -11,8 +11,8 @@ export class Event {
   organizerName: string;
   address: Address = new Address();
   date: {
-    start: moment.Moment;
-    end: moment.Moment;
+    start: moment.Moment | string;
+    end: moment.Moment | string;
   };
   times: {
     start: string;

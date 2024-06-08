@@ -48,7 +48,10 @@ export class AddNameAndAliasFormComponent {
   parentContainer = inject(ControlContainer);
 
   ngOnInit() {
-    this.nameFormControl = new FormControl("", Validators.required);
+    this.nameFormControl = new FormControl(
+      "",
+      this.isOrganizerCrawlerView ? null : Validators.required
+    );
     this.parentFormGroup.addControl("name", this.nameFormControl);
 
     this.aliasFormControl = new FormControl([]);
@@ -65,6 +68,7 @@ export class AddNameAndAliasFormComponent {
 
   updateOrganizerNameFromAutocomplete(organizer: Organizer) {
     if (this.isOrganizerCrawlerView) {
+      if (!organizer.alias) organizer.alias = [];
       organizer.alias.push(this.nameFormControl.value);
       this.emitOrganizer.emit(organizer);
     } else {

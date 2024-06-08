@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { dateTimesFormater } from "../../logic/opening-times-format-helpers";
 import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
+import { take } from "rxjs";
 
 @Component({
   selector: "app-custom-dialog",
@@ -18,7 +19,10 @@ export class CustomDialogComponent {
     public dialogRef: MatDialogRef<CustomDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data
   ) {
-    dialogRef.beforeClosed().subscribe(() => dialogRef.close(this.continue));
+    dialogRef
+      .beforeClosed()
+      .pipe(take(1))
+      .subscribe(() => dialogRef.close(this.continue));
   }
 
   closeDialog(data) {

@@ -7,6 +7,8 @@ export function openingTimesFormatter(event: Event): string {
     return "";
   } else if (event.openingTimes && event.openingTimes.length > 0) {
     return "";
+  } else if (!event.times || !event.times.start) {
+    return "";
   } else if (event.times.start === event.times.end) {
     return "ganztägig geöffnet";
   } else if (!event.times.end) {

@@ -10,12 +10,24 @@ export const CRAWLER_CONFIG = {
     inputUrl:
       "https://www.leipzig.de/searchresults?mksearch%5Bcategory%5D=&mksearch%5Bdate_from%5D=20.12.2023&mksearch%5Bdate_to%5D=20.12.2023&mksearch%5Bterm%5D=&mksearch%5Bsubmit%5D=Veranstaltung+suchen&mksearch%5Bsubmitted%5D=1",
     inputValue: new Date(),
-    secondRobotId: "4fa8ca19-18e5-4971-9e1b-a86ecd45aa57",
+    secondRobotId: "8e1af8a9-9c60-428f-a1cc-f1e27e4c4eb4",
   },
   ifz: {
     robotId: "ecb29737-7885-4521-85b9-feb7929b4d0b",
     inputUrl: "https://ifz.me/",
     inputValue: null,
     secondRobotId: "1f0b7146-3dd2-4d29-a5cc-305eed6d198b",
+  },
+  meineFlohmaerkte: {
+    robotId: "9865ebe8-b3f7-4473-be43-4155d9dadc54",
+    inputUrl: "https://meine-flohmarkt-termine.de/ort/leipzig",
+    inputValue: null,
+    secondRobotId: "7c61ab48-b42a-4552-ba4b-4779092aa10d",
+  },
+  rausgegangen: {
+    robotId: "977a9438-4f60-41fd-8d90-06890b217b64",
+    inputUrl: "https://rausgegangen.de/en/leipzig/category/party/",
+    inputValue: null,
+    secondRobotId: "fe00c758-1057-4fc2-8dfe-b53802f359e7",
   },
 };

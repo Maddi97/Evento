@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { concatMap, map } from "rxjs/operators";
 import { Category } from "@globals/models/category";
 import { Organizer } from "@globals/models/organizer";
@@ -27,6 +27,9 @@ import { MapViewComponent } from "@shared/molecules/map-view/map-view.component"
   styleUrls: ["./organizer-view.component.css"],
 })
 export class OrganizerViewComponent implements OnInit, OnDestroy {
+  @ViewChild("organizerFormComponent")
+  organizerFormComponent: OrganizerFormComponent;
+
   organizers: Organizer[] = [];
   allOrganizer: Organizer[] = [];
   updateOrganizerId = "";
@@ -75,6 +78,7 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
     this.organizerOnservableService
       .addNewOrganizer(organizer)
       .then((organizerResponse) => {
+        this.organizerFormComponent?.resetForm();
         this.snackbarService.openSnackBar(
           "Successfully added: " + organizerResponse.name,
           "success"
@@ -87,6 +91,7 @@ export class OrganizerViewComponent implements OnInit, OnDestroy {
     this.organizerOnservableService
       .updateOrganizer(organizer)
       .then((organizerResponse) => {
+        this.organizerFormComponent?.resetForm();
         this.snackbarService.openSnackBar(
           "Successfully added: " + organizerResponse.name,
           "success"

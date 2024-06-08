@@ -160,7 +160,7 @@ export function retryWaitingForResultIfFailed(
     retryWhen((errors) =>
       errors.pipe(
         tap((error) =>
-          console.error("Error occurred, retrying...", error.message || error)
+          console.error(url, "Error occurred, retrying...", error.message || error)
         ),
         concatMap((error, attemptNumber) => {
           if (attemptNumber === MAX_RETRIES_TASK_FAILED - 1) {

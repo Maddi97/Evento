@@ -19,8 +19,12 @@ import { crawlBrowseAi } from "../../shared/logic/browse-ai-subscription-helpers
 import { mapIfzToEvents } from "../../shared/logic/specific-crawler/ifz-helper";
 import { mapLeipzigToEvents } from "../../shared/logic/specific-crawler/leipzig-helper";
 import { mapUrbaniteToEvents } from "../../shared/logic/specific-crawler/urbanite-helper";
+import { mapMeineFlohmaerkteToEvents } from "../../shared/logic/specific-crawler/meine-flohmaerkte-helper";
+import { mapRausgegangenToEvents } from "../../shared/logic/specific-crawler/rausgegangen";
+
 import { CrawledEventsToEventComponent } from "../../shared/molecules/crawled-events-to-event/crawled-events-to-event.component";
 import { StoreDatasetService } from "@shared/services/store-dataset/store-dataset.service";
+import { EventsService } from "@shared/services/events/events.web.service";
 
 export type PossibleCrawlerNames = keyof typeof CRAWLER_CONFIG | "All";
 
@@ -44,9 +48,13 @@ export type PossibleCrawlerNames = keyof typeof CRAWLER_CONFIG | "All";
 })
 export class CrawlEventsComponent implements OnInit {
   message;
-  crawlerNames = [...Object.keys(CRAWLER_CONFIG), "All"];
+  UNWANTED_CRAWLER_NAMES = ["ifz"];
+  crawlerNames = [...Object.keys(CRAWLER_CONFIG), "All"].filter(
+    (name) => !this.UNWANTED_CRAWLER_NAMES.includes(name)
+  );
   selectedInputDate = new Date();
   crawledEventList: Event[] = [];
+  actualEventsList: Event[] = [];
   allOrganizer: Organizer[] = [];
   inputNumberOfDays: number = 1;
   organizerIn: Organizer;
@@ -61,11 +69,15 @@ export class CrawlEventsComponent implements OnInit {
     private snackbar: SnackbarService,
     private organizerService: OrganizerService,
     private spinner: NgxSpinnerService,
-    private storeDatasetService: StoreDatasetService
+    private storeDatasetService: StoreDatasetService,
+    private eventService: EventsService
   ) {}
   ngOnInit(): void {
     this.organizerService.getOrganizer().subscribe((org) => {
       this.allOrganizer = org;
+    });
+    this.eventService.getAllUpcomingEvents().subscribe((events) => {
+      this.actualEventsList = events;
     });
   }
 
@@ -116,9 +128,26 @@ export class CrawlEventsComponent implements OnInit {
       crawling$.subscribe({
         next: (eventList) => {
           eventList = eventList.flat();
+
           console.log("Final crawled events: ", eventList);
           this.spinner.hide();
           this.crawledEventList = mapCrawledEventsFunction(eventList.flat());
+          let filteredOut = [];
+
+          // check if event exists in database
+          this.crawledEventList = this.crawledEventList.reduce((acc, event) => {
+            const exists = this.actualEventsList.some(
+              (e) => e.name === event.name && e.date.start === event.date.start
+            );
+            if (!exists) {
+              acc.push(event);
+            } else {
+              filteredOut.push(event);
+            }
+            return acc;
+          }, []);
+          console.log("Filtered events: ", this.crawledEventList.length);
+          console.log("filtered out events ", filteredOut);
           this.index = 0;
           this.eventIn = this.crawledEventList[this.index];
           this.findOrganizer();
@@ -139,7 +168,7 @@ export class CrawlEventsComponent implements OnInit {
   crawlAllCrawler() {
     const observables = this.crawlerNames
       .map((crawlerName: PossibleCrawlerNames) => {
-        if (crawlerName !== "All" && crawlerName !== "leipzig") {
+        if (crawlerName !== "All") {
           const crawler = CRAWLER_CONFIG[crawlerName];
 
           const [crawling$, mapCrawledEventsFunction] =
@@ -161,13 +190,24 @@ export class CrawlEventsComponent implements OnInit {
         let filteredResult = results
           .filter((result) => result !== null && Object.keys(result).length > 0)
           .flat();
-        filteredResult = filteredResult.filter((event, index, array) => {
-          return (
-            array.findIndex(
+
+        let filteredOut = [];
+        filteredResult = filteredResult.reduce((acc, event) => {
+          const exists =
+            filteredResult.some(
               (e) => e.name === event.name && e.date.start === event.date.start
-            ) === index
-          );
-        });
+            ) &&
+            this.actualEventsList.some(
+              (e) => e.name === event.name && e.date.start === event.date.start
+            );
+          if (!exists) {
+            acc.push(event);
+          } else {
+            filteredOut.push(event);
+          }
+          return acc;
+        }, []);
+        console.log(`Filtered out ${filteredOut.length} events:`, filteredOut);
         if (filteredResult.length === 0) return;
         this.crawledEventList = filteredResult;
         this.index = 0;
@@ -192,7 +232,6 @@ export class CrawlEventsComponent implements OnInit {
       },
       complete: () => {
         this.spinner.hide();
-        console.log("COMPLETED All Subscriptions");
       },
     });
   }
@@ -222,8 +261,7 @@ export class CrawlEventsComponent implements OnInit {
         );
 
       return newUrl;
-    }
-    if (crawlerName === "ifz") {
+    } else {
       return crawler.inputUrl;
     }
   }
@@ -245,7 +283,7 @@ export class CrawlEventsComponent implements OnInit {
     let mapCrawledEventsFunction: Function;
 
     switch (crawlerName) {
-      case "urbanite":
+      case "urbanite": {
         crawlings$ = forkJoin(
           urls.map((url) =>
             //creates an observable for every date
@@ -266,7 +304,8 @@ export class CrawlEventsComponent implements OnInit {
         );
         mapCrawledEventsFunction = mapUrbaniteToEvents;
         break;
-      case "leipzig":
+      }
+      case "leipzig": {
         crawlings$ = forkJoin(
           urls.map((url) => {
             return crawlBrowseAi(
@@ -279,7 +318,9 @@ export class CrawlEventsComponent implements OnInit {
           })
         );
         mapCrawledEventsFunction = mapLeipzigToEvents;
-      case "ifz":
+        break;
+      }
+      case "ifz": {
         crawlings$ = crawlBrowseAi(
           crawler,
           urls[0],
@@ -293,10 +334,46 @@ export class CrawlEventsComponent implements OnInit {
           })
         );
         mapCrawledEventsFunction = mapIfzToEvents;
+        break;
+      }
+      case "meineFlohmaerkte": {
+        crawlings$ = crawlBrowseAi(
+          crawler,
+          urls[0],
+          this.crawlerService,
+          this.storeDatasetService,
+          crawlerName
+        ).pipe(
+          catchError((error) => {
+            console.error(`Error while crawling ${urls[0]}`, error);
+            return of([]);
+          })
+        );
+        mapCrawledEventsFunction = mapMeineFlohmaerkteToEvents;
+        break;
+      }
+      case "rausgegangen": {
+        crawlings$ = crawlBrowseAi(
+          crawler,
+          urls[0],
+          this.crawlerService,
+          this.storeDatasetService,
+          crawlerName
+        ).pipe(
+          catchError((error) => {
+            console.error(`Error while crawling ${urls[0]}`, error);
+            return of([]);
+          })
+        );
+        mapCrawledEventsFunction = mapRausgegangenToEvents;
+        break;
+      }
     }
     return [crawlings$, mapCrawledEventsFunction];
   }
   findOrganizer() {
+    if (!this.eventIn.organizerName)
+      this.eventIn.organizerName = "NO ORGANIZER NAME";
     const filteredOrganizer = this.allOrganizer
       .filter(
         (organizer) =>
@@ -311,7 +388,7 @@ export class CrawlEventsComponent implements OnInit {
       .pop();
     if (!filteredOrganizer) {
       this.organizerIn = new Organizer();
-      this.organizerIn.name = this.eventIn.organizerName || "NO ORGANIZER NAME";
+      this.organizerIn.name = this.eventIn.organizerName;
       this.organizerIn.category = this.eventIn.category
         ? this.eventIn.category
         : undefined;
@@ -327,9 +404,7 @@ export class CrawlEventsComponent implements OnInit {
       this.organizerIn.address.country = this.eventIn.address?.country
         ? this.eventIn.address.country
         : "Deutschland";
-      this.organizerIn.link = this.eventIn.organizerName
-        ? ""
-        : this.eventIn?.link;
+      this.organizerIn.link = this.eventIn?.link;
     } else {
       //wenn es organizer gibt dann baue direkt das event
       this.organizerIn = filteredOrganizer;

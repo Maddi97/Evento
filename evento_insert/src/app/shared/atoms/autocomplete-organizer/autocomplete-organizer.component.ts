@@ -33,6 +33,7 @@ import { take, tap } from "rxjs";
 })
 export class AutocompleteOrganizerComponent implements OnInit {
   @Input() organizerName: string;
+  @Input() isOrganizerCrawlerView: boolean = false;
   @Output() emitOrganizer: EventEmitter<Organizer> =
     new EventEmitter<Organizer>();
 

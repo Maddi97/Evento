@@ -1,45 +1,37 @@
 import moment from "moment";
-import { Address } from "@globals/models/address";
-import { Event } from "@globals/models/event";
+import { Address } from "../../../globals/models/address";
+import { Event } from "../../../globals/models/event";
 
-export type LeipzigEvent = {
+export type RAEvent = {
   name: string;
   date: string;
-  time: string;
+  timeStart: string;
+  timeEnd: string;
   organizerName: string;
   description: string;
   address: string;
   link: string;
 };
 
-export function mapLeipzigToEvents(events: LeipzigEvent[]) {
+export function mapLeipzigToEvents(events: RAEvent[]) {
   return events.map((event) => {
     return mapPropertiesOfCrawledEvent(event);
   });
 }
-function mapPropertiesOfCrawledEvent(eventIn: LeipzigEvent) {
+function mapPropertiesOfCrawledEvent(eventIn: RAEvent) {
   const e = new Event();
   e.name = eventIn.name;
   e.organizerName = parseOrganizerName(eventIn.organizerName);
   e.description = eventIn.description;
   e.link = eventIn.link;
   e.address = parseAddress(eventIn.address);
-  e.times = parseTime(eventIn.time);
+  type Times = { start: string | undefined; end: string | undefined };
+  const times: Times = { start: undefined, end: undefined };
+  e.times.start = eventIn.timeStart;
+  e.times.end = eventIn.timeEnd;
   e.date = parseDate(eventIn.date);
   e.permanent = false;
   return e;
-}
-
-function parseTime(timeStr: string) {
-  const time = extractImportantString(timeStr, "Uhrzeit");
-  const times = { start: undefined, end: undefined };
-  if (time === "ganztägig") {
-    times.start = "00:00";
-    times.end = "00:00";
-  } else {
-    times.start = time;
-  }
-  return times;
 }
 
 function parseDate(dateStr: string) {
