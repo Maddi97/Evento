@@ -241,26 +241,36 @@ export class CrawlEventsComponent implements OnInit {
       return crawler.inputUrl + moment(inputDate).format("YYYY-MM-DD");
     }
     if (crawlerName === "leipzig") {
-      const customDate = new Date(inputDate);
-      const customDateObj = new Date(customDate);
-
-      // Extract day, month, and year components from the custom date
-      const day = customDateObj.getDate().toString().padStart(2, "0");
-      const month = (customDateObj.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-      const year = customDateObj.getFullYear();
-
-      const formattedDate = `${day}.${month}.${year}`;
-      const newUrl = crawler.inputUrl
-        .replace(
-          /mksearch%5Bdate_from%5D=\d{2}\.\d{2}\.\d{4}/,
-          `mksearch%5Bdate_from%5D=${formattedDate}`
-        )
-        .replace(
-          /mksearch%5Bdate_to%5D=\d{2}\.\d{2}\.\d{4}/,
-          `mksearch%5Bdate_to%5D=${formattedDate}`
+      const categories = crawler.categories;
+      const url_categories = categories.map((category) => {
+        return crawler.inputUrl.replace(
+          /mksearch%5Bcategory%5D=\d+/,
+          `mksearch%5Bcategory%5D=${category}`
         );
+      });
 
-      return newUrl;
+      return url_categories.map((url) => {
+        const customDate = new Date(inputDate);
+        const customDateObj = new Date(customDate);
+
+        // Extract day, month, and year components from the custom date
+        const day = customDateObj.getDate().toString().padStart(2, "0");
+        const month = (customDateObj.getMonth() + 1)
+          .toString()
+          .padStart(2, "0"); // Months are zero-based
+        const year = customDateObj.getFullYear();
+
+        const formattedDate = `${day}.${month}.${year}`;
+        return url
+          .replace(
+            /mksearch%5Bdate_from%5D=\d{2}\.\d{2}\.\d{4}/,
+            `mksearch%5Bdate_from%5D=${formattedDate}`
+          )
+          .replace(
+            /mksearch%5Bdate_to%5D=\d{2}\.\d{2}\.\d{4}/,
+            `mksearch%5Bdate_to%5D=${formattedDate}`
+          );
+      });
     } else {
       return crawler.inputUrl;
     }
@@ -278,6 +288,8 @@ export class CrawlEventsComponent implements OnInit {
           moment(this.selectedInputDate).add(i, "days").toDate()
         )
       );
+      urls = urls.flat();
+      console.log("Urls: ", urls);
     }
     let crawlings$;
     let mapCrawledEventsFunction: Function;
