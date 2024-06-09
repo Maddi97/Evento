@@ -5,6 +5,7 @@ import { Address } from "@globals/models/address";
 export type UrbaniteEvent = {
   date: string;
   start_time: string;
+  end_time: string;
   category: string;
   event_name: string;
   organizer_name: string;
@@ -39,7 +40,7 @@ function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
     e.times.end = "00:00";
   } else {
     e.times.start = parseTimeFormat(eventIn.start_time);
-    e.times.end = undefined;
+    e.times.end = parseTimeFormat(eventIn.end_time);
   }
   const date = { start: undefined, end: undefined };
   if (eventIn.date) {
@@ -48,6 +49,7 @@ function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
     ).toISOString();
     date.end = date.start;
   }
+
   e.date = date;
   e.permanent = false;
   return e;
@@ -73,5 +75,6 @@ function parseEventDateUrbanite(dateString: string): Date | null {
 }
 
 function parseTimeFormat(time: string) {
-  return time?.split(" ")[0] || undefined;
+  const match = time?.match(/\b\d{2}:\d{2}\b/);
+  return match ? match[0] : undefined;
 }

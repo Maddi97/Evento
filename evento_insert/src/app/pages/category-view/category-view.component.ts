@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Observable, forkJoin, of } from "rxjs";
-import { concatMap, map, take } from "rxjs/operators";
+import { concatMap, map, take, tap } from "rxjs/operators";
 import { Category, Subcategory } from "@globals/models/category";
 import { CategoryService } from "@shared/services/category/category.web.service";
 import { CategoryObservableService } from "@shared/services/category/category.observable.service";
@@ -60,8 +60,12 @@ export class CategoryViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.category$ = this.categoryService.getCategories().pipe(
-      map((cat) => {
-        this.categories = cat;
+      map((categories: Category[]) => {
+        this.categories = categories.sort((a, b) => {
+          const weightA = a.weight ? parseFloat(a.weight) : 0;
+          const weightB = b.weight ? parseFloat(b.weight) : 0;
+          return weightB - weightA;
+        });
       }),
       take(1)
     );

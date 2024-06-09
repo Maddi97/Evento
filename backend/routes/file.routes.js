@@ -173,8 +173,9 @@ router.post("/downloadFile", limiter, function (req, res) {
       if (err) {
         if (err.code === "ENOENT") {
           return res.status(404).json({ error: "File not found." });
+        } else {
+          return res.status(500).json({ error: "Internal server error." });
         }
-        return res.status(500).json({ error: "Internal server error." });
       }
     });
   } catch (error) {
