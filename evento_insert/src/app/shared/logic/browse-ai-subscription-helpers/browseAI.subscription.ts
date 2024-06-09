@@ -83,7 +83,6 @@ export function crawlBrowseAi(
           }),
           // wait until robot is finished
           switchMap((res) => {
-            console.log(`Run bulk response of ${url} - `, res);
             if (!res["result"]) return of({});
             return retryWaitingForResultIfFailed(
               "bulk",
@@ -117,8 +116,9 @@ export function crawlBrowseAi(
                 crawlerName,
               };
             });
+            console.log(`Events of bulk run: ${url} - `, events);
             sessionStorage.setItem(url, JSON.stringify(events));
-            if (events.length !== 0) {
+            if (events.length === 0) {
               throw new Error(`No Events found for crawler: ${url}`);
             }
             return events;
@@ -151,7 +151,6 @@ export function retryWaitingForResultIfFailed(
         taskOrBulk === "task"
           ? res["status"] === "failed" || !res["status"]
           : res.message;
-
       if (retryFailCondition) {
         return throwError(
           () => new Error(`${taskOrBulk} failed! - ${res?.message}`)

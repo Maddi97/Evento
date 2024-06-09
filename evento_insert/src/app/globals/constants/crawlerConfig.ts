@@ -3,7 +3,7 @@ export const CRAWLER_CONFIG = {
     robotId: "e7343656-2f63-4078-bf8c-df7ea0835a80",
     inputUrl: "https://www.urbanite.net/leipzig/events/",
     inputValue: new Date(),
-    secondRobotId: "1f35cb33-2c3d-4889-b971-63493ae6ad21",
+    secondRobotId: "d72c5565-ab6b-4698-994e-c9c68bcb5196",
   },
   leipzig: {
     robotId: "4fdc80d2-0187-4337-acba-aab100b74245",

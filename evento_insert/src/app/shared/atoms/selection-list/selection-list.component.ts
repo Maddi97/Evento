@@ -14,7 +14,10 @@ export class SelectionListComponent {
   @Output() updatedNamesList = new EventEmitter<string[]>();
 
   deleteName(name: string): void {
-    this.namesList = this.namesList.filter((item) => item !== name);
+    const index = this.namesList.indexOf(name);
+    if (index !== -1) {
+      this.namesList.splice(index, 1);
+    }
     this.updatedNamesList.emit(this.namesList);
   }
 }
