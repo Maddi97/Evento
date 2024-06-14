@@ -190,7 +190,7 @@ img {
   transition: margin-top 300ms ease-out;
   margin-bottom: 20px;
   width: 100%;
-  justify-content: center;
+  margin-left: auto;
 }
 .animate-off-screen {
   margin-top: -150px;

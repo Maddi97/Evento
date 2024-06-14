@@ -2,6 +2,7 @@ import moment from "moment";
 import { Address } from "../../../globals/models/address";
 import { Event } from "../../../globals/models/event";
 import { parse } from "path";
+import { Category } from "@globals/models/category";
 
 export type RausgegangenEvent = {
   name: string;
@@ -14,7 +15,10 @@ export type RausgegangenEvent = {
   link: string;
 };
 
-export function mapRausgegangenToEvents(events: RausgegangenEvent[]) {
+export function mapRausgegangenToEvents(
+  events: RausgegangenEvent[],
+  categories: Category[]
+) {
   return events.map((event) => {
     return mapPropertiesOfCrawledEvent(event);
   });

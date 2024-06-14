@@ -1,12 +1,14 @@
 import moment from "moment";
 import { Event } from "@globals/models/event";
 import { Address } from "@globals/models/address";
+import { Category } from "@globals/models/category";
 
 export type UrbaniteEvent = {
   date: string;
   start_time: string;
   end_time: string;
   category: string;
+  subcategory: string;
   event_name: string;
   organizer_name: string;
   street: string;
@@ -16,16 +18,41 @@ export type UrbaniteEvent = {
   link: string;
 };
 
-export function mapUrbaniteToEvents(events: UrbaniteEvent[]) {
+const mapCategoriesUrbanite = {
+  "MESSEN + KONGRESSE": { c: "Sonstiges", s: undefined },
+  "Kinder + Familie": { c: "Sonstiges", s: undefined },
+  "ESSEN + TRINKEN": { c: "Sonstiges", s: undefined },
+  "SPECIAL EVENTS": { c: "Sonstiges", s: undefined },
+  FÜHRUNGEN: { c: "Sonstiges", s: undefined },
+  STADTLEBEN: { c: "Sonstiges", s: undefined },
+  AUSSTELLUNG: { c: "Kunst & Museum", s: "Austellung" },
+  SPORT: { c: "Sport - Live", s: undefined },
+  BÜHNE: { c: "Kultur", s: undefined },
+  PARTY: { c: "Club", s: undefined },
+  "KONZERTE + LIVEMUSIK": { c: "Konzerte & Livemusik", s: undefined },
+};
+
+const mapSubcategoriesUrbanite = {
+  "Comedy & Kabarett": { c: "Comedy", s: undefined },
+  Techno: { c: "Techno", s: undefined },
+};
+
+export function mapUrbaniteToEvents(
+  events: UrbaniteEvent[],
+  categories: Category[]
+) {
   return events.map((event) => {
-    return mapPropertiesOfCrawledEvent(event);
+    return mapPropertiesOfCrawledEvent(event, categories);
   });
 }
-function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
+function mapPropertiesOfCrawledEvent(
+  eventIn: UrbaniteEvent,
+  categories: Category[]
+): Event {
   const e = new Event();
   e.name = eventIn.event_name;
   e.organizerName = eventIn.organizer_name;
-
+  e.category = mapCategory(eventIn.category, eventIn.subcategory, categories);
   const address = {
     city: eventIn.city,
     plz: eventIn.plz,
@@ -53,6 +80,23 @@ function mapPropertiesOfCrawledEvent(eventIn: UrbaniteEvent): Event {
   e.date = date;
   e.permanent = false;
   return e;
+}
+
+function mapCategory(
+  category: string,
+  subcategory: string,
+  categories: Category[]
+) {
+  console.log("category", category, "subcategory", subcategory);
+  const mappedCategory = mapSubcategoriesUrbanite[subcategory]
+    ? mapSubcategoriesUrbanite[subcategory]
+    : mapCategoriesUrbanite[category];
+  let categoryObj = categories.find((c) => c.name === mappedCategory?.c);
+  if (!categoryObj) return new Category();
+  categoryObj.subcategories =
+    categoryObj?.subcategories.filter((s) => s.name === mappedCategory?.s) ||
+    [];
+  return categoryObj;
 }
 
 function createAddressFromInput(address: any): Address {

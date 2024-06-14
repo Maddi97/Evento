@@ -1,6 +1,7 @@
 import moment from "moment";
 import { Address } from "../../../globals/models/address";
 import { Event } from "../../../globals/models/event";
+import { Category } from "../../../globals/models/category";
 
 export type RAEvent = {
   name: string;
@@ -13,7 +14,7 @@ export type RAEvent = {
   link: string;
 };
 
-export function mapLeipzigToEvents(events: RAEvent[]) {
+export function mapLeipzigToEvents(events: RAEvent[], categories: Category[]) {
   return events.map((event) => {
     return mapPropertiesOfCrawledEvent(event);
   });

@@ -164,15 +164,19 @@ router.post("/eventOnDateCatAndSubcat", limiter, (req, res) => {
         }
         // If neither should be promoted, compare by distance
         else {
-          const distance1 = get_distance(
-            [ev1.coordinates.lat, ev1.coordinates.lon],
-            userPosition
-          );
-          const distance2 = get_distance(
-            [ev2.coordinates.lat, ev2.coordinates.lon],
-            userPosition
-          );
-          return distance1 - distance2;
+          const [aHours, aMinutes] = ev1.times?.start
+            ?.split(":")
+            .map(Number) || [0, 0];
+          const [bHours, bMinutes] = ev2.times?.start
+            ?.split(":")
+            .map(Number) || [0, 0];
+
+          // Compare hours first, then minutes
+          if (aHours !== bHours) {
+            return aHours - bHours;
+          } else {
+            return aMinutes - bMinutes;
+          }
         }
       });
       // Return events from offset to limit to not load all at once
