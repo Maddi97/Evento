@@ -1,5 +1,6 @@
 import moment from "moment";
 import { Event } from "@globals/models/event";
+import { Category } from "@globals/models/category";
 
 export type IFZEvent = {
   name: string;
@@ -10,7 +11,7 @@ export type IFZEvent = {
   crawlerName: string;
 };
 
-export function mapIfzToEvents(events: IFZEvent[]) {
+export function mapIfzToEvents(events: IFZEvent[], categories: Category[]) {
   return events.map((event) => {
     return mapPropertiesOfCrawledEvent(event);
   });

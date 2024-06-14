@@ -25,6 +25,8 @@ import { mapRausgegangenToEvents } from "../../shared/logic/specific-crawler/rau
 import { CrawledEventsToEventComponent } from "../../shared/molecules/crawled-events-to-event/crawled-events-to-event.component";
 import { StoreDatasetService } from "@shared/services/store-dataset/store-dataset.service";
 import { EventsService } from "@shared/services/events/events.web.service";
+import { CategoryService } from "@shared/services/category/category.web.service";
+import { Category } from "@globals/models/category";
 
 export type PossibleCrawlerNames = keyof typeof CRAWLER_CONFIG | "All";
 
@@ -63,6 +65,7 @@ export class CrawlEventsComponent implements OnInit {
   index = 0;
   linkList = [];
   actualCrawler: PossibleCrawlerNames = "urbanite";
+  allCategories: Category[] = [];
 
   constructor(
     private crawlerService: CrawlerApiService,
@@ -70,7 +73,8 @@ export class CrawlEventsComponent implements OnInit {
     private organizerService: OrganizerService,
     private spinner: NgxSpinnerService,
     private storeDatasetService: StoreDatasetService,
-    private eventService: EventsService
+    private eventService: EventsService,
+    private categoryService: CategoryService
   ) {}
   ngOnInit(): void {
     this.organizerService.getOrganizer().subscribe((org) => {
@@ -78,6 +82,9 @@ export class CrawlEventsComponent implements OnInit {
     });
     this.eventService.getAllUpcomingEvents().subscribe((events) => {
       this.actualEventsList = events;
+    });
+    this.categoryService.getCategories().subscribe((categories) => {
+      this.allCategories = categories;
     });
   }
 
@@ -131,7 +138,10 @@ export class CrawlEventsComponent implements OnInit {
 
           console.log("Final crawled events: ", eventList);
           this.spinner.hide();
-          this.crawledEventList = mapCrawledEventsFunction(eventList.flat());
+          this.crawledEventList = mapCrawledEventsFunction(
+            eventList.flat(),
+            this.allCategories
+          );
           let filteredOut = [];
 
           // check if event exists in database
@@ -401,6 +411,7 @@ export class CrawlEventsComponent implements OnInit {
     if (!filteredOrganizer) {
       this.organizerIn = new Organizer();
       this.organizerIn.name = this.eventIn.organizerName;
+      console.log(this.eventIn.category);
       this.organizerIn.category = this.eventIn.category
         ? this.eventIn.category
         : undefined;
@@ -425,7 +436,8 @@ export class CrawlEventsComponent implements OnInit {
       const e = this.eventIn;
       e._organizerId = this.organizerIn._id;
       e.organizerName = this.organizerIn.name;
-      if (!e.category._id) e.category = this.organizerIn.category;
+      if (!e.category?._id) e.category = this.organizerIn.category;
+      console.log("cat", e.category);
       if (!e.address.street) e.address = this.organizerIn.address;
       if (!e.description) e.description = this.organizerIn.description;
       this.eventIn = e;

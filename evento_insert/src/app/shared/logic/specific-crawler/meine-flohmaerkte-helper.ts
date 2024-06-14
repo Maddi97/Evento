@@ -1,3 +1,4 @@
+import { Category } from "@globals/models/category";
 import { Event } from "../../../globals/models/event";
 import moment from "moment";
 
@@ -10,7 +11,10 @@ export type MeineFlohmaerkteEvent = {
   link: string;
   crawlerName: string;
 };
-export function mapMeineFlohmaerkteToEvents(events: MeineFlohmaerkteEvent[]) {
+export function mapMeineFlohmaerkteToEvents(
+  events: MeineFlohmaerkteEvent[],
+  categories: Category[]
+) {
   return events.map((event) => {
     return mapPropertiesOfCrawledEvent(event);
   });
