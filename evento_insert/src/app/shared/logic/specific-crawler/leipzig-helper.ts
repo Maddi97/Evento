@@ -7,31 +7,56 @@ export type LeipzigEvent = {
   name: string;
   date: string;
   time: string;
+  category: string;
   organizerName: string;
   description: string;
   address: string;
   link: string;
 };
-
+const mapCategoriesLeipzig = {
+  Ausstellung: { c: "Kunst & Museum", s: "Austellung" },
+  Sport: { c: "Sport - Live", s: undefined },
+  Schauspiel: { c: "Kultur", s: undefined },
+  Musical: { c: "Kultur", s: undefined },
+  Kabarett: { c: "Comedy", s: undefined },
+  "Oper & Operette": { c: "Kultur", s: undefined },
+  "Ballett & Tanztheater": { c: "Kultur", s: undefined },
+  Lesung: { c: "Kultur", s: undefined },
+  Konzert: { c: "Konzerte & Livemusik", s: undefined },
+};
 export function mapLeipzigToEvents(
   events: LeipzigEvent[],
   categories: Category[]
 ) {
   return events.map((event) => {
-    return mapPropertiesOfCrawledEvent(event);
+    return mapPropertiesOfCrawledEvent(event, categories);
   });
 }
-function mapPropertiesOfCrawledEvent(eventIn: LeipzigEvent) {
+function mapPropertiesOfCrawledEvent(
+  eventIn: LeipzigEvent,
+  categories: Category[]
+) {
   const e = new Event();
   e.name = eventIn.name;
   e.organizerName = parseOrganizerName(eventIn.organizerName);
   e.description = eventIn.description;
+  e.category = mapCategory(parseCategory(eventIn.category), categories);
   e.link = eventIn.link;
   e.address = parseAddress(eventIn.address);
   e.times = parseTime(eventIn.time);
   e.date = parseDate(eventIn.date);
   e.permanent = false;
   return e;
+}
+
+function mapCategory(category: string, categories: Category[]) {
+  const mappedCategory = mapCategoriesLeipzig[category];
+  let categoryObj = categories.find((c) => c.name === mappedCategory?.c);
+  if (!categoryObj) return new Category();
+  categoryObj.subcategories =
+    categoryObj?.subcategories.filter((s) => s.name === mappedCategory?.s) ||
+    [];
+  return categoryObj;
 }
 
 function parseTime(timeStr: string) {
@@ -57,6 +82,12 @@ function parseOrganizerName(name: string): string {
   const oName = extractImportantString(name, "Veranstaltungsort");
   return oName;
 }
+
+function parseCategory(category: string): string {
+  category = extractImportantString(category, "Kategorie");
+  return category;
+}
+
 function parseAddress(address: string): Address {
   // Define regular expressions for city, PLZ, and street with street number
   const cityRegex = /([^0-9]+)/;
@@ -67,7 +98,7 @@ function parseAddress(address: string): Address {
   const fullRegex = new RegExp(
     `${streetWithNumberRegex.source}\n${plzRegex.source} ${cityRegex.source}`
   );
-
+  if (!address) return new Address();
   // Execute the regular expression
   const match = address.match(fullRegex);
 
@@ -88,5 +119,5 @@ function extractImportantString(str: string, key: string) {
   let substringsToReplace = [key, "\n"];
   let regex = new RegExp(substringsToReplace.join("|"), "g");
 
-  return str.replace(regex, "");
+  return str?.replace(regex, "") || "";
 }
