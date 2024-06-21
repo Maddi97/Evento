@@ -159,8 +159,27 @@ export class CrawlEventsComponent implements OnInit {
           console.log("Filtered events: ", this.crawledEventList.length);
           console.log("filtered out events ", filteredOut);
           this.index = 0;
+          const [completeEvents, incompleteEvents] = this.returnCompleteEvents(
+            this.crawledEventList
+          );
+          console.log(
+            "==================== Count already inserted ======================="
+          );
+          console.log("Complete Events. Already inserted: ", completeEvents);
+          console.log(
+            "Incomplete Events. Not inserted: ",
+            incompleteEvents.length
+          );
+          console.log(
+            "=================================================================="
+          );
+
+          this.crawledEventList = incompleteEvents;
+          this.eventService.addMultipleEvents(completeEvents);
           this.eventIn = this.crawledEventList[this.index];
+
           this.findOrganizer();
+          this.eventService;
         },
         error: (error) => {
           // Handle error here
@@ -187,7 +206,10 @@ export class CrawlEventsComponent implements OnInit {
           return crawling$.pipe(
             // Map the result using mapCrawledEventsFunction
             map((eventList: any) => {
-              return mapCrawledEventsFunction(eventList.flat());
+              return mapCrawledEventsFunction(
+                eventList.flat(),
+                this.allCategories
+              );
             })
           );
         }
@@ -221,12 +243,25 @@ export class CrawlEventsComponent implements OnInit {
         if (filteredResult.length === 0) return;
         this.crawledEventList = filteredResult;
         this.index = 0;
+        const [completeEvents, incompleteEvents] = this.returnCompleteEvents(
+          this.crawledEventList
+        );
+        console.log(
+          "==================== Count already inserted ======================="
+        );
+        console.log("Complete Events. Already inserted: ", completeEvents);
+        console.log(
+          "Incomplete Events. Not inserted: ",
+          incompleteEvents.length
+        );
+        console.log(
+          "=================================================================="
+        );
+
+        this.crawledEventList = incompleteEvents;
+        this.eventService.addMultipleEvents(completeEvents);
         this.eventIn = this.crawledEventList[this.index];
         this.findOrganizer();
-        console.log(
-          "Collected results after each subscription completes:",
-          filteredResult
-        );
       },
       error: (error) => {
         // Handle error for forkJoin
@@ -396,22 +431,11 @@ export class CrawlEventsComponent implements OnInit {
   findOrganizer() {
     if (!this.eventIn.organizerName)
       this.eventIn.organizerName = "NO ORGANIZER NAME";
-    const filteredOrganizer = this.allOrganizer
-      .filter(
-        (organizer) =>
-          organizer.name?.toLowerCase() ===
-            this.eventIn.organizerName?.toLowerCase() ||
-          organizer.alias?.some(
-            (aliasName: string) =>
-              aliasName.toLowerCase() ===
-              this.eventIn?.organizerName?.toLowerCase()
-          )
-      )
-      .pop();
+    const filteredOrganizer = this.findOrganizerByName(this.eventIn);
     if (!filteredOrganizer) {
       this.organizerIn = new Organizer();
       this.organizerIn.name = this.eventIn.organizerName;
-      console.log(this.eventIn.category);
+
       this.organizerIn.category = this.eventIn.category
         ? this.eventIn.category
         : undefined;
@@ -436,13 +460,61 @@ export class CrawlEventsComponent implements OnInit {
       const e = this.eventIn;
       e._organizerId = this.organizerIn._id;
       e.organizerName = this.organizerIn.name;
-      if (!e.category?._id) e.category = this.organizerIn.category;
-      console.log("cat", e.category);
+      if (!e.category?._id) {
+        e.category = this.organizerIn.category;
+      }
       if (!e.address.street) e.address = this.organizerIn.address;
       if (!e.description) e.description = this.organizerIn.description;
       this.eventIn = e;
     }
   }
+
+  returnCompleteEvents(events) {
+    const completeEvents = events.filter((event) => {
+      const e = this.isEventComplete(event);
+      if (e) {
+        return e;
+      }
+    });
+    const incompleteEvents = events.filter((event) => {
+      const e = this.isEventComplete(event);
+      if (!e) {
+        return event;
+      }
+    });
+    return [completeEvents, incompleteEvents];
+  }
+
+  isEventComplete(event: Event) {
+    const hasOrganizer = (event._organizerId =
+      this.findOrganizerByName(event)?._id);
+    if (
+      !!event.name &&
+      !!event.date.start &&
+      !!event.address.city &&
+      !!event.address.street &&
+      !!event.address.plz &&
+      !!event.category._id &&
+      !!hasOrganizer
+    )
+      return event;
+    return undefined;
+  }
+
+  findOrganizerByName(event: Event) {
+    return this.allOrganizer
+      .filter(
+        (organizer) =>
+          organizer.name?.toLowerCase() ===
+            event.organizerName?.toLowerCase() ||
+          organizer.alias?.some(
+            (aliasName: string) =>
+              aliasName.toLowerCase() === event.organizerName?.toLowerCase()
+          )
+      )
+      .pop();
+  }
+
   selectOrganizerForCrawledEvent(organizer: Organizer) {
     this.eventIn.organizerName = organizer.name;
     this.findOrganizer();

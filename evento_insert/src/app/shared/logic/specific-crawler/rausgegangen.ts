@@ -10,6 +10,7 @@ export type RausgegangenEvent = {
   endTime: string;
   organizerName: string;
   description: string;
+  category: string;
   street: string;
   plzCity: string;
   link: string;
@@ -20,15 +21,19 @@ export function mapRausgegangenToEvents(
   categories: Category[]
 ) {
   return events.map((event) => {
-    return mapPropertiesOfCrawledEvent(event);
+    return mapPropertiesOfCrawledEvent(event, categories);
   });
 }
-function mapPropertiesOfCrawledEvent(eventIn: RausgegangenEvent) {
+function mapPropertiesOfCrawledEvent(
+  eventIn: RausgegangenEvent,
+  categories: Category[]
+) {
   const e = new Event();
   e.name = eventIn.name;
   e.organizerName = eventIn.organizerName;
   e.description = eventIn.description;
   e.link = eventIn.link;
+  e.category = mapRausgegangenCategory(eventIn.category, categories);
   e.address = parseAddress(eventIn.street, eventIn.plzCity);
   e.times = parseTime(eventIn.startDateAndTime, eventIn.endTime);
   e.date = parseDate(eventIn.startDateAndTime);
@@ -37,18 +42,19 @@ function mapPropertiesOfCrawledEvent(eventIn: RausgegangenEvent) {
 }
 
 function parseDate(datestr: string) {
-  const date = datestr.split(",")[1]?.trim();
+  const date = datestr?.split(",")[1]?.trim() || undefined;
+  if (!date) return { start: undefined, end: undefined };
   let momentDate = parseDateStr(date);
   return { start: momentDate, end: momentDate };
 }
 function parseTime(startStr: string, endStr: string) {
   const start =
     startStr
-      .split(",")
-      .pop()
-      .replaceAll(" ", "")
-      .replace("-", "")
-      .replaceAll("\n", "") || undefined;
+      ?.split(",")
+      ?.pop()
+      ?.replaceAll(" ", "")
+      ?.replace("-", "")
+      ?.replaceAll("\n", "") || undefined;
   if (!start) return { start: parseEndTime(endStr), end: undefined };
   else {
     return { start: start, end: parseEndTime(endStr) };
@@ -56,13 +62,20 @@ function parseTime(startStr: string, endStr: string) {
 }
 
 function parseEndTime(timestr: string) {
-  return timestr.split(",").pop()?.trim() || undefined;
+  return timestr?.split(",").pop()?.trim() || undefined;
 }
-
+function mapRausgegangenCategory(category: string, categories: Category[]) {
+  const categoryName = category.toLowerCase().includes("techno")
+    ? "Techno"
+    : "Club";
+  let categoryObj = categories.find((c) => c.name === categoryName);
+  if (!categoryObj) return new Category();
+  return categoryObj;
+}
 function parseAddress(street: string, plzCity: string): Address {
   const address = new Address();
   address.street = street;
-  const [plz, city] = plzCity.split(" ");
+  const [plz, city] = plzCity?.split(" ") || ["", ""];
   address.city = city;
   address.plz = plz;
   return address;

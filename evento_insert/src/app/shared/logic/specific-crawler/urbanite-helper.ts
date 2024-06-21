@@ -87,7 +87,6 @@ function mapCategory(
   subcategory: string,
   categories: Category[]
 ) {
-  console.log("category", category, "subcategory", subcategory);
   const mappedCategory = mapSubcategoriesUrbanite[subcategory]
     ? mapSubcategoriesUrbanite[subcategory]
     : mapCategoriesUrbanite[category];
