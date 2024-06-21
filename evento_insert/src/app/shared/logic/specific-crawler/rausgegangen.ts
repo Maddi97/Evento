@@ -3,6 +3,7 @@ import { Address } from "../../../globals/models/address";
 import { Event } from "../../../globals/models/event";
 import { parse } from "path";
 import { Category } from "@globals/models/category";
+import { Organizer } from "@globals/models/organizer";
 
 export type RausgegangenEvent = {
   name: string;
@@ -18,22 +19,23 @@ export type RausgegangenEvent = {
 
 export function mapRausgegangenToEvents(
   events: RausgegangenEvent[],
-  categories: Category[]
+  categories: Category[],
+  organizers: Organizer[]
 ) {
   return events.map((event) => {
-    return mapPropertiesOfCrawledEvent(event, categories);
+    return mapPropertiesOfCrawledEvent(event, organizers);
   });
 }
 function mapPropertiesOfCrawledEvent(
   eventIn: RausgegangenEvent,
-  categories: Category[]
+  organizers: Organizer[]
 ) {
   const e = new Event();
   e.name = eventIn.name;
   e.organizerName = eventIn.organizerName;
   e.description = eventIn.description;
   e.link = eventIn.link;
-  e.category = mapRausgegangenCategory(eventIn.category, categories);
+  e.category = mapRausgegangenCategory(eventIn.organizerName, organizers);
   e.address = parseAddress(eventIn.street, eventIn.plzCity);
   e.times = parseTime(eventIn.startDateAndTime, eventIn.endTime);
   e.date = parseDate(eventIn.startDateAndTime);
@@ -64,13 +66,15 @@ function parseTime(startStr: string, endStr: string) {
 function parseEndTime(timestr: string) {
   return timestr?.split(",").pop()?.trim() || undefined;
 }
-function mapRausgegangenCategory(category: string, categories: Category[]) {
-  const categoryName = category.toLowerCase().includes("techno")
-    ? "Techno"
-    : "Club";
-  let categoryObj = categories.find((c) => c.name === categoryName);
-  if (!categoryObj) return new Category();
-  return categoryObj;
+function mapRausgegangenCategory(
+  organizerName: string,
+  organizers: Organizer[]
+) {
+  const organizer = findOrganizerByName(organizerName, organizers);
+  if (organizer) {
+    return organizer.category;
+  }
+  return new Category();
 }
 function parseAddress(street: string, plzCity: string): Address {
   const address = new Address();
@@ -105,4 +109,15 @@ function parseDateStr(datestr: string) {
   // Parse the date string to a Date object
   const parsedDate = new Date(formattedDate);
   return moment(parsedDate).toISOString();
+}
+function findOrganizerByName(name, organizers): Organizer {
+  return organizers
+    .filter(
+      (organizer) =>
+        organizer.name?.toLowerCase() === name?.toLowerCase() ||
+        organizer.alias?.some(
+          (aliasName: string) => aliasName.toLowerCase() === name?.toLowerCase()
+        )
+    )
+    .pop();
 }

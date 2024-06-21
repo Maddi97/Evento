@@ -140,7 +140,8 @@ export class CrawlEventsComponent implements OnInit {
           this.spinner.hide();
           this.crawledEventList = mapCrawledEventsFunction(
             eventList.flat(),
-            this.allCategories
+            this.allCategories,
+            this.allOrganizer
           );
           let filteredOut = [];
 
@@ -208,7 +209,8 @@ export class CrawlEventsComponent implements OnInit {
             map((eventList: any) => {
               return mapCrawledEventsFunction(
                 eventList.flat(),
-                this.allCategories
+                this.allCategories,
+                this.allOrganizer
               );
             })
           );

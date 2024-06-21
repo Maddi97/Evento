@@ -16,17 +16,21 @@ export function mapMeineFlohmaerkteToEvents(
   categories: Category[]
 ) {
   return events.map((event) => {
-    return mapPropertiesOfCrawledEvent(event);
+    return mapPropertiesOfCrawledEvent(event, categories);
   });
 }
 
-function mapPropertiesOfCrawledEvent(eventIn: MeineFlohmaerkteEvent) {
+function mapPropertiesOfCrawledEvent(
+  eventIn: MeineFlohmaerkteEvent,
+  categories: Category[]
+) {
   const e = new Event();
 
   e.name = eventIn.name;
   e.organizerName = eventIn.organizerName;
   e.description = eventIn.description;
   e.link = eventIn.link;
+  e.category = categories.find((c) => c.name === "Flohmarkt");
   e.address = parseAdress(eventIn.address);
   e.times = parseTime(eventIn.timeAndDate);
   e.date = parseDate(eventIn.timeAndDate);
