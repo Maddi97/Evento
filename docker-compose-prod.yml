@@ -66,14 +66,14 @@ services:
     #   container_name: mongodb
     #   depends_on:
     #     - letsencrypt
-  # ai_crawler_server:
-  #   build:
-  #     context: ai_crawler_server
-  #     dockerfile: dev.Dockerfile
-  #   container_name: crawler_container
-  #   ports:
-  #     - 3001:3001
-  #   volumes:
-  #     - ./ai_crawler_server:/app
+  ai_crawler_server:
+    build:
+      context: ai_crawler_server
+      dockerfile: dev.Dockerfile
+    container_name: crawler_container
+    ports:
+      - 3001:3001
+    volumes:
+      - ./ai_crawler_server:/app
   # depends_on:
   #   - letsencrypt

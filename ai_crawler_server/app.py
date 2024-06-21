@@ -66,7 +66,7 @@ def storeLinklist():
         return jsonify({'message': 'Linklist Data received successfully'})
     except Exception as e:
         print(f"An error occured while storing linklist: \n\n {e}")
-        return jsonify({'error': 'Linklist Data storing failed'})
+        return jsonify({'error': 'Linklist Data storing failed', 'message': str(e)})
 
 @app.route('/storeEventDetails', methods=['POST'])
 def storeEventDetails():
@@ -75,7 +75,7 @@ def storeEventDetails():
         
         # Extract url and linklist from the data
         events = data.get('events')
-        data_rows = []
+        new_df = pd.DataFrame()
         for event in events:
             print(f"store event: {event['link']}")
             url = event["link"]
@@ -87,33 +87,37 @@ def storeEventDetails():
             # Find the <body> tag and extract its content
             pagefilling = ''.join(['%s' % x for x in soup.body.contents]) 
             data = {
-                    'url': url,
-                    'date': datetime.now().strftime("%m/%d/%Y"),
-                    'html_content': pagefilling,
-                    'event_details': str(event)
+                    'url': [url],
+                    'date': [datetime.now().strftime("%m/%d/%Y")],
+                    'html_content': [pagefilling],
+                    'event_details': [str(event)]
                 }
-            data_rows.append(data)
+            df_row = pd.DataFrame(data)
+            print(f"Captured data row: {df_row}")
+            new_df = pd.concat([new_df, df_row], ignore_index=True)
             
         df = None
         create_dir_if_not_exist()
         if os.path.exists(csv_file_path_event_details):
             # If the CSV file exists, read it into a DataFrame
+            print(f"Add new df to existing: {new_df.shape}")
             df = pd.read_csv(csv_file_path_event_details)
-            new_data_df = pd.DataFrame(data_rows)
-            df = pd.concat([df, new_data_df], ignore_index=True)
-
+            df = pd.concat([df, new_df], ignore_index=True)
+            print(f"Updated df shape: {df.shape}")
             print(f"CSV file exists. DataFrame loaded from {csv_file_path_event_details}")
         else:
             # If the CSV file does not exist, create a new DataFrame
-            df = pd.DataFrame(data_rows)
+            print(f"Create new df: {new_df.shape}")
+            df = new_df
             # Save the DataFrame as a CSV file
         df.to_csv(csv_file_path_event_details, index=False)
+        print("====================================================")
         print("DF saved")
-
+        print("====================================================")
         return jsonify({'message': 'Data event details received successfully'})
     except Exception as e:
         print(f"An error occured while storing event details: \n\n {e}")
-        return jsonify({'error': 'event details Data storing failed'})
+        return jsonify({'error': 'event details Data storing failed', 'message': str(e)})
 
 if __name__ == "__main__":
   app.run(port=3001)
