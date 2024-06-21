@@ -195,6 +195,13 @@ export class EventsService {
     );
   }
 
+  addMultipleEvents(events: Event[]): Observable<Event[]> {
+    events.map((event) => {
+      this.createEvent(event).subscribe();
+    });
+    return;
+  }
+
   checkIfEventsExistsInDB(event: Event): Observable<Event[]> {
     return this.webService.post("checkIfEventExists", { event }).pipe(
       map((res: any) => res as Event[]), // Adjust the type if needed

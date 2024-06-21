@@ -70,7 +70,7 @@ export class CrawledEventsToEventComponent {
   previousEvent() {
     this.emitPreviousEvent.emit();
   }
-
+  
   addNewOrganizer(organizer) {
     this.organizerOnservableService
       .addNewOrganizer(organizer)

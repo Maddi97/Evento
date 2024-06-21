@@ -69,6 +69,7 @@ export function crawlBrowseAi(
             // console.log(`${url} - links: ${linkList.map((e) => e.originUrl)}`);
 
             if (linkList.length === 0) {
+              sessionStorage.setItem(url, JSON.stringify([]));
               throw new Error(`No Event links found in ${url}`);
             } else {
               return linkList;
